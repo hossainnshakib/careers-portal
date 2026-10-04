@@ -20,9 +20,9 @@ describe.skipIf(!enabled)("anon RLS integration", () => {
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !key) throw new Error("RLS checks require dev Supabase URL and anon key.");
     const client = createClient(url, key, { auth: { persistSession: false } });
-    const { data, error } = await client.from(table).select("*").limit(1);
+    const { count, error } = await client.from(table).select("*", { head: true, count: "exact" });
     // Only recognized permission denials are acceptable; network/schema errors must fail.
     if (error) expect(error.code).toBe("42501");
-    else expect(data).toEqual([]);
+    else expect(count).toBe(0);
   });
 });
