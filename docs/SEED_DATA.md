@@ -57,6 +57,21 @@ Values marked **TBD** are placeholders the owner will confirm; they must be easy
 
 `sort_order` follows the table order. Never write group/hierarchy wording in descriptions.
 
+## Standard questions (Phase 1)
+Define this set as a constant in `src/lib/questions/defaults.ts`; do not create a DB table. The question builder's **"Add standard questions"** button copies the definitions into a job as ordinary editable questions with their own IDs. The copies follow the same edit/order/archive rules as all other questions; they are not live-linked to the constant.
+
+| Label | Type | Required | Section | Config |
+|---|---|---|---|---|
+| LinkedIn profile | `url` | No | `professional` | — |
+| Portfolio or website | `url` | No | `portfolio` | — |
+| Years of relevant experience | `number` | Yes | `experience` | `{ integer: true, min: 0, max: 50 }` |
+| Current or most recent job title and company | `short_text` | No | `experience` | — |
+| Earliest date you can join | `date` | No | `professional` | `{ min: "today" }` |
+| Expected monthly salary (BDT) | `number` | No | `professional` | — |
+| Why do you want to work with us? | `long_text` | Yes | `professional` | `{ maxLength: 1500 }` |
+
+Do not ask for age, religion, marital status, or photos. Demo jobs must include this set plus role-specific questions after the new `date` migration is applied in Phase 1. This docs-only decision does not change the already-applied Phase 0 schema or its existing demo seed.
+
 ## Demo jobs (for `seed:demo` only)
 Use the real 19 titles/slugs above but assign DEMO values chosen to exercise every feature. Mark nothing in the UI as "demo" (the database is dev-only), but make the text obviously placeholder-ish (for example "Demo description for ...").
 - Status mix: 16 `open`, 2 `draft`, 1 `closed`.
@@ -65,7 +80,7 @@ Use the real 19 titles/slugs above but assign DEMO values chosen to exercise eve
 - Brands: spread across all 8 brands; at least 3 jobs belong to 2+ brands (one primary each); at least one brand has no open jobs (tests the empty state/hidden option).
 - Levels: set `experience_level` on about half; `creative-director-production-lead` is `senior`.
 - Content: summary (≤ 200 chars), markdown description with a list, responsibilities, requirements. Include a few markdown edge cases (links, bold, a list) and one attempted raw HTML snippet to prove it is NOT rendered.
-- Questions: 4–8 per job from sensible templates per department (for example Web: GitHub URL, portfolio URL, best live projects (long text), React/Next.js experience (single choice), years of experience (number)). `web-developer` must include ALL ten question types, required and optional mixed, plus one file_upload question. Each question has a section.
+- Questions (Phase 1 onward): the seven standard questions above plus 4–8 role-specific questions per job from sensible templates per department (for example Web: GitHub URL, best live projects (long text), React/Next.js experience (single choice)). `web-developer` must exercise ALL eleven question types overall, required and optional mixed, including a file_upload question. Each question has a section. Include radio/dropdown choice presentation and "Other" examples across the demo jobs.
 
 ## Demo applicants (for `seed:demo` only)
 - About 30 applications across open and closed jobs, spread over several weeks, statuses covering all five values.

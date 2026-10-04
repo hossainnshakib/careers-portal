@@ -9,7 +9,7 @@ Postgres (Supabase), managed with Drizzle migrations. Primary keys are `uuid` (d
 - `experience_level`: `entry | mid | senior`
 - `job_status`: `draft | open | closed`
 - `brand_status`: `active | hidden`
-- `question_type`: `short_text | long_text | single_choice | multiple_choice | yes_no | number | url | email | phone | file_upload`
+- `question_type` (11 types): `short_text | long_text | single_choice | multiple_choice | yes_no | number | url | email | phone | file_upload | date`
 - `question_section`: `professional | experience | skills | portfolio | role_specific`
 - `application_status`: `new | under_review | shortlisted | rejected | hired`
 - `attachment_kind`: `cv | portfolio | other`
@@ -31,7 +31,11 @@ Indexes: `(status)`, `(department_id)`, `(sort_order)`.
 `job_id` → jobs (cascade), `brand_id` → brands (restrict), `is_primary bool`. PK `(job_id, brand_id)`. Partial unique index: one primary per job (`where is_primary`). Application layer guarantees exactly one primary.
 
 ### job_questions
-`id`, `job_id` → jobs (cascade), `label`, `help_text null`, `type question_type`, `required bool`, `options jsonb null` (array of `{ value, label }` for choice types), `config jsonb null` (e.g. `{ minLength, maxLength, min, max, integer, minSelected, maxSelected, accept: ["pdf","png"], maxSizeMb }`), `section question_section default role_specific`, `sort_order int`, `archived_at null`, `created_at`.
+`id`, `job_id` → jobs (cascade), `label`, `help_text null`, `type question_type`, `required bool`, `options jsonb null` (array of `{ value, label }` for choice types), `config jsonb null` (e.g. `{ minLength, maxLength, min, max, integer, minSelected, maxSelected, display, allowOther, accept: ["pdf","png"], maxSizeMb }`), `section question_section default role_specific`, `sort_order int`, `archived_at null`, `created_at`.
+Config extensions:
+- `single_choice`: `display: "radio" | "dropdown"` controls presentation; `allowOther: bool` enables an "Other" free-text answer.
+- `multiple_choice`: `allowOther: bool` enables an "Other" free-text answer alongside selected options.
+- `date`: `min` and `max` are an absolute ISO calendar date (`YYYY-MM-DD`) or `"today"`. Bounds are inclusive; resolve `"today"` at validation time, not when the question is saved. A date answer is a date-only string, not a timestamp.
 Rules: once a job has applications, questions are archived, never deleted. Editing a question after applications exist only affects future applications (answers carry snapshots).
 Index: `(job_id, sort_order)`.
 
@@ -41,6 +45,7 @@ Indexes: `(job_id)`, `(status)`, `(submitted_at desc)`, `lower(email)`. "Previou
 
 ### application_answers
 `id`, `application_id` → applications (cascade), `question_id` → job_questions (set null), `label_snapshot`, `type_snapshot question_type`, `section_snapshot question_section`, `sort_order int`, `value jsonb` (string | number | boolean | string[] | null; file_upload answers store the attachment id(s)).
+Date answers use ISO date-only strings (`YYYY-MM-DD`). "Other" answers are stored as plain text in `value`: a string for single choice, or a free-text string within the multiple-choice answer array. Do not store HTML or a separate "Other" object; render answers as text.
 Index: `(application_id)`.
 
 ### attachments
@@ -63,3 +68,4 @@ Index: `(application_id)`.
 ## Migrations notes
 - A migration enables RLS on all tables, creates the partial unique index for the primary brand, and creates the slug-immutability trigger.
 - Seed data is NOT in migrations (see `docs/SEED_DATA.md`).
+- `date` is a Phase 1 schema extension. The applied Phase 0 enum has ten types; add `date` through a **NEW migration in Phase 1** and update the Drizzle enum then. Never edit an applied migration to add it.

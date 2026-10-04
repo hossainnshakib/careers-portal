@@ -11,7 +11,8 @@ Cloudflare Turnstile protects the apply form and the upload-URL endpoint.
 No separate backend. Brand websites (WordPress, Laravel, Next.js, SaaS) are NOT coupled to this app; they only link to it.
 
 ## Hosting and environments
-- Now: Vercel (Hobby) + Supabase (free), region Singapore (`sin1` for functions if configurable). Only a DEV Supabase project exists. Production comes later (separate Supabase project, separate Vercel environment variables, custom domain `careers.fixenmedia.com` via a CNAME).
+- Now: Vercel (Hobby) + Supabase (free). The existing DEV Supabase project is in Mumbai (`ap-south-1`). Only a DEV Supabase project exists. Production comes later (separate Supabase project, separate Vercel environment variables, custom domain `careers.fixenmedia.com` via a CNAME).
+- Production region: Singapore or Mumbai, to be decided by measuring latency before the production project is created; the Vercel function region must match the Supabase region. Use `sin1` for Singapore or `bom1` for Mumbai, including Mumbai for previews connected to the dev project.
 - Free-tier caveats the code must tolerate: Supabase free projects pause after about a week of inactivity, and there are no automatic backups. The daily cron route (below) makes a trivial DB query as a keep-alive, and the runbook documents a manual periodic export. Vercel Hobby cron can run at most once per day, so use ONE daily route.
 - Local dev connects to the dev Supabase project. Vercel previews also use dev. Never point local or preview at production.
 

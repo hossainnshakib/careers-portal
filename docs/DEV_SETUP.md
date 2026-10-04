@@ -2,7 +2,7 @@
 
 ## Owner prerequisites
 1. Use Node 24 and pnpm 12.9.1. pnpm was activated on this machine through Corepack.
-2. Create/confirm the DEV Supabase project in Singapore. Disable email sign-ups.
+2. Use the existing DEV Supabase project in Mumbai (`ap-south-1`). Disable email sign-ups. Production region will be chosen by comparing Singapore/Mumbai latency before creating the production project; Vercel functions must match the chosen Supabase region.
 3. Copy `.env.example` to `.env.local` locally (never into chat or git).
 4. Fill every required field. Pin `DEV_SUPABASE_PROJECT_REF` to the DEV dashboard's project reference. Runtime `DATABASE_URL` uses the pooler; migration `DIRECT_URL` uses direct Postgres or the session pooler if your network cannot reach IPv6.
 5. Use documented Cloudflare Turnstile test keys for development. Generate independent random secrets of at least 32 characters for upload sessions and cron.
