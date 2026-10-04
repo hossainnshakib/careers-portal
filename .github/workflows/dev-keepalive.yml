@@ -1,0 +1,29 @@
+name: Dev database availability
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: ${{ vars.DEV_KEEPALIVE_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: development
+      DEV_SUPABASE_PROJECT_REF: ${{ secrets.DEV_SUPABASE_PROJECT_REF }}
+      DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DEV_DIRECT_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.DEV_SUPABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:keepalive:dev
