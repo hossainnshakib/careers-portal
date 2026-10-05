@@ -149,3 +149,39 @@ Newer entries override earlier planning documents. All code and database work in
 - Storage uses a server-selected `brands/<brandId>/<uuid>.<extension>` path. A DB write failure removes the newly uploaded object. Replaced old logos are retained as non-sensitive assets to avoid breaking cached URLs; automated old-logo cleanup is not added in Phase 1.
 - Browser fixtures now also remove their test-only logo objects through `src/lib/storage/test-logos.ts` after catalog cleanup. No owner assets are selected for deletion. Brand mutation/page tests independently prove anonymous/non-admin denial, validation, DB-failure cleanup and `brands`/`jobs`/affected `job:<slug>` invalidation.
 - Brand e2e exposed unstable accessible names in wrapping labels for controlled select/textarea fields; explicit aria-labels now keep Sector/Status/Description names stable. The test passed after fixing those UI labels rather than relaxing selectors: create with all fields, reorder, reject unsafe SVG, upload/display passive SVG as IMG, edit and hide.
+
+## Phase 1 handoff — 2026-10-05 (catalog checkpoint, latest)
+
+This section supersedes the earlier foundation handoff's progress/next-command information. Its execution constraints and answer/auth contracts still apply.
+
+### Done
+- Foundation: date enum migration (already applied; never edit 0000–0002), strict question configs, Supabase Auth/allowlist/login/logout/admin:add/middleware, eleven-type buildSchema and protected shell. See the previous handoff and commits `9e2b858`, `8f3f30b`, `a22b492`, `f413051`.
+- `a77d780`: Departments complete: page, create/edit/activation/up-down reorder, strict server validation, transactional DB queries, direct page/action denial tests and cache invalidation. Ephemeral dev-pinned IPC browser fixture added. Chromium flow verifies login/create/reorder/rename/deactivate/logout.
+- `7b6222d`: Brands complete: page, fields/create/edit/hide/show/reorder, logo upload, strict SVG passive allowlist and PNG/WebP signature validation, server-selected paths, failed-DB-upload cleanup, img-only rendering, tests and revalidation. Browser fixture deletes test logo objects as well as temporary account/catalog rows.
+- No dependencies added. All work remains on `phase-1-admin` and pushed to origin. No owner Auth credentials used or owner allowlist row added; owner command remains `pnpm admin:add <email>`.
+
+### Remaining todos (resume in order)
+1. **Jobs queries/list/actions**: filters (status, department, brand, search), transactional save with one-or-more brands/exactly one primary, publish/close/reopen/duplicate/copy questions/delete eligible drafts, DB-loaded ownership/archive/application/immutable-slug enforcement. Direct denial, validation and lifecycle tests.
+2. **Job editor basics/content**: one page, editable auto-slug before publish, all specified basics/deadline/CV toggle, summary counter, safe markdown live preview. The owner explicitly allows a markdown renderer plus sanitizer; justify in one line before installing, all other new dependencies still need approval. Do not assume react-hook-form/nuqs/shadcn packages are installed.
+3. **Question builder/live form preview**: eleven types, config/options/section/help/required/up-down/archive, copy from another job, shared buildSchema preview with radio/dropdown/Other/date controls.
+4. **Standards and seed**: seven defaults in code, independent copies/button/editability tests; extend fresh demo questions and carefully upgrade unchanged deterministic existing demo rows without overwriting owner edits or application snapshots. Existing seed still has early-return behavior; no reset/reseed has been run in this continuation.
+5. **Revalidation completeness**: department and brand mutations already invalidate their own tags, jobs and affected job details; ensure every job mutation does too and test all affected tags.
+6. **Slug helper/tests**: ASCII lowercase, punctuation removal, collision suffixes, 19 explicit final slugs. Can introduce the minimal helper with job actions if needed, then complete the deliverable/tests.
+7. **Exhaustive admin gating**: current direct page tests cover layout/dashboard/applications/departments/brands; action tests cover login-after-auth/logout/departments/brands/logo upload. Extend discovery/registry to every future protected surface and live HTTP gating. The live requireAdmin test alone does not prove every HTTP route/action is gated.
+8. **Required job-create/publish Chromium e2e**: reuse guarded ephemeral admin fixture, add standard questions and every type, exercise radio/dropdown/Other/date preview, publish and see list. Never use owner credentials; keep credential traces off.
+9. **Docs/walkthrough/final gates/report**: complete schema/architecture/setup/decisions updates and creation walkthrough. Run typecheck/lint/unit suite/live gating/e2e before final report. Include exact owner commands and security-relevant diff paths.
+
+### Latest verification
+- `pnpm typecheck`: passed.
+- `pnpm lint`: passed; no new lint/type ignores added.
+- `pnpm test`: **11 test files passed / 122 tests passed**, two live files / 15 tests skipped by default.
+- `$env:RUN_SUPABASE_TESTS = '1'; node --env-file=.env.local node_modules/vitest/vitest.mjs run src/lib/auth/requireAdmin.live.test.ts src/db/rls.test.ts` (remove env flag afterward): **two files / all 15 passed**, none skipped. Four real Auth/allowlist checks plus anon count-only RLS checks on all 11 tables.
+- `pnpm exec playwright test tests/e2e/departments.spec.ts tests/e2e/brands.spec.ts`: **two passed**, including real guarded account setup and cleanup, actual dev DB mutations and Storage SVG upload/rejection. Playwright managed its background dev server.
+- Initial browser failures were fixed: first protected-route compile needed a 30-second login URL wait; duplicate status elements needed a main-scoped selector; controlled select/textarea wrapping labels needed stable accessible names. Tests were not removed or skipped.
+- Not verified: job authoring/publishing and preview (not implemented), exhaustive future surface live gating, production build, Bengali PDF shaping (still required before Phase 4), production behavior. No unresolved failing checks at this checkpoint.
+
+### Known details / next command
+- `src/lib/validation/brand-logo.ts` intentionally accepts only passive SVG; uploads with style blocks/attributes/external images must be exported as passive paths or PNG/WebP. Seeded static logos are unaffected. Old replaced logo objects are retained; newly failed writes and all test assets are cleaned up.
+- `next.config.ts` permits 2 MB server-action bodies solely to fit a <=1 MB logo plus multipart overhead. Candidate files still need the planned direct Storage flow in Phase 2.
+- DB access belongs in `src/db/queries/*`, storage in `src/lib/storage/*`. Existing query/action patterns are simple; do not introduce a generic CRUD framework. Job multi-row writes need transactions and DB reloads, not client-trusted definitions.
+- Next command: **`git log --oneline -10`**, then **`git status --short --branch`**. Read this newest handoff and the required docs, rebuild the remaining todo list, inspect schema/validation/auth/tests, then start jobs queries and gated actions/list. Continue autonomously with small commits and pushes.
