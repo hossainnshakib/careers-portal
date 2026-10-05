@@ -78,3 +78,9 @@ Newer entries override earlier planning documents. All code and database work in
 - Middleware refreshes auth cookies and uses `getUser()` for convenience redirects only. Admin/auth responses use private/no-store headers; all admin pages are dynamic. The installed SSR package's cookie callback supports cache headers, which middleware propagates.
 - Login has generic errors, a disabled pending button and a short client retry delay. Supabase Auth's server-side throttling remains the enforcement layer; no unreliable process-local rate limiter or extra dependency is introduced.
 - `admin:add` is dev-pinned in this phase and only allowlists an existing Auth account. It paginates Auth users and performs an idempotent database upsert; it never prints email addresses or creates users. Production account setup will require a separately approved owner-run procedure later.
+
+### Answer validation contract
+- `buildSchema` accepts validated question definitions and rejects unknown answer keys. Text is trimmed; optional blank/null/empty-array values become absent while `false` and `0` remain valid answers. Number and boolean inputs are not silently coerced.
+- Other answers use the prescribed plain-string/string-array representation, with a 500-character limit and at most one Other value per multiple-choice answer. Existing options remain ordinary values; choice UI must avoid a reserved-value sentinel collision when collecting Other text.
+- File answers validate opaque UUID token arrays (up to eight, unique), not browser-supplied storage paths or metadata. Actual object ownership, MIME, extension and size checks remain mandatory in Phase 2 upload/submit handling after DB definitions are reloaded; this validator alone is not upload authorization.
+- Bangladesh phones accept local 013–019 prefixes or +880 equivalents; general international numbers require a leading + and 8–15 digits. Spaces, parentheses and hyphens are normalized.
