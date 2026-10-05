@@ -17,6 +17,8 @@ import Dashboard from "@/app/admin/(protected)/page";
 import Applications from "@/app/admin/(protected)/applications/page";
 import Departments from "@/app/admin/(protected)/departments/page";
 import Brands from "@/app/admin/(protected)/brands/page";
+import Jobs from "@/app/admin/(protected)/jobs/page";
+vi.mock("@/db/queries/jobs", () => ({ listJobs: vi.fn() }));
 vi.mock("@/db/queries/departments", () => ({ listDepartments: vi.fn() }));
 vi.mock("@/db/queries/brands", () => ({ listBrands: vi.fn() }));
 
@@ -28,6 +30,7 @@ describe("protected admin pages independently gate access", () => {
     ["/admin/applications", Applications],
     ["/admin/departments", Departments],
     ["/admin/brands", Brands],
+    ["/admin/jobs", () => Jobs({ searchParams: Promise.resolve({}) })],
   ] as const;
   for (const [name, invoke] of surfaces) {
     it.each(["anonymous", "non-admin"])(
