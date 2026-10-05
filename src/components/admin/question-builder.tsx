@@ -4,6 +4,7 @@ import { useState } from "react";
 import { questionSectionEnum, questionTypeEnum } from "@/db/schema";
 import type { QuestionDefinition } from "@/lib/questions/definition";
 import { copyJobQuestionsAction } from "@/app/admin/(protected)/jobs/actions";
+import { copyStandardQuestions } from "@/lib/questions/defaults";
 
 const inputClass = "mt-1 block w-full rounded border border-input bg-card p-2";
 const buttonClass = "rounded border border-border px-3 py-2 disabled:opacity-50";
@@ -37,6 +38,14 @@ export function QuestionBuilder({
       <h2 className="text-xl font-semibold">3. Questions</h2>
       <p>Questions removed from a job with applications are archived when saved.</p>
       <div className="flex flex-wrap items-end gap-3">
+        <button
+          type="button"
+          className={buttonClass}
+          disabled={questions.length > 93}
+          onClick={() => onChange([...questions, ...copyStandardQuestions(questions.length)])}
+        >
+          Add standard questions
+        </button>
         <button
           type="button"
           className={buttonClass}

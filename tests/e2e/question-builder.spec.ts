@@ -38,7 +38,13 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByLabel("Question 6 Minimum", { exact: true }).fill("0");
   await page.getByLabel("Question 6 Maximum", { exact: true }).fill("50");
   await page.getByLabel("Question 11 min date", { exact: true }).fill("today");
+  await page.getByRole("button", { name: "Add standard questions", exact: true }).click();
+  await page.getByLabel("Question 12 label", { exact: true }).fill("LinkedIn contact");
   const preview = page.getByRole("region", { name: "Candidate form preview", exact: true });
+  await preview.getByLabel("Years of relevant experience", { exact: true }).fill("3");
+  await preview
+    .getByLabel("Why do you want to work with us?", { exact: true })
+    .fill("Thoughtful work with a small team.");
   for (const [name, value] of [
     ["Full name", "শ্রীময়ী দত্ত"],
     ["Email", "preview@example.com"],
@@ -70,13 +76,11 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await preview.getByLabel("url question", { exact: true }).fill("https://example.com");
   await preview.getByLabel("email question", { exact: true }).fill("alternative@example.com");
   await preview.getByLabel("phone question", { exact: true }).fill("+8801712345678");
-  await preview
-    .getByLabel("file_upload question", { exact: true })
-    .setInputFiles({
-      name: "sample.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("%PDF-1.4 preview"),
-    });
+  await preview.getByLabel("file_upload question", { exact: true }).setInputFiles({
+    name: "sample.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("%PDF-1.4 preview"),
+  });
   const today = new Date().toISOString().slice(0, 10);
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
   await preview.getByLabel("date question", { exact: true }).fill(yesterday);
@@ -91,4 +95,16 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
     await expect(page.getByLabel(`Question ${index + 1} type`, { exact: true })).toHaveValue(type);
   await expect(page.getByLabel("Question 3 display", { exact: true })).toHaveValue("dropdown");
   await expect(page.getByLabel("Question 11 min date", { exact: true })).toHaveValue("today");
+  await expect(page.getByLabel("Question 12 label", { exact: true })).toHaveValue(
+    "LinkedIn contact",
+  );
+  await page.getByRole("link", { name: "Jobs", exact: true }).click();
+  await page.getByLabel("Search", { exact: true }).fill(`${adminAccount.prefix}Questions`);
+  await page.getByRole("button", { name: "Filter jobs", exact: true }).click();
+  await expect(
+    page
+      .getByRole("row")
+      .filter({ hasText: `${adminAccount.prefix}Questions` })
+      .getByRole("cell", { name: "open", exact: true }),
+  ).toBeVisible();
 });
