@@ -13,6 +13,8 @@ import { jobInput, type JobInput } from "@/lib/validation/jobs";
 import { slugify } from "@/lib/slug";
 import { SafeMarkdown } from "@/lib/markdown/render";
 import { jobCommandAction, saveJobAction } from "@/app/admin/(protected)/jobs/actions";
+import { QuestionBuilder } from "./question-builder";
+import { CandidatePreview } from "./candidate-preview";
 
 const inputClass = "mt-1 block w-full rounded border border-input bg-card p-2";
 const buttonClass = "rounded border border-border px-4 py-2 disabled:opacity-50";
@@ -36,6 +38,7 @@ export function JobEditor({
   initial,
   brands,
   departments,
+  sources,
   published,
   status,
   hasApplications,
@@ -133,8 +136,8 @@ export function JobEditor({
                 Slug
                 <input
                   className={inputClass}
-                value={draft.slug}
-                aria-label="Slug"
+                  value={draft.slug}
+                  aria-label="Slug"
                   maxLength={120}
                   required
                   readOnly={published}
@@ -343,14 +346,13 @@ export function JobEditor({
               </div>
             ))}
           </section>
-          <section className="rounded border border-border bg-card p-5">
-            <h2 className="text-xl font-semibold">3. Questions</h2>
-            <p className="my-3">{draft.questions.length} active questions.</p>
-            {draft.questions.map((q) => (
-              <p key={q.id}>
-                {q.label} ({q.type})
-              </p>
-            ))}
+          <QuestionBuilder
+            questions={draft.questions}
+            onChange={(questions) => field("questions", questions)}
+            sources={sources.filter((source) => source.id !== draft.id)}
+            hasApplications={hasApplications}
+          />
+          <section>
             {archivedLabels.length > 0 && (
               <details>
                 <summary>Archived questions ({archivedLabels.length})</summary>
@@ -362,10 +364,7 @@ export function JobEditor({
               </details>
             )}
           </section>
-          <section className="rounded border border-border bg-card p-5">
-            <h2 className="text-xl font-semibold">4. Candidate form preview</h2>
-            <p className="mt-3">The interactive question preview is being added.</p>
-          </section>
+          <CandidatePreview questions={draft.questions} cvRequired={draft.cvRequired} />
           <div className="flex flex-wrap gap-3">
             <button className={buttonClass} disabled={pending}>
               {draft.id ? "Save changes" : "Save draft"}
