@@ -25,7 +25,8 @@
     "db:reset:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/reset.ts",
     "storage:ensure": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/storage/ensure-buckets.ts",
     "db:counts": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/counts.ts",
-    "db:keepalive:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/keepalive.ts"
+    "db:keepalive:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/keepalive.ts",
+    "admin:add": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/auth/admin-add.ts"
   },
   "dependencies": {
     "@react-pdf/renderer": "4.9.0",
