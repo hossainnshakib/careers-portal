@@ -37,7 +37,22 @@ Remove-Item Env:RUN_SUPABASE_TESTS
 
 The production guard tests include the actual demo/reset CLI entry points with synthetic connection strings. They must refuse before making network calls. Do not weaken the dev project pin to get a test to pass.
 
-**Do not install Playwright browsers or run `pnpm test:e2e` until Phase 2**, per the owner's instruction. The smoke test is written in `tests/e2e/smoke.spec.ts`.
+The owner authorized Chromium installation and e2e execution during Phase 1. Chromium is installed on this development machine. Run `pnpm exec playwright test tests/e2e/admin-shell.spec.ts` for anonymous admin redirects/login accessibility. The Phase 0 smoke test remains in `tests/e2e/smoke.spec.ts`; the full job-creation flow is being added in Phase 1.
+
+## Phase 1 admin access
+After creating an Auth user manually in the **dev** dashboard (email/password, auto-confirm; sign-ups remain disabled), add that existing user to the allowlist:
+```powershell
+pnpm admin:add <email>
+```
+Replace `<email>` with the Auth user's email. This idempotent command checks the pinned dev target, does not create Auth accounts and does not print credentials. Then run `pnpm dev` and visit `http://localhost:3000/admin/login`.
+
+To run the live auth foundation checks:
+```powershell
+$env:RUN_SUPABASE_TESTS = '1'
+node --env-file=.env.local node_modules/vitest/vitest.mjs run src/lib/auth/requireAdmin.live.test.ts
+Remove-Item Env:RUN_SUPABASE_TESTS
+```
+The tests check the independent dev pin before any mutation, create ephemeral Auth users, verify anonymous/non-allowlisted denial and allowlist revocation, then delete the test users in teardown. They never use the owner's credentials. These foundation checks do not replace the exhaustive admin surface and job-creation e2e tests required later in Phase 1.
 
 **Bengali PDF shaping is untested.** The owner deferred the spike; complete it before Phase 4 as described in DECISIONS.md. The website has self-hosted Hind Siliguri; any future PDF test must use static TTFs, not Inter's website-only variable font.
 
