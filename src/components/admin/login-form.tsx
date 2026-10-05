@@ -15,6 +15,9 @@ export function LoginForm() {
         event.preventDefault();
         if (pending) return;
         const form = new FormData(event.currentTarget);
+        const passwordField =
+          event.currentTarget.querySelector<HTMLInputElement>('input[name="password"]');
+        if (passwordField) passwordField.value = "";
         setPending(true);
         setError("");
         try {

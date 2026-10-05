@@ -15,6 +15,8 @@ vi.mock("@/components/admin/logout-button", () => ({ LogoutButton: () => null })
 import Layout from "@/app/admin/(protected)/layout";
 import Dashboard from "@/app/admin/(protected)/page";
 import Applications from "@/app/admin/(protected)/applications/page";
+import Departments from "@/app/admin/(protected)/departments/page";
+vi.mock("@/db/queries/departments", () => ({ listDepartments: vi.fn() }));
 
 describe("protected admin pages independently gate access", () => {
   beforeEach(() => vi.resetAllMocks());
@@ -22,6 +24,7 @@ describe("protected admin pages independently gate access", () => {
     ["layout", () => Layout({ children: null })],
     ["/admin", Dashboard],
     ["/admin/applications", Applications],
+    ["/admin/departments", Departments],
   ] as const;
   for (const [name, invoke] of surfaces) {
     it.each(["anonymous", "non-admin"])(
