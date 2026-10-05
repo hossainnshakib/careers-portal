@@ -54,6 +54,12 @@ Remove-Item Env:RUN_SUPABASE_TESTS
 ```
 The tests check the independent dev pin before any mutation, create ephemeral Auth users, verify anonymous/non-allowlisted denial and allowlist revocation, then delete the test users in teardown. They never use the owner's credentials. These foundation checks do not replace the exhaustive admin surface and job-creation e2e tests required later in Phase 1.
 
+Departments and brands management are available from the signed-in sidebar. Run their browser checks with:
+```powershell
+pnpm exec playwright test tests/e2e/departments.spec.ts tests/e2e/brands.spec.ts
+```
+The shared dev-guarded fixture creates a temporary admin and deletes its Auth/allowlist entries, random-prefix catalog rows and uploaded test logos in teardown. Tests disable traces for credential-entry flows and never use the owner's account. These tests perform dev-only writes; they refuse a target that fails the independent dev-project guard.
+
 **Bengali PDF shaping is untested.** The owner deferred the spike; complete it before Phase 4 as described in DECISIONS.md. The website has self-hosted Hind Siliguri; any future PDF test must use static TTFs, not Inter's website-only variable font.
 
 ## Resetting development

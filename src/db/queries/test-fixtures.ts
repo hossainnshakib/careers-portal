@@ -9,10 +9,14 @@ import { requireDevTarget } from "@/db/seed/require-dev";
 export async function removeTestFixture(userId: string, prefix: string) {
   requireDevTarget();
   if (!/^e2e-[a-f0-9]{32}-$/.test(prefix)) throw new Error("Invalid test fixture prefix");
-  await getDb().transaction(async (tx) => {
+  return getDb().transaction(async (tx) => {
     await tx.delete(jobs).where(like(jobs.slug, `${prefix}%`));
-    await tx.delete(brands).where(like(brands.slug, `${prefix}%`));
+    const removedBrands = await tx
+      .delete(brands)
+      .where(like(brands.slug, `${prefix}%`))
+      .returning({ id: brands.id });
     await tx.delete(departments).where(like(departments.slug, `${prefix}%`));
     await tx.delete(adminUsers).where(eq(adminUsers.userId, userId));
+    return removedBrands.map((brand) => brand.id);
   });
 }

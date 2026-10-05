@@ -6,6 +6,7 @@ import { addAdmin } from "../../src/db/queries/admins";
 import { removeTestFixture } from "../../src/db/queries/test-fixtures";
 import { requireDevTarget } from "../../src/db/seed/require-dev";
 import { createSupabaseAdminClient } from "../../src/lib/supabase/admin";
+import { removeTestLogos } from "../../src/lib/storage/test-logos";
 
 let userId: string | undefined;
 const prefix = `e2e-${randomUUID().replaceAll("-", "")}-`;
@@ -16,7 +17,8 @@ async function cleanup() {
   try {
     if (userId) {
       try {
-        await removeTestFixture(userId, prefix);
+        const brands = await removeTestFixture(userId, prefix);
+        await removeTestLogos(brands);
       } finally {
         const { error } = await createSupabaseAdminClient().auth.admin.deleteUser(userId);
         if (error) throw new Error("Auth cleanup failed");
