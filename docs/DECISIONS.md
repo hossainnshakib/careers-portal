@@ -90,3 +90,46 @@ Newer entries override earlier planning documents. All code and database work in
 - Use native accessible HTML and existing Tailwind styles for the Phase 1 shell. shadcn supporting packages are absent from the Phase 0 installation; no unapproved dependencies were added. The navigation adapts to a wrapped row on mobile and a sidebar on desktop.
 - Vite 8's Oxc JSX transform is explicitly set to the automatic runtime in Vitest config. Next.js requires `jsx: preserve`, so the test-runner override is needed to import and exercise actual TSX page modules without altering application compiler settings or adding a plugin.
 - Chromium (including its headless runtime and Playwright support binaries) has been installed once under the owner's Phase 1 authorization. `admin-shell.spec.ts` passed for real anonymous redirects and accessible login fields. Signed-in UI flows and exhaustive future admin surfaces remain to be tested as content management is added.
+
+## Phase 1 handoff — 2026-10-05 (foundation boundary)
+
+### Session instructions
+- Continue autonomously on **`phase-1-admin`**, never main/merge/force-push. Read this section and `git log --oneline -10` first, then the ordered docs and `prompts/02-phase1-admin.md`; inspect real state and rebuild the remaining todo list before code edits.
+- Owner explicitly authorized proceeding without plan approval, incremental commits and regular pushes. Ask only for true blockers or STOP-list decisions. No subagents were requested; do not delegate.
+- No dependencies added so far. A markdown renderer plus sanitizer is explicitly authorized by the owner's exception (justify it in one line); other dependency additions require approval. react-hook-form, nuqs and shadcn supporting packages are **not installed**, despite the planned stack. Native HTML/Tailwind is used so far. Do not assume they are available or add them silently.
+- Every protected page/action/handler must call `requireAdmin()` itself. Public login is the documented necessary exception; login action calls it after password verification. Maintain typed action results, direct gating tests and generic client errors.
+
+### Done, committed and pushed
+1. `9e2b858`: new `0002_yielding_night_thrasher.sql` enum extension, updated Drizzle enum/snapshot/journal, shared strict question-definition/config validator and three tests. **Migration applied successfully to the pinned dev project** after `requireDevTarget()` verification. Never edit migrations 0000, 0001 or 0002 now.
+2. `8f3f30b`: request-scoped SSR client, server-only service-role Auth management client, `requireAdmin()` (`getUser()` plus Drizzle allowlist lookup), cookie-refresh middleware, dev-guarded paginated/idempotent `pnpm admin:add <email>`, login/logout and UI. Fourteen unit tests; four real guarded live auth checks passed and ephemeral users were deleted.
+3. `a22b492`: `buildSchema` for eleven question types, 36 tests covering required/optional, bounds, membership, Other, phones, leap/calendar dates and parse-time UTC today. Unknown keys rejected; file values are opaque UUID token arrays and need actual Storage checks in Phase 2.
+4. `f413051`: responsive protected shell, signed-in email/logout, dashboard/application placeholders, loading/error states; nine direct page/layout denial/outage tests; Chromium anonymous redirect/login accessibility e2e passed. Vitest Oxc automatic JSX runtime allows testing actual TSX modules. DEV_SETUP updated for admin:add/live checks/Phase 1 browser permission.
+
+### Remaining todo list (ordered)
+1. Departments list/create/edit/activate/deactivate/up-down reorder; server Zod validation, queries, typed actions, direct denial and mutation tests. Add the appropriate cache revalidation from the start rather than postpone protection of public data.
+2. Brands list/create/edit/hide/show/reorder and logo upload behind `src/lib/storage/`; PNG/WebP/SVG <=1 MB, server-selected path, MIME/extension/content validation including unsafe SVG tests. Logo rendering only `<img>`.
+3. Jobs list with URL status/department/brand/search filters; transactional save and lifecycle actions (publish/close/reopen/duplicate/delete draft without applications). DB reload to enforce question ownership/archive rules and immutable published slug; exactly one primary brand.
+4. Single-page basics/content editor, summary counter and safe live markdown preview. Check installed Next.js cache API/types before using `revalidateTag`.
+5. Eleven-type question builder (config, options, section, reorder/archive, copy from job) and shared candidate-form preview validated with `buildSchema`; exercise radio/dropdown/Other/date UI.
+6. Seven standard question constants and independent editable copies/button/tests. Non-destructive demo seed extension: current seeding preserves existing jobs and returns early; do not reset dev or overwrite owner edits/application snapshots to update them. Fresh demo jobs need standard+role-specific questions/all eleven types. Existing dev data still has the original 118 questions; design a conservative, tested update of unchanged deterministic demo definitions or document what was intentionally preserved.
+7. Revalidation completeness and tests (`jobs`, `job:<slug>`, `brands`, `departments`) for every public-affecting mutation.
+8. ASCII slug helper/collision tests plus all 19 intended seed slugs; may introduce a minimal helper earlier if CRUD needs it, then verify this deliverable here.
+9. Exhaustive surface registry/discovery tests: every protected admin page/action/route independently rejects anonymous and authenticated non-admin. Expand `admin-pages.test.ts` and add action tests as new surfaces appear. Live HTTP gating tests must cover the completed surfaces; current live test proves requireAdmin only.
+10. Full Chromium job-create/publish e2e using ephemeral dev-guarded Auth admin setup+teardown, never owner credentials. Add standard questions/every type and test choice/date/Other preview controls, publish and verify list. Current `admin-shell.spec.ts` covers anonymous routes only.
+11. Finish architecture/setup/schema/decisions docs and actual creating-a-job walkthrough; update stale docs in same commit as decisions.
+12. Final `pnpm typecheck`, `pnpm lint`, `pnpm test`, opt-in live gating, relevant e2e. Final report per owner's detailed requirements, including `pnpm admin:add <email>` and security-review files.
+
+### Verification at this checkpoint
+- `pnpm typecheck`: passed after shell/test runtime changes.
+- `pnpm lint`: passed (entire repository).
+- `pnpm test`: **8 files passed, 73 tests passed; 2 live files / 15 tests skipped** by default (11 RLS and four live auth). Skips are not proof of live coverage.
+- Live auth: `$env:RUN_SUPABASE_TESTS = '1'`, then `node --env-file=.env.local node_modules/vitest/vitest.mjs run src/lib/auth/requireAdmin.live.test.ts`, then remove the env flag: **four passed**. Checks real anonymous/non-admin denial, allowlisted acceptance and immediate revocation; no owner credentials.
+- `pnpm exec playwright test tests/e2e/admin-shell.spec.ts`: **one passed**, using Playwright-managed background dev server. Chromium installed once; do not reinstall unnecessarily. No long-lived foreground dev process was started.
+- `pnpm db:migrate`: passed on pinned dev target. No production operation, reset or reseed was performed.
+- Not verified: signed-in shell/browser logout, full job authoring (not implemented), exhaustive future surfaces, fresh live RLS in this session, production build, Bengali PDF shaping (still due before Phase 4). No unresolved test failures at checkpoint; initial TS null comparison and Vite TSX import errors were fixed at root cause, not suppressed.
+
+### Known constraints / next command
+- Owner Auth user exists but was **not** allowlisted by this session; owner can run `pnpm admin:add <email>` with their actual address. Tests only allowlisted ephemeral accounts and removed them.
+- Jobs/Brands/Departments nav links currently point to forthcoming routes. Do not treat the current shell as finished content management.
+- `requireAdmin()` throws `AdminAccessError`; pages use `.catch(redirectAdminDenial)`, actions must catch expected denials and return typed results. Infrastructure failures must not reveal secrets/PII.
+- Continue from Departments. Next command: **`git log --oneline -10`**, then **`git status --short --branch`**, read the handoff and required docs, reconstruct todos, and implement `src/db/queries/departments.ts` plus gated departments page/actions/UI/tests.
