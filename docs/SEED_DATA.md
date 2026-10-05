@@ -81,6 +81,7 @@ Use the real 19 titles/slugs above but assign DEMO values chosen to exercise eve
 - Levels: set `experience_level` on about half; `creative-director-production-lead` is `senior`.
 - Content: summary (≤ 200 chars), markdown description with a list, responsibilities, requirements. Include a few markdown edge cases (links, bold, a list) and one attempted raw HTML snippet to prove it is NOT rendered.
 - Questions (Phase 1 onward): the seven standard questions above plus 4–8 role-specific questions per job from sensible templates per department (for example Web: GitHub URL, best live projects (long text), React/Next.js experience (single choice)). `web-developer` must exercise ALL eleven question types overall, required and optional mixed, including a file_upload question. Each question has a section. Include radio/dropdown choice presentation and "Other" examples across the demo jobs.
+- Existing Phase 0 demo questions are upgraded only when the job timestamps and every deterministic question field still match the original seed. Three overlapping legacy questions are archived, never removed from historical answers; standard copies and a role question are inserted, and unchanged choice configs are extended. Edited or already-upgraded jobs are preserved. A fresh Phase 1 seed has 212 active questions; an untouched upgraded Phase 0 database has 269 total questions including 57 archived legacy definitions.
 
 ## Demo applicants (for `seed:demo` only)
 - About 30 applications across open and closed jobs, spread over several weeks, statuses covering all five values.

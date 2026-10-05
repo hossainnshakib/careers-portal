@@ -17,7 +17,7 @@ pnpm db:counts
 pnpm dev
 ```
 
-Open `http://localhost:3000`. The foundation home reads active brands from Postgres; it does not substitute static seed data. A fresh demo database should have 6 departments, 8 brands, 19 jobs, 118 questions, and 30 applications. Repeat seeds preserve owner edits instead of resetting them. The health endpoint is `http://localhost:3000/api/health` and returns only `{ "ok": true }`.
+Open `http://localhost:3000`. The foundation home reads active brands from Postgres; it does not substitute static seed data. A fresh Phase 1 demo database should have 6 departments, 8 brands, 19 jobs, 212 active questions, and 30 applications. An untouched Phase 0 database upgraded by the conservative seed has 269 total questions, including 57 archived legacy definitions. Edited jobs are preserved and may retain their previous question counts. The health endpoint is `http://localhost:3000/api/health` and returns only `{ "ok": true }`.
 
 Without configured server environment variables the placeholder shows a generic setup state. With configuration but a failed database connection it shows the normal error boundary. This is not proof of database connectivity.
 

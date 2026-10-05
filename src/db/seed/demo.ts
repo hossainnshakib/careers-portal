@@ -23,6 +23,8 @@ import { ensureBuckets } from "@/lib/storage/ensure-buckets";
 import { seedBase } from "./base";
 import { jobData } from "./data";
 import { requireDevTarget } from "./require-dev";
+import { mayUpgradeDemoQuestions } from "./question-upgrade";
+import { copyStandardQuestions } from "@/lib/questions/defaults";
 
 function id(label: string) {
   const hex = createHash("sha256").update(`careers-demo:${label}`).digest("hex");
@@ -150,6 +152,31 @@ function questionsFor(dept: number, allTypes: boolean) {
   return list;
 }
 
+export function phase1QuestionsFor(dept: number, allTypes: boolean) {
+  const roles = questionsFor(dept, allTypes)
+    .filter((_, i) => ![0, 2, 3].includes(i))
+    .map((q) => ({
+      ...q,
+      config:
+        q.type === "single_choice"
+          ? { display: dept % 2 ? "radio" : "dropdown", allowOther: true }
+          : q.type === "multiple_choice"
+            ? { maxSelected: 3, allowOther: true }
+            : q.config,
+    }));
+  if (!allTypes)
+    roles.push({
+      label: "Available to collaborate with the team?",
+      type: "yes_no",
+      section: "role_specific",
+      required: false,
+      config: null,
+      options: null,
+      helpText: null,
+    });
+  return { standards: copyStandardQuestions(), roles };
+}
+
 const names = [
   "শাকিব আহমেদ",
   "শ্রীময়ী দত্ত",
@@ -187,6 +214,8 @@ function answer(question: JobQuestion, i: number, attachmentId: string) {
       return "01700000000";
     case "file_upload":
       return [attachmentId];
+    case "date":
+      return new Date().toISOString().slice(0, 10);
   }
 }
 
@@ -245,7 +274,56 @@ export async function seedDemo() {
         })
         .onConflictDoNothing({ target: jobs.slug })
         .returning();
-      if (!job) return; // Preserve admin-edited demo jobs/questions on repeat runs.
+      if (!job) {
+        const [existing] = await tx.select().from(jobs).where(eq(jobs.slug, slug)).for("update");
+        const current = await tx
+          .select()
+          .from(jobQuestions)
+          .where(eq(jobQuestions.jobId, existing.id));
+        const baseline = questionsFor(deptNumber, i === 0).map((q, n) => ({
+          ...q,
+          id: id(`${slug}-q-${n}`),
+          sortOrder: n + 1,
+        }));
+        if (!mayUpgradeDemoQuestions(existing, id(slug), current, baseline)) return;
+        // Archive obsolete overlapping questions; snapshots and IDs remain intact.
+        for (const n of [0, 2, 3])
+          await tx
+            .update(jobQuestions)
+            .set({ archivedAt: new Date() })
+            .where(eq(jobQuestions.id, id(`${slug}-q-${n}`)));
+        for (const n of [4, 5])
+          await tx
+            .update(jobQuestions)
+            .set({
+              config:
+                n === 4
+                  ? { display: deptNumber % 2 ? "radio" : "dropdown", allowOther: true }
+                  : { maxSelected: 3, allowOther: true },
+            })
+            .where(eq(jobQuestions.id, id(`${slug}-q-${n}`)));
+        const { standards, roles } = phase1QuestionsFor(deptNumber, i === 0);
+        await tx
+          .insert(jobQuestions)
+          .values(
+            standards.map((q, n) => ({
+              ...q,
+              id: id(`${slug}-standard-${n}`),
+              jobId: existing.id,
+              sortOrder: 20 + n,
+            })),
+          );
+        if (i !== 0)
+          await tx
+            .insert(jobQuestions)
+            .values({
+              ...roles.at(-1)!,
+              id: id(`${slug}-phase1-role`),
+              jobId: existing.id,
+              sortOrder: 30,
+            });
+        return;
+      }
       const selectedBrands = [allBrands[i < 16 ? i % 7 : 7]];
       if (i < 3) selectedBrands.push(allBrands[(i + 1) % 7]);
       await tx.insert(jobBrands).values(
@@ -255,8 +333,9 @@ export async function seedDemo() {
           isPrimary: n === 0,
         })),
       );
+      const definitions = phase1QuestionsFor(deptNumber, i === 0);
       await tx.insert(jobQuestions).values(
-        questionsFor(deptNumber, i === 0).map((question, n) => ({
+        [...definitions.standards, ...definitions.roles].map((question, n) => ({
           ...question,
           id: id(`${slug}-q-${n}`),
           jobId: job.id,
@@ -296,7 +375,9 @@ export async function seedDemo() {
       .innerJoin(brands, eq(brands.id, jobBrands.brandId))
       .where(eq(jobBrands.jobId, job.id));
     const department = depts.find((item) => item.id === job.departmentId)!;
-    const questions = await db.select().from(jobQuestions).where(eq(jobQuestions.jobId, job.id));
+    const questions = (
+      await db.select().from(jobQuestions).where(eq(jobQuestions.jobId, job.id))
+    ).filter((question) => !question.archivedAt);
     const fileQuestion = questions.find((item) => item.type === "file_upload");
     const status = (["new", "under_review", "shortlisted", "rejected", "hired"] as const)[i % 5];
     const submittedAt = new Date(Date.UTC(2026, 8, 1 + i));
