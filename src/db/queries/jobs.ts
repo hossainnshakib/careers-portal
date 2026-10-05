@@ -50,6 +50,15 @@ export async function loadJob(id: string) {
   return { job, links, questions };
 }
 
+export async function jobHasApplications(id: string) {
+  const [row] = await getDb()
+    .select({ id: applications.id })
+    .from(applications)
+    .where(eq(applications.jobId, id))
+    .limit(1);
+  return !!row;
+}
+
 export async function saveJob(input: JobInput) {
   return getDb().transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(1103)`);
@@ -155,19 +164,17 @@ export async function mutateJob(id: string, command: "close" | "reopen" | "dupli
       );
       const slug = uniqueSlug(`${job.slug.slice(0, 110).replace(/-+$/, "")}-copy`, used);
       const now = new Date();
-      await tx
-        .insert(jobs)
-        .values({
-          ...job,
-          id: newId,
-          title: `${job.title.slice(0, 193)} (copy)`,
-          slug,
-          status: "draft",
-          publishedAt: null,
-          closedAt: null,
-          createdAt: now,
-          updatedAt: now,
-        });
+      await tx.insert(jobs).values({
+        ...job,
+        id: newId,
+        title: `${job.title.slice(0, 193)} (copy)`,
+        slug,
+        status: "draft",
+        publishedAt: null,
+        closedAt: null,
+        createdAt: now,
+        updatedAt: now,
+      });
       const links = await tx.select().from(jobBrands).where(eq(jobBrands.jobId, id));
       if (!links.length || links.filter((link) => link.isPrimary).length !== 1)
         throw new Error("Invalid source brands");
