@@ -66,3 +66,8 @@ Newer entries override earlier planning documents. All code and database work in
 - Phase 1 demo jobs include the standard set plus role-specific questions and exercise all eleven types, choice presentation, and "Other" answers. Preserve existing applications/snapshots and owner edits when updating demo seeding.
 - Do not ask for age, religion, marital status, or photos.
 - Update the Phase 1 prompt to include the new migration, defaults file/button, builder/validation config, and meaningful date/"Other" tests. This decision changes documentation only; application code, applied migrations, and current dev seed data are not updated in this step.
+
+## 2026-10-05 — Phase 1 execution and question config validation
+- The owner's Phase 1 execution instructions authorize autonomous implementation on the existing `phase-1-admin` branch, incremental commits/pushes, Chromium installation, and Phase 1 e2e execution. These supersede the earlier approval wait and Phase 0 browser deferral.
+- Question definitions use a shared strict Zod validator, including type-specific JSON config, unique choice values, calendar-date bounds and upload limits. Existing JSON columns need no SQL change; only the enum requires a new migration. Unknown or cross-type config fails validation rather than silently changing meaning.
+- Date-only validation uses Gregorian ISO dates (years 0001–9999). Relative `today` bounds will resolve at answer-validation time using the UTC calendar date, making results consistent across browser/server time zones. The UI should state this convention.

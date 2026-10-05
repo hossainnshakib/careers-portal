@@ -59,6 +59,7 @@ export const questionTypeEnum = pgEnum("question_type", [
   "email",
   "phone",
   "file_upload",
+  "date",
 ]);
 
 export const questionSectionEnum = pgEnum("question_section", [
