@@ -122,3 +122,17 @@ it("returns generic failure for immutable slug/DB failures", async () => {
   expect(JSON.stringify(result)).not.toContain("Sensitive");
   expect(mocks.tag).not.toHaveBeenCalled();
 });
+it.each(["close", "reopen", "duplicate", "delete"])(
+  "%s invalidates list/counts and both affected slug tags",
+  async (command) => {
+    expect((await jobCommandAction({ id, command })).ok).toBe(true);
+    expect(mocks.mutate).toHaveBeenCalledWith(id, command);
+    expect(mocks.tag.mock.calls.map(([tag]) => tag)).toEqual([
+      "jobs",
+      "brands",
+      "departments",
+      "job:new",
+      "job:old",
+    ]);
+  },
+);

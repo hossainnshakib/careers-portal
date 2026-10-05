@@ -245,3 +245,9 @@ This is the latest continuation point; earlier handoffs still describe completed
 
 ## Open questions for owner
 - None currently blocking. Brand sector/accent/description placeholders and production region selection remain owner-confirmable setup choices from prior docs; Phase 1 keeps their existing dev values.
+
+## 2026-10-06 — Complete surface discovery and real authorization checks
+- A discovery-backed registry covers all seven protected admin pages and ten action exports. Tests fail if a new page/action/admin API handler is added without coverage. Every protected page/layout calls requireAdmin directly; all mutation exports are covered for denial and cache tags. Phase 1 has no admin API route handlers.
+- Live integration tests exercise actual page/action functions with real Supabase identities and the real Drizzle allowlist: 35 checks cover all pages/layout, nine protected actions under anonymous/non-admin identities, and rejection/session removal for public login with valid non-admin credentials. Browser HTTP tests independently visit every protected route under both identities and verify generic non-admin login failure.
+- Non-admin browser fixtures issue valid SSR session cookies inside the dev-pinned worker, transfer them only over IPC, and delete the temporary user afterward. Traces remain off for all credential-entry tests.
+- Login controls remain disabled until hydration and use POST as the native fallback, preventing an unhydrated form from navigating with credentials in a query string. This also fixed a browser test that submitted before the client error handler was ready. Password values clear after capture; errors stay generic. Editor native validation is disabled because Zod validates authoring data and local preview experiments must not block saving the job.

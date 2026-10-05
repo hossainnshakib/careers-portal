@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <p className="mb-3 break-all text-sm text-muted-foreground">{admin.email}</p>
         <LogoutButton />
       </aside>
-      <main className="min-w-0 p-5 md:p-10">{children}</main>
+      <main id="main" className="min-w-0 p-5 md:p-10">{children}</main>
     </div>
   );
 }

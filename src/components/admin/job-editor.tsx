@@ -101,6 +101,7 @@ export function JobEditor({
       <h1 className="text-2xl font-bold">{draft.id ? "Edit job" : "Create job"}</h1>
       <p>Status: {status}</p>
       <form
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           void save("save");
