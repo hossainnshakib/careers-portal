@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const latin = localFont({
   src: "../../assets/fonts/Inter-Variable.ttf",
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <header className="border-b border-border bg-card">
           <div className="mx-auto max-w-6xl px-6 py-5 text-lg font-semibold">Careers</div>
         </header>
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
         <footer className="mx-auto max-w-6xl px-6 py-8 text-sm text-muted-foreground">
           Find your next opportunity.
         </footer>

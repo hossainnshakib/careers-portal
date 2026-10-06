@@ -17,9 +17,9 @@ pnpm db:counts
 pnpm dev
 ```
 
-Open `http://localhost:3000`. The foundation home reads active brands from Postgres; it does not substitute static seed data. A fresh Phase 1 demo database should have 6 departments, 8 brands, 19 jobs, 212 active questions, and 30 applications. An untouched Phase 0 database upgraded by the conservative seed has 269 total questions, including 57 archived legacy definitions. Edited jobs are preserved and may retain their previous question counts. The health endpoint is `http://localhost:3000/api/health` and returns only `{ "ok": true }`.
+Open `http://localhost:3000`. The careers home reads open jobs and active brands from Postgres; it does not substitute static seed data. A fresh Phase 1 demo database should have 6 departments, 8 brands, 19 jobs, 212 active questions, and 30 applications. An untouched Phase 0 database upgraded by the conservative seed has 269 total questions, including 57 archived legacy definitions. Edited jobs are preserved and may retain their previous question counts. The health endpoint is `http://localhost:3000/api/health` and returns only `{ "ok": true }`.
 
-Without configured server environment variables the placeholder shows a generic setup state. With configuration but a failed database connection it shows the normal error boundary. This is not proof of database connectivity.
+Without configured server environment variables the home shows a generic setup state. With configuration but a failed database connection it shows the normal error boundary. This is not proof of database connectivity.
 
 ## Verification
 ```powershell
@@ -37,7 +37,7 @@ Remove-Item Env:RUN_SUPABASE_TESTS
 
 The production guard tests include the actual demo/reset CLI entry points with synthetic connection strings. They must refuse before making network calls. Do not weaken the dev project pin to get a test to pass.
 
-The owner authorized Chromium installation and e2e execution during Phase 1. Chromium is installed on this development machine. Run `pnpm exec playwright test tests/e2e/admin-shell.spec.ts` for anonymous admin redirects/login accessibility. The Phase 0 smoke test remains in `tests/e2e/smoke.spec.ts`; the full job-creation flow is being added in Phase 1.
+The owner authorized Chromium installation and e2e execution during Phase 1. Chromium is installed on this development machine. Run `pnpm exec playwright test tests/e2e/admin-shell.spec.ts` for anonymous admin redirects/login accessibility. The smoke test remains in `tests/e2e/smoke.spec.ts`; job authoring and public application flows have separate browser coverage.
 
 ## Phase 1 admin access
 After creating an Auth user manually in the **dev** dashboard (email/password, auto-confirm; sign-ups remain disabled), add that existing user to the allowlist:
@@ -83,6 +83,26 @@ The default browser suite runs serially against the shared dev database. Do not 
 
 ## Resetting development
 `pnpm db:reset:dev` is destructive: it removes known application files, drops the application tables/types/migration ledger, reapplies migrations, and runs demo seeding. It requires the independent dev pin and validates both database targets before touching data. It does not drop Supabase Auth, Storage schemas, or the public schema. It does not clean unreferenced/pending uploads; stale pending cleanup belongs to Phase 5.
+
+## Phase 2 public applications
+Browse `/`, try `/?brand=doshok,builtale&mode=remote&q=developer`, open a role, then choose **Apply for this role**. Drafts are unavailable publicly; closed/expired roles do not accept uploads or submissions. Contact fields, CV requirements and role questions are validated on the server against current definitions. Successful submission redirects to a reference-only acknowledgement. Applicant review comes in Phase 3.
+
+Use Cloudflare's always-pass test site/secret keys in the dev environment. No Turnstile bypass endpoint is provided, and test secrets are rejected when `APP_ENV=production`. A security check starts the upload session, then a fresh check protects submission. Files go directly to the private Storage bucket; at most eight upload reservations are issued per two-hour session. Use **Start fresh uploads** if the session expires or its slots are exhausted; written answers remain, but files must be selected again.
+
+To test on a phone on the same Wi-Fi network:
+```powershell
+pnpm dev --hostname 0.0.0.0
+ipconfig
+```
+Open `http://<your-PC-IPv4-address>:3000` on the phone. Check brand links, the Filters bottom sheet, job detail, Bengali input, upload progress and the success reference. For local-network testing use the documented dev Turnstile keys; real keys validate the hostname from `NEXT_PUBLIC_SITE_URL`. If Windows prompts for firewall access, allow the dev server on your private network. Stop the server with Ctrl+C.
+
+Alternatively, deploy this branch as a Vercel preview with **dev-only** Supabase credentials, the dev project pin, `APP_ENV=development`, a preview-appropriate `NEXT_PUBLIC_SITE_URL` and Turnstile configuration. Never point a preview at production. No preview was deployed by this phase.
+
+Run the targeted browser checks:
+```powershell
+pnpm exec playwright test tests/e2e/public-apply.spec.ts
+```
+They cover initial URL-filtered HTML without JavaScript, mobile filters, sitemap/robots, actual Turnstile checks, direct uploads of a generated PDF CV and work sample, concurrent reservation limits, final application/answer/attachment rows and Bengali preservation. The ephemeral admin/job and all tracked test upload objects are dev-guarded and removed in teardown; traces are disabled. See `docs/PHASE2_VERIFICATION.md` for results and limitations.
 
 ## Optional dev database availability workflow
 After creating a private GitHub repository, add these **dev-only** repository secrets:

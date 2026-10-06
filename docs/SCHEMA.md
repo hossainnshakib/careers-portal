@@ -65,6 +65,7 @@ Index: `(application_id)`.
 - `applications` — PRIVATE. Paths: `pending/<sessionId>/<uuid>-<name>` then `applications/<applicationId>/<uuid>-<name>`.
 - `brand-assets` — PUBLIC (non-sensitive logos only). Accept svg/png/webp, ≤ 1 MB. Reject SVGs that contain `<script`, `on*=` attributes, `javascript:` URLs or `<foreignObject`.
 - Uploaded SVGs use a conservative passive-shape/attribute allowlist: gradients, local ID references, masks and clipping are supported; scripts, events, style elements/attributes, external resources, entities/DTDs, images, animation and unknown markup are rejected. Raster uploads must match their PNG/WebP signatures. Admin-uploaded filenames are not used as storage paths; the server chooses a UUID path.
+- Phase 2 uses private `pending/<sessionId>/reservations/<uploadId>.json` metadata sidecars to bind opaque upload tokens to server-approved slots and files. These are server-created objects, never signed upload destinations. The eight-file limit counts reservations to include uploads still in progress. Session UUIDs become application UUIDs for idempotent submission; no schema extension is needed. Final attachment paths remain `applications/<applicationId>/<uploadId>-<sanitisedName>`.
 
 ## Migrations notes
 - A migration enables RLS on all tables, creates the partial unique index for the primary brand, and creates the slug-immutability trigger.

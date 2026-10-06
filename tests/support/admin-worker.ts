@@ -9,16 +9,20 @@ import { createSupabaseAdminClient } from "../../src/lib/supabase/admin";
 import { removeTestLogos } from "../../src/lib/storage/test-logos";
 import { createServerClient } from "@supabase/ssr";
 import { getPublicEnv } from "../../src/lib/env-public";
+import { createPublicTestJob, verifyPublicTestApplication } from "../../src/db/queries/public-test-fixture";
+import { removePublicTestFiles } from "../../src/lib/storage/public-test-files";
 
 let userId: string | undefined;
 const prefix = `e2e-${randomUUID().replaceAll("-", "")}-`;
 let cleaning = false;
+const publicSessions = new Set<string>();
 async function cleanup() {
   if (cleaning) return;
   cleaning = true;
   try {
     if (userId) {
       try {
+        await removePublicTestFiles(prefix, [...publicSessions]);
         const brands = await removeTestFixture(userId, prefix);
         await removeTestLogos(brands);
       } finally {
@@ -36,6 +40,15 @@ async function cleanup() {
 }
 process.on("message", (message) => {
   if (message === "cleanup") void cleanup();
+  if (message && typeof message === "object" && "type" in message) {
+    if (message.type === "session" && "id" in message && typeof message.id === "string") publicSessions.add(message.id);
+    if (message.type === "verify" && "reference" in message && typeof message.reference === "string") {
+      verifyPublicTestApplication(prefix, message.reference).then(
+        (counts) => process.send?.({ type: "verified", counts: JSON.stringify(counts) }),
+        () => process.send?.({ type: "error", message: "Public application verification failed." }),
+      );
+    }
+  }
 });
 process.on("disconnect", () => {
   void cleanup();
@@ -77,7 +90,8 @@ async function setup() {
     if (signedIn.error) throw new Error("Outsider session creation failed");
   }
   // Credentials travel only over IPC to the fixture, never stdout or files.
-  process.send?.({ type: "ready", email, password, prefix, cookieJSON: JSON.stringify(cookies) });
+  const publicJob = process.argv[2] === "public" ? await createPublicTestJob(prefix) : undefined;
+  process.send?.({ type: "ready", email, password, prefix, cookieJSON: JSON.stringify(cookies), publicJobJSON: JSON.stringify(publicJob ?? null) });
 }
 setup().catch(async () => {
   process.send?.({ type: "error", message: "Guarded test fixture setup failed." });

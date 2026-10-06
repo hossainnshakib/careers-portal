@@ -75,6 +75,8 @@ docs/  prompts/  design/
 ## Caching
 - The public job list and job detail pages are cached with tags (`jobs`, `job:<slug>`, `brands`, `departments`). Every admin mutation that affects public data calls `revalidateTag` for the affected tags. Use the caching API of the installed Next.js version (check its docs; do not rely on memory).
 - Careers home: the server loads ALL open jobs (with brands, department, type, mode, level) once from cache; a client component filters them in memory and syncs filters to the URL with nuqs. Counts per option are computed from the same data. The initial HTML is already filtered according to the URL so links and crawlers work. If open jobs ever exceed a few hundred, move filtering to the server behind the same UI.
+- Phase 2 catalog/detail caches use JSON-safe public projections and a five-minute fallback TTL alongside the existing mutation tags. Expired deadlines are excluded when refreshing the catalog. Hidden brands are omitted from public branding; a job with no active brand is unavailable publicly. If its primary brand is hidden, the first visible linked brand supplies the card logo, while application snapshots retain the actual database primary.
+- Facet counts apply every other selected filter and replace the counted facet with the individual option. This preserves OR semantics when adding options. The homepage has no streaming loading boundary that would hide its filtered HTML without JavaScript; the application page retains its own loading state.
 - Apply form pages and all admin pages are dynamic (no shared cache).
 
 ## Dynamic form
@@ -92,10 +94,21 @@ Files never pass through the Next.js server (Vercel body limits).
 5. The daily cron deletes anything under `pending/` older than 24 hours.
 Limits to start with: CV pdf/doc/docx ≤ 5 MB; other files pdf/png/jpg/webp/zip ≤ 10 MB; max 8 files per application. No antivirus scanning in V1 (admins download files rather than previewing them in untrusted apps).
 
+Phase 2 implementation details:
+- `POST /api/upload-url` also accepts `{ jobSlug, turnstileToken }` to initialize a session for applications with no attachments. The signed session is bound to that job and expires after two hours. Submit requires a fresh Turnstile verification and at least three seconds since server-issued session creation. Live Turnstile checks require the configured site hostname and `careers` action; documented Cloudflare test secrets are accepted only with `APP_ENV=development`.
+- Private `pending/<sessionId>/reservations/<uploadId>.json` sidecars store server-validated slot, filename, MIME and size. A transaction advisory lock keyed by session serializes reservation creation and submission. At most eight reservations are issued, including unfinished/removed files; this prevents simultaneous signed-URL requests bypassing the limit. No database table or migration is added.
+- Browser forms submit opaque upload UUIDs. Only server-owned reservations determine paths and metadata. Signed uploads cannot overwrite existing objects. Retries reuse reservations; a completed upload with matching metadata is recognized after a lost browser response. The form offers **Start fresh uploads** to renew an expired/exhausted session while preserving written answers.
+- Submit checks the current job/questions under a shared job-row lock, verifies reservation ownership/slot, actual Storage size/MIME, and a bounded 512-byte content signature. Only this small prefix passes through Next.js; full candidate files upload directly to Storage. Signature checks are not antivirus or full document parsing.
+- The session UUID becomes the application UUID. The session lock and existing-application lookup make retries idempotent; reference collisions retry using a unique-index-safe insert. Questions and linked brands are snapshotted transactionally, and file answers contain attachment UUIDs.
+- On persistence failure, the server reacquires the session lock and checks whether the transaction actually committed before attempting recovery. Uncommitted moved files are restored to their original pending paths so the candidate can retry. This deliberately replaces the original delete-on-failure behavior; committed attachments are never restored merely because a commit acknowledgement was lost. Recovery failures return a generic message to restart uploads.
+- Abandoned reservation/file cleanup remains the Phase 5 daily cron deliverable. That cleanup must recurse into reservation sidecars. Phase 2 browser fixtures explicitly remove all their tracked pending/final test objects.
+
 Small admin logos are separate: authenticated server actions accept SVG/PNG/WebP <=1 MB, validate bytes/extension/MIME and passive SVG markup, and upload behind `src/lib/storage/`. A 2 MB Next server-action body limit accommodates multipart overhead; candidate files still follow the direct Storage flow above.
 
 ## Submit flow (`submitApplication` server action)
 Verify Turnstile → load job (must be `open`) and its non-archived questions → validate with `buildSchema` → verify uploads (above) → generate unique `reference` (`APP-` + 6 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ`, retry on collision) → transaction: insert `applications` (with job title, slug, brand names, department name snapshots), `application_answers` (with label/type/section snapshots), `attachments` → redirect to `/applied/<reference>`. Honeypot field and a minimum fill time are checked as well.
+
+The public acknowledgement validates and displays only the reference syntax. It performs no applicant lookup and exposes no applicant details or confirmation that a reference exists; it is excluded from indexing. Actual receipt is established by the successful submission redirect.
 
 ## Admin file downloads
 `GET /api/admin/attachments/[id]` → `requireAdmin()` → load attachment → create a signed URL (≈60 s, with download filename) → 302. No public URLs ever.
