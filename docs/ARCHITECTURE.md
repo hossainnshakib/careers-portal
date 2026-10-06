@@ -63,11 +63,13 @@ docs/  prompts/  design/
 ## Auth
 - Supabase Auth, email + password, sign-ups disabled. Admins are created manually in the Supabase dashboard and then added to `admin_users` with `pnpm admin:add <email>`.
 - `requireAdmin()`: create server Supabase client, `getUser()`, reject if no user, look up `admin_users`, reject if missing. Returns `{ userId, email }`. Call it at the top of every admin layout/page, server action, and route handler.
+- Public `/admin/login` is the necessary authentication entry exception. Its login action verifies credentials, then calls `requireAdmin()` before returning success; non-allowlisted sessions are removed. Protected actions return typed generic denials; protected pages redirect expected denials to login. The discovery-backed surface tests cover each independently.
 - `middleware.ts` only redirects unauthenticated requests for `/admin/*` to `/admin/login` as a convenience.
 - TOTP MFA for admins is added in Phase 4.
 
 ## Data access
 - All reads/writes through Drizzle in `src/db/queries/*`, server-side only. RLS is enabled on every table with no policies, so the browser-exposed anon key cannot read anything even if misused.
+- Phase 1 catalog/job mutations use transaction advisory locks for shared ordering/slug writes. Job saves lock/reload the existing row, questions and application existence before applying ownership, immutable slug and archive rules.
 - Use transactions for multi-row writes (application submit, job save with brands + questions).
 
 ## Caching
@@ -79,6 +81,7 @@ docs/  prompts/  design/
 - The apply page loads the job and its non-archived questions on the server and renders the form from that data.
 - `buildSchema(questions)` produces the Zod schema. The SAME function validates on the client and on the server. Question `type` maps to validation: short_text/long_text (trim, max length), single_choice (value ∈ options), multiple_choice (subset of options, min/max if configured), yes_no (boolean), number (min/max/integer), url (http/https only), email, phone (Bangladesh-friendly: allow +880 and local 01XXXXXXXXX plus general international), file_upload (references uploaded file tokens, see below).
 - Fixed fields on every application: full name, email, phone, location (city/country). A CV upload is fixed and required unless the job sets `cv_required = false`.
+- `date` answers are Gregorian ISO calendar strings with inclusive absolute or UTC-`today` bounds resolved when validating. Single choice supports radio/dropdown; permitted Other is plain text (one free-text value in a multiple-choice array). Phase 1's shared field renderer and local preview exercise these without submitting applicants/files.
 
 ## File upload flow
 Files never pass through the Next.js server (Vercel body limits).
@@ -88,6 +91,8 @@ Files never pass through the Next.js server (Vercel body limits).
 4. On submit the server re-verifies every referenced path starts with `pending/<sessionId>/`, the object exists, and its size/MIME match what is allowed. It generates the `applicationId`, **moves** the objects to `applications/<applicationId>/...`, then inserts rows in one transaction. If the transaction fails, it deletes the moved objects.
 5. The daily cron deletes anything under `pending/` older than 24 hours.
 Limits to start with: CV pdf/doc/docx ≤ 5 MB; other files pdf/png/jpg/webp/zip ≤ 10 MB; max 8 files per application. No antivirus scanning in V1 (admins download files rather than previewing them in untrusted apps).
+
+Small admin logos are separate: authenticated server actions accept SVG/PNG/WebP <=1 MB, validate bytes/extension/MIME and passive SVG markup, and upload behind `src/lib/storage/`. A 2 MB Next server-action body limit accommodates multipart overhead; candidate files still follow the direct Storage flow above.
 
 ## Submit flow (`submitApplication` server action)
 Verify Turnstile → load job (must be `open`) and its non-archived questions → validate with `buildSchema` → verify uploads (above) → generate unique `reference` (`APP-` + 6 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ`, retry on collision) → transaction: insert `applications` (with job title, slug, brand names, department name snapshots), `application_answers` (with label/type/section snapshots), `attachments` → redirect to `/applied/<reference>`. Honeypot field and a minimum fill time are checked as well.

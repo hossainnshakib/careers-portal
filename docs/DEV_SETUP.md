@@ -1,4 +1,4 @@
-# Phase 0 development setup (Windows)
+# Development setup (Windows)
 
 ## Owner prerequisites
 1. Use Node 24 and pnpm 12.9.1. pnpm was activated on this machine through Corepack.
@@ -59,6 +59,25 @@ Departments and brands management are available from the signed-in sidebar. Run 
 pnpm exec playwright test tests/e2e/departments.spec.ts tests/e2e/brands.spec.ts
 ```
 The shared dev-guarded fixture creates a temporary admin and deletes its Auth/allowlist entries, random-prefix catalog rows and uploaded test logos in teardown. Tests disable traces for credential-entry flows and never use the owner's account. These tests perform dev-only writes; they refuse a target that fails the independent dev-project guard.
+
+## Phase 1 job authoring
+Open `/admin/jobs` and choose **Create job**. The one-page editor contains Basics, Content, Questions and Candidate form preview. Choose brands and one primary, enter an ASCII slug, write Markdown, add/edit questions or copy them from another job, and use **Add standard questions** for the seven defaults. Save a draft or publish. Published slugs are locked; close/reopen preserves the URL. Duplicate creates an independent draft. Only unpublished drafts without applications can be deleted.
+
+Use the local candidate preview to check answers, radio/dropdown/Other controls and date bounds before saving. Preview files and answers are never submitted; date `today` bounds use UTC, while the deadline input uses your local timezone. Question removal archives definitions when the job has applications. Existing answers keep snapshots.
+
+See `docs/PHASE1_VERIFICATION.md` for the acceptance matrix and complete authoring walkthrough.
+
+Final verification commands (one at a time):
+```powershell
+pnpm typecheck
+pnpm lint
+pnpm test
+$env:RUN_SUPABASE_TESTS = '1'
+node --env-file=.env.local node_modules/vitest/vitest.mjs run src/lib/auth/requireAdmin.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/rls.test.ts src/db/queries/jobs.live.test.ts
+Remove-Item Env:RUN_SUPABASE_TESTS
+pnpm test:e2e
+```
+The default browser suite runs serially against the shared dev database. Do not run the seed-upgrade preservation test concurrently with other tests that create applications, because it intentionally fingerprints all existing applications/answers before and after seeding. To repeat that check separately, use the same live flag with `src/db/seed/upgrade.live.test.ts`.
 
 **Bengali PDF shaping is untested.** The owner deferred the spike; complete it before Phase 4 as described in DECISIONS.md. The website has self-hosted Hind Siliguri; any future PDF test must use static TTFs, not Inter's website-only variable font.
 
