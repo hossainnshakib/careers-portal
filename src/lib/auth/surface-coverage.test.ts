@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { expect, it } from "vitest";
-import { actionFiles, protectedPages } from "./surfaces";
+import { actionFiles, protectedApiRoutes, protectedPages } from "./surfaces";
 const root = fileURLToPath(new URL("../../app/admin/", import.meta.url));
 function files(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) =>
@@ -36,8 +36,7 @@ it("covers every admin page, action export and route handler and requires direct
   for (const path of [...pages, "(protected)/layout.tsx"])
     expect(readFileSync(`${root}/${path}`, "utf8")).toContain("await requireAdmin()");
   const apiRoot = fileURLToPath(new URL("../../app/api/", import.meta.url));
-  expect(
-    files(apiRoot).filter((path) => path.startsWith("admin/") && path.endsWith("route.ts")),
-  ).toEqual([]);
-  // There are no admin API handlers in Phase 1; adding one requires registry/tests.
+  const handlers = files(apiRoot).filter((path) => path.startsWith("admin/") && path.endsWith("route.ts"));
+  expect(handlers.map((path) => `/api/${path.replace(/\/route\.ts$/, "")}`).sort()).toEqual([...protectedApiRoutes].sort());
+  for (const path of handlers) expect(readFileSync(`${apiRoot}/${path}`, "utf8")).toContain("await requireAdmin()");
 });

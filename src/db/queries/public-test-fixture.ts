@@ -22,7 +22,7 @@ export async function createPublicTestJob(prefix: string) {
       { id: textId, label: "Tell us about your work", type: "long_text", required: true, helpText: null, options: null, config: { maxLength: 1500 }, section: "professional", sortOrder: 0 },
       { id: questionId, label: "Work sample", type: "file_upload", required: true, helpText: "Upload a PDF sample.", options: null, config: { accept: ["pdf"], maxSizeMb: 1 }, section: "portfolio", sortOrder: 1 },
     ] }));
-  return { ...saved, questionId, textId, brandSlug: brand.slug, departmentSlug: department.slug, title: `${prefix}Public Application Test` };
+  return { ...saved, questionId, textId, brandSlug: brand.slug, brandId: brand.id, departmentId: department.id, departmentSlug: department.slug, title: `${prefix}Public Application Test` };
 }
 export async function verifyPublicTestApplication(prefix: string, reference: string) {
   guard(prefix);

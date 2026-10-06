@@ -2,6 +2,7 @@
 export const protectedPages = [
   "/admin",
   "/admin/applications",
+  "/admin/applications/[id]",
   "/admin/brands",
   "/admin/departments",
   "/admin/jobs",
@@ -17,4 +18,6 @@ export const actionFiles = {
     "uploadBrandLogoAction",
   ],
   "(protected)/jobs/actions.ts": ["saveJobAction", "jobCommandAction", "copyJobQuestionsAction"],
+  "(protected)/applications/actions.ts": ["changeStatusAction", "addNoteAction", "deleteNoteAction", "deleteApplicationAction"],
 } as const;
+export const protectedApiRoutes = ["/api/admin/attachments/[id]"] as const;

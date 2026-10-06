@@ -64,6 +64,7 @@ docs/  prompts/  design/
 - Supabase Auth, email + password, sign-ups disabled. Admins are created manually in the Supabase dashboard and then added to `admin_users` with `pnpm admin:add <email>`.
 - `requireAdmin()`: create server Supabase client, `getUser()`, reject if no user, look up `admin_users`, reject if missing. Returns `{ userId, email }`. Call it at the top of every admin layout/page, server action, and route handler.
 - Public `/admin/login` is the necessary authentication entry exception. Its login action verifies credentials, then calls `requireAdmin()` before returning success; non-allowlisted sessions are removed. Protected actions return typed generic denials; protected pages redirect expected denials to login. The discovery-backed surface tests cover each independently.
+- Phase 3 adds the applicant profile, four review actions and the attachment handler to that discovery registry. Middleware redirects anonymous admin pages but lets admin API requests reach their own authorization gate; the attachment handler returns a generic 403 rather than a login redirect for denied callers.
 - `middleware.ts` only redirects unauthenticated requests for `/admin/*` to `/admin/login` as a convenience.
 - TOTP MFA for admins is added in Phase 4.
 
@@ -112,6 +113,17 @@ The public acknowledgement validates and displays only the reference syntax. It 
 
 ## Admin file downloads
 `GET /api/admin/attachments/[id]` → `requireAdmin()` → load attachment → create a signed URL (≈60 s, with download filename) → 302. No public URLs ever.
+
+The handler validates the attachment UUID, uses private/no-store and no-referrer headers, and serializes authorization with deletion under the application's advisory/row lock. Before signing, it restores any files from an interrupted deletion while the application still exists. Storage metadata JSON distinguishes `NoSuchKey` from permission/infrastructure failures; a missing quarantine object is normal, but other errors fail closed.
+
+## Admin application review (Phase 3)
+- The dashboard groups counts by status and loads the latest ten rows. The application list uses validated URL filters (`brand`, `department`, `job`, `status`, `q`, `from`, `to`, `tz`, `sort`, `page`) and 25-row server pagination. Default order is newest first with a stable UUID tie-breaker. Name/email search is case-insensitive with LIKE wildcard escaping; all SQL values are bound parameters.
+- Brand/department/job filters use current job assignments, while displayed titles, brands, department and answers use submission snapshots. Date bounds are inclusive calendar days in a validated IANA timezone; the form supplies the viewer's timezone, and saved links retain it. Dates/times display in the viewer's locale/timezone after hydration, with a consistent UTC server fallback.
+- Profile reads use a fixed set of queries rather than per-answer/note queries. Answers are plain text except validated HTTP(S) URL links and authorized attachment links. Up to 50 other applications with the same case-insensitive email are shown. Status history joins the allowlist for readable actor emails, with the recorded UUID as fallback when an admin has been removed.
+- Status updates lock/reload the application, preserve the actual previous status, update `status_changed_at` and insert the event in one transaction. A no-op status selection does not create an event. Notes record trusted Auth identity/email; only their author can delete them, enforced in the database mutation predicate.
+- Confirmed deletion uses the same per-application advisory lock as submission/downloads. It moves attached objects into private `deleting/<applicationId>/<attachmentId>` quarantine paths before deleting the application transactionally (answers, attachments, notes and events cascade). No candidate file bytes pass through Next.js.
+- If preparation/DB commit fails and the row remains, moved objects are restored to the original DB paths. Recovery first checks whether commit actually succeeded, so a lost acknowledgement cannot resurrect a deleted application's files. Already absent original objects do not block reference cleanup; permission/network errors do.
+- After a committed deletion, quarantine objects are removed. Cleanup failure is reported as a typed error; repeating deletion for the same UUID finishes cleanup even when the row is already gone. The profile error links to the authorized list's `?cleanup=<uuid>` retry control. Interrupted pre-commit deletion also recovers on the next download or deletion attempt. No automatic quarantine reconciliation/cleanup is claimed; persistent Storage failures require an admin retry.
 
 ## Candidate PDF
 - `GET /api/admin/applications/[id]/pdf?notes=0|1` → `requireAdmin()` → load application, answers, attachments list, notes (only if requested) → render with `@react-pdf/renderer` in the Node runtime → stream with a good filename (`<reference>-<name>.pdf`). Generated on demand; not stored.

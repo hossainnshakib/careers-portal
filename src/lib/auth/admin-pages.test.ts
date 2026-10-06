@@ -15,6 +15,7 @@ vi.mock("@/components/admin/logout-button", () => ({ LogoutButton: () => null })
 import Layout from "@/app/admin/(protected)/layout";
 import Dashboard from "@/app/admin/(protected)/page";
 import Applications from "@/app/admin/(protected)/applications/page";
+import Profile from "@/app/admin/(protected)/applications/[id]/page";
 import Departments from "@/app/admin/(protected)/departments/page";
 import Brands from "@/app/admin/(protected)/brands/page";
 import Jobs from "@/app/admin/(protected)/jobs/page";
@@ -27,13 +28,15 @@ vi.mock("@/db/queries/jobs", () => ({
 }));
 vi.mock("@/db/queries/departments", () => ({ listDepartments: vi.fn() }));
 vi.mock("@/db/queries/brands", () => ({ listBrands: vi.fn() }));
+vi.mock("@/db/queries/review", () => ({ loadReviewDashboard: vi.fn(), listReviewApplications: vi.fn(), reviewFilterOptions: vi.fn(), loadReviewProfile: vi.fn() }));
 
 describe("protected admin pages independently gate access", () => {
   beforeEach(() => vi.resetAllMocks());
   const surfaces = [
     ["layout", () => Layout({ children: null })],
     ["/admin", Dashboard],
-    ["/admin/applications", Applications],
+    ["/admin/applications", () => Applications({ searchParams: Promise.resolve({}) })],
+    ["/admin/applications/[id]", () => Profile({ params: Promise.resolve({ id: "invalid" }) })],
     ["/admin/departments", Departments],
     ["/admin/brands", Brands],
     ["/admin/jobs", () => Jobs({ searchParams: Promise.resolve({}) })],

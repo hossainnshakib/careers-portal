@@ -8,7 +8,8 @@ it("authenticates sessions, binds them to a job and rejects tampering", () => {
   expect(verifyUploadSession(token, "web-developer")).toEqual(session);
   expect(() => verifyUploadSession(token, "other-job")).toThrow();
   const [payload, signature] = token.split(".");
-  expect(() => verifyUploadSession(`${payload}.${signature.slice(0, -2)}aa`, "web-developer")).toThrow();
+  const changedSignature = `${signature[0] === "A" ? "B" : "A"}${signature.slice(1)}`;
+  expect(() => verifyUploadSession(`${payload}.${changedSignature}`, "web-developer")).toThrow();
   expect(() => verifyUploadSession(`${token}.extra`, "web-developer")).toThrow();
   expect(() => verifyUploadSession("x".repeat(2049), "web-developer")).toThrow();
 });

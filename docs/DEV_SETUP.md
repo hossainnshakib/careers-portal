@@ -85,7 +85,7 @@ The default browser suite runs serially against the shared dev database. Do not 
 `pnpm db:reset:dev` is destructive: it removes known application files, drops the application tables/types/migration ledger, reapplies migrations, and runs demo seeding. It requires the independent dev pin and validates both database targets before touching data. It does not drop Supabase Auth, Storage schemas, or the public schema. It does not clean unreferenced/pending uploads; stale pending cleanup belongs to Phase 5.
 
 ## Phase 2 public applications
-Browse `/`, try `/?brand=doshok,builtale&mode=remote&q=developer`, open a role, then choose **Apply for this role**. Drafts are unavailable publicly; closed/expired roles do not accept uploads or submissions. Contact fields, CV requirements and role questions are validated on the server against current definitions. Successful submission redirects to a reference-only acknowledgement. Applicant review comes in Phase 3.
+Browse `/`, try `/?brand=doshok,builtale&mode=remote&q=developer`, open a role, then choose **Apply for this role**. Drafts are unavailable publicly; closed/expired roles do not accept uploads or submissions. Contact fields, CV requirements and role questions are validated on the server against current definitions. Successful submission redirects to a reference-only acknowledgement. Applicant review is available at `/admin/applications`.
 
 Use Cloudflare's always-pass test site/secret keys in the dev environment. No Turnstile bypass endpoint is provided, and test secrets are rejected when `APP_ENV=production`. A security check starts the upload session, then a fresh check protects submission. Files go directly to the private Storage bucket; at most eight upload reservations are issued per two-hour session. Use **Start fresh uploads** if the session expires or its slots are exhausted; written answers remain, but files must be selected again.
 
@@ -114,3 +114,20 @@ After creating a private GitHub repository, add these **dev-only** repository se
 Set repository variable `DEV_KEEPALIVE_ENABLED` to `true` and merge `.github/workflows/dev-keepalive.yml` onto the default branch. Run it manually once before relying on its daily schedule. It executes a guarded `select 1`, prints no credentials, and cannot target a different project. GitHub schedules can be delayed; an already paused project must be restored in the Supabase dashboard.
 
 No GitHub remote or production project is configured by these files. No production credentials are needed during this phase.
+
+## Phase 3 application review
+1. Sign in at `/admin/login`. The dashboard shows Total/New/Under review/Shortlisted/Rejected/Hired counts and the latest ten applications. Click a count to filter the list.
+2. Open **Applications**. Filter by brand, department, job, status, date range or name/email; choose sorting and use pagination. Copy the URL to retain filters. Calendar date bounds use the timezone shown below the controls.
+3. Click a candidate name/reference to open the profile. Review contact details, Bengali answers, snapshots, previous applications, status history and attachments.
+4. Choose **Application status** and click **Update status**. Write an **Internal note** and click **Add note**; only your own notes show **Delete own note**.
+5. Use **Download CV** or an attachment link. Each request independently checks the allowlist and redirects to a roughly 60-second signed URL; files remain private.
+6. To remove an application, choose **Delete application** and confirm. If Storage cleanup fails, use the displayed retry link/control. A retained application recovers its quarantined files before retry/download; a committed deletion retries temporary-file cleanup.
+
+Targeted browser and live integration checks:
+```powershell
+pnpm exec playwright test tests/e2e/review.spec.ts tests/e2e/admin-gating.spec.ts
+$env:RUN_SUPABASE_TESTS = '1'
+node --env-file=.env.local node_modules/vitest/vitest.mjs run src/db/queries/review.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/rls.test.ts
+Remove-Item Env:RUN_SUPABASE_TESTS
+```
+Run cloud integration and browser suites separately. These checks create only dev-guarded, random-prefix fixtures/temporary Auth accounts and remove their rows and original/quarantined objects afterward. Credentials travel over IPC, and traces are disabled. See `docs/PHASE3_VERIFICATION.md` for results, acceptance coverage and remaining limitations. Candidate Profile PDF remains Phase 4.

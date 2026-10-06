@@ -18,6 +18,8 @@ import { getPublicEnv } from "@/lib/env-public";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import Dashboard from "@/app/admin/(protected)/page";
 import Applications from "@/app/admin/(protected)/applications/page";
+import Profile from "@/app/admin/(protected)/applications/[id]/page";
+import { GET as attachmentDownload } from "@/app/api/admin/attachments/[id]/route";
 import Brands from "@/app/admin/(protected)/brands/page";
 import Departments from "@/app/admin/(protected)/departments/page";
 import Jobs from "@/app/admin/(protected)/jobs/page";
@@ -28,6 +30,7 @@ import * as authActions from "@/app/admin/login/actions";
 import * as departmentActions from "@/app/admin/(protected)/departments/actions";
 import * as brandActions from "@/app/admin/(protected)/brands/actions";
 import * as jobActions from "@/app/admin/(protected)/jobs/actions";
+import * as reviewActions from "@/app/admin/(protected)/applications/actions";
 
 describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
   "all live admin surfaces reject anonymous/non-allowlisted users",
@@ -73,7 +76,8 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
     const pages = [
       ["layout", () => Layout({ children: null })],
       ["dashboard", Dashboard],
-      ["applications", Applications],
+      ["applications", () => Applications({ searchParams: Promise.resolve({}) })],
+      ["profile", () => Profile({ params: Promise.resolve({ id: "invalid" }) })],
       ["brands", Brands],
       ["departments", Departments],
       ["jobs", () => Jobs({ searchParams: Promise.resolve({}) })],
@@ -105,6 +109,10 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       jobActions.saveJobAction,
       jobActions.jobCommandAction,
       jobActions.copyJobQuestionsAction,
+      reviewActions.changeStatusAction,
+      reviewActions.addNoteAction,
+      reviewActions.deleteNoteAction,
+      reviewActions.deleteApplicationAction,
     ];
     for (const [index, action] of actions.entries())
       it.each(["anonymous", "outsider"])(
@@ -117,6 +125,12 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
         },
         30000,
       );
+    it.each(["anonymous", "outsider"])("attachment route rejects %s using real Auth+allowlist", async (kind) => {
+      state.client = kind === "anonymous" ? anonymous : outsider;
+      const response = await attachmentDownload(new Request("http://localhost/api/admin/attachments/invalid"), { params: Promise.resolve({ id: "invalid" }) });
+      expect(response.status).toBe(403);
+      expect(response.headers.has("location")).toBe(false);
+    }, 30000);
     it("public login rejects valid non-admin credentials and clears that session", async () => {
       state.client = outsider;
       expect((await authActions.login({ email, password })).ok).toBe(false);

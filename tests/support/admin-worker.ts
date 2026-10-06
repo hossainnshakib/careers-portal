@@ -11,11 +11,14 @@ import { createServerClient } from "@supabase/ssr";
 import { getPublicEnv } from "../../src/lib/env-public";
 import { createPublicTestJob, verifyPublicTestApplication } from "../../src/db/queries/public-test-fixture";
 import { removePublicTestFiles } from "../../src/lib/storage/public-test-files";
+import { createReviewTestApplication, reviewTestApplicationIds, verifyReviewTestRows } from "../../src/db/queries/review-test-fixture";
+import { removeReviewTestFiles, reviewTestFilesAbsent } from "../../src/lib/storage/review-test-files";
 
 let userId: string | undefined;
 const prefix = `e2e-${randomUUID().replaceAll("-", "")}-`;
 let cleaning = false;
 const publicSessions = new Set<string>();
+const reviewIds = new Set<string>();
 async function cleanup() {
   if (cleaning) return;
   cleaning = true;
@@ -23,6 +26,7 @@ async function cleanup() {
     if (userId) {
       try {
         await removePublicTestFiles(prefix, [...publicSessions]);
+        await removeReviewTestFiles([...new Set([...reviewIds, ...await reviewTestApplicationIds(prefix)])]);
         const brands = await removeTestFixture(userId, prefix);
         await removeTestLogos(brands);
       } finally {
@@ -46,6 +50,13 @@ process.on("message", (message) => {
       verifyPublicTestApplication(prefix, message.reference).then(
         (counts) => process.send?.({ type: "verified", counts: JSON.stringify(counts) }),
         () => process.send?.({ type: "error", message: "Public application verification failed." }),
+      );
+    }
+    if (message.type === "review-verify" && "id" in message && typeof message.id === "string" && reviewIds.has(message.id)) {
+      const id = message.id;
+      Promise.all([verifyReviewTestRows(prefix, id), reviewTestFilesAbsent(id)]).then(
+        ([counts, filesAbsent]) => process.send?.({ type: "review-verified", counts: JSON.stringify({ ...counts, filesAbsent }) }),
+        () => process.send?.({ type: "error", message: "Review fixture verification failed." }),
       );
     }
   }
@@ -91,7 +102,9 @@ async function setup() {
   }
   // Credentials travel only over IPC to the fixture, never stdout or files.
   const publicJob = process.argv[2] === "public" ? await createPublicTestJob(prefix) : undefined;
-  process.send?.({ type: "ready", email, password, prefix, cookieJSON: JSON.stringify(cookies), publicJobJSON: JSON.stringify(publicJob ?? null) });
+  const reviewApplication = process.argv[2] === "review" ? await createReviewTestApplication(prefix) : undefined;
+  if (reviewApplication) { reviewIds.add(reviewApplication.applicationId); reviewIds.add(reviewApplication.previousId); }
+  process.send?.({ type: "ready", email, password, prefix, cookieJSON: JSON.stringify(cookies), publicJobJSON: JSON.stringify(publicJob ?? null), reviewJSON: JSON.stringify(reviewApplication ?? null) });
 }
 setup().catch(async () => {
   process.send?.({ type: "error", message: "Guarded test fixture setup failed." });

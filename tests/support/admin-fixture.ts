@@ -7,6 +7,8 @@ type PublicFixture = Account & {
   job: { slug: string; id: string; questionId: string; textId: string; brandSlug: string; departmentSlug: string; title: string };
   trackSession: (id: string) => void;
   verify: (reference: string) => Promise<Record<string, number | boolean>>;
+  review: { applicationId: string; previousId: string; attachmentId: string; reference: string; jobId: string; title: string; email: string; brandId: string; departmentId: string };
+  verifyReview: (id: string) => Promise<Record<string, number | boolean | string | null>>;
 };
 function waitFor(child: ChildProcess, type: string) {
   return new Promise<Record<string, string>>((resolve, reject) => {
@@ -39,10 +41,10 @@ function waitFor(child: ChildProcess, type: string) {
   });
 }
 
-async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" = false) {
+async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" = false) {
   const child = fork(
     fileURLToPath(new URL("./admin-worker.ts", import.meta.url)),
-    outsider === "public" ? ["public"] : outsider ? ["outsider"] : [],
+    typeof outsider === "string" ? [outsider] : outsider ? ["outsider"] : [],
     {
       execArgv: ["--env-file-if-exists=.env.local", "--conditions=react-server", "--import", "tsx"],
       stdio: ["ignore", "ignore", "ignore", "ipc"],
@@ -56,9 +58,14 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
       prefix: account.prefix,
       cookieJSON: account.cookieJSON,
       job: JSON.parse(account.publicJobJSON ?? "null"),
+      review: JSON.parse(account.reviewJSON ?? "null"),
       trackSession: (id) => child.send({ type: "session", id }),
       verify: async (reference) => {
         const verified = waitFor(child, "verified"); child.send({ type: "verify", reference });
+        return JSON.parse((await verified).counts);
+      },
+      verifyReview: async (id) => {
+        const verified = waitFor(child, "review-verified"); child.send({ type: "review-verify", id });
         return JSON.parse((await verified).counts);
       },
     });
@@ -70,7 +77,7 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
     }
   }
 }
-export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture }>({
+export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture }>({
   adminAccount: [
     async ({}, use) => {
       await withAccount(use);
@@ -84,5 +91,6 @@ export const test = base.extend<{ adminAccount: Account; outsiderAccount: Accoun
     { timeout: 120000 },
   ],
   publicFixture: [async ({}, use) => { await withAccount(use, "public"); }, { timeout: 120000 }],
+  reviewFixture: [async ({}, use) => { await withAccount(use, "review"); }, { timeout: 120000 }],
 });
 export { expect };

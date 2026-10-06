@@ -1,5 +1,5 @@
 import { test, expect } from "../support/admin-fixture";
-import { protectedPages } from "../../src/lib/auth/surfaces";
+import { protectedApiRoutes, protectedPages } from "../../src/lib/auth/surfaces";
 test.use({ trace: "off" });
 test("every admin page rejects anonymous and authenticated non-admin HTTP requests", async ({
   page,
@@ -13,6 +13,11 @@ test("every admin page rejects anonymous and authenticated non-admin HTTP reques
     await page.goto(route);
     await expect(page).toHaveURL(/\/admin\/login$/, { timeout: 30000 });
   }
+  for (const route of protectedApiRoutes) {
+    const response = await page.request.get(route.replace("[id]", "00000000-0000-4000-8000-000000000001"), { maxRedirects: 0 });
+    expect(response.status()).toBe(403);
+    expect(response.headers().location).toBeUndefined();
+  }
   const cookies = JSON.parse(outsiderAccount.cookieJSON) as { name: string; value: string }[];
   expect(cookies.length > 0).toBe(true);
   await page
@@ -21,6 +26,11 @@ test("every admin page rejects anonymous and authenticated non-admin HTTP reques
   for (const route of routes) {
     await page.goto(route);
     await expect(page).toHaveURL(/\/admin\/login$/, { timeout: 30000 });
+  }
+  for (const route of protectedApiRoutes) {
+    const response = await page.request.get(route.replace("[id]", "00000000-0000-4000-8000-000000000001"), { maxRedirects: 0 });
+    expect(response.status()).toBe(403);
+    expect(response.headers().location).toBeUndefined();
   }
   await page.getByLabel("Email", { exact: true }).fill(outsiderAccount.email);
   await page.getByLabel("Password", { exact: true }).fill(outsiderAccount.password);
