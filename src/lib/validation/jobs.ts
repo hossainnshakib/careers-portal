@@ -1,3 +1,4 @@
+import "./zod-csp";
 import { z } from "zod";
 import { employmentTypeEnum, experienceLevelEnum, workModeEnum } from "@/db/schema";
 import { questionDefinitionSchema } from "@/lib/questions/definition";

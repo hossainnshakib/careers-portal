@@ -15,6 +15,7 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
 
 ## Typography
 - Bengali: Hind Siliguri or Noto Sans Bengali (self-host; OFL). Latin: one clean sans (for example Inter or Geist). Define a font stack with Bengali fallbacks so mixed text renders well. Body 16px minimum on mobile.
+- Implemented website fonts are self-hosted Inter plus Hind Siliguri; Bengali faces load on demand rather than preloading unused fonts on English-first pages. Candidate PDFs use tested static Hind Siliguri Regular/Bold, never the website variable Inter file. PDF branding uses rasterized validated logos on white, black body text and a restrained accent band for grayscale readability.
 - Candidate names and answers may be Bengali: every screen that shows them, and the PDF, must render Bengali correctly (conjuncts, vowel signs).
 
 ## Layout and components

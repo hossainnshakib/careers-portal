@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   employmentTypeEnum,
   experienceLevelEnum,
@@ -49,7 +48,6 @@ export function JobEditor({
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const [mounted, setMounted] = useState(false);
-  const router = useRouter();
   useEffect(() => setMounted(true), []);
   function field<K extends keyof JobInput>(name: K, value: JobInput[K]) {
     setDraft((current) => ({ ...current, [name]: value }));
@@ -69,8 +67,8 @@ export function JobEditor({
       if (!result.ok) setMessage(result.error);
       else {
         setMessage("Job saved.");
-        if (draft.id) router.refresh();
-        else router.replace(`/admin/jobs/${result.data.id}/edit`);
+        if (draft.id) window.location.reload();
+        else window.location.replace(`/admin/jobs/${result.data.id}/edit`);
       }
     } catch {
       setMessage("Unable to save job. Try again.");
@@ -86,9 +84,9 @@ export function JobEditor({
       const result = await jobCommandAction({ id: draft.id, command });
       if (!result.ok) setMessage(result.error);
       else {
-        if (command === "delete") router.push("/admin/jobs");
-        else if (command === "duplicate") router.push(`/admin/jobs/${result.data.id}/edit`);
-        else router.refresh();
+        if (command === "delete") window.location.assign("/admin/jobs");
+        else if (command === "duplicate") window.location.assign(`/admin/jobs/${result.data.id}/edit`);
+        else window.location.reload();
       }
     } catch {
       setMessage("Unable to update job. Try again.");

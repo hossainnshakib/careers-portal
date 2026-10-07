@@ -1,4 +1,5 @@
 import { test, expect } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
 test.use({ trace: "off" });
 
 test("URL filters render without JavaScript and mobile filters use an accessible bottom sheet", async ({ browser, page, request }) => {
@@ -27,14 +28,14 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   // Save through the actual admin action to invalidate the public catalog cache.
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill(publicFixture.email); await page.getByLabel("Password").fill(publicFixture.password);
-  await page.getByRole("button", { name: "Sign in" }).click(); await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
+  await page.getByRole("button", { name: "Sign in" }).click(); await completeAdminMfa(page, publicFixture);
   await page.goto(`/admin/jobs/${publicFixture.job.id}/edit`);
   const [published] = await Promise.all([
     page.waitForResponse((response) => response.request().method() === "POST" && response.url().includes(`/admin/jobs/${publicFixture.job.id}/edit`)),
+    page.waitForEvent("framenavigated", { predicate: (frame) => frame === page.mainFrame() }),
     page.getByRole("button", { name: "Save changes", exact: true }).click(),
   ]);
   expect(published.ok()).toBe(true);
-  await published.finished();
   await expect(page.getByRole("button", { name: "Save changes", exact: true })).toBeEnabled();
   await page.getByRole("button", { name: "Sign out" }).click(); await expect(page).toHaveURL(/\/admin\/login/);
   const query = new URLSearchParams({ brand: publicFixture.job.brandSlug, dept: publicFixture.job.departmentSlug, mode: "remote", q: publicFixture.prefix });

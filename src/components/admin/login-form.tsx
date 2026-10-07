@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { login } from "@/app/admin/login/actions";
 
 export function LoginForm() {
-  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
@@ -26,8 +24,7 @@ export function LoginForm() {
         try {
           const result = await login({ email: form.get("email"), password: form.get("password") });
           if (result.ok) {
-            router.replace("/admin");
-            router.refresh();
+            window.location.replace("/admin/mfa");
           } else {
             setError(result.error);
             await new Promise((resolve) => setTimeout(resolve, 1000));

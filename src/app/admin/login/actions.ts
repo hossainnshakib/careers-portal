@@ -23,7 +23,7 @@ export async function login(input: unknown): Promise<AuthResult> {
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     if (error) return invalid;
     try {
-      await requireAdmin();
+      await requireAdmin({ allowMfaSetup: true });
     } catch {
       await supabase.auth.signOut({ scope: "local" });
       return invalid;
@@ -36,7 +36,7 @@ export async function login(input: unknown): Promise<AuthResult> {
 
 export async function logout(): Promise<AuthResult> {
   try {
-    await requireAdmin();
+    await requireAdmin({ allowMfaSetup: true });
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.signOut({ scope: "local" });
     return error

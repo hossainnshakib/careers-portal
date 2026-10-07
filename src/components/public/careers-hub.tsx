@@ -45,12 +45,12 @@ export function CareersHub({ jobs, brands, departments }: {
       <h2 className="mt-3 text-2xl font-semibold">{selectedBrand.name}</h2><p className="mt-2">{selectedBrand.description}</p>
       <button className="mt-3 underline" onClick={() => void setFilters({ brand: [] })}>See all brands</button>
     </section>}
-    <div className="my-8 grid grid-cols-2 gap-3 sm:grid-cols-4">{brands.map((b) => <button key={b.id}
-      aria-pressed={filters.brand.includes(b.slug)} aria-label={`Filter by ${b.name}`}
-      disabled={!optionCount(jobs, filters, "brand", b.slug) && !filters.brand.includes(b.slug)}
+    <div className="my-8 grid grid-cols-2 gap-3 sm:grid-cols-4">{brands.map((b) => { const count = optionCount(jobs, filters, "brand", b.slug); return <button key={b.id}
+      aria-pressed={filters.brand.includes(b.slug)} aria-label={`Filter by ${b.name} (${count})`}
+      disabled={!count && !filters.brand.includes(b.slug)}
       onClick={() => toggle("brand", b.slug)} className={`rounded-xl border p-2 disabled:opacity-40 ${filters.brand.includes(b.slug) ? "border-primary ring-1 ring-primary" : "border-border"}`}>
-      <BrandLogo name={b.name} src={b.logoUrl} /><span className="text-sm font-medium">{b.name} ({optionCount(jobs, filters, "brand", b.slug)})</span>
-    </button>)}</div>
+      {b.logoUrl ? <BrandLogo name={b.name} src={b.logoUrl} /> : <div aria-hidden="true" className="h-24 rounded-lg bg-white" />}<span className="text-sm font-medium">{b.name} ({count})</span>
+    </button>; })}</div>
     <label className="block max-w-xl font-medium">Search roles<input aria-label="Search roles" type="search" maxLength={200}
       value={filters.q} onChange={(e) => void setFilters({ q: e.target.value })} className="mt-2 block w-full rounded-lg border border-input bg-card p-3" /></label>
     <button onClick={() => mobileDialog.current?.showModal()} className="my-4 rounded border border-border p-3 md:hidden">Filters</button>

@@ -1,3 +1,4 @@
+import "./validation/zod-csp";
 import { z } from "zod";
 
 const publicSchema = z.object({
@@ -25,4 +26,8 @@ export function getPublicEnv(): PublicEnv {
   }
   cache = result.data;
   return cache;
+}
+export function getSecurityEnvironment() {
+  const parsed = z.url().safeParse(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  return { supabaseOrigin: parsed.success ? new URL(parsed.data).origin : null, development: process.env.NODE_ENV !== "production" };
 }

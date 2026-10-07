@@ -1,3 +1,4 @@
+import "./zod-csp";
 import { z } from "zod";
 import type { QuestionDefinition } from "@/lib/questions/definition";
 

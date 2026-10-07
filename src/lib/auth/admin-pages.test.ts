@@ -16,6 +16,7 @@ import Layout from "@/app/admin/(protected)/layout";
 import Dashboard from "@/app/admin/(protected)/page";
 import Applications from "@/app/admin/(protected)/applications/page";
 import Profile from "@/app/admin/(protected)/applications/[id]/page";
+import Mfa from "@/app/admin/mfa/page";
 import Departments from "@/app/admin/(protected)/departments/page";
 import Brands from "@/app/admin/(protected)/brands/page";
 import Jobs from "@/app/admin/(protected)/jobs/page";
@@ -37,6 +38,7 @@ describe("protected admin pages independently gate access", () => {
     ["/admin", Dashboard],
     ["/admin/applications", () => Applications({ searchParams: Promise.resolve({}) })],
     ["/admin/applications/[id]", () => Profile({ params: Promise.resolve({ id: "invalid" }) })],
+    ["/admin/mfa", Mfa],
     ["/admin/departments", Departments],
     ["/admin/brands", Brands],
     ["/admin/jobs", () => Jobs({ searchParams: Promise.resolve({}) })],
@@ -64,7 +66,7 @@ describe("protected admin pages independently gate access", () => {
         error: null,
       });
       mocks.findAdmin.mockRejectedValue(new Error("Database unavailable"));
-      await expect(invoke()).rejects.toThrow("Database unavailable");
+      await expect(invoke()).rejects.toThrow("Unable to verify administrator access.");
     });
   }
 });

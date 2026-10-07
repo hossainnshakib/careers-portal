@@ -1,4 +1,5 @@
 import { expect, test } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
 test.use({ trace: "off" });
 
 test("admin filters, reviews Bengali snapshots, changes status, notes, downloads and deletes an application", async ({ page, reviewFixture }) => {
@@ -8,6 +9,7 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   await page.getByLabel("Email", { exact: true }).fill(reviewFixture.email);
   await page.getByLabel("Password", { exact: true }).fill(reviewFixture.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await completeAdminMfa(page, reviewFixture);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await expect(page.getByRole("heading", { name: "Latest applications" })).toBeVisible();
   await page.goto("/admin/applications");
@@ -17,7 +19,8 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   await page.getByRole("button", { name: "Filter applications" }).click();
   await expect(page).toHaveURL(/status=new/);
   await expect(page.getByRole("table").getByRole("row")).toHaveCount(2);
-  await page.getByRole("link", { name: "শ্রী ক্ষিতিশ", exact: true }).click();
+  const candidate = page.getByRole("link", { name: "শ্রী ক্ষিতিশ", exact: true });
+  await candidate.focus(); await candidate.press("Enter");
   await expect(page).toHaveURL(new RegExp(`/admin/applications/${fixture.applicationId}$`));
   await expect(page.getByText("আমি সৃজনশীল কাজে অভিজ্ঞ।", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previous applications from this email" })).toBeVisible();
@@ -34,6 +37,12 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
     page.waitForEvent("download"), page.getByRole("link", { name: "Download CV", exact: true }).click(),
   ]);
   expect(download.suggestedFilename()).toBe("review-cv.pdf"); expect(await download.failure()).toBeNull();
+  await expect(page.getByRole("checkbox", { name: "Include internal notes in PDF" })).not.toBeChecked();
+  const [pdf] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "Download Profile PDF", exact: true }).click()]);
+  expect(pdf.suggestedFilename().startsWith(fixture.reference)).toBe(true); expect(await pdf.failure()).toBeNull();
+  const stream = await pdf.createReadStream(); const chunks: Buffer[] = [];
+  for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
+  expect(Buffer.concat(chunks).subarray(0, 5).toString()).toBe("%PDF-");
   expect(await reviewFixture.verifyReview(fixture.applicationId)).toMatchObject({ exists: true, status: "shortlisted", events: 2, notes: 1, attachments: 1, answers: 2, filesAbsent: false });
   await page.getByRole("button", { name: "Delete own note", exact: true }).click();
   await expect(page.getByRole("region", { name: "Internal notes", exact: true })).not.toContainText(note);

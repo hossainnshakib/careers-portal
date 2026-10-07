@@ -3,6 +3,7 @@ export const protectedPages = [
   "/admin",
   "/admin/applications",
   "/admin/applications/[id]",
+  "/admin/mfa",
   "/admin/brands",
   "/admin/departments",
   "/admin/jobs",
@@ -19,5 +20,6 @@ export const actionFiles = {
   ],
   "(protected)/jobs/actions.ts": ["saveJobAction", "jobCommandAction", "copyJobQuestionsAction"],
   "(protected)/applications/actions.ts": ["changeStatusAction", "addNoteAction", "deleteNoteAction", "deleteApplicationAction"],
+  "mfa/actions.ts": ["enrollMfaAction", "verifyMfaAction"],
 } as const;
-export const protectedApiRoutes = ["/api/admin/attachments/[id]"] as const;
+export const protectedApiRoutes = ["/api/admin/attachments/[id]", "/api/admin/applications/[id]/pdf"] as const;

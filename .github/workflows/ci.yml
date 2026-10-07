@@ -19,3 +19,40 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
+
+  dev-integration-and-e2e:
+    if: vars.DEV_TESTS_ENABLED == 'true' && github.event_name == 'push'
+    needs: checks
+    runs-on: ubuntu-latest
+    concurrency:
+      group: shared-dev-careers-tests
+      cancel-in-progress: false
+    env:
+      APP_ENV: development
+      DEV_SUPABASE_PROJECT_REF: ${{ secrets.DEV_SUPABASE_PROJECT_REF }}
+      DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DEV_DIRECT_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.DEV_SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.DEV_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.DEV_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_SITE_URL: http://localhost:3100
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+      UPLOAD_SESSION_SECRET: ${{ secrets.DEV_UPLOAD_SESSION_SECRET }}
+      CRON_SECRET: ${{ secrets.DEV_CRON_SECRET }}
+      PLAYWRIGHT_PRODUCTION: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Live auth, review and anonymous RLS checks
+        run: pnpm exec vitest run src/lib/auth/requireAdmin.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/queries/review.live.test.ts src/db/rls.test.ts
+        env:
+          RUN_SUPABASE_TESTS: '1'
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build
+      - run: pnpm test:e2e

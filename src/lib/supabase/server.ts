@@ -9,6 +9,7 @@ export async function createSupabaseServerClient() {
   const store = await cookies();
   const env = getPublicEnv();
   return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    cookieOptions: { httpOnly: true, sameSite: "lax", secure: new URL(env.NEXT_PUBLIC_SITE_URL).protocol === "https:" },
     cookies: {
       getAll: () => store.getAll(),
       setAll(values) {

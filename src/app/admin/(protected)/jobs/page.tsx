@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { listJobs } from "@/db/queries/jobs";
@@ -29,9 +28,9 @@ export default async function JobsPage({
     <section className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Jobs</h1>
-        <Link href="/admin/jobs/new" className="rounded border border-border px-4 py-2">
+        <a href="/admin/jobs/new" className="rounded border border-border px-4 py-2">
           Create job
-        </Link>
+        </a>
       </div>
       <form className="flex flex-wrap items-end gap-3" action="/admin/jobs" method="get">
         <label>
@@ -90,7 +89,7 @@ export default async function JobsPage({
           </select>
         </label>
         <button className="rounded border border-border px-4 py-2">Filter jobs</button>
-        <Link href="/admin/jobs">Clear filters</Link>
+        <a href="/admin/jobs">Clear filters</a>
       </form>
       {!parsed.success && <p role="status">Invalid filters were cleared.</p>}
       {rows.length === 0 ? (
@@ -114,7 +113,7 @@ export default async function JobsPage({
                   <td className="p-3">{row.department}</td>
                   <td className="p-3">{row.status}</td>
                   <td className="p-3">
-                    <Link href={`/admin/jobs/${row.id}/edit`}>Edit {row.title}</Link>
+                    <a href={`/admin/jobs/${row.id}/edit`}>Edit {row.title}</a>
                   </td>
                 </tr>
               ))}

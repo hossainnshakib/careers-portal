@@ -30,11 +30,15 @@ it("covers every admin page, action export and route handler and requires direct
     discovered[path] = [...source.matchAll(/export async function (\w+)/g)].map(
       (match) => match[1],
     );
-    expect(source).toContain("await requireAdmin()");
+    expect(source).toMatch(/await requireAdmin\(/);
+    if (source.includes("allowMfaSetup")) expect(["login/actions.ts", "mfa/actions.ts"]).toContain(path);
   }
   expect(discovered).toEqual(actionFiles);
-  for (const path of [...pages, "(protected)/layout.tsx"])
-    expect(readFileSync(`${root}/${path}`, "utf8")).toContain("await requireAdmin()");
+  for (const path of [...pages, "(protected)/layout.tsx"]) {
+    const source = readFileSync(`${root}/${path}`, "utf8");
+    expect(source).toMatch(/await requireAdmin\(/);
+    if (source.includes("allowMfaSetup")) expect(path).toBe("mfa/page.tsx");
+  }
   const apiRoot = fileURLToPath(new URL("../../app/api/", import.meta.url));
   const handlers = files(apiRoot).filter((path) => path.startsWith("admin/") && path.endsWith("route.ts"));
   expect(handlers.map((path) => `/api/${path.replace(/\/route\.ts$/, "")}`).sort()).toEqual([...protectedApiRoutes].sort());

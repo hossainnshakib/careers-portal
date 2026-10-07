@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { headers } from "next/headers";
+import { NonceProvider } from "@/components/nonce-provider";
 
 const latin = localFont({
   src: "../../assets/fonts/Inter-Variable.ttf",
@@ -16,6 +17,7 @@ const bengali = localFont({
   ],
   variable: "--font-bengali",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -23,7 +25,8 @@ export const metadata: Metadata = {
   description: "Discover opportunities across our brands.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="en">
       <body className={`${latin.variable} ${bengali.variable} antialiased`}>
@@ -33,7 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <header className="border-b border-border bg-card">
           <div className="mx-auto max-w-6xl px-6 py-5 text-lg font-semibold">Careers</div>
         </header>
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NonceProvider nonce={nonce}>{children}</NonceProvider>
         <footer className="mx-auto max-w-6xl px-6 py-8 text-sm text-muted-foreground">
           Find your next opportunity.
         </footer>

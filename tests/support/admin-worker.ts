@@ -9,6 +9,8 @@ import { createSupabaseAdminClient } from "../../src/lib/supabase/admin";
 import { removeTestLogos } from "../../src/lib/storage/test-logos";
 import { createServerClient } from "@supabase/ssr";
 import { getPublicEnv } from "../../src/lib/env-public";
+import { createClient } from "@supabase/supabase-js";
+import { freshTestTotp } from "./totp";
 import { createPublicTestJob, verifyPublicTestApplication } from "../../src/db/queries/public-test-fixture";
 import { removePublicTestFiles } from "../../src/lib/storage/public-test-files";
 import { createReviewTestApplication, reviewTestApplicationIds, verifyReviewTestRows } from "../../src/db/queries/review-test-fixture";
@@ -19,6 +21,7 @@ const prefix = `e2e-${randomUUID().replaceAll("-", "")}-`;
 let cleaning = false;
 const publicSessions = new Set<string>();
 const reviewIds = new Set<string>();
+let authenticatorSecret = "";
 async function cleanup() {
   if (cleaning) return;
   cleaning = true;
@@ -44,6 +47,7 @@ async function cleanup() {
 }
 process.on("message", (message) => {
   if (message === "cleanup") void cleanup();
+  if (message === "otp" && authenticatorSecret) void freshTestTotp(authenticatorSecret).then((code) => process.send?.({ type: "otp", code }));
   if (message && typeof message === "object" && "type" in message) {
     if (message.type === "session" && "id" in message && typeof message.id === "string") publicSessions.add(message.id);
     if (message.type === "verify" && "reference" in message && typeof message.reference === "string") {
@@ -78,6 +82,15 @@ async function setup() {
   userId = data.user.id;
   const outsider = process.argv[2] === "outsider";
   if (!outsider) await addAdmin(userId, email);
+  if (!outsider && process.argv[2] !== "mfa") {
+    const env = getPublicEnv();
+    const client = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+    if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error("MFA fixture login failed");
+    const factor = await client.auth.mfa.enroll({ factorType: "totp", friendlyName: "Fixture authenticator" });
+    if (factor.error) throw new Error("MFA fixture enrollment failed");
+    authenticatorSecret = factor.data.totp.secret;
+    if ((await client.auth.mfa.challengeAndVerify({ factorId: factor.data.id, code: await freshTestTotp(authenticatorSecret) })).error) throw new Error("MFA fixture verification failed");
+  }
   const cookies: { name: string; value: string }[] = [];
   if (outsider) {
     const env = getPublicEnv();

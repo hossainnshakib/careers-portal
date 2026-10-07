@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { getPublicEnv } from "@/lib/env-public";
+import { useDocumentNonce } from "@/components/nonce-provider";
 
 declare global {
   interface Window {
@@ -13,6 +14,7 @@ declare global {
   }
 }
 export function TurnstileWidget({ onToken }: { onToken: (token: string) => void }) {
+  const nonce = useDocumentNonce();
   const container = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -24,6 +26,6 @@ export function TurnstileWidget({ onToken }: { onToken: (token: string) => void 
     });
     return () => { window.turnstile?.remove(id); };
   }, [ready, onToken]);
-  return <div><Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" onReady={() => setReady(true)} onError={() => setFailed(true)} />
-    <div ref={container} aria-label="Security check" />{failed && <p role="alert">Security check could not load. Refresh the page to try again.</p>}</div>;
+  return <div><Script nonce={nonce} src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" onReady={() => setReady(true)} onError={() => setFailed(true)} />
+    <div ref={container} role="group" aria-label="Security check" />{failed && <p role="alert">Security check could not load. Refresh the page to try again.</p>}</div>;
 }

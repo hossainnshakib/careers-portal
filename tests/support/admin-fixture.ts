@@ -2,7 +2,7 @@ import { fork, type ChildProcess } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { test as base, expect } from "@playwright/test";
 
-type Account = { email: string; password: string; prefix: string; cookieJSON: string };
+type Account = { email: string; password: string; prefix: string; cookieJSON: string; otp: () => Promise<string> };
 type PublicFixture = Account & {
   job: { slug: string; id: string; questionId: string; textId: string; brandSlug: string; departmentSlug: string; title: string };
   trackSession: (id: string) => void;
@@ -41,7 +41,7 @@ function waitFor(child: ChildProcess, type: string) {
   });
 }
 
-async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" = false) {
+async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" | "mfa" = false) {
   const child = fork(
     fileURLToPath(new URL("./admin-worker.ts", import.meta.url)),
     typeof outsider === "string" ? [outsider] : outsider ? ["outsider"] : [],
@@ -57,6 +57,7 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
       password: account.password,
       prefix: account.prefix,
       cookieJSON: account.cookieJSON,
+      otp: async () => { const code = waitFor(child, "otp"); child.send("otp"); return (await code).code; },
       job: JSON.parse(account.publicJobJSON ?? "null"),
       review: JSON.parse(account.reviewJSON ?? "null"),
       trackSession: (id) => child.send({ type: "session", id }),
@@ -77,7 +78,7 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
     }
   }
 }
-export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture }>({
+export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture; mfaAccount: Account }>({
   adminAccount: [
     async ({}, use) => {
       await withAccount(use);
@@ -92,5 +93,6 @@ export const test = base.extend<{ adminAccount: Account; outsiderAccount: Accoun
   ],
   publicFixture: [async ({}, use) => { await withAccount(use, "public"); }, { timeout: 120000 }],
   reviewFixture: [async ({}, use) => { await withAccount(use, "review"); }, { timeout: 120000 }],
+  mfaAccount: [async ({}, use) => { await withAccount(use, "mfa"); }, { timeout: 120000 }],
 });
 export { expect };

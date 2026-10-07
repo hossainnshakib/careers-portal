@@ -1,6 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
+import sharp from "sharp";
 import { z } from "zod";
 import { getStorageClient } from "./client";
 import { validateBrandLogo } from "@/lib/validation/brand-logo";
@@ -12,6 +13,9 @@ export async function uploadBrandLogo(brandId: string, file: File) {
     { name: file.name, type: file.type, size: file.size },
     bytes,
   );
+  // Signature/passive-markup checks precede bounded decoding; reject malformed
+  // or huge raster/SVG images rather than publishing header-shaped binaries.
+  await sharp(bytes, { limitInputPixels: 20000000 }).png().toBuffer();
   const path = `brands/${brandId}/${randomUUID()}.${extension}`;
   const storage = getStorageClient();
   const { error } = await storage

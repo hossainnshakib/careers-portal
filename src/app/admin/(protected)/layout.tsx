@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { LogoutButton } from "@/components/admin/logout-button";
@@ -10,9 +9,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen md:grid md:grid-cols-[15rem_1fr]">
       <aside className="border-b border-border bg-card p-5 md:border-r md:border-b-0">
-        <Link href="/admin" className="text-lg font-bold">
+        <a href="/admin" className="text-lg font-bold">
           Careers admin
-        </Link>
+        </a>
         <nav aria-label="Admin navigation" className="my-6 flex flex-wrap gap-2 md:flex-col">
           {[
             ["Dashboard", "/admin"],
@@ -21,9 +20,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             ["Brands", "/admin/brands"],
             ["Departments", "/admin/departments"],
           ].map(([label, href]) => (
-            <Link key={href} href={href} className="rounded px-3 py-2 hover:bg-secondary">
+            <a key={href} href={href} className="rounded px-3 py-2 hover:bg-secondary">
               {label}
-            </Link>
+            </a>
           ))}
         </nav>
         <p className="mb-3 break-all text-sm text-muted-foreground">{admin.email}</p>

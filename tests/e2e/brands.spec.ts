@@ -1,4 +1,5 @@
 import { test, expect } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
 
 test.use({ trace: "off" });
 test("admin edits, hides, reorders and uploads a validated brand logo", async ({
@@ -10,6 +11,7 @@ test("admin edits, hides, reorders and uploads a validated brand logo", async ({
   await page.getByLabel("Email", { exact: true }).fill(adminAccount.email);
   await page.getByLabel("Password", { exact: true }).fill(adminAccount.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.getByRole("link", { name: "Brands", exact: true }).click();
   const name = `${adminAccount.prefix}Brand`;

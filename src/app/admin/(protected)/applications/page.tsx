@@ -1,6 +1,5 @@
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
-import Link from "next/link";
 import { listReviewApplications, reviewFilterOptions } from "@/db/queries/review";
 import { reviewFilters } from "@/lib/validation/review";
 import { ApplicationTable } from "@/components/admin/application-table";
@@ -13,7 +12,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
   const allowed = ["brand", "department", "job", "status", "q", "from", "to", "tz", "sort", "page", "cleanup"];
   const parsed = reviewFilters.safeParse(Object.fromEntries(allowed.filter((key) => params[key] !== undefined).map((key) => [key, params[key]])));
   const filters = parsed.success ? parsed.data : reviewFilters.parse({});
-  const [result, options] = await Promise.all([listReviewApplications(filters), reviewFilterOptions()]);
+  const [result, options] = await Promise.all([listReviewApplications(filters), reviewFilterOptions()]).catch(() => { throw new Error("Unable to load applications."); });
   function pageUrl(page: number) {
     const values = new URLSearchParams();
     for (const [key, value] of Object.entries(filters)) if (value !== "" && key !== "page" && key !== "cleanup") values.set(key, String(value));
@@ -29,8 +28,8 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
       <p>{result.total} applications · Page {result.page} of {result.pages}</p>
       <ApplicationTable rows={result.rows} />
       <nav aria-label="Application pages" className="flex gap-6">
-        {result.page > 1 && <Link href={pageUrl(result.page - 1)} className="underline">Previous page</Link>}
-        {result.page < result.pages && <Link href={pageUrl(result.page + 1)} className="underline">Next page</Link>}
+        {result.page > 1 && <a href={pageUrl(result.page - 1)} className="underline">Previous page</a>}
+        {result.page < result.pages && <a href={pageUrl(result.page + 1)} className="underline">Next page</a>}
       </nav>
     </section>
   );

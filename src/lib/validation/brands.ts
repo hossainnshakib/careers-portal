@@ -1,3 +1,4 @@
+import "./zod-csp";
 import { z } from "zod";
 import { sectorEnum } from "@/db/schema";
 import { slugInput } from "./departments";

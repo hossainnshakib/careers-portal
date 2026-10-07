@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { applicationStatusEnum, type Application } from "@/db/schema";
 import { addNoteAction, changeStatusAction, deleteApplicationAction, deleteNoteAction } from "@/app/admin/(protected)/applications/actions";
 import type { ActionResult } from "@/lib/actions/result";
@@ -12,13 +10,12 @@ export function ReviewControls({ applicationId, status }: { applicationId: strin
   const [note, setNote] = useState("");
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
-  const router = useRouter();
   async function update(work: () => Promise<ActionResult>, success: string) {
     setPending(true); setMessage("");
     try {
       const result = await work();
       if (!result.ok) setMessage(result.error);
-      else { setMessage(success); if (success === "Note added.") setNote(""); router.refresh(); }
+      else { setMessage(success); if (success === "Note added.") setNote(""); window.location.reload(); }
     } catch { setMessage("Unable to update application. Try again."); }
     finally { setPending(false); }
   }
@@ -38,10 +35,9 @@ export function ReviewControls({ applicationId, status }: { applicationId: strin
 export function DeleteNoteButton({ applicationId, noteId }: { applicationId: string; noteId: string }) {
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
-  const router = useRouter();
   return <div><button type="button" disabled={pending} className="mt-2 text-sm underline" onClick={async () => {
     setPending(true);
-    try { const result = await deleteNoteAction({ applicationId, noteId }); if (result.ok) router.refresh(); else setMessage(result.error); }
+    try { const result = await deleteNoteAction({ applicationId, noteId }); if (result.ok) window.location.reload(); else setMessage(result.error); }
     catch { setMessage("Unable to delete note."); }
     finally { setPending(false); }
   }}>Delete own note</button><p role="status">{message}</p></div>;
@@ -50,7 +46,6 @@ export function DeleteApplicationControl({ applicationId, reference, retry = fal
   const dialog = useRef<HTMLDialogElement>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
-  const router = useRouter();
   return <section aria-label="Application deletion" className="rounded border border-border p-5">
     <button type="button" className="text-destructive underline" onClick={() => dialog.current?.showModal()}>{retry ? "Retry deletion cleanup" : "Delete application"}</button>
     <dialog ref={dialog} aria-label="Confirm application deletion" className="max-w-lg rounded-xl border border-border bg-card p-6 text-foreground backdrop:bg-black/40">
@@ -61,13 +56,13 @@ export function DeleteApplicationControl({ applicationId, reference, retry = fal
           setPending(true); setMessage("");
           try {
             const result = await deleteApplicationAction({ applicationId, confirmed: true });
-            if (result.ok) { dialog.current?.close(); router.replace("/admin/applications"); }
+            if (result.ok) { dialog.current?.close(); window.location.replace("/admin/applications"); }
             else { setMessage(result.error); dialog.current?.close(); }
           } catch { setMessage("Unable to delete application. Try again."); }
           finally { setPending(false); }
         }}>{pending ? "Deleting…" : "Confirm deletion"}</button></div>
     </dialog>
     <p role="status" className="mt-3">{message}</p>
-    {message && <Link href={`/admin/applications?cleanup=${applicationId}`} className="text-sm underline">Retry this deletion from the applications list</Link>}
+    {message && <a href={`/admin/applications?cleanup=${applicationId}`} className="text-sm underline">Retry this deletion from the applications list</a>}
   </section>;
 }

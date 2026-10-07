@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { logout } from "@/app/admin/login/actions";
 
 export function LogoutButton() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
   return (
     <div>
       <button
@@ -19,8 +17,7 @@ export function LogoutButton() {
           try {
             const result = await logout();
             if (result.ok) {
-              router.replace("/admin/login");
-              router.refresh();
+              window.location.replace("/admin/login");
             } else setError(result.error);
           } catch {
             setError("Unable to sign out. Try again.");

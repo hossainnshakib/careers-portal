@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { verifiedTestClaims } from "@/lib/auth/test-claims";
 
 const mocks = vi.hoisted(() => ({
   getUser: vi.fn(),
@@ -11,7 +12,7 @@ const mocks = vi.hoisted(() => ({
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({
-  createSupabaseServerClient: async () => ({ auth: { getUser: mocks.getUser } }),
+  createSupabaseServerClient: async () => ({ auth: { getUser: mocks.getUser, getClaims: () => verifiedTestClaims(mocks.getUser) } }),
 }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
 vi.mock("@/db/queries/departments", () => ({

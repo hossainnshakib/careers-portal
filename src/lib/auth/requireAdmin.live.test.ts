@@ -13,7 +13,8 @@ import { addAdmin } from "@/db/queries/admins";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { getPublicEnv } from "@/lib/env-public";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { AdminAccessError, requireAdmin } from "./requireAdmin";
+import { AdminAccessError, AdminMfaRequiredError, requireAdmin } from "./requireAdmin";
+import { freshTestTotp } from "../../../tests/support/totp";
 
 describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
   "live requireAdmin gating (dev only)",
@@ -53,6 +54,14 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
         const session = client();
         const signedIn = await session.auth.signInWithPassword({ email, password });
         if (signedIn.error) throw new Error("Ephemeral test account login failed.");
+        if (allowlisted) {
+          const enrolled = await session.auth.mfa.enroll({ factorType: "totp" });
+          if (enrolled.error) throw new Error("Ephemeral MFA enrollment failed");
+          state.client = session;
+          await expect(requireAdmin()).rejects.toBeInstanceOf(AdminMfaRequiredError);
+          const verified = await session.auth.mfa.challengeAndVerify({ factorId: enrolled.data.id, code: await freshTestTotp(enrolled.data.totp.secret) });
+          if (verified.error) throw new Error("Ephemeral MFA verification failed");
+        }
         return session;
       }
       nonAdmin = await testAccount(false);

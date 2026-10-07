@@ -1,4 +1,5 @@
 import { test, expect } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
 
 test.use({ trace: "off" });
 test("admin jobs list filters by URL and shows an empty result", async ({ page, adminAccount }) => {
@@ -7,6 +8,7 @@ test("admin jobs list filters by URL and shows an empty result", async ({ page, 
   await page.getByLabel("Email", { exact: true }).fill(adminAccount.email);
   await page.getByLabel("Password", { exact: true }).fill(adminAccount.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.getByRole("link", { name: "Jobs", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Jobs", exact: true })).toBeVisible();

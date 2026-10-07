@@ -1,4 +1,5 @@
 import { test, expect } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
 
 // Auth credentials must never be recorded in Playwright trace artifacts.
 test.use({ trace: "off" });
@@ -11,6 +12,7 @@ test("admin creates, edits, deactivates and reorders a department", async ({
   await page.getByLabel("Email", { exact: true }).fill(adminAccount.email);
   await page.getByLabel("Password", { exact: true }).fill(adminAccount.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.getByRole("link", { name: "Departments", exact: true }).click();
   const name = `${adminAccount.prefix}Design`;

@@ -1,4 +1,5 @@
 import { test, expect } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
 test.use({ trace: "off" });
 test("eleven-type builder validates radio/dropdown Other, dates and candidate preview", async ({
   page,
@@ -9,6 +10,7 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByLabel("Email", { exact: true }).fill(adminAccount.email);
   await page.getByLabel("Password", { exact: true }).fill(adminAccount.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.goto("/admin/jobs/new");
   await page.getByLabel("Title", { exact: true }).fill(`${adminAccount.prefix}Questions`);

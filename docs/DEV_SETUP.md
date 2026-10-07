@@ -79,7 +79,7 @@ pnpm test:e2e
 ```
 The default browser suite runs serially against the shared dev database. Do not run the seed-upgrade preservation test concurrently with other tests that create applications, because it intentionally fingerprints all existing applications/answers before and after seeding. To repeat that check separately, use the same live flag with `src/db/seed/upgrade.live.test.ts`.
 
-**Bengali PDF shaping is untested.** The owner deferred the spike; complete it before Phase 4 as described in DECISIONS.md. The website has self-hosted Hind Siliguri; any future PDF test must use static TTFs, not Inter's website-only variable font.
+**The deferred Bengali PDF spike passed in Phase 4.** Static Hind Siliguri Regular/Bold were compared visually with a same-font Chromium reference. See `docs/PHASE4_VERIFICATION.md` for generated samples and limitations; Inter's website-only variable font is not used in PDFs.
 
 ## Resetting development
 `pnpm db:reset:dev` is destructive: it removes known application files, drops the application tables/types/migration ledger, reapplies migrations, and runs demo seeding. It requires the independent dev pin and validates both database targets before touching data. It does not drop Supabase Auth, Storage schemas, or the public schema. It does not clean unreferenced/pending uploads; stale pending cleanup belongs to Phase 5.
@@ -130,4 +130,33 @@ $env:RUN_SUPABASE_TESTS = '1'
 node --env-file=.env.local node_modules/vitest/vitest.mjs run src/db/queries/review.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/rls.test.ts
 Remove-Item Env:RUN_SUPABASE_TESTS
 ```
-Run cloud integration and browser suites separately. These checks create only dev-guarded, random-prefix fixtures/temporary Auth accounts and remove their rows and original/quarantined objects afterward. Credentials travel over IPC, and traces are disabled. See `docs/PHASE3_VERIFICATION.md` for results, acceptance coverage and remaining limitations. Candidate Profile PDF remains Phase 4.
+Run cloud integration and browser suites separately. These checks create only dev-guarded, random-prefix fixtures/temporary Auth accounts and remove their rows and original/quarantined objects afterward. Credentials travel over IPC, and traces are disabled. See `docs/PHASE3_VERIFICATION.md` for results. Candidate Profile PDF is now available from the profile sidebar.
+
+## Phase 4 MFA and PDF walkthrough
+1. Sign in with your allowlisted admin email/password. Password-only sessions go to `/admin/mfa` and cannot read applications, mutate jobs, or download files/PDFs.
+2. Choose **Set up authenticator**, scan the QR code in a TOTP app (or enter the setup key), then enter its six-digit code. On later sign-ins use **Authenticator code**. Setup secrets/codes are never logged; keep your authenticator available.
+3. If a verified authenticator is lost, the portal owner must recover the account manually in the Supabase dashboard: revoke sessions/remove the lost factor, then have that admin sign in and enroll again. The app provides no password-only bypass or verified-factor reset endpoint. Never share recovery credentials in chat or git.
+4. Open an applicant profile and choose **Download Profile PDF**. Notes are excluded by default. Select **Include internal notes in PDF** only when intended. CV and attachments remain separate downloads.
+5. Review English/Bengali samples and long/many-answer pagination. Temporary files are listed in `docs/PHASE4_VERIFICATION.md`.
+
+Stop any development server before an optimized build. Production-mode Playwright owns a separate port 3100 and never reuses a running dev server:
+```powershell
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+$env:PLAYWRIGHT_PRODUCTION = '1'
+pnpm test:e2e
+Remove-Item Env:PLAYWRIGHT_PRODUCTION
+```
+The optional Lighthouse test is skipped in the normal suite but was executed separately:
+```powershell
+$env:PLAYWRIGHT_PRODUCTION = '1'
+$env:RUN_LIGHTHOUSE = '1'
+pnpm exec playwright test tests/e2e/performance.spec.ts
+Remove-Item Env:RUN_LIGHTHOUSE
+Remove-Item Env:PLAYWRIGHT_PRODUCTION
+```
+It runs Lighthouse 13.5.0 via pnpm dlx against anonymous public pages, writes reports into the approved temporary directory, and passes no application credentials to the tool. Scores are local simulated-mobile measurements, not deployed field metrics.
+
+For CI's guarded push-only cloud/browser job, set `DEV_TESTS_ENABLED=true` and these **dev-only** repository secrets: `DEV_SUPABASE_PROJECT_REF`, `DEV_DATABASE_URL`, `DEV_DIRECT_URL`, `DEV_SUPABASE_URL`, `DEV_SUPABASE_ANON_KEY`, `DEV_SUPABASE_SERVICE_ROLE_KEY`, `DEV_UPLOAD_SESSION_SECRET`, `DEV_CRON_SECRET`. CI uses official Turnstile test keys and `APP_ENV=development`. No production credentials belong in this job. It runs cloud tests before browsers and serializes shared-dev jobs. No GitHub run was triggered by this phase.

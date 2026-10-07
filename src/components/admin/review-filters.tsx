@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { applicationStatusEnum } from "@/db/schema";
 import type { ReviewFilters } from "@/lib/validation/review";
@@ -25,6 +24,10 @@ export function ReviewFilterForm({ filters, options }: {
     <label>To date<input aria-label="To date" type="date" name="to" defaultValue={filters.to} className={input} /></label>
     <label>Sort<select aria-label="Sort" name="sort" defaultValue={filters.sort} className={input}>{[["newest", "Newest first"], ["oldest", "Oldest first"], ["name_asc", "Name A–Z"], ["name_desc", "Name Z–A"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
     <p className="text-xs text-muted-foreground sm:col-span-2">Date range uses {zone}; the end date is inclusive.</p>
-    <div className="flex items-center gap-4"><button className="rounded border border-border px-4 py-2">Filter applications</button><Link href="/admin/applications" className="underline">Clear filters</Link></div>
+    <div className="flex items-center gap-4"><button className="rounded border border-border px-4 py-2">Filter applications</button>
+      {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a href="/admin/applications" className="underline">Clear filters</a>
+    </div>
   </form>;
 }
