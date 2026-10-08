@@ -13,7 +13,7 @@ const logoScale: Record<string, number> = {
 };
 const boxes = {
   default: "h-24 w-full p-4", strip: "h-16 w-32 p-2",
-  mark: "h-8 w-20 p-1", tiny: "h-6 w-16 p-1",
+  mark: "h-8 w-20 p-1", tiny: "h-6 w-16 px-1",
 };
 
 export function BrandLogo({ name, src, slug, size = "default", decorative = false, className = "" }: BrandLogoProps) {

@@ -12,5 +12,8 @@
 ## Separation for later polish
 `CareersHub` owns URL/filter interactions; `lib/careers/filters.ts` owns matching/count contracts; `presentation.ts` owns ordered grouping/primary-brand selection/passive colour and link selection. Hero, results, info, header and footer components are thin presentation. Theme values/motion are in globals.css.
 
+## Implemented — inline job applications
+Job pages have a small primary-first Hiring for row, sanitized role content and the existing application form at `#apply`. Top/mobile anchors scroll to it. Form definitions and current open/deadline/CV state reload uncached; submit authorization and Storage flow are unchanged. Closed/expired roles have no form, and drafts/hidden-only roles return 404. Next config supplies the legacy apply HTTP 308 before streaming; the old page retains a validated redirect fallback and its obsolete loading boundary is removed. Turnstile mounts only near the form or on input/focus, retaining document nonces and real server verification.
+
 ## Pending workstreams
-Inline job applications/lazy Turnstile/legacy redirect, draft privacy and utility pages, admin colour previews/dots, and the launch kit are still pending. Browser verification and Lighthouse are reserved for the final V1 pass; unit checks are not visual sign-off.
+Draft privacy and utility pages, admin colour previews/dots, and the launch kit are still pending. Browser verification and Lighthouse are reserved for the final V1 pass; unit checks are not visual sign-off.

@@ -2,17 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
-import { loadPublicJob } from "@/db/queries/public-jobs";
+import { loadApplicationJob, loadPublicJob } from "@/db/queries/public-jobs";
 import { BrandLogo } from "@/components/brand-logo";
 import { SafeMarkdown } from "@/lib/markdown/render";
 import { humanize } from "@/lib/careers/filters";
 import { getPublicEnv } from "@/lib/env-public";
+import { ApplicationForm } from "@/components/public/application-form";
 
 async function getJob(params: Promise<{ slug: string }>) {
   const parsed = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120).safeParse((await params).slug);
   if (!parsed.success) notFound();
-  const data = await loadPublicJob(parsed.data);
-  if (!data || !data.brands.some((b) => b.brand.status === "active")) notFound();
+  const data = await loadPublicJob(parsed.data).catch(() => { throw new Error("Unable to load this role."); });
+  if (!data || data.job.status === "draft" || !data.brands.some((b) => b.brand.status === "active")) notFound();
   return data;
 }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -21,20 +22,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title: `${job.title} · Careers`, description: job.summary, alternates: { canonical: url }, openGraph: { title: job.title, description: job.summary, url, type: "website" } };
 }
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { job, department, brands } = await getJob(params);
-  const visibleBrands = brands.filter((b) => b.brand.status === "active");
-  const closed = job.status !== "open" || (!!job.deadlineAt && new Date(job.deadlineAt).getTime() <= Date.now());
+  const { job, department } = await getJob(params);
+  // Render the form from fresh authoritative definitions, just as the former
+  // apply page did; submission independently reloads them again under its lock.
+  const definition = await loadApplicationJob(job.slug).catch(() => { throw new Error("Unable to load the application form."); });
+  if (!definition || definition.job.status === "draft" || !definition.brands.some(item => item.brand.status === "active")) notFound();
+  const visibleBrands = definition.brands.filter(item => item.brand.status === "active").sort((a, b) => Number(b.primary) - Number(a.primary));
+  const closed = definition.job.status !== "open" || (!!definition.job.deadlineAt && definition.job.deadlineAt.getTime() <= Date.now());
   return <main id="main" className="mx-auto max-w-3xl space-y-8 px-5 py-10 pb-28">
     <Link href="/" className="underline">All roles</Link>
-    <div className="grid gap-3 sm:grid-cols-2">{visibleBrands.map(({ brand }) => <BrandLogo key={brand.id} name={brand.name} src={brand.logoUrl} />)}</div>
-    <header><p className="text-muted-foreground">{visibleBrands.map(({ brand }) => brand.name).join(" · ")}</p>
-      <h1 className="mt-3 text-4xl font-semibold">{job.title}</h1><p className="mt-4">{department.name}</p>
-      <p className="mt-2 capitalize">{humanize(job.employmentType)} · {job.workMode}{job.experienceLevel ? ` · ${job.experienceLevel}` : ""}</p>
-      {job.locationText && <p className="mt-2">{job.locationText}</p>}<p className="mt-4 text-muted-foreground">{job.summary}</p>
+    <header>
+      <h1 className="text-4xl font-bold leading-tight">{job.title}</h1><p className="mt-4">Department · {department.name}</p>
+      <div className="mt-4 flex flex-wrap gap-2">{[humanize(job.employmentType), job.workMode, job.experienceLevel, job.locationText].filter(Boolean).map(value => <span key={value} className="rounded-lg border border-border px-3 py-2 capitalize">{value}</span>)}</div>
+      <div className="mt-5 flex flex-wrap items-center gap-4" aria-label="Hiring brands"><span className="text-muted-foreground">Hiring for</span>
+        {visibleBrands.map(({ brand }) => <span key={brand.id} className="flex items-center gap-2">
+          {brand.logoUrl && <BrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} size="tiny" decorative />}<span>{brand.name}</span>
+        </span>)}
+      </div><p className="mt-5 leading-relaxed text-muted-foreground">{job.summary}</p>
     </header>
-    {closed ? <section role="status" className="rounded-xl border border-border p-5"><h2 className="font-semibold">No longer accepting applications</h2><Link href="/" className="underline">Explore open roles</Link></section> :
-      <Link href={`/jobs/${job.slug}/apply`} className="fixed inset-x-5 bottom-5 z-20 rounded-lg bg-primary p-4 text-center font-semibold text-primary-foreground sm:static sm:inline-block">Apply for this role</Link>}
-    {[["About the role", job.descriptionMd], ["Responsibilities", job.responsibilitiesMd], ["Requirements", job.requirementsMd]].map(([heading, text]) => <section key={heading}><h2 className="mb-4 text-2xl font-semibold">{heading}</h2><SafeMarkdown text={text} /></section>)}
-    <section><h2 className="text-2xl font-semibold">How applying works</h2><p className="mt-3">Tell us about yourself, share your CV and answer the role-specific questions. You will receive an application reference after submitting.</p></section>
+    {closed ? <section role="status" className="rounded-lg border border-border p-5"><h2 className="font-bold">No longer accepting applications</h2><Link href="/" className="mt-3 inline-block underline">Explore open roles</Link></section> :
+      <a href="#apply" className="inline-block rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground">Apply</a>}
+    {[["About the role", job.descriptionMd], ["Responsibilities", job.responsibilitiesMd], ["Requirements", job.requirementsMd]].map(([heading, text]) => <section key={heading}><h2 className="mb-4 text-2xl font-bold">{heading}</h2><SafeMarkdown text={text} /></section>)}
+    {!closed && <section id="apply" tabIndex={-1} aria-labelledby="apply-title" className="scroll-mt-8 border-t border-border pt-10">
+      <h2 id="apply-title" className="mb-6 text-3xl font-bold">Apply for {job.title}</h2>
+      <ApplicationForm jobSlug={job.slug} questions={definition.questions} cvRequired={definition.job.cvRequired} />
+    </section>}
+    {!closed && <a href="#apply" className="fixed inset-x-5 bottom-5 z-20 rounded-lg bg-primary p-4 text-center font-bold text-primary-foreground md:hidden">Apply</a>}
   </main>;
 }

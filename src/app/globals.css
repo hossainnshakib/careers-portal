@@ -51,6 +51,14 @@
   --radius-2xl: var(--radius);
   --font-weight-medium: 700;
   --font-weight-semibold: 700;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.5;
+  --text-xs: 1rem;
+  --text-xs--line-height: 1.5;
+}
+
+@layer utilities {
+  .rounded { border-radius: var(--radius); }
 }
 
 body {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { submitApplication } from "@/app/(public)/jobs/[slug]/apply/actions";
 import { QuestionFields } from "@/components/form-renderer/question-fields";
@@ -26,6 +27,16 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
   const [other, setOther] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const honeypot = useRef<HTMLInputElement>(null);
+  const form = useRef<HTMLFormElement>(null);
+  const [securityActive, setSecurityActive] = useState(false);
+  useEffect(() => {
+    if (!form.current || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) { setSecurityActive(true); observer.disconnect(); }
+    }, { rootMargin: "300px" });
+    observer.observe(form.current);
+    return () => observer.disconnect();
+  }, []);
   const ensureSession = useCallback(async () => {
     if (sessionRef.current) return sessionRef.current;
     if (sessionPromise.current) return sessionPromise.current;
@@ -54,7 +65,7 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
   function fileField(label: string, slot: string, onChange: (ids: string[]) => void, accept: string[], maxMb: number, multiple = false) {
     return <UploadWidget key={`${slot}:${uploadGeneration}`} label={label} slot={slot} prepare={prepare} onChange={onChange} onBusy={busy} accept={accept} maxMb={maxMb} multiple={multiple} />;
   }
-  return <form method="post" noValidate className="space-y-8" onSubmit={handleSubmit(async () => {
+  return <form ref={form} method="post" noValidate className="space-y-8" onInputCapture={() => setSecurityActive(true)} onFocusCapture={() => setSecurityActive(true)} onSubmit={handleSubmit(async () => {
     setMessage("");
     try {
       if (uploadBusy) throw new Error("Wait for every upload to finish.");
@@ -104,8 +115,8 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
     })}
     {questions.some((q) => q.type === "date") && <p className="text-sm text-muted-foreground">Date questions with “today” bounds use the UTC calendar date.</p>}
     <div className="absolute -left-[10000px]" aria-hidden="true"><label>Company website<input ref={honeypot} name="companyWebsite" tabIndex={-1} autoComplete="off" /></label></div>
-    <section className="space-y-4 rounded-xl border border-border p-5"><h2 className="font-semibold">Your privacy</h2><p className="text-sm text-muted-foreground">Your contact details, answers and files are collected for recruitment and are accessible only to the internal hiring team. Please share only information relevant to this application.</p>
-      <TurnstileWidget key={widgetKey} onToken={setToken} />
+    <section className="space-y-4 rounded-xl border border-border p-5"><h3 className="font-bold">Your privacy</h3><p className="text-muted-foreground">Your contact details, answers and files are collected for recruitment and are accessible only to the internal hiring team. Please share only information relevant to this application. <Link href="/privacy" className="underline">Read the privacy notice.</Link></p>
+      {securityActive ? <TurnstileWidget key={widgetKey} onToken={setToken} /> : <p className="text-muted-foreground">The security check loads when you start this form.</p>}
       <button type="button" disabled={isSubmitting || uploadBusy > 0} onClick={async () => {
         await sessionPromise.current?.catch(() => undefined);
         sessionRef.current = ""; tokenRef.current = ""; setToken(""); setWidgetKey((key) => key + 1);

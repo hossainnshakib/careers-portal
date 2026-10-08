@@ -10,10 +10,10 @@ Fixen Media, Builtale, Doshok, Accoraze, Wiki Bangla, Ghora Fera, Mactie, Avagat
 
 ## Users
 - Candidate: public, anonymous, no account. Mostly on mobile, in Bangladesh. Names and answers may be in Bengali or English.
-- Admin: a few internal team members. Log in with email + password (MFA later). Everyone has the same access.
+- Admin: a few internal team members. Log in with email + password and mandatory TOTP MFA. Everyone has the same access.
 
 ## Candidate flow
-Careers home → filter by brand / department / employment type / work mode (more filters hidden behind "More filters") and search → job detail → Apply → fill the dynamic form (upload CV/files where required) → submit → success page with a reference number.
+Careers home → use the brand strip, expanded sidebar/mobile filters and search → job detail → Apply scrolls to the form on the same page → fill dynamic questions and upload required files → submit → success page with a reference number. Old `/jobs/<slug>/apply` links permanently redirect to the job's `#apply` anchor.
 
 A candidate must always see: which position, which brand(s), department, employment type, work mode, responsibilities, requirements, and the role-specific questions.
 

@@ -8,6 +8,9 @@ import { assertStartupEnvironment } from "./src/lib/app-env";
 assertStartupEnvironment(process.env, process.env.NODE_ENV);
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [{ source: "/jobs/:slug/apply", destination: "/jobs/:slug#apply", permanent: true }];
+  },
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   logging: { incomingRequests: false },
   serverExternalPackages: ["@react-pdf/renderer", "sharp"],
