@@ -5,12 +5,13 @@ import { test } from "../support/admin-fixture";
 
 test.use({ trace: "off" });
 test.skip(process.env.RUN_LIGHTHOUSE !== "1", "Explicit performance run only.");
-test("mobile Lighthouse reports for home, job detail and application", async ({ publicFixture, baseURL }) => {
+test("mobile Lighthouse reports for home, job detail and success", async ({ publicFixture, baseURL }) => {
   test.setTimeout(300000);
   const manager = process.env.npm_execpath;
   if (!manager) throw new Error("Run the performance check through pnpm.");
   const folder = "C:/Users/Hossa/AppData/Local/Temp/opencode";
-  const cases = { home: "/", job: `/jobs/${publicFixture.job.slug}`, apply: `/jobs/${publicFixture.job.slug}/apply` };
+  // Success is reference-only and deliberately performs no applicant lookup.
+  const cases = { home: "/", job: `/jobs/${publicFixture.job.slug}`, success: "/applied/APP-234567" };
   for (const [label, path] of Object.entries(cases)) {
     const args = ["dlx", "lighthouse@13.5.0", `${baseURL}${path}`, "--quiet", "--output=json", `--output-path=${folder}/lighthouse-${label}.json`, "--only-categories=performance,accessibility,best-practices,seo", "--chrome-flags=--headless --no-sandbox", "--no-enable-error-reporting"];
     const executable = manager.endsWith(".exe") ? manager : process.execPath;

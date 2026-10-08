@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
-export const metadata = { title: "Application submitted · Careers", robots: { index: false, follow: false } };
+export const metadata = { title: "Application submitted · Careers", description: "Keep your application reference for your records.", robots: { index: false, follow: false }, openGraph: { title: "Application submitted · Careers", description: "Keep your application reference for your records.", type: "website" as const } };
 export default async function AppliedPage({ params }: { params: Promise<{ reference: string }> }) {
   const parsed = z.string().regex(/^APP-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/).safeParse((await params).reference);
   if (!parsed.success) notFound();

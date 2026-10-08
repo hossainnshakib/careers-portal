@@ -19,7 +19,8 @@ async function getJob(params: Promise<{ slug: string }>) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { job } = await getJob(params);
   const url = `${getPublicEnv().NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")}/jobs/${job.slug}`;
-  return { title: `${job.title} · Careers`, description: job.summary, alternates: { canonical: url }, openGraph: { title: job.title, description: job.summary, url, type: "website" } };
+  const description = job.summary || `Explore the ${job.title} role, read the requirements and apply without an account.`;
+  return { title: `${job.title} · Careers`, description, alternates: { canonical: url }, openGraph: { title: job.title, description, url, type: "website", siteName: "Careers" } };
 }
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {
   const { job, department } = await getJob(params);

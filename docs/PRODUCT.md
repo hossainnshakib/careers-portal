@@ -56,3 +56,4 @@ Professional and branded, but simple. It must NOT look like a Google Form, a thi
 
 ## Data and privacy basics
 Applicants' personal data and CVs are sensitive. Keep it private, minimise logging, and make deletion possible (admin can delete an application and its files). A short privacy note appears on the apply form (what is collected, who sees it).
+`/privacy` describes actual collection/access/providers, manual deletion requests and current retention behavior. It is explicitly a draft for owner review: no automatic submitted-application expiry is configured, and the contact address/retention policy require owner confirmation. The reference-only success page is noindex and performs no applicant lookup.

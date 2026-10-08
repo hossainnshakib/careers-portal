@@ -5,5 +5,5 @@ import { getPublicEnv } from "@/lib/env-public";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getPublicEnv().NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   const catalog = await loadPublicCatalog();
-  return [{ url: base, changeFrequency: "daily", priority: 1 }, ...catalog.jobs.map((job) => ({ url: `${base}/jobs/${job.slug}`, changeFrequency: "daily" as const, priority: 0.8 }))];
+  return [{ url: base, changeFrequency: "daily", priority: 1 }, { url: `${base}/privacy`, changeFrequency: "monthly", priority: 0.3 }, ...catalog.jobs.map((job) => ({ url: `${base}/jobs/${job.slug}`, changeFrequency: "daily" as const, priority: 0.8 }))];
 }

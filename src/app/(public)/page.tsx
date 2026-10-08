@@ -2,6 +2,14 @@ import { loadPublicCatalog } from "@/db/queries/public-jobs";
 import { CareersHub } from "@/components/public/careers-hub";
 import { isServerEnvConfigured } from "@/lib/env";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { getPublicSiteUrl } from "@/lib/env-public";
+
+export const metadata = {
+  title: "Careers · Good work starts here",
+  description: "Browse open roles across our brands. No account needed.",
+  alternates: { canonical: getPublicSiteUrl() },
+  openGraph: { title: "Careers · Good work starts here", description: "Browse open roles across our brands. No account needed.", url: getPublicSiteUrl(), type: "website" as const },
+};
 
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   await searchParams;

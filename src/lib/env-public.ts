@@ -2,7 +2,7 @@ import "./validation/zod-csp";
 import { z } from "zod";
 
 const publicSchema = z.object({
-  NEXT_PUBLIC_SITE_URL: z.url(),
+  NEXT_PUBLIC_SITE_URL: z.url({ protocol: /^https?$/ }),
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1),
@@ -32,4 +32,17 @@ export function getPublicEnv(): PublicEnv {
 export function getSecurityEnvironment() {
   const parsed = z.url().safeParse(process.env.NEXT_PUBLIC_SUPABASE_URL);
   return { supabaseOrigin: parsed.success ? new URL(parsed.data).origin : null, development: process.env.NODE_ENV !== "production" };
+}
+
+/** Metadata and contact pages can render before database credentials exist. */
+export function getPublicSiteUrl(): string {
+  if (!process.env.NEXT_PUBLIC_SITE_URL) return "https://careers.fixenmedia.com";
+  const parsed = publicSchema.shape.NEXT_PUBLIC_SITE_URL.safeParse(process.env.NEXT_PUBLIC_SITE_URL);
+  if (!parsed.success) throw new Error("Invalid public site URL setting.");
+  return parsed.data.replace(/\/$/, "");
+}
+export function getPublicContactEmail(): string | undefined {
+  const parsed = publicSchema.shape.NEXT_PUBLIC_CONTACT_EMAIL.safeParse(process.env.NEXT_PUBLIC_CONTACT_EMAIL);
+  if (!parsed.success) throw new Error("Invalid public contact email setting.");
+  return parsed.data;
 }

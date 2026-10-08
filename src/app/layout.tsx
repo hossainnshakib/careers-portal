@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { headers } from "next/headers";
 import { NonceProvider } from "@/components/nonce-provider";
+import { getPublicSiteUrl } from "@/lib/env-public";
 
 const latin = localFont({
   src: "../../assets/fonts/Inter-Variable.ttf",
@@ -21,8 +22,11 @@ const bengali = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getPublicSiteUrl()),
   title: "Careers",
-  description: "Discover opportunities across our brands.",
+  description: "Browse open roles across our brands. No account needed.",
+  openGraph: { title: "Careers", description: "Good work starts here. Browse open roles across our brands.", siteName: "Careers", type: "website" },
+  twitter: { card: "summary" },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
