@@ -62,3 +62,4 @@ For another campaign use the direct equivalent (same guard):
 node --env-file="C:\secure\careers-production.env" --conditions=react-server --import tsx src/db/generate-links.ts october-recruitment
 ```
 Generate real links **after** base -> draft shells -> admin content/questions/brands -> publish. Check every destination before printing. A dev export uses the configured dev URL and is not a production poster kit. No QR dependency was added; use these reviewed public links in your existing poster/QR design workflow. Do not commit generated exports or the original reference/poster artwork.
+If a spreadsheet does not autodetect Bengali UTF-8 text, import the CSV explicitly as UTF-8 rather than saving it through an ANSI encoding.

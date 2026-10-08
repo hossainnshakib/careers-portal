@@ -24,5 +24,5 @@ Job/application lists and latest applications show tiny current-brand dots besid
 ## Launch preparation delivered
 RUNBOOK, VERCEL_CHECKLIST and BRAND_LINKS cover owner-only production setup, backups/restore/rollback, DNS, region/plan choices, MFA/Turnstile/private data and website/poster conventions. Separate allowed-target owner setup commands preserve dev-only guards; draft-shell and public CSV tools are implemented without schema/dependency changes. Vercel region currently matches Mumbai dev; final production choice belongs to the owner.
 
-## Verification pending
-The single full default/live/build/browser/audit/privacy/Lighthouse pass remains pending; per-workstream unit checks are not visual, hosted or production sign-off. Owner preview/real-phone/backup-restore/production-key checks remain external launch tasks.
+## Local verification complete
+The final default/live/build/browser/audit/privacy/Lighthouse pass is recorded in V1_VERIFICATION.md, including the corrected cold-catalog contention and visible card-name issue. All 17 production browser cases passed. This is not hosted or production sign-off: owner preview/real-phone/backup-restore/production-key checks remain external launch tasks.
