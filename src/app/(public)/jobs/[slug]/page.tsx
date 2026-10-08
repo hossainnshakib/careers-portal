@@ -9,6 +9,10 @@ import { humanize } from "@/lib/careers/filters";
 import { getPublicEnv } from "@/lib/env-public";
 import { ApplicationForm } from "@/components/public/application-form";
 
+// Server Actions inherit the runtime/duration of the page that renders them.
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 async function getJob(params: Promise<{ slug: string }>) {
   const parsed = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120).safeParse((await params).slug);
   if (!parsed.success) notFound();

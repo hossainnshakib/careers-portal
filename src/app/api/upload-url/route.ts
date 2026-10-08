@@ -8,6 +8,7 @@ import { jobSlugSchema, uploadRequestSchema } from "@/lib/validation/uploads";
 import { reserveUpload } from "@/lib/storage/application-files";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 const requestSchema = z.union([uploadRequestSchema, z.strictObject({ jobSlug: jobSlugSchema, turnstileToken: z.string().min(1).max(2048) })]);
 const response = (data: unknown, status = 200) => NextResponse.json(data, { status, headers: { "Cache-Control": "private, no-store" } });
 export async function POST(request: Request) {
