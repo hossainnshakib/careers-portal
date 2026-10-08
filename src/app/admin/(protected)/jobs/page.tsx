@@ -1,9 +1,10 @@
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
-import { listJobs } from "@/db/queries/jobs";
+import { listJobBrandMarks, listJobs } from "@/db/queries/jobs";
 import { listBrands } from "@/db/queries/brands";
 import { listDepartments } from "@/db/queries/departments";
 import { jobFilters } from "@/lib/validation/jobs";
+import { BrandDot } from "@/components/brand-dot";
 
 export default async function JobsPage({
   searchParams,
@@ -22,6 +23,7 @@ export default async function JobsPage({
   const rows = await listJobs(filters);
   const brands = await listBrands();
   const departments = await listDepartments();
+  const marks = await listJobBrandMarks(rows.map(row => row.id));
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
@@ -100,6 +102,7 @@ export default async function JobsPage({
               <tr>
                 <th className="p-3">Title</th>
                 <th className="p-3">Department</th>
+                <th className="p-3">Brands</th>
                 <th className="p-3">Status</th>
                 <th className="p-3">Actions</th>
               </tr>
@@ -109,6 +112,7 @@ export default async function JobsPage({
                 <tr key={row.id} className="border-t border-border">
                   <td className="p-3">{row.title}</td>
                   <td className="p-3">{row.department}</td>
+                  <td className="p-3"><div className="flex flex-wrap gap-3">{marks.filter(mark => mark.jobId === row.id).map(mark => <span key={mark.id} className="inline-flex items-center gap-2"><BrandDot color={mark.accentColor} />{mark.name}</span>)}</div></td>
                   <td className="p-3">{row.status}</td>
                   <td className="p-3">
                     <a href={`/admin/jobs/${row.id}/edit`}>Edit {row.title}</a>

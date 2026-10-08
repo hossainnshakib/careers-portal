@@ -18,5 +18,8 @@ Job pages have a small primary-first Hiring for row, sanitized role content and 
 ## Implemented — public utility pages
 Privacy describes actual collection, administrator access/downloads, providers, deletion requests and the absence of automatic submitted-application retention, prominently marked as an owner-review draft. The optional configured contact is shared with the footer. Public/root 404 and generic error recovery avoid provider diagnostics. Home/job/privacy have canonical/Open Graph basics; sitemap includes privacy and open roles, never private or success URLs. Reference-only success remains noindex, validates syntax and does not look up applicants. The final Lighthouse case now targets home/job/success.
 
+## Implemented — light admin touches
+Job/application lists and latest applications show tiny current-brand dots beside neutral text. Application snapshot names are preserved; a unique exact current-name match supplies colour, while renamed/ambiguous names use neutral fallback. Lists use bounded bulk lookups, not one query per row. The existing accent editor has a live readable-text/contrast preview. Black/white selection covers every sRGB accent at >=4.5:1; PDF branding already uses a border on a neutral header rather than text on an accent background. Fresh Doshok defaults use teal; existing stored choices are untouched.
+
 ## Pending workstreams
-Admin colour previews/dots and the launch kit are still pending. Browser verification and Lighthouse are reserved for the final V1 pass; unit checks are not visual sign-off.
+The launch kit is still pending. Browser verification and Lighthouse are reserved for the final V1 pass; unit checks are not visual sign-off.

@@ -27,7 +27,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
       {filters.cleanup && <DeleteApplicationControl applicationId={filters.cleanup} reference="the selected application" retry />}
       <ReviewFilterForm key={JSON.stringify(filters)} filters={filters} options={options} />
       <p>{result.total} applications · Page {result.page} of {result.pages}</p>
-      <ApplicationTable rows={result.rows} />
+      <ApplicationTable rows={result.rows} brandAccents={options.brands} />
       <nav aria-label="Application pages" className="flex gap-6">
         {result.page > 1 && <a href={pageUrl(result.page - 1)} className="underline">Previous page</a>}
         {result.page < result.pages && <a href={pageUrl(result.page + 1)} className="underline">Next page</a>}

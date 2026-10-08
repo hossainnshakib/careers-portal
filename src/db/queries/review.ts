@@ -21,11 +21,12 @@ export async function loadReviewDashboard() {
   const db = getDb();
   const counts = await db.select({ status: applications.status, count: count() }).from(applications).groupBy(applications.status);
   const latest = await db.select(summary).from(applications).orderBy(desc(applications.submittedAt), desc(applications.id)).limit(10);
-  return { counts, latest };
+  const brandAccents = await db.select({ name: brands.name, accentColor: brands.accentColor }).from(brands);
+  return { counts, latest, brandAccents };
 }
 export async function reviewFilterOptions() {
   const db = getDb();
-  const brandRows = await db.select({ id: brands.id, name: brands.name }).from(brands).orderBy(asc(brands.sortOrder));
+  const brandRows = await db.select({ id: brands.id, name: brands.name, accentColor: brands.accentColor }).from(brands).orderBy(asc(brands.sortOrder));
   const departmentRows = await db.select({ id: departments.id, name: departments.name }).from(departments).orderBy(asc(departments.sortOrder));
   const jobRows = await db.select({ id: jobs.id, title: jobs.title }).from(jobs).orderBy(asc(jobs.title));
   return { brands: brandRows, departments: departmentRows, jobs: jobRows };

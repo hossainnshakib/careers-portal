@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { and, asc, eq, ilike, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { applications, brands, departments, jobBrands, jobQuestions, jobs } from "@/db/schema";
 import { checkJobCommand, checkJobEdit, removedQuestionIds } from "@/lib/questions/job-policy";
@@ -48,6 +48,14 @@ export async function loadJob(id: string) {
     .where(eq(jobQuestions.jobId, id))
     .orderBy(asc(jobQuestions.sortOrder));
   return { job, links, questions };
+}
+
+/** One bounded lookup for list marks; never duplicate the job-list rows. */
+export async function listJobBrandMarks(ids: string[]) {
+  if (!ids.length) return [];
+  return getDb().select({ id: brands.id, jobId: jobBrands.jobId, name: brands.name, accentColor: brands.accentColor })
+    .from(jobBrands).innerJoin(brands, eq(brands.id, jobBrands.brandId))
+    .where(inArray(jobBrands.jobId, ids)).orderBy(desc(jobBrands.isPrimary), asc(brands.sortOrder));
 }
 
 export async function jobHasApplications(id: string) {

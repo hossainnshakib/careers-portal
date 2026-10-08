@@ -6,7 +6,7 @@ import { ApplicationTable } from "@/components/admin/application-table";
 
 export default async function DashboardPage() {
   await requireAdmin().catch(redirectAdminDenial);
-  const { counts, latest } = await loadReviewDashboard().catch(() => { throw new Error("Unable to load application dashboard."); });
+  const { counts, latest, brandAccents } = await loadReviewDashboard().catch(() => { throw new Error("Unable to load application dashboard."); });
   const total = counts.reduce((sum, row) => sum + row.count, 0);
   return (
     <section>
@@ -16,7 +16,7 @@ export default async function DashboardPage() {
           <a key={item.label} href={item.status ? `/admin/applications?status=${item.status}` : "/admin/applications"} className="rounded-xl border border-border bg-card p-5"><h2 className="capitalize">{item.label}</h2><p className="mt-2 text-3xl font-semibold">{item.count}</p></a>)}
       </div>
       <h2 className="mb-4 text-xl font-semibold">Latest applications</h2>
-      <ApplicationTable rows={latest} />
+      <ApplicationTable rows={latest} brandAccents={brandAccents} />
     </section>
   );
 }

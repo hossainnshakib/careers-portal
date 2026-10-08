@@ -11,6 +11,8 @@ import {
 } from "@/app/admin/(protected)/brands/actions";
 import type { ActionResult } from "@/lib/actions/result";
 import { BrandLogo } from "@/components/brand-logo";
+import { accentColor } from "@/lib/careers/presentation";
+import { contrastRatio, readableAccentText } from "@/lib/brands/contrast";
 
 const blank: BrandInput = {
   id: null,
@@ -30,6 +32,8 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const previewAccent = accentColor(draft.accentColor);
+  const previewText = readableAccentText(previewAccent);
   async function run(action: () => Promise<ActionResult<unknown>>, success: string) {
     setPending(true);
     setMessage("");
@@ -128,6 +132,10 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
             onChange={(event) => setDraft({ ...draft, accentColor: event.target.value })}
           />
         </label>
+        <section aria-label="Accent contrast preview" className="rounded-lg border border-border p-4" style={{ backgroundColor: previewAccent, color: previewText }}>
+          <p className="font-bold">{draft.name || "Brand colour preview"}</p>
+          <p className="mt-2">Readable text · {contrastRatio(previewAccent, previewText).toFixed(2)}:1 contrast</p>
+        </section>
         <label className="block">
           Status
           <select

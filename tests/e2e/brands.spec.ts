@@ -21,6 +21,9 @@ test("admin edits, hides, reorders and uploads a validated brand logo", async ({
   await page.getByLabel("Description", { exact: true }).fill("Test brand description");
   await page.getByLabel("Website", { exact: true }).fill("https://example.com");
   await page.getByLabel("Accent color", { exact: true }).fill("#123456");
+  const contrastPreview = page.getByRole("region", { name: "Accent contrast preview" });
+  await expect(contrastPreview).toHaveCSS("background-color", "rgb(18, 52, 86)");
+  await expect(contrastPreview).toHaveCSS("color", "rgb(255, 255, 255)");
   await page.getByRole("button", { name: "Save brand", exact: true }).click();
   const row = page.getByRole("row").filter({ hasText: name });
   await expect(row).toBeVisible();

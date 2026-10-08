@@ -48,7 +48,7 @@ Values marked **TBD** are placeholders the owner will confirm; they must be easy
 |---|---|---|---|---|---|
 | Fixen Media | `fixen-media` | creative_agency | `#EC1C24` | fixenmedia.com | TBD |
 | Builtale | `builtale` | real_estate | `#565439` | (none yet) | TBD |
-| Doshok | `doshok` | fashion | `#FE5C36` | doshok.com | TBD |
+| Doshok | `doshok` | fashion | `#2B95A0` | doshok.com | TBD |
 | Accoraze | `accoraze` | saas | `#1B2F6E` | TBD | Run your business, smarter. |
 | Wiki Bangla | `wiki-bangla` | media | `#0AA278` | wikibangla.org | Connecting the world to Bangladesh |
 | Ghora Fera | `ghora-fera` | other (TBD) | `#FE5C36` (TBD) | ghorafera.com | TBD |
