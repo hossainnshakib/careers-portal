@@ -1,4 +1,5 @@
 import type { Application } from "@/db/schema";
+import { applicationStatusLabel } from "@/lib/admin/display";
 
 const colors: Record<Application["status"], string> = {
   new: "bg-blue-100 text-blue-900",
@@ -8,7 +9,7 @@ const colors: Record<Application["status"], string> = {
   hired: "bg-green-100 text-green-900",
 };
 export function StatusBadge({ status }: { status: Application["status"] }) {
-  return <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold capitalize ${colors[status]}`}>
-    {status === "new" ? "● New" : status.replaceAll("_", " ")}
+  return <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${colors[status]}`}>
+    {status === "new" ? "● New" : applicationStatusLabel(status)}
   </span>;
 }

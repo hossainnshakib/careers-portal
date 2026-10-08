@@ -1,9 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { formatAdminDate } from "@/lib/admin/display";
 
 export function ViewerDate({ iso }: { iso: string }) {
-  const [text, setText] = useState(() => `${new Date(iso).toLocaleString("en-GB", { timeZone: "UTC" })} UTC`);
-  useEffect(() => { setText(new Date(iso).toLocaleString()); }, [iso]);
-  return <time dateTime={iso}>{text}</time>;
+  return <time dateTime={iso}>{formatAdminDate(iso)}</time>;
 }

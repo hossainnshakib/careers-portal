@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { applicationStatusEnum } from "@/db/schema";
 import type { ReviewFilters } from "@/lib/validation/review";
+import { applicationStatusLabel } from "@/lib/admin/display";
 
 export function ReviewFilterForm({ filters, options }: {
   filters: ReviewFilters;
@@ -19,7 +20,7 @@ export function ReviewFilterForm({ filters, options }: {
     <label>Brand<select aria-label="Brand" name="brand" defaultValue={filters.brand} className={input}><option value="">All brands</option>{options.brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select></label>
     <label>Department<select aria-label="Department" name="department" defaultValue={filters.department} className={input}><option value="">All departments</option>{options.departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></label>
     <label>Job<select aria-label="Job" name="job" defaultValue={filters.job} className={input}><option value="">All jobs</option>{options.jobs.map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}</select></label>
-    <label>Status<select aria-label="Status" name="status" defaultValue={filters.status} className={input}><option value="">All statuses</option>{applicationStatusEnum.enumValues.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}</select></label>
+    <label>Status<select aria-label="Status" name="status" defaultValue={filters.status} className={input}><option value="">All statuses</option>{applicationStatusEnum.enumValues.map((status) => <option key={status} value={status}>{applicationStatusLabel(status)}</option>)}</select></label>
     <label>From date<input aria-label="From date" type="date" name="from" defaultValue={filters.from} className={input} /></label>
     <label>To date<input aria-label="To date" type="date" name="to" defaultValue={filters.to} className={input} /></label>
     <label>Sort<select aria-label="Sort" name="sort" defaultValue={filters.sort} className={input}>{[["newest", "Newest first"], ["oldest", "Oldest first"], ["name_asc", "Name A–Z"], ["name_desc", "Name Z–A"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>

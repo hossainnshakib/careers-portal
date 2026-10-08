@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { applicationStatusEnum, type Application } from "@/db/schema";
 import { addNoteAction, changeStatusAction, deleteApplicationAction, deleteNoteAction } from "@/app/admin/(protected)/applications/actions";
 import type { ActionResult } from "@/lib/actions/result";
+import { applicationStatusLabel } from "@/lib/admin/display";
 
 export function ReviewControls({ applicationId, status }: { applicationId: string; status: Application["status"] }) {
   const [selected, setSelected] = useState(status);
@@ -21,7 +22,7 @@ export function ReviewControls({ applicationId, status }: { applicationId: strin
   }
   return <section aria-label="Review controls" className="space-y-5 rounded border border-border bg-card p-5">
     <form onSubmit={(event) => { event.preventDefault(); void update(() => changeStatusAction({ applicationId, status: selected }), "Status updated."); }}>
-      <label className="font-semibold">Application status<select aria-label="Application status" value={selected} onChange={(event) => setSelected(event.target.value as Application["status"])} disabled={pending} className="my-2 block w-full rounded border border-input p-2">{applicationStatusEnum.enumValues.map((value) => <option key={value} value={value}>{value.replaceAll("_", " ")}</option>)}</select></label>
+      <label className="font-semibold">Application status<select aria-label="Application status" value={selected} onChange={(event) => setSelected(event.target.value as Application["status"])} disabled={pending} className="my-2 block w-full rounded border border-input p-2">{applicationStatusEnum.enumValues.map((value) => <option key={value} value={value}>{applicationStatusLabel(value)}</option>)}</select></label>
       <button disabled={pending} className="rounded border border-border px-3 py-2 disabled:opacity-50">Update status</button>
     </form>
     <form onSubmit={(event) => { event.preventDefault(); void update(() => addNoteAction({ applicationId, note }), "Note added."); }}>
