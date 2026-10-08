@@ -16,7 +16,7 @@ export function CareersResults({ jobs, departments, onClear }: { jobs: JobCard[]
     </header>
     <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{department.roles.map(job => {
       const brands = cardBrands(job);
-      return <li key={job.id} className="min-w-0"><Link href={`/jobs/${job.slug}`} aria-label={`View role: ${job.title}`} className="block h-full rounded-lg border border-t-2 border-border bg-card p-5" style={{ borderTopColor: accentColor(brands[0]?.accentColor) }}>
+      return <li key={job.id} className="min-w-0"><Link href={`/jobs/${job.slug}`} className="block h-full rounded-lg border border-t-2 border-border bg-card p-5" style={{ borderTopColor: accentColor(brands[0]?.accentColor) }}>
         <h3 className="text-xl font-bold leading-snug">{job.title}</h3>
         <div className="my-4 flex flex-wrap gap-3">{brands.map(brand => <span key={brand.id} className="flex min-w-0 items-center gap-2">
           {brand.logoUrl && <BrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} size="mark" decorative />}

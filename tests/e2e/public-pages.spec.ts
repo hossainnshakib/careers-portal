@@ -11,6 +11,7 @@ test("public privacy, 404, metadata and reference-only success remain safe", asy
   await page.goto("/applied/APP-234567");
   await expect(page.getByRole("heading", { name: "Application submitted" })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", "Keep your application reference for your records.");
   expect((await request.get("/applied/not-a-valid-reference")).status()).toBe(404);
   const sitemap = await request.get("/sitemap.xml");
   const xml = await sitemap.text();

@@ -2,19 +2,20 @@ import "server-only";
 
 import { and, asc, eq, gt, isNull, ne, or } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { getDb } from "@/db";
 import { brands, departments, jobBrands, jobQuestions, jobs } from "@/db/schema";
 import { questionFromRow } from "@/lib/questions/from-row";
 import type { JobCard, PublicBrand } from "@/lib/careers/filters";
 
-export const loadPublicCatalog = unstable_cache(async () => {
+export const loadPublicCatalog = cache(unstable_cache(async () => {
   const db = getDb();
-  const [rows, brandRows, departmentRows, links] = await Promise.all([
-    db.select().from(jobs).where(and(eq(jobs.status, "open"), or(isNull(jobs.deadlineAt), gt(jobs.deadlineAt, new Date())))).orderBy(asc(jobs.sortOrder), asc(jobs.title)),
-    db.select().from(brands).where(eq(brands.status, "active")).orderBy(asc(brands.sortOrder)),
-    db.select().from(departments).orderBy(asc(departments.sortOrder)),
-    db.select().from(jobBrands),
-  ]);
+  // The public layout and home share this request-local memoized read. Keep
+  // its bounded statements sequential on the same pooler as admin read sets.
+  const rows = await db.select().from(jobs).where(and(eq(jobs.status, "open"), or(isNull(jobs.deadlineAt), gt(jobs.deadlineAt, new Date())))).orderBy(asc(jobs.sortOrder), asc(jobs.title));
+  const brandRows = await db.select().from(brands).where(eq(brands.status, "active")).orderBy(asc(brands.sortOrder));
+  const departmentRows = await db.select().from(departments).orderBy(asc(departments.sortOrder));
+  const links = await db.select().from(jobBrands);
   const publicBrands: PublicBrand[] = brandRows.map(({ id, name, slug, sector, logoUrl, description, accentColor, website }) =>
     ({ id, name, slug, sector, logoUrl, description, accentColor, website }));
   const cards: JobCard[] = rows.flatMap((job) => {
@@ -28,7 +29,7 @@ export const loadPublicCatalog = unstable_cache(async () => {
       brands: visible, primaryBrandId: linked.find((l) => l.isPrimary)?.brandId ?? visible[0].id }];
   });
   return { jobs: cards, brands: publicBrands, departments: departmentRows.map(({ name, slug }) => ({ name, slug })) };
-}, ["public-catalog"], { tags: ["jobs", "brands", "departments"], revalidate: 300 });
+}, ["public-catalog"], { tags: ["jobs", "brands", "departments"], revalidate: 300 }));
 
 /** Uncached authoritative definition for upload and submit authorization. */
 export async function loadApplicationJob(slug: string, db: Pick<ReturnType<typeof getDb>, "select"> = getDb()) {

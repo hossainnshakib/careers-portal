@@ -8,7 +8,7 @@ test("URL filters render without JavaScript and mobile filters use an accessible
     const serverPage = await context.newPage();
     await serverPage.goto("/?q=no-such-public-role-7b29e8&mode=remote");
     await expect(serverPage.getByRole("heading", { name: "No matching roles" })).toBeVisible();
-    await expect(serverPage.getByRole("region", { name: "Open roles", exact: true }).getByRole("link", { name: /^View role:/ })).toHaveCount(0);
+    await expect(serverPage.getByRole("region", { name: "Open roles", exact: true }).getByRole("link")).toHaveCount(0);
   } finally { await context.close(); }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
@@ -48,7 +48,7 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   await page.goto(`/?${query}`);
   await expect(page.getByRole("heading", { name: publicFixture.job.title })).toBeVisible();
   await expect(page.getByRole("button", { name: "See all brands" })).toBeVisible();
-  await page.getByRole("link", { name: `View role: ${publicFixture.job.title}`, exact: true }).click();
+  await page.getByRole("region", { name: "Open roles", exact: true }).getByRole("link").filter({ hasText: publicFixture.job.title }).click();
   await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}$`), { timeout: 30000 });
   await page.reload(); // Exercise the JSON-backed detail cache with a non-null deadline.
   await expect(page.locator('script[src*="challenges.cloudflare.com/turnstile/"]')).toHaveCount(0);
