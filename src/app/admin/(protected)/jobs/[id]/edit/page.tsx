@@ -15,12 +15,12 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   if (!parsed.success) notFound();
   const loaded = await loadJob(parsed.data);
   if (!loaded) notFound();
-  const [brands, departments, sources, hasApplications] = await Promise.all([
-    listBrands(),
-    listDepartments(),
-    listJobs(jobFilters.parse({})),
-    jobHasApplications(parsed.data),
-  ]);
+  // Serialize the small catalog reads: concurrent mixed-protocol reads stalled
+  // the shared transaction pooler during production browser verification.
+  const brands = await listBrands();
+  const departments = await listDepartments();
+  const sources = await listJobs(jobFilters.parse({}));
+  const hasApplications = await jobHasApplications(parsed.data);
   const { job, links, questions } = loaded;
   const initial: JobInput = {
     id: job.id,

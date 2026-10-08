@@ -19,11 +19,9 @@ export default async function JobsPage({
     q: params.q ?? "",
   });
   const filters = parsed.success ? parsed.data : jobFilters.parse({});
-  const [rows, brands, departments] = await Promise.all([
-    listJobs(filters),
-    listBrands(),
-    listDepartments(),
-  ]);
+  const rows = await listJobs(filters);
+  const brands = await listBrands();
+  const departments = await listDepartments();
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">

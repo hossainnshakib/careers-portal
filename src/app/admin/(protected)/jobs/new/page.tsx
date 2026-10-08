@@ -8,11 +8,9 @@ import { JobEditor } from "@/components/admin/job-editor";
 
 export default async function NewJobPage() {
   await requireAdmin().catch(redirectAdminDenial);
-  const [brands, departments, sources] = await Promise.all([
-    listBrands(),
-    listDepartments(),
-    listJobs(jobFilters.parse({})),
-  ]);
+  const brands = await listBrands();
+  const departments = await listDepartments();
+  const sources = await listJobs(jobFilters.parse({}));
   const initial: JobInput = {
     id: null,
     title: "",
