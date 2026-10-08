@@ -50,7 +50,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Live auth, review and anonymous RLS checks
-        run: pnpm exec vitest run src/lib/auth/requireAdmin.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/queries/review.live.test.ts src/db/rls.test.ts
+        run: pnpm exec vitest run src/lib/auth/requireAdmin.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/queries/review.live.test.ts src/db/rls.test.ts src/db/auth-config.live.test.ts
+        env:
+          RUN_SUPABASE_TESTS: '1'
+      - name: Isolated crashed browser account recovery
+        run: pnpm exec vitest run src/db/queries/test-accounts.live.test.ts
         env:
           RUN_SUPABASE_TESTS: '1'
       - run: pnpm exec playwright install --with-deps chromium
