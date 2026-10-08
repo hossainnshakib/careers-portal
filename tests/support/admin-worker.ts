@@ -37,9 +37,9 @@ async function cleanup() {
         if (error) throw new Error("Auth cleanup failed");
       }
     }
-    process.send?.({ type: "cleaned" });
+    if (process.connected) process.send?.({ type: "cleaned" });
   } catch {
-    process.send?.({ type: "error", message: "Test fixture cleanup failed." });
+    if (process.connected) process.send?.({ type: "error", message: "Test fixture cleanup failed." });
   } finally {
     await closeDb();
     process.exit();
@@ -68,6 +68,8 @@ process.on("message", (message) => {
 process.on("disconnect", () => {
   void cleanup();
 });
+process.on("SIGINT", () => { void cleanup(); });
+process.on("SIGTERM", () => { void cleanup(); });
 
 async function setup() {
   requireDevTarget();
