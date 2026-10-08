@@ -64,6 +64,10 @@ Index: `(application_id)`.
 ## Storage buckets
 - `applications` — PRIVATE. Paths: `pending/<sessionId>/<uuid>-<name>` then `applications/<applicationId>/<uuid>-<name>`.
 - `brand-assets` — PUBLIC (non-sensitive logos only). Accept svg/png/webp, ≤ 1 MB. Reject SVGs that contain `<script`, `on*=` attributes, `javascript:` URLs or `<foreignObject`.
+- Uploaded SVGs use a conservative passive-shape/attribute allowlist: gradients, local ID references, masks and clipping are supported; scripts, events, style elements/attributes, external resources, entities/DTDs, images, animation and unknown markup are rejected. Raster uploads must match their PNG/WebP signatures. Admin-uploaded filenames are not used as storage paths; the server chooses a UUID path.
+- Phase 2 uses private `pending/<sessionId>/reservations/<uploadId>.json` metadata sidecars to bind opaque upload tokens to server-approved slots and files. These are server-created objects, never signed upload destinations. The eight-file limit counts reservations to include uploads still in progress. Session UUIDs become application UUIDs for idempotent submission; no schema extension is needed. Final attachment paths remain `applications/<applicationId>/<uploadId>-<sanitisedName>`.
+- Phase 3 deletion temporarily moves attached objects into PRIVATE `deleting/<applicationId>/<attachmentId>` paths. UUIDs come from locked DB rows. Original paths remain in attachment rows until the application deletion commits; failed transactions restore the objects. After commit, the objects are removed, with an authorized retry if Storage cleanup fails. No new table, status or migration is needed.
+- Phase 4 adds bounded image decoding to brand-logo upload validation and rasterizes SVG logos for PDF use. Auth MFA factors live in Supabase Auth, not application tables. PDF exports read immutable application/answer snapshots and do not persist generated files. No new migration is required.
 
 ## Migrations notes
 - A migration enables RLS on all tables, creates the partial unique index for the primary brand, and creates the slug-immutability trigger.

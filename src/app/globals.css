@@ -20,7 +20,7 @@
   --border: #e3e2da;
   --input: #e3e2da;
   --ring: #42493c;
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -44,9 +44,21 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --font-sans: var(--font-latin), var(--font-bengali), sans-serif;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --font-weight-medium: 700;
+  --font-weight-semibold: 700;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.5;
+  --text-xs: 1rem;
+  --text-xs--line-height: 1.5;
+}
+
+@layer utilities {
+  .rounded { border-radius: var(--radius); }
 }
 
 body {
@@ -59,4 +71,15 @@ body {
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 3px;
+}
+
+.roles-marquee-track { animation: roles-marquee 90s linear infinite; }
+.roles-marquee:hover .roles-marquee-track,
+.roles-marquee:focus-within .roles-marquee-track { animation-play-state: paused; }
+@keyframes roles-marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .roles-marquee { overflow: visible; }
+  .roles-marquee-track { animation: none; width: 100%; }
+  .roles-marquee-track > ul { flex-wrap: wrap; }
+  .roles-marquee-copy { display: none; }
 }

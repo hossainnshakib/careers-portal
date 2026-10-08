@@ -1,0 +1,57 @@
+import { expect, test } from "../support/admin-fixture";
+import { completeAdminMfa } from "../support/mfa-login";
+test.use({ trace: "off" });
+
+test("admin filters, reviews Bengali snapshots, changes status, notes, downloads and deletes an application", async ({ page, reviewFixture }) => {
+  test.setTimeout(180000);
+  const fixture = reviewFixture.review;
+  await page.goto("/admin/login");
+  await page.getByLabel("Email", { exact: true }).fill(reviewFixture.email);
+  await page.getByLabel("Password", { exact: true }).fill(reviewFixture.password);
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await completeAdminMfa(page, reviewFixture);
+  await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
+  await expect(page.getByRole("heading", { name: "Latest applications" })).toBeVisible();
+  await page.goto("/admin/applications");
+  await page.getByLabel("Brand", { exact: true }).selectOption(fixture.brandId);
+  await page.getByLabel("Status", { exact: true }).selectOption("new");
+  await page.getByLabel("Search name/email", { exact: true }).fill(fixture.email);
+  await page.getByRole("button", { name: "Filter applications" }).click();
+  await expect(page).toHaveURL(/status=new/);
+  await expect(page.getByRole("table").getByRole("row")).toHaveCount(2);
+  const candidate = page.getByRole("link", { name: "শ্রী ক্ষিতিশ", exact: true });
+  await candidate.focus(); await candidate.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`/admin/applications/${fixture.applicationId}$`));
+  await expect(page.getByText("আমি সৃজনশীল কাজে অভিজ্ঞ।", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Previous applications from this email" })).toBeVisible();
+  await expect(page.locator('a[href^="javascript:"]')).toHaveCount(0);
+  await page.getByLabel("Application status", { exact: true }).selectOption("shortlisted");
+  await page.getByRole("button", { name: "Update status" }).click();
+  await expect(page.getByRole("region", { name: "Status history" })).toContainText("shortlisted");
+  await expect(page.getByRole("region", { name: "Status history" })).toContainText(reviewFixture.email);
+  const note = "শ্রীময়ীর কাজ পর্যালোচনা করা হয়েছে।";
+  await page.getByLabel("Internal note", { exact: true }).fill(note);
+  await page.getByRole("button", { name: "Add note", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Internal notes", exact: true })).toContainText(note);
+  const [download] = await Promise.all([
+    page.waitForEvent("download"), page.getByRole("link", { name: "Download CV", exact: true }).click(),
+  ]);
+  expect(download.suggestedFilename()).toBe("review-cv.pdf"); expect(await download.failure()).toBeNull();
+  await expect(page.getByRole("checkbox", { name: "Include internal notes in PDF" })).not.toBeChecked();
+  const [pdf] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "Download Profile PDF", exact: true }).click()]);
+  expect(pdf.suggestedFilename().startsWith(fixture.reference)).toBe(true); expect(await pdf.failure()).toBeNull();
+  const stream = await pdf.createReadStream(); const chunks: Buffer[] = [];
+  for await (const chunk of stream!) chunks.push(Buffer.from(chunk));
+  expect(Buffer.concat(chunks).subarray(0, 5).toString()).toBe("%PDF-");
+  expect(await reviewFixture.verifyReview(fixture.applicationId)).toMatchObject({ exists: true, status: "shortlisted", events: 2, notes: 1, attachments: 1, answers: 2, filesAbsent: false });
+  await page.getByRole("button", { name: "Delete own note", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Internal notes", exact: true })).not.toContainText(note);
+  await page.getByRole("button", { name: "Delete application", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Confirm application deletion" });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "Confirm deletion" }).click();
+  await expect(page).toHaveURL(/\/admin\/applications$/, { timeout: 30000 });
+  expect(await reviewFixture.verifyReview(fixture.applicationId)).toMatchObject({ exists: false, notes: 0, events: 0, attachments: 0, answers: 0, filesAbsent: true });
+  await page.goto(`/admin/applications/${fixture.previousId}`);
+  await expect(page.getByRole("heading", { name: "শ্রী ক্ষিতিশ", exact: true })).toBeVisible();
+});

@@ -28,7 +28,7 @@ export const brandData = [
     name: "Doshok",
     slug: "doshok",
     sector: "fashion",
-    accentColor: "#FE5C36",
+    accentColor: "#2B95A0",
     website: "https://doshok.com",
     description: "",
   },

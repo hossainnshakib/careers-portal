@@ -11,6 +11,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "smoke": "node --import tsx scripts/smoke.ts",
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -25,7 +26,14 @@
     "db:reset:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/reset.ts",
     "storage:ensure": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/storage/ensure-buckets.ts",
     "db:counts": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/counts.ts",
-    "db:keepalive:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/keepalive.ts"
+    "db:keepalive:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/keepalive.ts",
+    "admin:add": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/auth/admin-add.ts",
+    "admin:add:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/auth/admin-add-owner.ts",
+    "storage:ensure:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/storage/ensure-buckets-owner.ts",
+    "db:migrate:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/owner-setup.ts migrate",
+    "seed:base:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/owner-setup.ts base",
+    "jobs:seed-shells": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/job-shells.ts",
+    "links:generate": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/generate-links.ts"
   },
   "dependencies": {
     "@react-pdf/renderer": "4.9.0",
@@ -33,10 +41,15 @@
     "@supabase/supabase-js": "2.117.2",
     "drizzle-orm": "0.45.3",
     "next": "15.5.27",
+    "nuqs": "^2.10.1",
     "postgres": "3.4.9",
     "react": "19.1.9",
     "react-dom": "19.1.9",
+    "react-hook-form": "^7.89.0",
+    "react-markdown": "^10.1.0",
+    "rehype-sanitize": "^6.0.0",
     "server-only": "0.0.1",
+    "sharp": "0.35.5",
     "zod": "4.6.5"
   },
   "devDependencies": {

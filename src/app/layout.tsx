@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { headers } from "next/headers";
+import { NonceProvider } from "@/components/nonce-provider";
+import { getPublicSiteUrl } from "@/lib/env-public";
 
 const latin = localFont({
   src: "../../assets/fonts/Inter-Variable.ttf",
@@ -15,27 +18,26 @@ const bengali = localFont({
   ],
   variable: "--font-bengali",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getPublicSiteUrl()),
   title: "Careers",
-  description: "Discover opportunities across our brands.",
+  description: "Browse open roles across our brands. No account needed.",
+  openGraph: { title: "Careers", description: "Good work starts here. Browse open roles across our brands.", siteName: "Careers", type: "website" },
+  twitter: { card: "summary" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="en">
       <body className={`${latin.variable} ${bengali.variable} antialiased`}>
         <a href="#main" className="sr-only focus:not-sr-only focus:block focus:p-4">
           Skip to content
         </a>
-        <header className="border-b border-border bg-card">
-          <div className="mx-auto max-w-6xl px-6 py-5 text-lg font-semibold">Careers</div>
-        </header>
-        {children}
-        <footer className="mx-auto max-w-6xl px-6 py-8 text-sm text-muted-foreground">
-          Find your next opportunity.
-        </footer>
+        <NonceProvider nonce={nonce}>{children}</NonceProvider>
       </body>
     </html>
   );

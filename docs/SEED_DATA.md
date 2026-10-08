@@ -48,7 +48,7 @@ Values marked **TBD** are placeholders the owner will confirm; they must be easy
 |---|---|---|---|---|---|
 | Fixen Media | `fixen-media` | creative_agency | `#EC1C24` | fixenmedia.com | TBD |
 | Builtale | `builtale` | real_estate | `#565439` | (none yet) | TBD |
-| Doshok | `doshok` | fashion | `#FE5C36` | doshok.com | TBD |
+| Doshok | `doshok` | fashion | `#2B95A0` | doshok.com | TBD |
 | Accoraze | `accoraze` | saas | `#1B2F6E` | TBD | Run your business, smarter. |
 | Wiki Bangla | `wiki-bangla` | media | `#0AA278` | wikibangla.org | Connecting the world to Bangladesh |
 | Ghora Fera | `ghora-fera` | other (TBD) | `#FE5C36` (TBD) | ghorafera.com | TBD |
@@ -81,6 +81,7 @@ Use the real 19 titles/slugs above but assign DEMO values chosen to exercise eve
 - Levels: set `experience_level` on about half; `creative-director-production-lead` is `senior`.
 - Content: summary (≤ 200 chars), markdown description with a list, responsibilities, requirements. Include a few markdown edge cases (links, bold, a list) and one attempted raw HTML snippet to prove it is NOT rendered.
 - Questions (Phase 1 onward): the seven standard questions above plus 4–8 role-specific questions per job from sensible templates per department (for example Web: GitHub URL, best live projects (long text), React/Next.js experience (single choice)). `web-developer` must exercise ALL eleven question types overall, required and optional mixed, including a file_upload question. Each question has a section. Include radio/dropdown choice presentation and "Other" examples across the demo jobs.
+- Existing Phase 0 demo questions are upgraded only when the job timestamps and every deterministic question field still match the original seed. Three overlapping legacy questions are archived, never removed from historical answers; standard copies and a role question are inserted, and unchanged choice configs are extended. Edited or already-upgraded jobs are preserved. A fresh Phase 1 seed has 212 active questions; an untouched upgraded Phase 0 database has 269 total questions including 57 archived legacy definitions.
 
 ## Demo applicants (for `seed:demo` only)
 - About 30 applications across open and closed jobs, spread over several weeks, statuses covering all five values.
@@ -91,3 +92,4 @@ Use the real 19 titles/slugs above but assign DEMO values chosen to exercise eve
 
 ## Real data later
 When the owner moves to real data: run `seed:base` on production, then create the 19 jobs through the admin panel (or a one-off script that creates them as `draft` shells with the final titles/slugs/departments and no demo content). Keep slugs exactly as above.
+The implemented owner path is `seed:base:owner` -> `jobs:seed-shells` -> fill content/questions/brands/type/mode in admin -> publish. The shell CLI requires the independent allowed-target gate and preserves every existing slug. It inserts blank drafts only, with editable full-time/onsite and CV-required initial values demanded by the current schema; these are not approved role choices. No applicants, questions or job-brand links are seeded. `links:generate` exports only actual public roles after publication.
