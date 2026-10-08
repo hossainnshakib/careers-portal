@@ -171,5 +171,11 @@ Remove-Item Env:RUN_LIGHTHOUSE
 Remove-Item Env:PLAYWRIGHT_PRODUCTION
 ```
 It runs Lighthouse 13.5.0 via pnpm dlx against anonymous public pages, writes reports into the approved temporary directory, and passes no application credentials to the tool. Scores are local simulated-mobile measurements, not deployed field metrics.
+For V1 the three measured pages are home, job detail and reference-only success (the success reference is synthetic by syntax and performs no applicant lookup).
 
 For CI's guarded push-only cloud/browser job, set `DEV_TESTS_ENABLED=true` and these **dev-only** repository secrets: `DEV_SUPABASE_PROJECT_REF`, `DEV_DATABASE_URL`, `DEV_DIRECT_URL`, `DEV_SUPABASE_URL`, `DEV_SUPABASE_ANON_KEY`, `DEV_SUPABASE_SERVICE_ROLE_KEY`, `DEV_UPLOAD_SESSION_SECRET`, `DEV_CRON_SECRET`. CI uses official Turnstile test keys and `APP_ENV=development`. No production credentials belong in this job. It runs cloud tests before browsers and serializes shared-dev jobs. No GitHub run was triggered by this phase.
+
+## V1 owner tools
+See RUNBOOK for production commands; the agent never executes them. `jobs:seed-shells`, `links:generate`, and the `:owner` variants require ALLOWED_SUPABASE_PROJECT_REF independently pinned alongside the dev identifier, API host and both DB URLs. For dev execution the allowed pin must equal the existing dev pin and APP_ENV must remain development. Do not change the pin to get a failed check to pass.
+
+Ordinary `pnpm admin:add <email>` and `pnpm storage:ensure` still refuse non-dev targets. Owner production account setup takes ADMIN_EMAIL from a private external env file and never prints it. Generated CSV stays in ignored exports; no new dependencies or QR tool were added.

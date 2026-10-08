@@ -92,3 +92,4 @@ Use the real 19 titles/slugs above but assign DEMO values chosen to exercise eve
 
 ## Real data later
 When the owner moves to real data: run `seed:base` on production, then create the 19 jobs through the admin panel (or a one-off script that creates them as `draft` shells with the final titles/slugs/departments and no demo content). Keep slugs exactly as above.
+The implemented owner path is `seed:base:owner` -> `jobs:seed-shells` -> fill content/questions/brands/type/mode in admin -> publish. The shell CLI requires the independent allowed-target gate and preserves every existing slug. It inserts blank drafts only, with editable full-time/onsite and CV-required initial values demanded by the current schema; these are not approved role choices. No applicants, questions or job-brand links are seeded. `links:generate` exports only actual public roles after publication.

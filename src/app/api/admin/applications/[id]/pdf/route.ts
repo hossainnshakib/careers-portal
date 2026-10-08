@@ -5,6 +5,7 @@ import { loadPdfProfile } from "@/db/queries/pdf";
 import { renderProfilePdf } from "@/lib/pdf/render";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 const headers = { "Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer" };
 const querySchema = z.strictObject({

@@ -21,5 +21,8 @@ Privacy describes actual collection, administrator access/downloads, providers, 
 ## Implemented — light admin touches
 Job/application lists and latest applications show tiny current-brand dots beside neutral text. Application snapshot names are preserved; a unique exact current-name match supplies colour, while renamed/ambiguous names use neutral fallback. Lists use bounded bulk lookups, not one query per row. The existing accent editor has a live readable-text/contrast preview. Black/white selection covers every sRGB accent at >=4.5:1; PDF branding already uses a border on a neutral header rather than text on an accent background. Fresh Doshok defaults use teal; existing stored choices are untouched.
 
-## Pending workstreams
-The launch kit is still pending. Browser verification and Lighthouse are reserved for the final V1 pass; unit checks are not visual sign-off.
+## Launch preparation delivered
+RUNBOOK, VERCEL_CHECKLIST and BRAND_LINKS cover owner-only production setup, backups/restore/rollback, DNS, region/plan choices, MFA/Turnstile/private data and website/poster conventions. Separate allowed-target owner setup commands preserve dev-only guards; draft-shell and public CSV tools are implemented without schema/dependency changes. Vercel region currently matches Mumbai dev; final production choice belongs to the owner.
+
+## Verification pending
+The single full default/live/build/browser/audit/privacy/Lighthouse pass remains pending; per-workstream unit checks are not visual, hosted or production sign-off. Owner preview/real-phone/backup-restore/production-key checks remain external launch tasks.
