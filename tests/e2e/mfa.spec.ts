@@ -12,6 +12,7 @@ test("password-only admins are gated, enroll TOTP, then gain protected access un
   await page.getByRole("button", { name: "Sign in", exact: true }).click(); await expect(page).toHaveURL(/\/admin\/mfa$/, { timeout: 30000 });
   const denied = await page.request.get("/api/admin/attachments/00000000-0000-4000-8000-000000000001", { maxRedirects: 0 }); expect(denied.status()).toBe(403);
   await page.goto("/admin/jobs"); await expect(page).toHaveURL(/\/admin\/mfa$/);
+  await page.getByLabel("Administrator password", { exact: true }).fill(mfaAccount.password);
   await page.getByRole("button", { name: "Set up authenticator" }).click();
   const key = page.getByTestId("mfa-setup-key"); await expect(key).toBeVisible();
   const secret = (await key.textContent())!;

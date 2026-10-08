@@ -7,14 +7,19 @@ export function MfaForm({ factors }: { factors: { id: string; name: string }[] }
   const [factorId, setFactorId] = useState(factors[0]?.id ?? "");
   const [setup, setSetup] = useState<{ qr: string; secret: string } | null>(null);
   const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   return <section className="space-y-5 rounded border border-border bg-card p-5">
-    {!factorId && <><p>Install an authenticator app, then scan the QR code and verify its six-digit code.</p><button disabled={pending} className="rounded border border-border p-3" onClick={async () => {
-      setPending(true); setMessage("");
-      try { const result = await enrollMfaAction({}); if (result.ok) { setFactorId(result.data.factorId); setSetup(result.data); } else setMessage(result.error); }
+    {!factorId && <form method="post" onSubmit={async (event) => {
+      event.preventDefault(); const capturedPassword = password; setPassword(""); setPending(true); setMessage("");
+      try { const result = await enrollMfaAction({ password: capturedPassword }); if (result.ok) { setFactorId(result.data.factorId); setSetup(result.data); } else setMessage(result.error); }
       catch { setMessage("Unable to start enrollment."); } finally { setPending(false); }
-    }}>Set up authenticator</button></>}
+    }} className="space-y-4">
+      <p>Install an authenticator app, then scan the QR code and verify its six-digit code.</p>
+      <label>Administrator password<input aria-label="Administrator password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 block w-full rounded border border-input p-3" /></label>
+      <button disabled={pending || !password} className="rounded border border-border p-3 disabled:opacity-50">Set up authenticator</button>
+    </form>}
     {setup && <><div className="flex justify-center bg-white p-4">
       {/* QR SVG is trusted Auth output and is displayed as an image, never inline markup. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
