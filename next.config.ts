@@ -1,4 +1,11 @@
 import type { NextConfig } from "next";
+import { assertStartupEnvironment } from "./src/lib/app-env";
+
+// `next build` and `next start` both run with NODE_ENV=production and load the
+// .env files before this file, so a production build with APP_ENV missing or
+// unrecognised (or Turnstile test keys configured) fails here with a clear
+// message instead of silently falling back to development.
+assertStartupEnvironment(process.env, process.env.NODE_ENV);
 
 const nextConfig: NextConfig = {
   experimental: { serverActions: { bodySizeLimit: "2mb" } },

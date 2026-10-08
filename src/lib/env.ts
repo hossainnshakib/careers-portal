@@ -1,6 +1,7 @@
 import "server-only";
 
 import { z } from "zod";
+import { appEnvSchema } from "./app-env";
 export { getPublicEnv } from "./env-public";
 export type { PublicEnv } from "./env-public";
 
@@ -12,11 +13,13 @@ export type { PublicEnv } from "./env-public";
  *   Every `NEXT_PUBLIC_*` value is referenced literally so Next.js can inline it at build time.
  *
  * Validation is lazy (first access) but strict: a missing or malformed value throws a single
- * message listing everything that is wrong. Nothing reads `process.env` directly elsewhere.
+ * message listing everything that is wrong. The production startup check is eager:
+ * `next.config.ts` calls `assertStartupEnvironment` (from `./app-env`) so a production build
+ * fails at startup instead of lazily on the first request.
  */
 
 const serverSchema = z.object({
-  APP_ENV: z.enum(["development", "production"]).default("development"),
+  APP_ENV: appEnvSchema,
   DEV_SUPABASE_PROJECT_REF: z.preprocess(
     (value) => (value === "" ? undefined : value),
     z
@@ -70,10 +73,6 @@ export function getDevDatabaseEnv() {
     .pick({ APP_ENV: true, DEV_SUPABASE_PROJECT_REF: true, DATABASE_URL: true, DIRECT_URL: true })
     .extend({ NEXT_PUBLIC_SUPABASE_URL: z.url() });
   return parseOrThrow(schema, process.env, "dev database");
-}
-
-export function getAppEnv() {
-  return z.enum(["development", "production"]).default("development").parse(process.env.APP_ENV);
 }
 
 /** Non-throwing check for pages that should show a friendly "not configured" state. */
