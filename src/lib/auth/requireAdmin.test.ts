@@ -1,15 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const mocks = vi.hoisted(() => ({ getUser: vi.fn(), getClaims: vi.fn(), findAdmin: vi.fn() }));
+const mocks = vi.hoisted(() => ({ getUser: vi.fn(), getClaims: vi.fn(), findAdmin: vi.fn(), currentSession: vi.fn() }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({
   createSupabaseServerClient: async () => ({ auth: { getUser: mocks.getUser, getClaims: mocks.getClaims } }),
 }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
+vi.mock("@/db/queries/admin-sessions", () => ({ hasCurrentAdminSession: mocks.currentSession }));
 import { AdminAccessError, AdminMfaRequiredError, requireAdmin } from "./requireAdmin";
 
 describe("requireAdmin", () => {
-  beforeEach(() => { vi.resetAllMocks(); mocks.getClaims.mockResolvedValue({ data: { claims: { sub: "user-id", aal: "aal2" } }, error: null }); });
+  beforeEach(() => { vi.resetAllMocks(); mocks.currentSession.mockResolvedValue(true); mocks.getClaims.mockResolvedValue({ data: { claims: { sub: "user-id", aal: "aal2", session_id: "00000000-0000-4000-8000-000000000001" } }, error: null }); });
   it("denies unauthenticated requests before accessing the allowlist", async () => {
     mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
     await expect(requireAdmin()).rejects.toBeInstanceOf(AdminAccessError);
@@ -59,6 +60,12 @@ describe("requireAdmin", () => {
     }
     mocks.findAdmin.mockResolvedValue(null);
     await expect(requireAdmin({ allowMfaSetup: true })).rejects.toBeInstanceOf(AdminAccessError);
+  });
+  it("rejects an expired/revoked provider session without relaxing AAL2", async () => {
+    mocks.getUser.mockResolvedValue({ data: { user: { id: "user-id", email: "test@example.com" } }, error: null });
+    mocks.findAdmin.mockResolvedValue({ userId: "user-id" }); mocks.currentSession.mockResolvedValue(false);
+    await expect(requireAdmin()).rejects.toBeInstanceOf(AdminAccessError);
+    expect(mocks.currentSession).toHaveBeenCalledWith("00000000-0000-4000-8000-000000000001", "user-id");
   });
   it("discards raw provider/DB exception details instead of attaching them to framework errors", async () => {
     mocks.getUser.mockResolvedValue({ data: { user: { id: "user-id", email: "test@example.com" } }, error: null });

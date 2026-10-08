@@ -19,6 +19,10 @@ export async function login(input: unknown): Promise<AuthResult> {
   const parsed = credentials.safeParse(input);
   if (!parsed.success) return invalid;
   try {
+    try {
+      const existing = await requireAdmin();
+      if (existing.email.toLowerCase() === parsed.data.email.toLowerCase()) return { ok: true, data: null };
+    } catch (error) { if (!(error instanceof AdminAccessError)) return invalid; }
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     if (error) return invalid;

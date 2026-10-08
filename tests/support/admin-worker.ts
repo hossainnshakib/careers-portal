@@ -1,7 +1,9 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { closeDb } from "../../src/db/index";
+import { closeDb, getDb } from "../../src/db/index";
+import { sql } from "drizzle-orm";
+import { z } from "zod";
 import { addAdmin } from "../../src/db/queries/admins";
 import { removeTestFixture } from "../../src/db/queries/test-fixtures";
 import { requireDevTarget } from "../../src/db/seed/require-dev";
@@ -15,6 +17,7 @@ import { createPublicTestJob, verifyPublicTestApplication } from "../../src/db/q
 import { removePublicTestFiles } from "../../src/lib/storage/public-test-files";
 import { createReviewTestApplication, reviewTestApplicationIds, verifyReviewTestRows } from "../../src/db/queries/review-test-fixture";
 import { removeReviewTestFiles, reviewTestFilesAbsent } from "../../src/lib/storage/review-test-files";
+import { adminCookieOptions, adminCookieWriteOptions } from "../../src/lib/auth/session-cookies";
 
 let userId: string | undefined;
 const prefix = `e2e-${randomUUID().replaceAll("-", "")}-`;
@@ -22,6 +25,44 @@ let cleaning = false;
 const publicSessions = new Set<string>();
 const reviewIds = new Set<string>();
 let authenticatorSecret = "";
+let authenticatorFactorId = "";
+async function sessionOperation(message: { type: string; cookies?: unknown }) {
+  requireDevTarget(); if (!userId) throw new Error("Fixture identity missing");
+  const management = createSupabaseAdminClient();
+  if (message.type === "change-password") {
+    const password = `${randomUUID()}Aa9!`;
+    if ((await management.auth.admin.updateUserById(userId, { password })).error) throw new Error("Fixture password update failed");
+    process.send?.({ type: "password-changed", password }); return;
+  }
+  if (message.type === "remove-factor") {
+    if (!authenticatorFactorId || (await management.auth.admin.mfa.deleteFactor({ userId, id: authenticatorFactorId })).error) throw new Error("Fixture factor update failed");
+    process.send?.({ type: "factor-removed" }); return;
+  }
+  const cookies = z.array(z.object({ name: z.string(), value: z.string() })).parse(JSON.parse(z.string().parse(message.cookies)));
+  const env = getPublicEnv();
+  const client = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    cookieOptions: adminCookieOptions(false), cookies: { getAll: () => cookies, setAll: values => {
+      for (const cookie of values) {
+        const index = cookies.findIndex(item => item.name === cookie.name);
+        if (index >= 0) cookies.splice(index, 1);
+        if (cookie.options.maxAge !== 0) cookies.push({ name: cookie.name, value: cookie.value });
+      }
+    } },
+  });
+  const user = await client.auth.getUser(); if (user.error || user.data.user?.id !== userId) throw new Error("Fixture session mismatch");
+  if (message.type === "refresh-session") {
+    const refreshed = await client.auth.refreshSession(); if (refreshed.error) throw new Error("Fixture refresh failed");
+    const claims = await client.auth.getClaims(); if (claims.error || claims.data?.claims.sub !== userId || claims.data.claims.aal !== "aal2") throw new Error("Refresh lost verified assurance");
+    const options = adminCookieWriteOptions({}, false);
+    process.send?.({ type: "session-refreshed", cookies: JSON.stringify(cookies.map(cookie => ({ ...cookie, domain: "localhost", path: "/", httpOnly: true, secure: false, sameSite: "Lax", expires: Math.floor(options.expires!.getTime() / 1000) }))) });
+  } else {
+    const claims = await client.auth.getClaims();
+    const sessionId = z.uuid().parse(claims.data?.claims.session_id);
+    if (claims.error || claims.data?.claims.sub !== userId) throw new Error("Fixture claims mismatch");
+    await getDb().execute(sql`update auth.sessions set created_at = now() - interval '31 days' where id = ${sessionId}::uuid and user_id = ${userId}::uuid`);
+    process.send?.({ type: "session-expired" });
+  }
+}
 async function cleanup() {
   if (cleaning) return;
   cleaning = true;
@@ -49,6 +90,9 @@ process.on("message", (message) => {
   if (message === "cleanup") void cleanup();
   if (message === "otp" && authenticatorSecret) void freshTestTotp(authenticatorSecret).then((code) => process.send?.({ type: "otp", code }));
   if (message && typeof message === "object" && "type" in message) {
+    if (typeof message.type === "string" && ["refresh-session", "expire-session", "change-password", "remove-factor"].includes(message.type)) {
+      void sessionOperation(message as { type: string; cookies?: unknown }).catch(() => process.send?.({ type: "error", message: "Guarded fixture session operation failed." }));
+    }
     if (message.type === "session" && "id" in message && typeof message.id === "string") publicSessions.add(message.id);
     if (message.type === "verify" && "reference" in message && typeof message.reference === "string") {
       verifyPublicTestApplication(prefix, message.reference).then(
@@ -91,6 +135,7 @@ async function setup() {
     const factor = await client.auth.mfa.enroll({ factorType: "totp", friendlyName: "Fixture authenticator" });
     if (factor.error) throw new Error("MFA fixture enrollment failed");
     authenticatorSecret = factor.data.totp.secret;
+    authenticatorFactorId = factor.data.id;
     if ((await client.auth.mfa.challengeAndVerify({ factorId: factor.data.id, code: await freshTestTotp(authenticatorSecret) })).error) throw new Error("MFA fixture verification failed");
   }
   const cookies: { name: string; value: string }[] = [];

@@ -2,6 +2,8 @@ import "server-only";
 
 import { findAdmin } from "@/db/queries/admins";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { z } from "zod";
+import { hasCurrentAdminSession } from "@/db/queries/admin-sessions";
 
 export class AdminAccessError extends Error {
   constructor() {
@@ -26,6 +28,9 @@ export async function requireAdmin(options?: { allowMfaSetup: true }): Promise<{
     const claims = await supabase.auth.getClaims().catch(() => { throw new Error("Unable to verify administrator security."); });
     if (claims.error || !claims.data || claims.data.claims.sub !== data.user.id) throw new AdminAccessError();
     if (claims.data.claims.aal !== "aal2") throw new AdminMfaRequiredError();
+    const session = z.uuid().safeParse(claims.data.claims.session_id);
+    if (!session.success || !(await hasCurrentAdminSession(session.data, data.user.id).catch(() => { throw new Error("Unable to verify administrator session lifetime."); })))
+      throw new AdminAccessError();
   }
   return { userId: data.user.id, email: data.user.email };
 }
