@@ -133,8 +133,19 @@ Remove-Item Env:RUN_SUPABASE_TESTS
 Run cloud integration and browser suites separately. These checks create only dev-guarded, random-prefix fixtures/temporary Auth accounts and remove their rows and original/quarantined objects afterward. Credentials travel over IPC, and traces are disabled. See `docs/PHASE3_VERIFICATION.md` for results. Candidate Profile PDF is now available from the profile sidebar.
 
 ## Phase 4 MFA and PDF walkthrough
+### Browser fixture recovery
+Browser suites run a dev-pinned fixture-account sweep before and after execution, in addition to per-fixture `finally` teardown and child disconnect/signal handling. Run only one suite at a time against the shared dev project (CI already serializes runs). After a hard crash, rerun the suite or run:
+
+```powershell
+node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/sweep-test-accounts.ts
+```
+
+The sweep removes only the reserved `e2e-<32hex>-admin@example.com` accounts and their allowlist rows; output is counts only. Its recovery/preservation check is `src/db/queries/test-accounts.live.test.ts` with `RUN_SUPABASE_TESTS=1`; run that file alone, after other live checks have finished, because it sweeps their shared fixture namespace. CI has a separate sequential step for it. The one-time `orphans` argument removes only allowlist rows with no Auth user and explicitly protects the owner row.
+
+`APP_ENV` must be explicit. Production build/start refuses missing, empty or unknown settings and refuses Cloudflare's test site keys/secrets outside `APP_ENV=development`. Production-mode e2e is the acceptance gate; development-mode editor cold compilation is not a hardening target.
+
 1. Sign in with your allowlisted admin email/password. Password-only sessions go to `/admin/mfa` and cannot read applications, mutate jobs, or download files/PDFs.
-2. Choose **Set up authenticator**, scan the QR code in a TOTP app (or enter the setup key), then enter its six-digit code. On later sign-ins use **Authenticator code**. Setup secrets/codes are never logged; keep your authenticator available.
+2. Choose **Set up authenticator**, re-enter your administrator password (enrollment is refused to a session that only holds a stolen cookie), scan the QR code in a TOTP app (or enter the setup key), then enter its six-digit code. On later sign-ins use **Authenticator code**. Setup secrets/codes are never logged; keep your authenticator available.
 3. If a verified authenticator is lost, the portal owner must recover the account manually in the Supabase dashboard: revoke sessions/remove the lost factor, then have that admin sign in and enroll again. The app provides no password-only bypass or verified-factor reset endpoint. Never share recovery credentials in chat or git.
 4. Open an applicant profile and choose **Download Profile PDF**. Notes are excluded by default. Select **Include internal notes in PDF** only when intended. CV and attachments remain separate downloads.
 5. Review English/Bengali samples and long/many-answer pagination. Temporary files are listed in `docs/PHASE4_VERIFICATION.md`.

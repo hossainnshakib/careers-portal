@@ -19,6 +19,7 @@ No separate backend. Brand websites (WordPress, Laravel, Next.js, SaaS) are NOT 
 ## Environment variables
 See `.env.example`. Parse and validate them in `src/lib/env.ts` with Zod, split into server and public parts. The service-role key, `DATABASE_URL`, `UPLOAD_SESSION_SECRET`, `CRON_SECRET`, `TURNSTILE_SECRET_KEY` are server-only.
 Two DB URLs: `DATABASE_URL` (runtime, pooler, `prepare: false`) and `DIRECT_URL` (drizzle-kit migrations). If the direct connection fails because the network has no IPv6, use the Supabase session-pooler connection string for `DIRECT_URL`.
+`APP_ENV` is required explicitly; it has no development default. `next.config.ts` validates it before production build/start and rejects documented Turnstile test site keys and secrets unless `APP_ENV=development`. Request verification independently checks both key values and fails closed for invalid environments.
 
 ## Folder structure
 ```
@@ -61,15 +62,16 @@ docs/  prompts/  design/
 ```
 
 ## Auth
-- Supabase Auth, email + password, sign-ups disabled. Admins are created manually in the Supabase dashboard and then added to `admin_users` with `pnpm admin:add <email>`.
+- Supabase Auth, email + password, sign-ups disabled (asserted by the opt-in `src/db/auth-config.live.test.ts`). Admins are created manually in the Supabase dashboard and then added to `admin_users` with `pnpm admin:add <email>`.
 - `requireAdmin()`: create server Supabase client, `getUser()`, reject if no user, look up `admin_users`, reject if missing, then require cryptographically verified JWT claims with the same subject and `aal2`. Returns `{ userId, email }`. Call it at the top of every admin layout/page, server action, and route handler. The SDK's session-derived assurance metadata is not used for authorization.
-- Public `/admin/login` is the necessary authentication entry exception. Login verifies credentials and then calls `requireAdmin({ allowMfaSetup: true })` before success; non-allowlisted sessions are removed. That narrow first-factor exception is used only by login/logout and `/admin/mfa` enrollment/challenge surfaces, which still verify getUser and the DB allowlist. Discovery tests forbid it elsewhere. Protected pages redirect MFA denials to `/admin/mfa`, other expected denials to login; actions/API handlers fail closed with generic responses.
+- Public `/admin/login` is the necessary authentication entry exception. Login verifies credentials and then calls `requireAdmin({ allowMfaSetup: true })` before success; non-allowlisted sessions are removed. That narrow first-factor exception is used only by login/logout and `/admin/mfa` enrollment/challenge surfaces, which still verify getUser and the DB allowlist, and enrollment additionally re-verifies the administrator password against the verified session subject so a stolen first-factor cookie cannot install an authenticator. Discovery tests forbid it elsewhere. Protected pages redirect MFA denials to `/admin/mfa`, other expected denials to login; actions/API handlers fail closed with generic responses.
 - Phase 3 adds the applicant profile, four review actions and the attachment handler to that discovery registry. Middleware redirects anonymous admin pages but lets admin API requests reach their own authorization gate; the attachment handler returns a generic 403 rather than a login redirect for denied callers.
 - `middleware.ts` only redirects unauthenticated requests for `/admin/*` to `/admin/login` as a convenience.
-- TOTP MFA is mandatory for every admin under explicit owner approval. Setup reloads owned factors, never replaces a verified factor from a password-only session, and verifies AAL2 after a successful challenge. There is no application MFA bypass or self-service verified-factor removal/recovery endpoint. Auth cookies are HttpOnly/SameSite=Lax and Secure when the configured site uses HTTPS.
+- TOTP MFA is mandatory for every admin under explicit owner approval. Setup first re-verifies the administrator password, then reloads owned factors and never replaces a verified factor, and verifies AAL2 after a successful challenge. There is no application MFA bypass or self-service verified-factor removal/recovery endpoint. Auth cookies are HttpOnly/SameSite=Lax and Secure when the configured site uses HTTPS.
 
 ## Data access
 - All reads/writes through Drizzle in `src/db/queries/*`, server-side only. RLS is enabled on every table with no policies, so the browser-exposed anon key cannot read anything even if misused.
+- Job pages serialize their small catalog reads to avoid the observed concurrent-read transaction-pooler stall under production-mode browser tests; the runtime driver's five-connection pool and `prepare: false` remain unchanged.
 - Phase 1 catalog/job mutations use transaction advisory locks for shared ordering/slug writes. Job saves lock/reload the existing row, questions and application existence before applying ownership, immutable slug and archive rules.
 - Use transactions for multi-row writes (application submit, job save with brands + questions).
 
@@ -109,7 +111,7 @@ Small admin logos are separate: authenticated server actions accept SVG/PNG/WebP
 Phase 4 adds bounded sharp decoding (20-million input pixel limit) before publishing a logo, rejecting malformed header-shaped rasters and huge SVG canvases. Candidate files retain bounded first-byte signature checks and download-only access; no antivirus/full Office/archive parsing is claimed.
 
 ## Submit flow (`submitApplication` server action)
-Verify Turnstile → load job (must be `open`) and its non-archived questions → validate with `buildSchema` → verify uploads (above) → generate unique `reference` (`APP-` + 6 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ`, retry on collision) → transaction: insert `applications` (with job title, slug, brand names, department name snapshots), `application_answers` (with label/type/section snapshots), `attachments` → redirect to `/applied/<reference>`. Honeypot field and a minimum fill time are checked as well.
+Verify Turnstile → load job (must be `open`) and its non-archived questions → validate with `buildSchema` and reject submissions whose written answers exceed the shared 50,000-character budget (`validateApplicationAnswers`, which bounds storage, list reads and PDF rendering together) → verify uploads (above) → generate unique `reference` (`APP-` + 6 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ`, retry on collision) → transaction: insert `applications` (with job title, slug, brand names, department name snapshots), `application_answers` (with label/type/section snapshots), `attachments` → redirect to `/applied/<reference>`. Honeypot field and a minimum fill time are checked as well.
 
 The public acknowledgement validates and displays only the reference syntax. It performs no applicant lookup and exposes no applicant details or confirmation that a reference exists; it is excluded from indexing. Actual receipt is established by the successful submission redirect.
 
@@ -134,11 +136,11 @@ The handler validates the attachment UUID, uses private/no-store and no-referrer
 - PDF branding resolves the stored primary-brand name only when it matches exactly one current brand. A renamed/ambiguous historic brand gets its snapshot name and neutral accent instead of another brand's logo. Uploaded logos are read only from the configured public brand-assets bucket; static logos come only from the local brands directory. sharp converts trusted/validated logos to bounded PNGs; SVG markup is never inlined.
 - A "Profile + CV" package can be added later (merge with `pdf-lib` when the CV is a PDF, otherwise ZIP).
 
-## Cron (`/api/cron/daily`)
-`vercel.json` schedules one daily call. The route requires `Authorization: Bearer ${CRON_SECRET}`. It (1) deletes stale `pending/` uploads, (2) runs a trivial DB query as keep-alive. Returns counts only, no PII.
+## Cron (`/api/cron/daily`) — Phase 5, not yet implemented
+Planned design: `vercel.json` schedules one daily call. The route requires `Authorization: Bearer ${CRON_SECRET}`. It (1) deletes stale `pending/` uploads, (2) runs a trivial DB query as keep-alive. Returns counts only, no PII. Neither the route nor `vercel.json` exists yet: `CRON_SECRET` is validated by `src/lib/env.ts` but nothing consumes it, so abandoned `pending/` uploads currently accumulate until cleanup is added or an admin removes them.
 
 ## Security model summary
-- Public surface: careers pages, apply page, success page, `POST /api/upload-url`, health, sitemap. Everything else requires `requireAdmin()` or `CRON_SECRET`.
+- Public surface: careers pages, apply page, success page, `POST /api/upload-url`, health, sitemap. Everything else requires `requireAdmin()`; the planned `/api/cron/daily` will require `CRON_SECRET` instead.
 - Anti-abuse on public endpoints: Turnstile, honeypot, min fill time, upload-session limits. Add an IP-hash rate limit only if abuse actually appears.
 - Security headers are implemented: nosniff, referrer policy, DENY/frame-ancestors, permissions restrictions and enforced document CSP with 128-bit random script nonces. Self, Turnstile and the configured Supabase origins are allowed; fonts are self-hosted. Inline styles remain permitted for existing React/Tailwind branding styles. Unsafe-eval and development WebSocket allowances are development-only, not enabled in production. Flight/action fetches do not replace an existing document's CSP; the client nonce provider retains that document's initial nonce.
 - Zod uses its supported interpreter mode before shared client schemas are constructed, avoiding CSP-violating JIT/eval probes. Direct imports retain tree-shaking. Bengali website fonts remain available on demand without unnecessary preload on English-first pages.
