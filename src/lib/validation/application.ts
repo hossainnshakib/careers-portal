@@ -21,8 +21,24 @@ export const applicationInputSchema = z.strictObject({
   cv: z.array(z.uuid()).max(1),
   answers: z.record(z.uuid(), z.unknown()),
 });
+/**
+ * Total characters accepted across every answer of one submission.
+ *
+ * Per-question limits alone allow 100 questions x 10,000 characters to reach the
+ * 2 MB action body limit, so storage, list queries and PDF rendering all inherit
+ * an unbounded payload from a single anonymous submission.
+ */
+export const maxAnswerCharacters = 50_000;
+function answerCharacters(value: unknown): number {
+  if (typeof value === "string") return value.length;
+  if (Array.isArray(value)) return value.reduce((total, item) => total + answerCharacters(item), 0);
+  return 0;
+}
 export function validateApplicationAnswers(questions: QuestionDefinition[], answers: unknown, cv: string[], cvRequired: boolean) {
   const parsed = buildSchema(questions).parse(answers);
+  const characters = Object.values(parsed).reduce<number>((total, value) => total + answerCharacters(value), 0);
+  if (characters > maxAnswerCharacters)
+    throw new Error(`Keep all of your written answers together under ${maxAnswerCharacters} characters.`);
   if (cvRequired && cv.length !== 1) throw new Error("CV required");
   const files = [...cv.map((id) => ({ id, slot: "cv" }))];
   for (const q of questions) {
