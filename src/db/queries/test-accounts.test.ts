@@ -8,11 +8,15 @@ vi.mock("@/lib/supabase/admin", () => ({ createSupabaseAdminClient: () => ({ aut
 import { removeOrphanAdmins, sweepTestAccounts } from "./test-accounts";
 
 beforeEach(() => { vi.resetAllMocks(); });
-it.each([removeOrphanAdmins, sweepTestAccounts])("refuses cleanup before database or Auth access when the dev guard fails", async (run) => {
+it.each([() => removeOrphanAdmins("protected@example.com"), sweepTestAccounts])("refuses cleanup before database or Auth access when the dev guard fails", async (run) => {
   mocks.guard.mockImplementation(() => { throw new Error("Refused dev target"); });
   await expect(run()).rejects.toThrow();
   expect(mocks.execute).not.toHaveBeenCalled();
   expect(mocks.deleteUser).not.toHaveBeenCalled();
+});
+it("requires a valid protection address before deleting any orphan rows", async () => {
+  await expect(removeOrphanAdmins("")).rejects.toThrow();
+  expect(mocks.execute).not.toHaveBeenCalled();
 });
 it("reports a failed Auth deletion rather than silently succeeding", async () => {
   mocks.execute.mockResolvedValueOnce([{ id: "fixture-user" }]).mockResolvedValueOnce([]);

@@ -1,16 +1,16 @@
 import "server-only";
 
 import { sql } from "drizzle-orm";
+import { z } from "zod";
 import { getDb } from "@/db";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /** Only accounts in the browser fixture's reserved namespace. */
 const fixtureEmailPattern = "^e2e-[a-f0-9]{32}-admin@example[.]com$";
-const protectedOwnerEmail = "hossainnurshakib@gmail.com";
-
-export async function removeOrphanAdmins(): Promise<number> {
+export async function removeOrphanAdmins(protectedEmail: string): Promise<number> {
   requireDevTarget();
+  const protectedOwnerEmail = z.email().parse(protectedEmail).toLowerCase();
   const removed = await getDb().execute(sql`
     delete from public.admin_users a
     where not exists (select 1 from auth.users u where u.id = a.user_id)
@@ -28,9 +28,7 @@ export async function sweepTestAccounts() {
   `);
   const removed = await getDb().execute(sql`
     delete from public.admin_users a
-    where lower(a.email) <> ${protectedOwnerEmail}
-      and (a.email ~ ${fixtureEmailPattern}
-        or exists (select 1 from auth.users u where u.id = a.user_id and u.email ~ ${fixtureEmailPattern}))
+    where a.email ~ ${fixtureEmailPattern}
     returning 1 as removed
   `);
   const client = createSupabaseAdminClient();

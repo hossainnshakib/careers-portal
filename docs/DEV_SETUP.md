@@ -140,7 +140,7 @@ Browser suites run a dev-pinned fixture-account sweep before and after execution
 node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/sweep-test-accounts.ts
 ```
 
-The sweep removes only the reserved `e2e-<32hex>-admin@example.com` accounts and their allowlist rows; output is counts only. Its recovery/preservation check is `src/db/queries/test-accounts.live.test.ts` with `RUN_SUPABASE_TESTS=1`; run that file alone, after other live checks have finished, because it sweeps their shared fixture namespace. CI has a separate sequential step for it. The one-time `orphans` argument removes only allowlist rows with no Auth user and explicitly protects the owner row.
+The sweep removes only the reserved `e2e-<32hex>-admin@example.com` accounts and their allowlist rows; output is counts only. Its recovery/preservation check is `src/db/queries/test-accounts.live.test.ts` with `RUN_SUPABASE_TESTS=1`; run that file alone, after other live checks have finished, because it sweeps their shared fixture namespace. CI has a separate sequential step for it. The one-time `orphans` argument removes only allowlist rows with no Auth user and requires `DEV_PROTECTED_ADMIN_EMAIL` in the local environment to protect the owner row; the address must be valid and is never printed.
 
 `APP_ENV` must be explicit. Production build/start refuses missing, empty or unknown settings and refuses Cloudflare's test site keys/secrets outside `APP_ENV=development`. Production-mode e2e is the acceptance gate; development-mode editor cold compilation is not a hardening target.
 
