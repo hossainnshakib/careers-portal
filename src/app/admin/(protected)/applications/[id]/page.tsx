@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/admin/status-badge";
 import { ViewerDate } from "@/components/admin/viewer-date";
 import { DeleteApplicationControl, DeleteNoteButton, ReviewControls } from "@/components/admin/review-controls";
 import { PdfDownload } from "@/components/admin/pdf-download";
+import { displayAnswerValue } from "@/lib/questions/display-answer";
 
 export default async function ApplicantPage({ params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin().catch(redirectAdminDenial);
@@ -25,9 +26,9 @@ export default async function ApplicantPage({ params }: { params: Promise<{ id: 
     }
     const url = answer.typeSnapshot === "url" ? safeApplicantUrl(answer.value) : null;
     if (url) return <a className="break-all underline" href={url} target="_blank" rel="noopener noreferrer nofollow">{url}</a>;
-    if (typeof answer.value === "boolean") return <p>{answer.value ? "Yes" : "No"}</p>;
-    if (Array.isArray(answer.value)) return <ul className="list-inside list-disc">{answer.value.map((value, index) => <li key={index}>{typeof value === "string" || typeof value === "number" ? value : "Unsupported answer"}</li>)}</ul>;
-    return <p className="whitespace-pre-wrap break-words">{typeof answer.value === "string" || typeof answer.value === "number" ? answer.value : "No answer"}</p>;
+    const value = displayAnswerValue(answer);
+    if (Array.isArray(value)) return <ul className="list-inside list-disc">{value.map((item, index) => <li key={index}>{item}</li>)}</ul>;
+    return <p className="whitespace-pre-wrap break-words">{value}</p>;
   }
   return <section className="space-y-6">
     {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
