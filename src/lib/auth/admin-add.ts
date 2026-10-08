@@ -6,9 +6,17 @@ import { closeDb } from "@/db";
 import { addAdmin } from "@/db/queries/admins";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { requireAllowedTarget } from "@/lib/maintenance/require-target";
 
 export async function allowlistExistingAdmin(emailInput: unknown) {
   requireDevTarget();
+  await allowlistUser(emailInput);
+}
+export async function allowlistExistingAdminForOwner(emailInput: unknown) {
+  requireAllowedTarget();
+  await allowlistUser(emailInput);
+}
+async function allowlistUser(emailInput: unknown) {
   const email = z.email().max(254).parse(emailInput).toLowerCase();
   const supabase = createSupabaseAdminClient();
   // Auth has no lookup-by-email API. Traverse every page rather than assume
@@ -22,7 +30,7 @@ export async function allowlistExistingAdmin(emailInput: unknown) {
       return;
     }
     if (data.users.length < 100)
-      throw new Error("Create the Auth user in the dev dashboard first.");
+      throw new Error("Create the Auth user in the target dashboard first.");
   }
 }
 

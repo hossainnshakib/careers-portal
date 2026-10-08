@@ -4,15 +4,17 @@ const mocks = vi.hoisted(() => ({
   requireDevTarget: vi.fn(),
   addAdmin: vi.fn(),
   listUsers: vi.fn(),
+  requireAllowedTarget: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/db", () => ({ closeDb: vi.fn() }));
 vi.mock("@/db/queries/admins", () => ({ addAdmin: mocks.addAdmin }));
 vi.mock("@/db/seed/require-dev", () => ({ requireDevTarget: mocks.requireDevTarget }));
+vi.mock("@/lib/maintenance/require-target", () => ({ requireAllowedTarget: mocks.requireAllowedTarget }));
 vi.mock("@/lib/supabase/admin", () => ({
   createSupabaseAdminClient: () => ({ auth: { admin: { listUsers: mocks.listUsers } } }),
 }));
-import { allowlistExistingAdmin } from "./admin-add";
+import { allowlistExistingAdmin, allowlistExistingAdminForOwner } from "./admin-add";
 
 describe("admin:add", () => {
   beforeEach(() => vi.resetAllMocks());
@@ -27,6 +29,11 @@ describe("admin:add", () => {
   it("validates the email", async () => {
     await expect(allowlistExistingAdmin("invalid")).rejects.toThrow();
     expect(mocks.listUsers).not.toHaveBeenCalled();
+  });
+  it("owner setup refuses before Auth access when its independent target guard fails", async () => {
+    mocks.requireAllowedTarget.mockImplementation(() => { throw new Error("Refused owner target"); });
+    await expect(allowlistExistingAdminForOwner("test@example.com")).rejects.toThrow("Refused owner target");
+    expect(mocks.listUsers).not.toHaveBeenCalled(); expect(mocks.addAdmin).not.toHaveBeenCalled();
   });
   it("searches past the first page and normalizes the email", async () => {
     mocks.listUsers.mockResolvedValueOnce({

@@ -75,6 +75,13 @@ export function getDevDatabaseEnv() {
   return parseOrThrow(schema, process.env, "dev database");
 }
 
+/** Independent minimal target settings for owner-run setup commands. */
+export function getOwnerMaintenanceEnv() {
+  const schema = serverSchema.pick({ APP_ENV: true, DEV_SUPABASE_PROJECT_REF: true, DATABASE_URL: true, DIRECT_URL: true })
+    .extend({ ALLOWED_SUPABASE_PROJECT_REF: z.string().regex(/^[a-z0-9]{20}$/), NEXT_PUBLIC_SUPABASE_URL: z.url() });
+  return parseOrThrow(schema, process.env, "owner maintenance");
+}
+
 /** Non-throwing check for pages that should show a friendly "not configured" state. */
 export function isServerEnvConfigured(): boolean {
   try {
