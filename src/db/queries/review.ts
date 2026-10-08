@@ -19,19 +19,15 @@ const summary = {
 };
 export async function loadReviewDashboard() {
   const db = getDb();
-  const [counts, latest] = await Promise.all([
-    db.select({ status: applications.status, count: count() }).from(applications).groupBy(applications.status),
-    db.select(summary).from(applications).orderBy(desc(applications.submittedAt), desc(applications.id)).limit(10),
-  ]);
+  const counts = await db.select({ status: applications.status, count: count() }).from(applications).groupBy(applications.status);
+  const latest = await db.select(summary).from(applications).orderBy(desc(applications.submittedAt), desc(applications.id)).limit(10);
   return { counts, latest };
 }
 export async function reviewFilterOptions() {
   const db = getDb();
-  const [brandRows, departmentRows, jobRows] = await Promise.all([
-    db.select({ id: brands.id, name: brands.name }).from(brands).orderBy(asc(brands.sortOrder)),
-    db.select({ id: departments.id, name: departments.name }).from(departments).orderBy(asc(departments.sortOrder)),
-    db.select({ id: jobs.id, title: jobs.title }).from(jobs).orderBy(asc(jobs.title)),
-  ]);
+  const brandRows = await db.select({ id: brands.id, name: brands.name }).from(brands).orderBy(asc(brands.sortOrder));
+  const departmentRows = await db.select({ id: departments.id, name: departments.name }).from(departments).orderBy(asc(departments.sortOrder));
+  const jobRows = await db.select({ id: jobs.id, title: jobs.title }).from(jobs).orderBy(asc(jobs.title));
   return { brands: brandRows, departments: departmentRows, jobs: jobRows };
 }
 export async function listReviewApplications(filters: ReviewFilters) {
@@ -60,16 +56,15 @@ export async function loadReviewProfile(id: string) {
   const db = getDb();
   const [application] = await db.select().from(applications).where(eq(applications.id, id)).limit(1);
   if (!application) return null;
-  const [answers, files, notes, events, previous] = await Promise.all([
-    db.select().from(applicationAnswers).where(eq(applicationAnswers.applicationId, id)).orderBy(asc(applicationAnswers.sortOrder)),
-    db.select().from(attachments).where(eq(attachments.applicationId, id)).orderBy(asc(attachments.createdAt)),
-    db.select().from(adminNotes).where(eq(adminNotes.applicationId, id)).orderBy(desc(adminNotes.createdAt), desc(adminNotes.id)),
-    db.select({ event: applicationStatusEvents, adminEmail: adminUsers.email }).from(applicationStatusEvents)
+  // Keep this bounded read set sequential for the shared transaction pooler.
+  const answers = await db.select().from(applicationAnswers).where(eq(applicationAnswers.applicationId, id)).orderBy(asc(applicationAnswers.sortOrder));
+  const files = await db.select().from(attachments).where(eq(attachments.applicationId, id)).orderBy(asc(attachments.createdAt));
+  const notes = await db.select().from(adminNotes).where(eq(adminNotes.applicationId, id)).orderBy(desc(adminNotes.createdAt), desc(adminNotes.id));
+  const events = await db.select({ event: applicationStatusEvents, adminEmail: adminUsers.email }).from(applicationStatusEvents)
       .leftJoin(adminUsers, eq(adminUsers.userId, applicationStatusEvents.adminUserId))
-      .where(eq(applicationStatusEvents.applicationId, id)).orderBy(desc(applicationStatusEvents.createdAt), desc(applicationStatusEvents.id)),
-    db.select(summary).from(applications).where(and(ne(applications.id, id), sql`lower(${applications.email}) = lower(${application.email})`))
-      .orderBy(desc(applications.submittedAt)).limit(50),
-  ]);
+      .where(eq(applicationStatusEvents.applicationId, id)).orderBy(desc(applicationStatusEvents.createdAt), desc(applicationStatusEvents.id));
+  const previous = await db.select(summary).from(applications).where(and(ne(applications.id, id), sql`lower(${applications.email}) = lower(${application.email})`))
+      .orderBy(desc(applications.submittedAt)).limit(50);
   return { application, answers, files, notes, events: events.map(({ event, adminEmail }) => ({ ...event, adminEmail })), previous };
 }
 async function lockedApplication(tx: ApplicationTransaction, id: string) {

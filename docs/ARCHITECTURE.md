@@ -71,7 +71,7 @@ docs/  prompts/  design/
 
 ## Data access
 - All reads/writes through Drizzle in `src/db/queries/*`, server-side only. RLS is enabled on every table with no policies, so the browser-exposed anon key cannot read anything even if misused.
-- Job pages serialize their small catalog reads to avoid the observed concurrent-read transaction-pooler stall under production-mode browser tests; the runtime driver's five-connection pool and `prepare: false` remain unchanged.
+- Job pages and review/PDF loaders serialize their small bounded read sets to avoid the observed concurrent-read transaction-pooler stall under production-mode browser tests; the runtime driver's five-connection pool and `prepare: false` remain unchanged.
 - Phase 1 catalog/job mutations use transaction advisory locks for shared ordering/slug writes. Job saves lock/reload the existing row, questions and application existence before applying ownership, immutable slug and archive rules.
 - Use transactions for multi-row writes (application submit, job save with brands + questions).
 
