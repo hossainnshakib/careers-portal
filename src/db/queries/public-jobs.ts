@@ -15,8 +15,8 @@ export const loadPublicCatalog = unstable_cache(async () => {
     db.select().from(departments).orderBy(asc(departments.sortOrder)),
     db.select().from(jobBrands),
   ]);
-  const publicBrands: PublicBrand[] = brandRows.map(({ id, name, slug, sector, logoUrl, description, accentColor }) =>
-    ({ id, name, slug, sector, logoUrl, description, accentColor }));
+  const publicBrands: PublicBrand[] = brandRows.map(({ id, name, slug, sector, logoUrl, description, accentColor, website }) =>
+    ({ id, name, slug, sector, logoUrl, description, accentColor, website }));
   const cards: JobCard[] = rows.flatMap((job) => {
     const department = departmentRows.find((d) => d.id === job.departmentId);
     const linked = links.filter((l) => l.jobId === job.id);

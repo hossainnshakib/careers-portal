@@ -8,10 +8,14 @@ test("URL filters render without JavaScript and mobile filters use an accessible
     const serverPage = await context.newPage();
     await serverPage.goto("/?q=no-such-public-role-7b29e8&mode=remote");
     await expect(serverPage.getByRole("heading", { name: "No matching roles" })).toBeVisible();
-    await expect(serverPage.getByRole("link", { name: "View role", exact: true })).toHaveCount(0);
+    await expect(serverPage.getByRole("region", { name: "Open roles", exact: true }).getByRole("link", { name: /^View role:/ })).toHaveCount(0);
   } finally { await context.close(); }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".roles-marquee-track")).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".roles-marquee-copy")).not.toBeVisible();
+  await expect(page.getByRole("complementary", { name: "Job filters" }).getByRole("checkbox", { name: /^Brand/ })).toHaveCount(0);
   await page.getByRole("button", { name: "Filters", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Job filters" });
   await expect(dialog).toBeVisible();
@@ -42,7 +46,7 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   await page.goto(`/?${query}`);
   await expect(page.getByRole("heading", { name: publicFixture.job.title })).toBeVisible();
   await expect(page.getByRole("button", { name: "See all brands" })).toBeVisible();
-  await page.getByRole("link", { name: "View role", exact: true }).click();
+  await page.getByRole("link", { name: `View role: ${publicFixture.job.title}`, exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}$`), { timeout: 30000 });
   await page.reload(); // Exercise the JSON-backed detail cache with a non-null deadline.
   let uploadSessionToken = "";

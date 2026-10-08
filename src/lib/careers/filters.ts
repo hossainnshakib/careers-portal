@@ -15,6 +15,7 @@ export type Filters = Record<FilterKey, string[]> & { q: string };
 export type PublicBrand = {
   id: string; name: string; slug: string; sector: string; logoUrl: string | null;
   description: string; accentColor: string | null;
+  website?: string | null;
 };
 export type JobCard = {
   id: string; title: string; slug: string; summary: string; employmentType: string;

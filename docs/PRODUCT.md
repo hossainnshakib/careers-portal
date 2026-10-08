@@ -18,13 +18,14 @@ Careers home → filter by brand / department / employment type / work mode (mor
 A candidate must always see: which position, which brand(s), department, employment type, work mode, responsibilities, requirements, and the role-specific questions.
 
 ## Filters on the careers home
-- Brand (multi), Department (multi), Employment type (multi), Work mode (multi), Sector (multi, derived from the brand's sector), Experience level (optional), free-text search over job title.
+- Brand (multi) in one logo strip; Department, Employment type, Work mode, Sector (derived from the brand's sector), and Experience level in an expanded desktop sidebar/mobile sheet; free-text search over job title above results.
 - Within one filter: OR. Across filters: AND.
 - All filter state lives in the URL (`?brand=doshok,builtale&dept=design-creative&type=part_time&q=editor`). Brand-site links rely on this.
-- When `?brand=<slug>` is present with a single brand, show that brand's logo and description at the top with a "See all brands" link.
+- When `?brand=<slug>` is present, preselect its strip toggle. A single selection can show its description and "See all brands" control without duplicating a large brand header.
 - Show counts next to options; hide or grey options with zero open jobs.
-- Mobile: filters open in a bottom sheet. Selected filters show as removable chips with "Clear all".
+- Mobile: non-brand filters open in a bottom sheet; brand toggles remain in the snap-scrolling strip. Selected filters/search show removable chips and clear controls.
 - Role is not a filter. The job title is the role; use search plus department.
+- Results are grouped in department sort order, all expanded, with numbered headings/counts and whole-card links in a responsive 3/2/1 grid. The hero counts open roles/active brands from the cached live catalog and links real job titles in a reduced-motion-safe CSS marquee. Applying steps, FAQ, brand website links and an environment-configured contact placeholder complete the public home.
 
 ## Admin capabilities (V1)
 - Brands: create/edit/hide, logo upload, sector, accent colour, sort order.

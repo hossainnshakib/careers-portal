@@ -33,13 +33,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <a href="#main" className="sr-only focus:not-sr-only focus:block focus:p-4">
           Skip to content
         </a>
-        <header className="border-b border-border bg-card">
-          <div className="mx-auto max-w-6xl px-6 py-5 text-lg font-semibold">Careers</div>
-        </header>
         <NonceProvider nonce={nonce}>{children}</NonceProvider>
-        <footer className="mx-auto max-w-6xl px-6 py-8 text-sm text-muted-foreground">
-          Find your next opportunity.
-        </footer>
       </body>
     </html>
   );
