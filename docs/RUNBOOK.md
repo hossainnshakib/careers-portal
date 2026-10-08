@@ -35,7 +35,7 @@ Owner commands require explicit APP_ENV, both pins, the API host and **both DB U
 | NEXT_PUBLIC_SUPABASE_URL | Public API URL for the correct project |
 | NEXT_PUBLIC_SUPABASE_ANON_KEY | Public anon/publishable browser key; RLS denies app-table access |
 | NEXT_PUBLIC_TURNSTILE_SITE_KEY | Public real production widget key |
-| NEXT_PUBLIC_SITE_URL | Public `https://careers.fixenmedia.com`, without a trailing path |
+| NEXT_PUBLIC_SITE_URL | Optional public origin override; set the approved canonical custom origin for launch, omit on previews for Vercel system-hostname fallback |
 | NEXT_PUBLIC_CONTACT_EMAIL | Optional public recruitment/deletion contact; confirm before launch |
 | DEV_SUPABASE_PROJECT_REF | Dev identifier for guards; no dev secret in production |
 | ALLOWED_SUPABASE_PROJECT_REF, ADMIN_EMAIL | Owner-maintenance file only; not needed by deployed request handlers |
@@ -71,7 +71,7 @@ The command only allowlists an existing Auth identity and prints no address. It 
 Import the repository as a Next.js project; use Node 24, pnpm install with the frozen lockfile, `pnpm build`, and the standard Next output. Review `VERCEL_CHECKLIST.md` before deploying.
 V1 code is on **v1-complete**; main still contains only the foundation. Deploy that branch as a dev-backed preview first. After owner review, either merge through your own release process or consciously select the reviewed branch as Vercel's Production Branch. Do not assume the repository's current default branch already contains V1. The agent does not merge or update main.
 
-For a preview use **dev-only** project credentials, APP_ENV=development, the dev pin, a correct preview NEXT_PUBLIC_SITE_URL and documented Turnstile dev test keys. Region is bom1. Previews must never connect to production. Hosting access logs must not retain applicant-name/email filter queries or authorization headers; application request logging is disabled, but provider settings still require review.
+For a preview use **dev-only** project credentials, APP_ENV=development, the dev pin and documented Turnstile dev test keys. NEXT_PUBLIC_SITE_URL can be omitted: automatically exposed Vercel hostnames provide the build-time fallback (project production hostname first, deployment hostname next). Region is bom1. Previews must never connect to production. This development/test-key configuration must never be used for the real production recruitment deployment. Hosting access logs must not retain applicant-name/email filter queries or authorization headers; application request logging is disabled, but provider settings still require review. See VERCEL_ENV_TABLE for all settings.
 
 For production add the production runtime variables to the Production environment only. Create a real Cloudflare Turnstile widget for careers.fixenmedia.com and supply its real pair of keys. Do not allow localhost on the production widget. Redeploy after setting public variables. Disable sign-ups on production independently of the dev setting.
 
