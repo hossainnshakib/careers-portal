@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { assertStartupEnvironment } from "./src/lib/app-env";
+import { resolveSiteUrl } from "./src/lib/site-url";
 
 // `next build` and `next start` both run with NODE_ENV=production and load the
 // .env files before this file, so a production build with APP_ENV missing or
@@ -8,6 +9,9 @@ import { assertStartupEnvironment } from "./src/lib/app-env";
 assertStartupEnvironment(process.env, process.env.NODE_ENV);
 
 const nextConfig: NextConfig = {
+  // Bake the same resolved public origin into browser bundles; non-public
+  // Vercel system variables are otherwise unavailable to client modules.
+  env: { NEXT_PUBLIC_SITE_URL: resolveSiteUrl(process.env) },
   async redirects() {
     return [{ source: "/jobs/:slug/apply", destination: "/jobs/:slug#apply", permanent: true }];
   },

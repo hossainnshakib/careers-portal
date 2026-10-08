@@ -1,10 +1,13 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { getPublicContactEmail, getPublicSiteUrl } from "@/lib/env-public";
 
-beforeEach(() => { vi.stubEnv("NEXT_PUBLIC_SITE_URL", undefined); vi.stubEnv("NEXT_PUBLIC_CONTACT_EMAIL", undefined); });
+beforeEach(() => {
+  vi.stubEnv("NEXT_PUBLIC_SITE_URL", undefined); vi.stubEnv("NEXT_PUBLIC_CONTACT_EMAIL", undefined);
+  vi.stubEnv("VERCEL", undefined); vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", undefined); vi.stubEnv("VERCEL_URL", undefined);
+});
 afterEach(() => { vi.unstubAllEnvs(); });
-it("uses the known public launch URL for unconfigured metadata, without needing database credentials", () => {
-  expect(getPublicSiteUrl()).toBe("https://careers.fixenmedia.com");
+it("uses localhost for unconfigured metadata, without needing database credentials", () => {
+  expect(getPublicSiteUrl()).toBe("http://localhost:3000");
   expect(getPublicContactEmail()).toBeUndefined();
 });
 it("accepts HTTP local development and HTTPS deployment URLs", () => {

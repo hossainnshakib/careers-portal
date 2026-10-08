@@ -1,5 +1,6 @@
 import "./validation/zod-csp";
 import { z } from "zod";
+import { resolveSiteUrl } from "./site-url";
 
 const publicSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.url({ protocol: /^https?$/ }),
@@ -15,7 +16,7 @@ let cache: PublicEnv | undefined;
 export function getPublicEnv(): PublicEnv {
   if (cache) return cache;
   const result = publicSchema.safeParse({
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_SITE_URL: getPublicSiteUrl(),
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
@@ -36,10 +37,9 @@ export function getSecurityEnvironment() {
 
 /** Metadata and contact pages can render before database credentials exist. */
 export function getPublicSiteUrl(): string {
-  if (!process.env.NEXT_PUBLIC_SITE_URL) return "https://careers.fixenmedia.com";
-  const parsed = publicSchema.shape.NEXT_PUBLIC_SITE_URL.safeParse(process.env.NEXT_PUBLIC_SITE_URL);
-  if (!parsed.success) throw new Error("Invalid public site URL setting.");
-  return parsed.data.replace(/\/$/, "");
+  return resolveSiteUrl({ NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    VERCEL: process.env.VERCEL, VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    VERCEL_URL: process.env.VERCEL_URL });
 }
 export function getPublicContactEmail(): string | undefined {
   const parsed = publicSchema.shape.NEXT_PUBLIC_CONTACT_EMAIL.safeParse(process.env.NEXT_PUBLIC_CONTACT_EMAIL);
