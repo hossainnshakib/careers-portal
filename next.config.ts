@@ -18,7 +18,12 @@ const nextConfig: NextConfig = {
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   logging: { incomingRequests: false },
   serverExternalPackages: ["@react-pdf/renderer", "sharp"],
-  outputFileTracingIncludes: { "/api/admin/applications/*/pdf": ["./assets/fonts/*.ttf", "./public/brands/*"] },
+  outputFileTracingIncludes: { "/api/admin/applications/*/pdf": [
+    "./assets/fonts/*.ttf", "./public/brands/*",
+    // pdfkit uses createRequire with package-import font names at render time;
+    // automatic tracing misses these modules and their sibling chunks.
+    "./node_modules/.pnpm/pdfkit@*/node_modules/pdfkit/**",
+  ] },
   async headers() {
     return [{ source: "/:path*", headers: [
       { key: "X-Content-Type-Options", value: "nosniff" },
