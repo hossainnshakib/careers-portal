@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { employmentTypeEnum, experienceLevelEnum, jobStatusEnum, sectorEnum, workModeEnum } from "@/db/schema";
-import { formatAdminDate, applicationStatusLabel, employmentTypeLabels, workModeLabels, sectorLabels, experienceLevelLabels, jobStatusLabels } from "./display";
+import { jobStatusEnum, sectorEnum } from "@/db/schema";
+import { formatAdminDate, applicationStatusLabel, sectorLabels, jobStatusLabels } from "./display";
 
 it.each([
   ["2026-10-09T01:42:53.000Z", "9 Oct 2026, 7:42 AM"],
@@ -19,9 +19,9 @@ it("never mutates stored Date values and handles invalid input safely", () => {
 it.each([
   ["new", "New"], ["under_review", "Under review"], ["shortlisted", "Shortlisted"], ["rejected", "Rejected"], ["hired", "Hired"],
 ] as const)("labels %s without modifying its stored value", (value, expected) => { expect(applicationStatusLabel(value)).toBe(expected); });
-it("covers every employment type, work mode, sector, experience level and job status exactly once", () => {
+it("covers every sector and job status exactly once", () => {
   const pairs: readonly [Record<string, string>, readonly string[]][] = [
-    [employmentTypeLabels, employmentTypeEnum.enumValues], [workModeLabels, workModeEnum.enumValues], [sectorLabels, sectorEnum.enumValues], [experienceLevelLabels, experienceLevelEnum.enumValues], [jobStatusLabels, jobStatusEnum.enumValues],
+    [sectorLabels, sectorEnum.enumValues], [jobStatusLabels, jobStatusEnum.enumValues],
   ];
   for (const [labels, values] of pairs) {
     expect(Object.keys(labels).sort()).toEqual([...values].sort());
@@ -34,9 +34,6 @@ it("covers every employment type, work mode, sector, experience level and job st
   }
 });
 it("uses conventional admin spellings that raw enum values would not produce", () => {
-  expect(employmentTypeLabels.full_time).toBe("Full time");
-  expect(employmentTypeLabels.part_time).toBe("Part time");
-  expect(workModeLabels.onsite).toBe("On-site");
   expect(sectorLabels.creative_agency).toBe("Creative agency");
   expect(sectorLabels.real_estate).toBe("Real estate");
   expect(sectorLabels.saas).toBe("SaaS");

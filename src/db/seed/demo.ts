@@ -3,7 +3,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { closeDb, getDb } from "@/db";
 import {
   adminNotes,
@@ -14,6 +14,8 @@ import {
   brands,
   departments,
   jobBrands,
+  jobOptionLinks,
+  jobOptions,
   jobQuestions,
   jobs,
   type JobQuestion,
@@ -226,6 +228,13 @@ export async function seedDemo() {
   const db = getDb();
   const depts = await db.select().from(departments);
   const allBrands = await db.select().from(brands).orderBy(brands.sortOrder);
+  const allOptions = await db.select().from(jobOptions)
+    .orderBy(asc(jobOptions.group), asc(jobOptions.sortOrder), asc(jobOptions.id));
+  const optionId = (group: string, slug: string) => {
+    const option = allOptions.find((item) => item.group === group && item.slug === slug);
+    if (!option) throw new Error(`Seed base options before demo jobs (missing ${group}/${slug}).`);
+    return option.id;
+  };
   for (const [i, [title, slug, deptNumber]] of jobData.entries()) {
     const department = depts.find(
       (item) =>
@@ -240,7 +249,7 @@ export async function seedDemo() {
         ][deptNumber - 1],
     )!;
     const status = i < 16 ? "open" : i === 18 ? "closed" : "draft";
-    const employmentTypes = [
+    const engagementTypes = [
       "part_time",
       "part_time",
       "part_time",
@@ -249,6 +258,9 @@ export async function seedDemo() {
       "internship",
       "contract",
     ] as const;
+    const arrangementSlug = (["onsite", "remote", "hybrid"] as const)[i % 3];
+    const engagementSlug = engagementTypes[i] ?? "full_time";
+    const experienceSlug = slug === "creative-director-production-lead" ? "senior" : i % 2 === 0 ? "entry" : null;
     await db.transaction(async (tx) => {
       const [job] = await tx
         .insert(jobs)
@@ -257,10 +269,6 @@ export async function seedDemo() {
           title,
           slug,
           departmentId: department.id,
-          employmentType: employmentTypes[i] ?? "full_time",
-          workMode: (["onsite", "remote", "hybrid"] as const)[i % 3],
-          experienceLevel:
-            slug === "creative-director-production-lead" ? "senior" : i % 2 === 0 ? "entry" : null,
           locationText: "Dhaka, Bangladesh",
           status,
           sortOrder: i + 1,
@@ -333,6 +341,13 @@ export async function seedDemo() {
           isPrimary: n === 0,
         })),
       );
+      await tx.insert(jobOptionLinks).values(
+        [
+          optionId("arrangement", arrangementSlug),
+          optionId("engagement", engagementSlug),
+          ...(experienceSlug ? [optionId("experience", experienceSlug)] : []),
+        ].map((linkedOptionId) => ({ jobId: job.id, optionId: linkedOptionId })),
+      );
       const definitions = phase1QuestionsFor(deptNumber, i === 0);
       await tx.insert(jobQuestions).values(
         [...definitions.standards, ...definitions.roles].map((question, n) => ({
@@ -397,6 +412,7 @@ export async function seedDemo() {
         phone: "01700000000",
         location: "Dhaka, Bangladesh",
         status,
+        consentAt: submittedAt,
         jobTitleSnapshot: job.title,
         jobSlugSnapshot: job.slug,
         departmentNameSnapshot: department.name,

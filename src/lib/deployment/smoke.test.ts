@@ -1,6 +1,6 @@
 import { expect, it, vi } from "vitest";
 import { createCsp } from "@/lib/security/csp";
-import { anonymousDenied, inlineApplyRedirect, publicJobPath, responseLeaks, runSmoke, securityHeaders, smokeOrigin } from "./smoke";
+import { anonymousDenied, applyRouteInlineForm, publicJobPath, responseLeaks, runSmoke, securityHeaders, smokeOrigin } from "./smoke";
 
 const origin = "https://preview.example.test";
 const safeHeaders = () => new Headers({
@@ -29,10 +29,13 @@ it("accepts only same-origin login redirects or generic denials, never private c
   expect(anonymousDenied(snapshot("%PDF-private", 200), origin)).toBe(false);
   expect(anonymousDenied(snapshot("", 302, new Headers({ location: "https://storage.example.test/signed" })), origin)).toBe(false);
 });
-it("requires the correct permanent same-origin apply anchor", () => {
-  expect(inlineApplyRedirect(snapshot("", 308, new Headers({ location: "/jobs/role#apply" })), origin, "/jobs/role")).toBe(true);
-  expect(inlineApplyRedirect(snapshot("", 302, new Headers({ location: "/jobs/role#apply" })), origin, "/jobs/role")).toBe(false);
-  expect(inlineApplyRedirect(snapshot("", 308, new Headers({ location: "https://other.example.test/jobs/role#apply" })), origin, "/jobs/role")).toBe(false);
+const applyBody = '<meta name="robots" content="noindex, nofollow"/><div id="apply">Form</div>';
+it("requires the legacy apply route to render the inline form with noindex", () => {
+  expect(applyRouteInlineForm(snapshot(applyBody))).toBe(true);
+  expect(applyRouteInlineForm(snapshot(applyBody, 200, new Headers({ location: "/jobs/role#apply" })))).toBe(false);
+  expect(applyRouteInlineForm(snapshot(applyBody, 308, new Headers({ location: "/jobs/role#apply" })))).toBe(false);
+  expect(applyRouteInlineForm(snapshot('<div id="apply">Form</div>'))).toBe(false);
+  expect(applyRouteInlineForm(snapshot('<meta name="robots" content="noindex, nofollow"/>'))).toBe(false);
 });
 it.each([
   "Error: failure\n    at async work (/var/task/app.js:10:4)",
@@ -57,7 +60,7 @@ function fakeServer(failHome = false, leak = false) {
     if (path === "/api/health") body = '{"ok":true}';
     else if (path === "/") { status = failHome ? 503 : 200; body = '<a href="/jobs/role">Role</a>'; }
     else if (path === "/jobs/role") body = leak ? "CRON_SECRET=synthetic-private" : "Public role";
-    else if (path === "/jobs/role/apply") { status = 308; headers.set("location", "/jobs/role#apply"); }
+    else if (path === "/jobs/role/apply") body = applyBody;
     else if (path.startsWith("/jobs/smoke-unknown-")) status = 404;
     else if (path === "/admin") { status = 307; headers.set("location", "/admin/login"); }
     else if (path.startsWith("/api/admin/")) { status = 403; body = '{"error":"Administrator access required."}'; }

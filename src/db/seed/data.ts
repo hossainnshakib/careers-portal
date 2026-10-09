@@ -7,6 +7,39 @@ export const departmentData = [
   ["Presentation & Production Operations", "presentation-production-operations"],
 ] as const;
 
+/**
+ * Managed option lists (seeded by `seed:base`, production-safe and idempotent).
+ * Slugs for values that existed before v2 equal the legacy enum values so old
+ * shared URLs (`?mode=onsite`, `?type=full_time`, `?level=entry`) keep working.
+ */
+export const optionData = [
+  { group: "arrangement", label: "On-site", slug: "onsite", sortOrder: 1 },
+  { group: "arrangement", label: "Hybrid", slug: "hybrid", sortOrder: 2 },
+  { group: "arrangement", label: "Work from home", slug: "remote", sortOrder: 3 },
+  { group: "engagement", label: "Full-time", slug: "full_time", sortOrder: 1 },
+  { group: "engagement", label: "Part-time", slug: "part_time", sortOrder: 2 },
+  { group: "engagement", label: "Project-based", slug: "project-based", sortOrder: 3 },
+  { group: "engagement", label: "Duration-based", slug: "contract", sortOrder: 4 },
+  { group: "engagement", label: "Internship", slug: "internship", sortOrder: 5 },
+  { group: "engagement", label: "Freelance", slug: "freelance", sortOrder: 6 },
+  { group: "experience", label: "Fresher welcome", slug: "fresher-welcome", sortOrder: 1 },
+  { group: "experience", label: "Entry-level", slug: "entry", sortOrder: 2 },
+  { group: "experience", label: "Mid-level", slug: "mid", sortOrder: 3 },
+  { group: "experience", label: "Senior", slug: "senior", sortOrder: 4 },
+] as const;
+
+/** Filled only when a brand row has no accent yet; owner edits are never overwritten. */
+export const defaultBrandAccents: Record<string, string> = {
+  "fixen-media": "#EC1C24",
+  builtale: "#565439",
+  doshok: "#2B95A0",
+  accoraze: "#1B2F6E",
+  "wiki-bangla": "#0AA278",
+  "ghora-fera": "#FE5C36",
+  mactie: "#1E1E1E",
+  avagata: "#213F6E",
+};
+
 export const brandData = [
   {
     name: "Fixen Media",

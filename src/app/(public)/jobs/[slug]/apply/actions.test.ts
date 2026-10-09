@@ -12,7 +12,7 @@ const id = "00000000-0000-4000-8000-000000000001";
 const fileId = "00000000-0000-4000-8000-000000000002";
 const question = { id, label: "Why?", type: "long_text", required: true, options: null, config: null, helpText: null, section: "professional", sortOrder: 0 };
 const definition = { job: { status: "open", cvRequired: true, deadlineAt: null }, questions: [question], brands: [{ brand: { status: "active" } }] };
-const input = { jobSlug: "web-developer", sessionToken: "session", turnstileToken: "challenge", honeypot: "", contact: { fullName: "শ্রী ক্ষিতিশ", email: "candidate@example.com", phone: "01700000000", location: "Dhaka" }, cv: [fileId], answers: { [id]: "Relevant experience" } };
+const input = { jobSlug: "web-developer", sessionToken: "session", turnstileToken: "challenge", honeypot: "", contact: { fullName: "শ্রী ক্ষিতিশ", email: "candidate@example.com", phone: "01700000000", location: "Dhaka" }, consent: true, cv: [fileId], answers: { [id]: "Relevant experience" } };
 beforeEach(() => {
   vi.resetAllMocks(); mocks.turnstile.mockResolvedValue(true); mocks.session.mockReturnValue({ id: "session-id", issuedAt: Date.now() - 10000 });
   mocks.load.mockResolvedValue(definition); mocks.existing.mockResolvedValue(undefined); mocks.insert.mockResolvedValue("APP-234567");
@@ -23,13 +23,14 @@ it.each(["closed", "draft"])("rejects %s jobs before touching files", async (sta
   mocks.load.mockResolvedValue({ ...definition, job: { ...definition.job, status } });
   expect((await submitApplication(input)).ok).toBe(false); expect(mocks.verifyFile).not.toHaveBeenCalled(); expect(mocks.insert).not.toHaveBeenCalled();
 });
-it.each(["unknown question", "missing answer", "path instead of token", "duplicate file", "honeypot"])("rejects %s", async (kind) => {
+it.each(["unknown question", "missing answer", "path instead of token", "duplicate file", "honeypot", "missing consent"])("rejects %s", async (kind) => {
   const changed = structuredClone(input);
   if (kind === "unknown question") changed.answers[fileId as typeof id] = "Injected";
   if (kind === "missing answer") changed.answers = {} as typeof input.answers;
   if (kind === "path instead of token") changed.cv = ["pending/other-session/cv.pdf"];
   if (kind === "duplicate file") changed.cv = [fileId, fileId];
   if (kind === "honeypot") changed.honeypot = "bot";
+  if (kind === "missing consent") changed.consent = false;
   expect((await submitApplication(changed)).ok).toBe(false); expect(mocks.insert).not.toHaveBeenCalled();
 });
 it.each(["wrong session", "wrong MIME", "wrong size", "bad content"])("rejects storage verification failure: %s", async () => {
@@ -44,7 +45,7 @@ it.each(["expired session", "failed Turnstile", "minimum fill time"])("rejects %
 });
 it("persists Bengali contact details and DB-validated answers, then redirects outside the error catch", async () => {
   await expect(submitApplication(input)).rejects.toThrow("redirect-success");
-  expect(mocks.insert).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ contact: input.contact, answers: input.answers }));
+  expect(mocks.insert).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ contact: input.contact, consent: true, answers: input.answers }));
   expect(mocks.redirect).toHaveBeenCalledWith("/applied/APP-234567"); expect(mocks.restore).not.toHaveBeenCalled();
 });
 it("restores finalized files on persistence failure and reuses an existing session application", async () => {

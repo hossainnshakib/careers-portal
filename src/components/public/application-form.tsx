@@ -14,9 +14,9 @@ import { questionSectionEnum } from "@/db/schema";
 import type { QuestionDefinition } from "@/lib/questions/definition";
 import type { Answer } from "@/lib/validation/buildSchema";
 
-type FormValues = { contact: { fullName: string; email: string; phone: string; location: string }; answers: Record<string, Answer>; cv: string[] };
+type FormValues = { contact: { fullName: string; email: string; phone: string; location: string }; answers: Record<string, Answer>; cv: string[]; consent: boolean };
 export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: string; questions: QuestionDefinition[]; cvRequired: boolean }) {
-  const { register, control, handleSubmit, getValues, setError, setValue, formState: { errors, isSubmitting } } = useForm<FormValues>({ defaultValues: { contact: { fullName: "", email: "", phone: "", location: "" }, answers: {}, cv: [] } });
+  const { register, control, handleSubmit, getValues, setError, setValue, formState: { errors, isSubmitting } } = useForm<FormValues>({ defaultValues: { contact: { fullName: "", email: "", phone: "", location: "" }, answers: {}, cv: [], consent: false } });
   const [token, setToken] = useState("");
   const tokenRef = useRef(""); tokenRef.current = token;
   const sessionRef = useRef("");
@@ -85,9 +85,10 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
         } else answers[q.id] = value;
       }
       const validated = validateApplicationAnswers(questions, answers, values.cv, cvRequired);
+      if (!values.consent) throw new Error("Consent to the privacy notice is required.");
       const sessionToken = await ensureSession();
       if (!tokenRef.current) throw new Error("Complete the security check before submitting.");
-      const result = await submitApplication({ jobSlug, sessionToken, turnstileToken: tokenRef.current, honeypot: honeypot.current?.value ?? "", contact: contact.data, answers: validated.answers, cv: values.cv });
+      const result = await submitApplication({ jobSlug, sessionToken, turnstileToken: tokenRef.current, honeypot: honeypot.current?.value ?? "", contact: contact.data, consent: values.consent, answers: validated.answers, cv: values.cv });
       setToken(""); setWidgetKey((key) => key + 1);
       if (!result.ok) setMessage(result.error);
     } catch (error) {
@@ -116,6 +117,10 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
     {questions.some((q) => q.type === "date") && <p className="text-sm text-muted-foreground">Date questions with “today” bounds use the UTC calendar date.</p>}
     <div className="absolute -left-[10000px]" aria-hidden="true"><label>Company website<input ref={honeypot} name="companyWebsite" tabIndex={-1} autoComplete="off" /></label></div>
     <section className="space-y-4 rounded-xl border border-border p-5"><h3 className="font-bold">Your privacy</h3><p className="text-muted-foreground">Your contact details, answers and files are collected for recruitment and are accessible only to the internal hiring team. Please share only information relevant to this application. <Link href="/privacy" className="underline">Read the privacy notice.</Link></p>
+      <label className="flex items-start gap-3">
+        <input type="checkbox" className="mt-1 h-4 w-4 shrink-0" {...register("consent")} />
+        <span>I have read the privacy notice and consent to my application being processed for this role.</span>
+      </label>
       {securityActive ? <TurnstileWidget key={widgetKey} onToken={setToken} /> : <p className="text-muted-foreground">The security check loads when you start this form.</p>}
       <button type="button" disabled={isSubmitting || uploadBusy > 0} onClick={async () => {
         await sessionPromise.current?.catch(() => undefined);

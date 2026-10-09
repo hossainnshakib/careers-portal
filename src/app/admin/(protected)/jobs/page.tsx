@@ -1,11 +1,13 @@
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { listJobBrandMarks, listJobs } from "@/db/queries/jobs";
+import { jobOptionsFor } from "@/db/queries/job-options";
 import { listBrands } from "@/db/queries/brands";
 import { listDepartments } from "@/db/queries/departments";
 import { jobFilters } from "@/lib/validation/jobs";
 import { jobStatusLabels } from "@/lib/admin/display";
 import { jobStatusEnum } from "@/db/schema";
+import { groupLabels, optionGroupLabels, optionGroups } from "@/lib/careers/option-labels";
 import { BrandDot } from "@/components/brand-dot";
 
 export default async function JobsPage({
@@ -26,6 +28,7 @@ export default async function JobsPage({
   const brands = await listBrands();
   const departments = await listDepartments();
   const marks = await listJobBrandMarks(rows.map(row => row.id));
+  const optionsByJob = await jobOptionsFor(rows.map(row => row.id));
   return (
     <section className="space-y-6">
       <div className="flex items-center justify-between">
@@ -105,6 +108,7 @@ export default async function JobsPage({
                 <th className="p-3">Title</th>
                 <th className="p-3">Department</th>
                 <th className="p-3">Brands</th>
+                <th className="p-3">Options</th>
                 <th className="p-3">Status</th>
                 <th className="p-3">Actions</th>
               </tr>
@@ -115,6 +119,20 @@ export default async function JobsPage({
                   <td className="p-3">{row.title}</td>
                   <td className="p-3">{row.department}</td>
                   <td className="p-3"><div className="flex flex-wrap gap-3">{marks.filter(mark => mark.jobId === row.id).map(mark => <span key={mark.id} className="inline-flex items-center gap-2"><BrandDot color={mark.accentColor} />{mark.name}</span>)}</div></td>
+                  <td className="p-3">
+                    <div className="flex flex-wrap gap-3 text-sm">
+                      {optionGroups.map(group => {
+                        const labels = groupLabels(optionsByJob.get(row.id) ?? [], group);
+                        return labels.length ? (
+                          <span key={group}>
+                            <span className="text-muted-foreground">{optionGroupLabels[group]}: </span>
+                            {labels.join(", ")}
+                          </span>
+                        ) : null;
+                      })}
+                      {!optionsByJob.get(row.id)?.length && <span className="text-muted-foreground">None</span>}
+                    </div>
+                  </td>
                   <td className="p-3">{jobStatusLabels[row.status]}</td>
                   <td className="p-3">
                     <a href={`/admin/jobs/${row.id}/edit`}>Edit {row.title}</a>

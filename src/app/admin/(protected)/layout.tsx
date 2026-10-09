@@ -19,6 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             ["Jobs", "/admin/jobs"],
             ["Brands", "/admin/brands"],
             ["Departments", "/admin/departments"],
+            ["Options", "/admin/options"],
           ].map(([label, href]) => (
             <a key={href} href={href} className="rounded px-3 py-2 hover:bg-secondary">
               {label}

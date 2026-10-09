@@ -6,6 +6,7 @@ import { getDb } from "@/db";
 import { applicationAnswers, applications, attachments, brands, departments, jobs } from "@/db/schema";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { saveJob } from "./jobs";
+import { listJobOptions } from "./job-options";
 import { jobInput } from "@/lib/validation/jobs";
 
 function guard(prefix: string) { requireDevTarget(); if (!/^e2e-[a-f0-9]{32}-$/.test(prefix)) throw new Error("Invalid public test prefix"); }
@@ -14,9 +15,18 @@ export async function createPublicTestJob(prefix: string) {
   const [brand] = await getDb().select().from(brands).where(eq(brands.status, "active")).limit(1);
   const [department] = await getDb().select().from(departments).where(eq(departments.isActive, true)).limit(1);
   if (!brand || !department) throw new Error("Base catalog required for public test");
+  const options = await listJobOptions();
+  const optionIds = options.filter((option) =>
+    (option.group === "arrangement" && option.slug === "remote") ||
+    (option.group === "engagement" && option.slug === "full_time") ||
+    (option.group === "experience" && option.slug === "entry"),
+  ).map((option) => option.id);
+  if (optionIds.length < 2) throw new Error("Base options required for public test");
   const questionId = randomUUID(); const textId = randomUUID();
   const saved = await saveJob(jobInput.parse({ id: null, title: `${prefix}Public Application Test`, slug: `${prefix}public`, departmentId: department.id,
-    brandIds: [brand.id], primaryBrandId: brand.id, employmentType: "full_time", workMode: "remote", experienceLevel: "entry", locationText: "Dhaka",
+    brandIds: [brand.id], primaryBrandId: brand.id, optionIds, engagementNote: null,
+    salaryMode: "negotiable", salaryText: "", vacancies: null, experienceText: null,
+    skills: [], benefits: [], niceToHaveMd: "", locationText: "Dhaka",
     deadlineAt: new Date(Date.now() + 7 * 86400000).toISOString(), cvRequired: true, summary: "An ephemeral public application test role.", descriptionMd: "Work on meaningful projects.", responsibilitiesMd: "- Build carefully", requirementsMd: "- Relevant experience", intent: "publish",
     questions: [
       { id: textId, label: "Tell us about your work", type: "long_text", required: true, helpText: null, options: null, config: { maxLength: 1500 }, section: "professional", sortOrder: 0 },

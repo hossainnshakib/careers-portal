@@ -4,15 +4,16 @@ Postgres (Supabase), managed with Drizzle migrations. Primary keys are `uuid` (d
 
 ## Enums
 - `sector`: `creative_agency | real_estate | fashion | saas | media | technology | other`
-- `employment_type`: `full_time | part_time | contract | internship | freelance`
-- `work_mode`: `onsite | remote | hybrid`
-- `experience_level`: `entry | mid | senior`
+- `option_group`: `arrangement | engagement | experience`
+- `salary_mode`: `negotiable | range`
 - `job_status`: `draft | open | closed`
 - `brand_status`: `active | hidden`
 - `question_type` (11 types): `short_text | long_text | single_choice | multiple_choice | yes_no | number | url | email | phone | file_upload | date`
 - `question_section`: `professional | experience | skills | portfolio | role_specific`
 - `application_status`: `new | under_review | shortlisted | rejected | hired`
 - `attachment_kind`: `cv | portfolio | other`
+
+(V2 removed the `employment_type`, `work_mode` and `experience_level` enums; those values now live as rows in `job_options`.)
 
 ## Tables
 
@@ -23,9 +24,18 @@ Postgres (Supabase), managed with Drizzle migrations. Primary keys are `uuid` (d
 `id`, `name`, `slug` (unique), `sector`, `logo_url text null` (static `/brands/<slug>.svg` for seeded brands, or a public Storage URL for uploads), `description text`, `website text null`, `accent_color text null` (hex), `status brand_status default active`, `sort_order int`, `created_at`.
 
 ### jobs
-`id`, `title`, `slug` (unique), `department_id` → departments (restrict), `employment_type`, `work_mode`, `experience_level null`, `location_text null`, `summary text` (≤ 200 chars, shown on cards), `description_md`, `responsibilities_md`, `requirements_md`, `cv_required bool default true`, `status job_status default draft`, `published_at null`, `closed_at null`, `deadline_at null`, `sort_order int`, `created_at`, `updated_at`.
-Rules: **slug is immutable once `published_at` is set** (enforce in the server action AND with a DB trigger). Publishing sets `published_at` (first time only) and `status=open`; closing sets `status=closed`, `closed_at=now()`; reopening sets `status=open`, `closed_at=null`. A job must have at least one brand (enforced by the application layer); questions are optional.
+`id`, `title`, `slug` (unique), `department_id` → departments (restrict), `engagement_note text null` (≤ 80, shown with Project-based/Duration-based), `salary_mode salary_mode default negotiable`, `salary_text text null` (≤ 80, single line, required when `salary_mode=range`, ignored/stored null when negotiable), `vacancies int null` (1–10000), `experience_text text null` (≤ 60, free text such as "1 – 4 years"), `skills text[] default '{}'` (≤ 20 items, each ≤ 40), `benefits text[] default '{}'` (≤ 12 items, each ≤ 60), `nice_to_have_md text default ''`, `location_text null`, `summary text` (≤ 200 chars, shown on cards), `description_md`, `responsibilities_md`, `requirements_md`, `cv_required bool default true`, `status job_status default draft`, `published_at null`, `closed_at null`, `deadline_at null`, `sort_order int`, `created_at`, `updated_at`.
+Rules: **slug is immutable once `published_at` is set** (enforce in the server action AND with a DB trigger). Publishing sets `published_at` (first time only) and `status=open`; closing sets `status=closed`, `closed_at=now()`; reopening sets `status=open`, `closed_at=null`. A job must have at least one brand and at least one **arrangement** and one **engagement** option to publish (experience optional); drafts may have none. Questions are optional.
 Indexes: `(status)`, `(department_id)`, `(sort_order)`.
+
+### job_options
+`id`, `group option_group`, `label text` (displayed verbatim), `slug text`, `sort_order int default 0`, `is_active bool default true`, `created_at`. Unique `(group, slug)`; RLS enabled with no policies.
+Rules: admins manage these rows under `/admin/options`. Inactive options disappear from pickers, filters and public tags but keep existing job links. An option linked by any job cannot be deleted — deactivate instead. Seeded defaults (13 rows) live in migrations/`seed:base`, not owned by the app code.
+Indexes: unique `(group, slug)`, `(group, sort_order)`.
+
+### job_option_links
+`job_id` → jobs (cascade), `option_id` → job_options (restrict). PK `(job_id, option_id)`; RLS enabled with no policies. Multi-select: a job carries any number of options across the three groups; the order shown is the option's group/sort order.
+Index: `(option_id)`.
 
 ### job_brands
 `job_id` → jobs (cascade), `brand_id` → brands (restrict), `is_primary bool`. PK `(job_id, brand_id)`. Partial unique index: one primary per job (`where is_primary`). Application layer guarantees exactly one primary.
@@ -40,7 +50,7 @@ Rules: once a job has applications, questions are archived, never deleted. Editi
 Index: `(job_id, sort_order)`.
 
 ### applications
-`id`, `reference text unique`, `job_id` → jobs (restrict), `full_name`, `email`, `phone`, `location`, `status application_status default new`, snapshots: `job_title_snapshot`, `job_slug_snapshot`, `department_name_snapshot`, `brand_names_snapshot text[]`, `primary_brand_snapshot text`, `submitted_at`, `status_changed_at`.
+`id`, `reference text unique`, `job_id` → jobs (restrict), `full_name`, `email`, `phone`, `location`, `status application_status default new`, `consent_at timestamptz null` (set at submission when the candidate accepted the privacy notice), snapshots: `job_title_snapshot`, `job_slug_snapshot`, `department_name_snapshot`, `brand_names_snapshot text[]`, `primary_brand_snapshot text`, `submitted_at`, `status_changed_at`.
 Indexes: `(job_id)`, `(status)`, `(submitted_at desc)`, `lower(email)`. "Previous applications from this email" is computed at read time by `lower(email)`.
 
 ### application_answers

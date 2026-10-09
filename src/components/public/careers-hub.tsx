@@ -4,13 +4,23 @@ import { useRef } from "react";
 import { useQueryStates } from "nuqs";
 import { BrandLogo } from "@/components/brand-logo";
 import { filterKeys, filterParsers, humanize, matchesJob, optionCount, type FilterKey, type JobCard, type PublicBrand } from "@/lib/careers/filters";
+import { optionGroupLabels, type OptionGroup } from "@/lib/careers/option-labels";
 import { accentColor } from "@/lib/careers/presentation";
 import { CareersHero } from "./careers-hero";
 import { CareersResults } from "./careers-results";
 import { CareersInfo } from "./careers-info";
 
 const sidebarKeys = filterKeys.filter(key => key !== "brand");
-const labels = { brand: "Brand", dept: "Department", type: "Employment type", mode: "Work mode", sector: "Sector", level: "Experience level" };
+const labels: Record<FilterKey, string> = {
+  brand: "Brand", dept: "Department",
+  type: optionGroupLabels.engagement, mode: optionGroupLabels.arrangement, sector: "Sector", level: optionGroupLabels.experience,
+};
+/** Distinct option facets from the open catalog, in first-seen (stored) order. */
+function optionFacet(jobs: JobCard[], group: OptionGroup) {
+  const seen = new Map<string, string>();
+  for (const job of jobs) for (const option of job.options) if (option.group === group && !seen.has(option.slug)) seen.set(option.slug, option.label);
+  return [...seen].map(([value, label]) => ({ value, label }));
+}
 
 export function CareersHub({ jobs, brands, departments }: {
   jobs: JobCard[]; brands: PublicBrand[]; departments: { name: string; slug: string }[];
@@ -22,10 +32,10 @@ export function CareersHub({ jobs, brands, departments }: {
   const options: Record<FilterKey, { value: string; label: string }[]> = {
     brand: brands.map(brand => ({ value: brand.slug, label: brand.name })),
     dept: departments.map(department => ({ value: department.slug, label: department.name })),
-    type: ["full_time", "part_time", "contract", "internship", "freelance"].map(value => ({ value, label: humanize(value) })),
-    mode: ["onsite", "remote", "hybrid"].map(value => ({ value, label: value })),
+    type: optionFacet(jobs, "engagement"),
+    mode: optionFacet(jobs, "arrangement"),
     sector: [...new Set(brands.map(brand => brand.sector))].map(value => ({ value, label: humanize(value) })),
-    level: ["entry", "mid", "senior"].map(value => ({ value, label: value })),
+    level: optionFacet(jobs, "experience"),
   };
   function toggle(key: FilterKey, value: string) {
     void setFilters({ [key]: filters[key].includes(value) ? filters[key].filter(item => item !== value) : [...filters[key], value] });

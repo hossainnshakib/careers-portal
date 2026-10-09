@@ -18,6 +18,9 @@ export const applicationInputSchema = z.strictObject({
   jobSlug: jobSlugSchema, sessionToken: z.string().min(1).max(2048), turnstileToken: z.string().min(1).max(2048),
   honeypot: z.string().max(200).default(""),
   contact: contactSchema,
+  consent: z.boolean().refine((value) => value === true, {
+    message: "Consent to the privacy notice is required.",
+  }),
   cv: z.array(z.uuid()).max(1),
   answers: z.record(z.uuid(), z.unknown()),
 });

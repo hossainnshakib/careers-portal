@@ -7,6 +7,7 @@ import { listBrands } from "./brands";
 import { listDepartments } from "./departments";
 import { addTestApplication, removeTestFixture } from "./test-fixtures";
 import { loadJob, mutateJob, saveJob, listJobs } from "./jobs";
+import { listJobOptions } from "./job-options";
 import { jobInput, jobFilters, type JobInput } from "@/lib/validation/jobs";
 
 describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
@@ -21,6 +22,14 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       const [brand] = await listBrands();
       const [department] = await listDepartments();
       if (!brand || !department) throw new Error("Base seed required for lifecycle test");
+      const options = await listJobOptions();
+      const optionIds = options
+        .filter((option) =>
+          (option.group === "arrangement" && option.slug === "remote") ||
+          (option.group === "engagement" && option.slug === "full_time"),
+        )
+        .map((option) => option.id);
+      if (optionIds.length < 2) throw new Error("Base options required for lifecycle test");
       input = jobInput.parse({
         id: null,
         title: `${prefix}Role`,
@@ -28,9 +37,15 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
         departmentId: department.id,
         brandIds: [brand.id],
         primaryBrandId: brand.id,
-        employmentType: "full_time",
-        workMode: "remote",
-        experienceLevel: null,
+        optionIds,
+        engagementNote: null,
+        salaryMode: "negotiable",
+        salaryText: "",
+        vacancies: null,
+        experienceText: null,
+        skills: [],
+        benefits: [],
+        niceToHaveMd: "",
         locationText: "Dhaka",
         deadlineAt: null,
         cvRequired: true,

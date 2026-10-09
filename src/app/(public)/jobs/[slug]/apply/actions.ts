@@ -32,7 +32,7 @@ export async function submitApplication(input: unknown): Promise<ActionResult<ne
       const files: Reservation[] = [];
       for (const file of validated.files) files.push(await verifyUploadedFile(session, file.id, file.slot, definition.questions));
       for (const file of files) { await moveApplicationFile(file); moved.push(file); }
-      return insertApplication(tx, { id: session.id, contact: data.contact, definition, answers: validated.answers, files });
+      return insertApplication(tx, { id: session.id, contact: data.contact, consent: data.consent, definition, answers: validated.answers, files });
     });
   } catch {
     if (moved.length && sessionId) {

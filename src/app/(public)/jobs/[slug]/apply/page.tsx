@@ -1,12 +1,18 @@
-import { notFound, permanentRedirect } from "next/navigation";
-import { jobSlugSchema } from "@/lib/validation/uploads";
+import type { Metadata } from "next";
+import JobPage, { generateMetadata as generateJobMetadata } from "../page";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-/** Next config supplies the HTTP 308; retain this fallback for direct rendering. */
-export default async function ApplyPage({ params }: { params: Promise<{ slug: string }> }) {
-  const parsed = jobSlugSchema.safeParse((await params).slug);
-  if (!parsed.success) notFound();
-  permanentRedirect(`/jobs/${parsed.data}#apply`);
+/**
+ * Old poster/bookmark URLs keep working by rendering the same inline job page
+ * (form at #apply) instead of redirecting; the route stays out of search indexes.
+ */
+export async function generateMetadata(
+  props: Parameters<typeof generateJobMetadata>[0],
+): Promise<Metadata> {
+  const metadata = await generateJobMetadata(props);
+  return { ...metadata, robots: { index: false, follow: false } };
 }
+
+export default JobPage;

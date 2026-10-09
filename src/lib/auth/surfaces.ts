@@ -6,6 +6,7 @@ export const protectedPages = [
   "/admin/mfa",
   "/admin/brands",
   "/admin/departments",
+  "/admin/options",
   "/admin/jobs",
   "/admin/jobs/new",
   "/admin/jobs/[id]/edit",
@@ -13,6 +14,7 @@ export const protectedPages = [
 export const actionFiles = {
   "login/actions.ts": ["login", "logout"],
   "(protected)/departments/actions.ts": ["saveDepartmentAction", "reorderDepartmentAction"],
+  "(protected)/options/actions.ts": ["saveOptionAction", "reorderOptionAction", "deleteOptionAction"],
   "(protected)/brands/actions.ts": [
     "saveBrandAction",
     "reorderBrandAction",

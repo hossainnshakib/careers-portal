@@ -3,6 +3,7 @@ import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { listBrands } from "@/db/queries/brands";
 import { listDepartments } from "@/db/queries/departments";
 import { listJobs } from "@/db/queries/jobs";
+import { listJobOptions } from "@/db/queries/job-options";
 import { jobFilters, type JobInput } from "@/lib/validation/jobs";
 import { JobEditor } from "@/components/admin/job-editor";
 
@@ -11,6 +12,7 @@ export default async function NewJobPage() {
   const brands = await listBrands();
   const departments = await listDepartments();
   const sources = await listJobs(jobFilters.parse({}));
+  const options = await listJobOptions();
   const initial: JobInput = {
     id: null,
     title: "",
@@ -18,9 +20,15 @@ export default async function NewJobPage() {
     departmentId: departments[0]?.id ?? "",
     brandIds: brands[0] ? [brands[0].id] : [],
     primaryBrandId: brands[0]?.id ?? "",
-    employmentType: "full_time",
-    workMode: "onsite",
-    experienceLevel: null,
+    optionIds: [],
+    engagementNote: null,
+    salaryMode: "negotiable",
+    salaryText: "",
+    vacancies: null,
+    experienceText: null,
+    skills: [],
+    benefits: [],
+    niceToHaveMd: "",
     locationText: "",
     deadlineAt: null,
     cvRequired: true,
@@ -37,6 +45,7 @@ export default async function NewJobPage() {
       brands={brands}
       departments={departments}
       sources={sources}
+      options={options}
       published={false}
       status="draft"
       hasApplications={false}

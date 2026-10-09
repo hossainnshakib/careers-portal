@@ -32,17 +32,10 @@ export const sectorEnum = pgEnum("sector", [
   "other",
 ]);
 
-export const employmentTypeEnum = pgEnum("employment_type", [
-  "full_time",
-  "part_time",
-  "contract",
-  "internship",
-  "freelance",
-]);
+/** Managed option lists: one enum group drives filters, tags and publish rules. */
+export const optionGroupEnum = pgEnum("option_group", ["arrangement", "engagement", "experience"]);
 
-export const workModeEnum = pgEnum("work_mode", ["onsite", "remote", "hybrid"]);
-
-export const experienceLevelEnum = pgEnum("experience_level", ["entry", "mid", "senior"]);
+export const salaryModeEnum = pgEnum("salary_mode", ["negotiable", "range"]);
 
 export const jobStatusEnum = pgEnum("job_status", ["draft", "open", "closed"]);
 
@@ -131,10 +124,15 @@ export const jobs = pgTable(
     departmentId: uuid("department_id")
       .notNull()
       .references(() => departments.id, { onDelete: "restrict" }),
-    employmentType: employmentTypeEnum("employment_type").notNull(),
-    workMode: workModeEnum("work_mode").notNull(),
-    experienceLevel: experienceLevelEnum("experience_level"),
     locationText: text("location_text"),
+    engagementNote: text("engagement_note"),
+    salaryMode: salaryModeEnum("salary_mode").notNull().default("negotiable"),
+    salaryText: text("salary_text"),
+    vacancies: int("vacancies"),
+    experienceText: text("experience_text"),
+    skills: text("skills").array().notNull().default(sql`'{}'`),
+    benefits: text("benefits").array().notNull().default(sql`'{}'`),
+    niceToHaveMd: text("nice_to_have_md").notNull().default(""),
     summary: text("summary").notNull().default(""),
     descriptionMd: text("description_md").notNull().default(""),
     responsibilitiesMd: text("responsibilities_md").notNull().default(""),
@@ -180,6 +178,41 @@ export const jobBrands = pgTable(
   ],
 );
 
+export const jobOptions = pgTable(
+  "job_options",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    group: optionGroupEnum("group").notNull(),
+    label: text("label").notNull(),
+    slug: text("slug").notNull(),
+    sortOrder: int("sort_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("job_options_group_slug_unique").on(t.group, t.slug),
+    index("job_options_group_sort_order_idx").on(t.group, t.sortOrder),
+  ],
+);
+
+export const jobOptionLinks = pgTable(
+  "job_option_links",
+  {
+    jobId: uuid("job_id")
+      .notNull()
+      .references(() => jobs.id, { onDelete: "cascade" }),
+    optionId: uuid("option_id")
+      .notNull()
+      .references(() => jobOptions.id, { onDelete: "restrict" }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.jobId, t.optionId] }),
+    index("job_option_links_option_id_idx").on(t.optionId),
+  ],
+);
+
 export const jobQuestions = pgTable(
   "job_questions",
   {
@@ -217,6 +250,7 @@ export const applications = pgTable(
     email: text("email").notNull(),
     phone: text("phone").notNull(),
     location: text("location").notNull().default(""),
+    consentAt: timestamp("consent_at", { withTimezone: true }),
     status: applicationStatusEnum("status").notNull().default("new"),
     jobTitleSnapshot: text("job_title_snapshot").notNull(),
     jobSlugSnapshot: text("job_slug_snapshot").notNull(),
@@ -325,6 +359,7 @@ export const adminUsers = pgTable(
 export type Department = typeof departments.$inferSelect;
 export type Brand = typeof brands.$inferSelect;
 export type Job = typeof jobs.$inferSelect;
+export type JobOption = typeof jobOptions.$inferSelect;
 export type JobQuestion = typeof jobQuestions.$inferSelect;
 export type Application = typeof applications.$inferSelect;
 export type ApplicationAnswer = typeof applicationAnswers.$inferSelect;

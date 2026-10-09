@@ -10,9 +10,15 @@ export const sampleJob = {
   departmentId: id,
   brandIds: [id],
   primaryBrandId: id,
-  employmentType: "full_time",
-  workMode: "remote",
-  experienceLevel: null,
+  optionIds: [],
+  engagementNote: null,
+  salaryMode: "negotiable",
+  salaryText: "",
+  vacancies: null,
+  experienceText: null,
+  skills: [],
+  benefits: [],
+  niceToHaveMd: "",
   locationText: "Dhaka",
   deadlineAt: null,
   cvRequired: true,
@@ -23,16 +29,18 @@ export const sampleJob = {
   questions: [],
   intent: "save",
 } as const;
-it("validates brands, primary, enums, summary, deadline and unknown fields", () => {
+it("validates brands, primary, option uniqueness, summary, deadline and unknown fields", () => {
   expect(jobInput.safeParse(sampleJob).success).toBe(true);
   for (const bad of [
     { ...sampleJob, brandIds: [] },
     { ...sampleJob, brandIds: [id, id] },
     { ...sampleJob, primaryBrandId: "20000000-0000-4000-8000-000000000001" },
+    { ...sampleJob, optionIds: [id, id] },
     { ...sampleJob, summary: "x".repeat(201) },
     { ...sampleJob, deadlineAt: "2026-10-05" },
     { ...sampleJob, status: "open" },
-    { ...sampleJob, workMode: "anywhere" },
+    { ...sampleJob, salaryMode: "range", salaryText: "" },
+    { ...sampleJob, salaryMode: "range", salaryText: "৳ 1\n৳ 2" },
   ])
     expect(jobInput.safeParse(bad).success).toBe(false);
 });

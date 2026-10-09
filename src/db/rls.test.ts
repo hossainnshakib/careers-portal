@@ -9,6 +9,8 @@ describe.skipIf(!enabled)("anon RLS integration", () => {
     "jobs",
     "job_brands",
     "job_questions",
+    "job_options",
+    "job_option_links",
     "applications",
     "application_answers",
     "attachments",

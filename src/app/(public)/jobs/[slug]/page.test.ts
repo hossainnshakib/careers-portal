@@ -10,9 +10,10 @@ vi.mock("@/components/public/application-form", () => ({ ApplicationForm: mocks.
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not-found"); } }));
 import JobPage, { generateMetadata } from "./page";
 
-const job = { id: "synthetic-job", slug: "web-developer", title: "Web Developer", status: "open", summary: "A thoughtful role", employmentType: "full_time", workMode: "remote", experienceLevel: "mid", locationText: "Dhaka", deadlineAt: null, cvRequired: true, descriptionMd: "**Meaningful work**\n\n<script>unsafe()</script>", responsibilitiesMd: "Build", requirementsMd: "Learn" };
+const job = { id: "synthetic-job", slug: "web-developer", title: "Web Developer", status: "open", summary: "A thoughtful role", locationText: "Dhaka", engagementNote: null, salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null, skills: [], benefits: [], niceToHaveMd: "", cvRequired: true, deadlineAt: null, descriptionMd: "**Meaningful work**\n\n<script>unsafe()</script>", responsibilitiesMd: "Build", requirementsMd: "Learn" };
 const brand = { id: "brand", name: "Brand", slug: "brand", status: "active", logoUrl: null };
-const cached = { job, department: { name: "Technical", slug: "technical" }, brands: [{ brand, primary: true }], questions: [] };
+const optionTags = [{ group: "arrangement", slug: "remote", label: "Work from home" }, { group: "engagement", slug: "full_time", label: "Full-time" }];
+const cached = { job, department: { name: "Technical", slug: "technical" }, brands: [{ brand, primary: true }], questions: [], options: optionTags };
 const freshQuestion = { id: "00000000-0000-4000-8000-000000000001", label: "Fresh question", type: "long_text", required: true, section: "professional", options: null, config: null, helpText: null, sortOrder: 0 };
 const params = () => Promise.resolve({ slug: job.slug });
 beforeEach(() => {

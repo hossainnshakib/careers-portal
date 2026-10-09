@@ -60,11 +60,11 @@ export function anonymousDenied(response: SmokeResponse, origin: string): boolea
       && ["Administrator access required.", "Unauthorized.", "Unauthorized", "Forbidden"].includes(body.error);
   } catch { return false; }
 }
-export function inlineApplyRedirect(response: SmokeResponse, origin: string, path: string): boolean {
-  try {
-    const url = new URL(response.headers.get("location") ?? "", origin);
-    return [301, 308].includes(response.status) && url.origin === origin && url.pathname === path && url.hash === "#apply";
-  } catch { return false; }
+/** The legacy /jobs/:slug/apply route must render the inline form and stay out of indexes. */
+export function applyRouteInlineForm(response: SmokeResponse): boolean {
+  if (response.status !== 200 || response.headers.has("location")) return false;
+  const robots = /<meta[^>]*name=["']robots["'][^>]*>/i.exec(response.body)?.[0] ?? "";
+  return /noindex/i.test(robots) && /id=["']apply["']/.test(response.body);
 }
 
 async function boundedBody(response: Response): Promise<string> {
@@ -105,7 +105,7 @@ export async function runSmoke(base: string, fetcher: typeof fetch = fetch, emit
   const unknown = await request(`/jobs/smoke-unknown-${randomUUID()}`);
   check("unknown job HTTP 404", unknown?.status === 404);
   const legacy = job ? await request(`${job}/apply`) : undefined;
-  check("legacy apply permanent redirect to inline form", !!legacy && !!job && inlineApplyRedirect(legacy, origin, job));
+  check("legacy apply route renders inline form with noindex", !!legacy && applyRouteInlineForm(legacy));
   check("home security headers and enforced production CSP", !!home && securityHeaders(home.headers));
   check("job security headers and enforced production CSP", !!role && securityHeaders(role.headers));
   const admin = await request("/admin");

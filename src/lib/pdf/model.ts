@@ -1,7 +1,7 @@
 export type PdfModel = {
   reference: string; fullName: string; email: string; phone: string; location: string;
   title: string; brands: string[]; department: string; primaryBrand: string;
-  status: string; appliedAt: string; generatedAt: string; timezone: string; locale: string;
+  status: string; appliedAt: string; consentAt?: string; generatedAt: string; timezone: string; locale: string;
   accent: string; logo?: string;
   answers: { label: string; type: string; section: string; value: unknown; optionsSnapshot?: unknown; questionOptions?: unknown }[];
   attachments: { id: string; name: string; size: number; kind: string }[];

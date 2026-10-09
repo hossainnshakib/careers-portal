@@ -38,7 +38,7 @@ export default async function ApplicantPage({ params }: { params: Promise<{ id: 
     <header className="rounded-xl border border-border bg-card p-5">
       <div className="flex flex-wrap items-center gap-3"><h1 className="text-3xl font-semibold">{app.fullName}</h1><StatusBadge status={app.status} /></div>
       <p className="mt-3 text-lg">{app.jobTitleSnapshot}</p><p>{(app.brandNamesSnapshot ?? []).join(" · ")}</p><p>{app.departmentNameSnapshot}</p>
-      <p className="mt-2">{app.reference} · Applied <ViewerDate iso={app.submittedAt.toISOString()} /></p>
+      <p className="mt-2">{app.reference} · Applied <ViewerDate iso={app.submittedAt.toISOString()} />{app.consentAt && <> · Consent given on <ViewerDate iso={app.consentAt.toISOString()} /></>}</p>
     </header>
     <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="min-w-0 space-y-6">

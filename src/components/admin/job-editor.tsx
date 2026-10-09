@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  employmentTypeEnum,
-  experienceLevelEnum,
-  workModeEnum,
-  type Brand,
-  type Department,
-} from "@/db/schema";
+import type { Brand, Department } from "@/db/schema";
 import { jobInput, type JobInput } from "@/lib/validation/jobs";
-import { employmentTypeLabels, experienceLevelLabels, jobStatusLabels, workModeLabels } from "@/lib/admin/display";
+import { missingPublishGroups } from "@/lib/validation/jobs";
+import { jobStatusLabels } from "@/lib/admin/display";
+import {
+  optionGroupLabels,
+  optionGroups,
+  optionLabel,
+  type OptionGroup,
+} from "@/lib/careers/option-labels";
 import { slugify } from "@/lib/slug";
 import { SafeMarkdown } from "@/lib/markdown/render";
 import { jobCommandAction, saveJobAction } from "@/app/admin/(protected)/jobs/actions";
@@ -18,6 +19,13 @@ import { CandidatePreview } from "./candidate-preview";
 
 const inputClass = "mt-1 block w-full rounded border border-input bg-card p-2";
 const buttonClass = "rounded border border-border px-4 py-2 disabled:opacity-50";
+export type EditorOption = {
+  id: string;
+  group: OptionGroup;
+  label: string;
+  slug: string;
+  isActive: boolean;
+};
 function localDateTime(iso: string | null) {
   if (!iso) return "";
   const date = new Date(iso);
@@ -29,6 +37,7 @@ export type JobEditorProps = {
   brands: Brand[];
   departments: Department[];
   sources: { id: string; title: string }[];
+  options: EditorOption[];
   published: boolean;
   status: "draft" | "open" | "closed";
   hasApplications: boolean;
@@ -39,6 +48,7 @@ export function JobEditor({
   brands,
   departments,
   sources,
+  options,
   published,
   status,
   hasApplications,
@@ -55,6 +65,18 @@ export function JobEditor({
   }
   async function save(intent: "save" | "publish") {
     setMessage("");
+    if (intent === "publish") {
+      const selected = draft.optionIds
+        .map((id) => options.find((option) => option.id === id)?.group)
+        .filter((group): group is OptionGroup => !!group);
+      const missing = missingPublishGroups(selected);
+      if (missing.length) {
+        setMessage(
+          `Publishing needs at least one ${missing.map((group) => optionGroupLabels[group].toLowerCase()).join(" and ")} selection.`,
+        );
+        return;
+      }
+    }
     const parsed = jobInput.safeParse({ ...draft, intent });
     if (!parsed.success) {
       setMessage(
@@ -212,58 +234,118 @@ export function JobEditor({
                   ))}
                 </div>
               </fieldset>
+              {optionGroups.map((group) => {
+                const visible = options.filter(
+                  (option) =>
+                    option.group === group &&
+                    (option.isActive || draft.optionIds.includes(option.id)),
+                );
+                return (
+                  <fieldset key={group} className="md:col-span-2">
+                    <legend>
+                      {optionGroupLabels[group]}
+                      {group === "experience" ? " (optional)" : " (select at least one to publish)"}
+                    </legend>
+                    <div className="mt-1 flex flex-wrap gap-x-5 gap-y-2">
+                      {visible.map((option) => (
+                        <label key={option.id} className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={draft.optionIds.includes(option.id)}
+                            onChange={(event) =>
+                              setDraft({
+                                ...draft,
+                                optionIds: event.target.checked
+                                  ? [...draft.optionIds, option.id]
+                                  : draft.optionIds.filter((id) => id !== option.id),
+                              })
+                            }
+                          />
+                          {optionLabel(option)}
+                          {option.isActive ? "" : " (inactive)"}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                );
+              })}
               <label>
-                Employment type
-                <select
-                  aria-label="Employment type"
+                Engagement note (optional, short)
+                <input
                   className={inputClass}
-                  value={draft.employmentType}
+                  value={draft.engagementNote ?? ""}
+                  maxLength={80}
+                  placeholder="e.g. 6 months or one campaign"
                   onChange={(event) =>
-                    field("employmentType", event.target.value as JobInput["employmentType"])
+                    field("engagementNote", event.target.value ? event.target.value : null)
                   }
-                >
-                  {employmentTypeEnum.enumValues.map((value) => (
-                    <option key={value} value={value}>
-                      {employmentTypeLabels[value]}
-                    </option>
-                  ))}
-                </select>
+                />
+                <span className="text-sm">
+                  Shown next to Project-based and Duration-based selections.
+                </span>
               </label>
-              <label>
-                Work mode
-                <select
-                  aria-label="Work mode"
-                  className={inputClass}
-                  value={draft.workMode}
-                  onChange={(event) =>
-                    field("workMode", event.target.value as JobInput["workMode"])
-                  }
-                >
-                  {workModeEnum.enumValues.map((value) => (
-                    <option key={value} value={value}>{workModeLabels[value]}</option>
+              <fieldset className="md:col-span-2">
+                <legend>Salary</legend>
+                <div className="mt-1 flex flex-wrap gap-x-5 gap-y-2">
+                  {(["negotiable", "range"] as const).map((mode) => (
+                    <label key={mode} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="salaryMode"
+                        checked={draft.salaryMode === mode}
+                        onChange={() => field("salaryMode", mode)}
+                      />
+                      {mode === "negotiable" ? "Negotiable" : "Show a range"}
+                    </label>
                   ))}
-                </select>
-              </label>
+                </div>
+                {draft.salaryMode === "range" ? (
+                  <>
+                    <input
+                      aria-label="Salary range"
+                      className={inputClass}
+                      value={draft.salaryText}
+                      maxLength={80}
+                      placeholder="৳ 30,000 – 50,000 / month"
+                      onChange={(event) => field("salaryText", event.target.value)}
+                    />
+                    <span className="text-sm">
+                      One line, up to 80 characters, for example ৳ 30,000 – 50,000 / month or ৳
+                      45,000 / month (negotiable bonus).
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm">The public site shows “Negotiable”.</span>
+                )}
+              </fieldset>
               <label>
-                Experience level
-                <select
-                  aria-label="Experience level"
+                Vacancies (optional)
+                <input
+                  aria-label="Vacancies"
                   className={inputClass}
-                  value={draft.experienceLevel ?? ""}
+                  type="number"
+                  min={1}
+                  max={10000}
+                  value={draft.vacancies ?? ""}
                   onChange={(event) =>
                     field(
-                      "experienceLevel",
-                      event.target.value
-                        ? (event.target.value as NonNullable<JobInput["experienceLevel"]>)
-                        : null,
+                      "vacancies",
+                      event.target.value === "" ? null : Number(event.target.value),
                     )
                   }
-                >
-                  <option value="">Not specified</option>
-                  {experienceLevelEnum.enumValues.map((value) => (
-                    <option key={value} value={value}>{experienceLevelLabels[value]}</option>
-                  ))}
-                </select>
+                />
+              </label>
+              <label>
+                Experience text (optional)
+                <input
+                  className={inputClass}
+                  value={draft.experienceText ?? ""}
+                  maxLength={60}
+                  placeholder="e.g. 1 – 4 years"
+                  onChange={(event) =>
+                    field("experienceText", event.target.value ? event.target.value : null)
+                  }
+                />
               </label>
               <label>
                 Location
@@ -345,6 +427,57 @@ export function JobEditor({
                 </section>
               </div>
             ))}
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="block">
+                Nice to have (Markdown, optional)
+                <textarea
+                  aria-label="Nice to have (Markdown)"
+                  rows={4}
+                  className={inputClass}
+                  value={draft.niceToHaveMd}
+                  maxLength={50000}
+                  onChange={(event) => field("niceToHaveMd", event.target.value)}
+                />
+              </label>
+              <section aria-label="Nice to have preview" className="rounded border border-border p-4">
+                <h3 className="mb-3 font-semibold">Nice to have preview</h3>
+                <SafeMarkdown text={draft.niceToHaveMd} />
+              </section>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="block">
+                Skills & expertise (one per line, up to 20)
+                <textarea
+                  aria-label="Skills"
+                  rows={5}
+                  className={inputClass}
+                  value={draft.skills.join("\n")}
+                  onChange={(event) =>
+                    field(
+                      "skills",
+                      event.target.value === "" ? [] : event.target.value.split("\n"),
+                    )
+                  }
+                />
+                <span className="text-sm">{draft.skills.length}/20 · each up to 40 characters</span>
+              </label>
+              <label className="block">
+                Compensation & benefits (one per line, up to 12)
+                <textarea
+                  aria-label="Benefits"
+                  rows={5}
+                  className={inputClass}
+                  value={draft.benefits.join("\n")}
+                  onChange={(event) =>
+                    field(
+                      "benefits",
+                      event.target.value === "" ? [] : event.target.value.split("\n"),
+                    )
+                  }
+                />
+                <span className="text-sm">{draft.benefits.length}/12 · each up to 60 characters</span>
+              </label>
+            </div>
           </section>
           <QuestionBuilder
             questions={draft.questions}
