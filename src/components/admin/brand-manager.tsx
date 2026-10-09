@@ -12,6 +12,7 @@ import {
 import type { ActionResult } from "@/lib/actions/result";
 import { BrandLogo } from "@/components/brand-logo";
 import { accentColor } from "@/lib/careers/presentation";
+import { sectorLabels } from "@/lib/admin/display";
 import { contrastRatio, readableAccentText } from "@/lib/brands/contrast";
 
 const blank: BrandInput = {
@@ -96,7 +97,7 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
           >
             {sectorEnum.enumValues.map((value) => (
               <option key={value} value={value}>
-                {value.replaceAll("_", " ")}
+                {sectorLabels[value]}
               </option>
             ))}
           </select>
@@ -229,7 +230,7 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
                     )}
                   </td>
                   <td className="p-3">{row.name}</td>
-                  <td className="p-3">{row.sector.replaceAll("_", " ")}</td>
+                  <td className="p-3">{sectorLabels[row.sector]}</td>
                   <td className="p-3">{row.status === "active" ? "Active" : "Hidden"}</td>
                   <td className="flex gap-2 p-3">
                     <button

@@ -19,6 +19,7 @@ vi.mock("@/lib/supabase/server", () => ({
   createSupabaseServerClient: async () => ({ auth: { getUser: mocks.getUser, getClaims: () => verifiedTestClaims(mocks.getUser) } }),
 }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
+vi.mock("@/db/queries/admin-sessions", () => ({ hasCurrentAdminSession: async () => true }));
 vi.mock("@/db/queries/brands", () => ({
   saveBrand: mocks.save,
   reorderBrand: mocks.reorder,
