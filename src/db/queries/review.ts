@@ -3,10 +3,11 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
-  adminNotes, adminUsers, applications, applicationAnswers, applicationStatusEvents, attachments,
+  adminNotes, adminUsers, applications, applicationStatusEvents, attachments,
   brands, departments, jobBrands, jobs, type Attachment,
 } from "@/db/schema";
 import { withUploadSession, type ApplicationTransaction } from "./applications";
+import { loadDisplayAnswers } from "./application-answers";
 import type { ReviewFilters } from "@/lib/validation/review";
 import { quarantineReviewFiles, removeReviewQuarantine, restoreReviewFiles, signReviewAttachment } from "@/lib/storage/review-files";
 
@@ -58,7 +59,7 @@ export async function loadReviewProfile(id: string) {
   const [application] = await db.select().from(applications).where(eq(applications.id, id)).limit(1);
   if (!application) return null;
   // Keep this bounded read set sequential for the shared transaction pooler.
-  const answers = await db.select().from(applicationAnswers).where(eq(applicationAnswers.applicationId, id)).orderBy(asc(applicationAnswers.sortOrder));
+  const answers = await loadDisplayAnswers(id);
   const files = await db.select().from(attachments).where(eq(attachments.applicationId, id)).orderBy(asc(attachments.createdAt));
   const notes = await db.select().from(adminNotes).where(eq(adminNotes.applicationId, id)).orderBy(desc(adminNotes.createdAt), desc(adminNotes.id));
   const events = await db.select({ event: applicationStatusEvents, adminEmail: adminUsers.email }).from(applicationStatusEvents)

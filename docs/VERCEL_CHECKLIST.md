@@ -2,7 +2,7 @@
 
 ## Build and environment
 - Next.js 15.5.27 / Node 24 / pnpm 12.9.1; install with frozen lockfile and build with `pnpm build`. No static export: admin, uploads, inline forms and PDFs require server runtime.
-- Preview the actual **v1-complete** branch; main is not consolidated yet. Only the owner selects/merges the final production release branch.
+- Main now contains the reviewed V1 merge. Preview **fix-pdf-tracing** for the packaging/display fixes before any owner release decision; the agent does not merge or update main.
 - Set public variables before the build. NEXT_PUBLIC_SITE_URL is an optional explicit origin override. Otherwise, on Vercel, resolution prefers VERCEL_PROJECT_PRODUCTION_URL then VERCEL_URL with HTTPS; outside Vercel the default is http://localhost:3000. Enable Vercel's automatic System Environment Variables exposure. NEXT_PUBLIC_CONTACT_EMAIL is optional but required to finish owner contact/privacy review. Secrets stay server-only, without NEXT_PUBLIC prefixes. See VERCEL_ENV_TABLE.md.
 - Next config bakes the resolved public origin into NEXT_PUBLIC_SITE_URL for browser/server consistency; client modules cannot directly read unprefixed platform variables. Prefer an explicit approved custom origin for the real production launch. The requested production-project-first precedence can make preview canonical URLs point at the project's production domain. Auth/relative redirects stay request-bound so a preview does not send login/submission navigation to another environment.
 - Preview uses dev Supabase only, APP_ENV=development and its independent dev pin. Production uses a distinct project and explicit APP_ENV=production, with real Turnstile keys. Missing/unknown APP_ENV and production test-key values fail build/start.
@@ -19,8 +19,28 @@ Exactly one daily cron calls `/api/cron/daily` at 0 0 UTC. Set CRON_SECRET; Verc
 - `serverExternalPackages` includes @react-pdf/renderer and sharp. The Linux build must install the correct optional sharp prebuilt binaries; do not deploy Windows node_modules.
 - Installed sharp 0.35.5 declares Linux x64 sharp/libvips optional packages and both are in the frozen pnpm lockfile; the workspace has no optional-dependency exclusion. [Sharp installation docs](https://sharp.pixelplumbing.com/install/) require optional packages, Node-API v9 (Node >=20.9) and a compatible Linux runtime; Node 24 meets the Node requirement. Install on Vercel Linux with optional dependencies enabled, not with no-optional/omit-optional flags. Current logo SVGs contain paths rather than text, so sharp does not need extra system fonts for them; PDF uses its traced static fonts separately. Installed sharp has no install lifecycle script to add to the existing build-permission list.
 - `outputFileTracingIncludes` explicitly covers `assets/fonts/*.ttf` and `public/brands/*` for `/api/admin/applications/*/pdf`. Check deployed bundle files, not only local compilation. Hind Siliguri static Regular/Bold are the PDF fonts; Inter variable is website-only.
+- PDF runtime data is explicitly included with `./node_modules/.pnpm/pdfkit@*/node_modules/pdfkit/**` for that same PDF route. pdfkit 0.20.1 is transitive through react-pdf and lazily uses `createRequire('#standard-fonts/Helvetica')`; its package-import modules/chunks were not discovered automatically. Existing renderer/sharp externalization is sufficient with this include; no dependency or PDF layout change is required.
 - Fonts/assets resolve from the function's application working directory. First real download must confirm the trace paths survive Vercel packaging, no remote font fetch occurs, and SVG logo bytes rasterize into bounded PNGs.
 - PDF response is private/no-store, generated in memory and downloadable with safe UTF-8 filename. Notes are not queried unless explicitly included. No filesystem persistence is assumed in serverless runtime.
+
+### Post-build PDF trace regression guard
+`pnpm build` automatically runs `scripts/check-pdf-trace.ts --require-build`. It parses `.next/server/app/api/admin/applications/[id]/pdf/route.js.nft.json` and fails if lazy Helvetica CJS, its chunks, ICC data, either static Bengali font or any current static brand logo is absent. Run `pnpm test:pdf-trace` manually to recheck; it skips cleanly without any build output, but a missing route trace after a build is a failure.
+
+Verified local before/after evidence (2026-10-09, main-derived branch):
+| Asset/package | Before | After |
+|---|---|---|
+| pdfkit traced files | 3 (Node entry, package.json, ICC) | 76, including its complete installed package |
+| Helvetica.cjs | Missing | Present |
+| Standard font CJS/MJS modules | 0 | 28 |
+| Standard font dependency chunks | 0 | 2 |
+| AFM files | 0 | 14 (legacy data also covered) |
+| sRGB ICC profile | Present | Present |
+| Hind Siliguri Regular/Bold | Both present | Both present |
+| Static brand logos | All 8 present | All 8 present |
+
+fontkit, linebreak, png-js, restructure, unicode-properties and unicode-trie runtime entry files were already present and remain so. Their installed compiled Unicode/shaper data is embedded in distributed code; fontkit source-only trie/JSON files not listed are not additional missing runtime assets. No unsupported broad dependency externals or extra package copies were added.
+
+Local renderer tests can find every installed node_modules file and therefore cannot expose a stripped-serverless-package failure like this. The trace guard catches omissions in the local Next build manifest, not whether Vercel copied/loaded that manifest correctly on Linux. Confirm cold and warm Profile PDF downloads on the branch preview with MFA, including Bengali text, before promotion.
 
 ## Test first on a dev-backed preview (owner)
 1. **MFA login**: fresh ephemeral/test admin, password re-verification for enrollment, TOTP challenge and password-only denial. Verify HttpOnly/Secure cookies over HTTPS and CSP without unsafe-eval.

@@ -3,7 +3,7 @@ export type PdfModel = {
   title: string; brands: string[]; department: string; primaryBrand: string;
   status: string; appliedAt: string; generatedAt: string; timezone: string; locale: string;
   accent: string; logo?: string;
-  answers: { label: string; type: string; section: string; value: unknown }[];
+  answers: { label: string; type: string; section: string; value: unknown; optionsSnapshot?: unknown; questionOptions?: unknown }[];
   attachments: { id: string; name: string; size: number; kind: string }[];
   notes: { note: string; author: string; createdAt: string }[];
 };

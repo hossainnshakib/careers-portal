@@ -2,7 +2,9 @@ import { fork, type ChildProcess } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { test as base, expect } from "@playwright/test";
 
-type Account = { email: string; password: string; prefix: string; cookieJSON: string; otp: () => Promise<string> };
+type Account = { email: string; password: string; prefix: string; cookieJSON: string; otp: () => Promise<string>;
+  refreshCookies: (cookies: string) => Promise<string>; expireSession: (cookies: string) => Promise<void>;
+  changePassword: () => Promise<string>; removeFactor: () => Promise<void> };
 type PublicFixture = Account & {
   job: { slug: string; id: string; questionId: string; textId: string; brandSlug: string; departmentSlug: string; title: string };
   trackSession: (id: string) => void;
@@ -58,6 +60,10 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
       prefix: account.prefix,
       cookieJSON: account.cookieJSON,
       otp: async () => { const code = waitFor(child, "otp"); child.send("otp"); return (await code).code; },
+      refreshCookies: async cookies => { const result = waitFor(child, "session-refreshed"); child.send({ type: "refresh-session", cookies }); return (await result).cookies; },
+      expireSession: async cookies => { const result = waitFor(child, "session-expired"); child.send({ type: "expire-session", cookies }); await result; },
+      changePassword: async () => { const result = waitFor(child, "password-changed"); child.send({ type: "change-password" }); return (await result).password; },
+      removeFactor: async () => { const result = waitFor(child, "factor-removed"); child.send({ type: "remove-factor" }); await result; },
       job: JSON.parse(account.publicJobJSON ?? "null"),
       review: JSON.parse(account.reviewJSON ?? "null"),
       trackSession: (id) => child.send({ type: "session", id }),

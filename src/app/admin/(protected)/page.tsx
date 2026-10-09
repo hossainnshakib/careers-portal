@@ -3,6 +3,7 @@ import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { loadReviewDashboard } from "@/db/queries/review";
 import { applicationStatusEnum } from "@/db/schema";
 import { ApplicationTable } from "@/components/admin/application-table";
+import { applicationStatusLabel } from "@/lib/admin/display";
 
 export default async function DashboardPage() {
   await requireAdmin().catch(redirectAdminDenial);
@@ -12,8 +13,8 @@ export default async function DashboardPage() {
     <section>
       <h1 className="text-2xl font-bold">Dashboard</h1>
       <div className="my-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {[{ status: "", label: "Total", count: total }, ...applicationStatusEnum.enumValues.map((status) => ({ status, label: status.replaceAll("_", " "), count: counts.find((row) => row.status === status)?.count ?? 0 }))].map((item) =>
-          <a key={item.label} href={item.status ? `/admin/applications?status=${item.status}` : "/admin/applications"} className="rounded-xl border border-border bg-card p-5"><h2 className="capitalize">{item.label}</h2><p className="mt-2 text-3xl font-semibold">{item.count}</p></a>)}
+        {[{ status: "", label: "Total", count: total }, ...applicationStatusEnum.enumValues.map((status) => ({ status, label: applicationStatusLabel(status), count: counts.find((row) => row.status === status)?.count ?? 0 }))].map((item) =>
+          <a key={item.label} href={item.status ? `/admin/applications?status=${item.status}` : "/admin/applications"} className="rounded-xl border border-border bg-card p-5"><h2>{item.label}</h2><p className="mt-2 text-3xl font-semibold">{item.count}</p></a>)}
       </div>
       <h2 className="mb-4 text-xl font-semibold">Latest applications</h2>
       <ApplicationTable rows={latest} brandAccents={brandAccents} />

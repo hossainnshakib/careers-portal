@@ -9,7 +9,8 @@
   "packageManager": "pnpm@12.9.1",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node --import tsx scripts/check-pdf-trace.ts --require-build",
+    "test:pdf-trace": "node --import tsx scripts/check-pdf-trace.ts",
     "start": "next start",
     "smoke": "node --import tsx scripts/smoke.ts",
     "lint": "eslint",

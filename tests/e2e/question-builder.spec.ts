@@ -107,6 +107,6 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
     page
       .getByRole("row")
       .filter({ hasText: `${adminAccount.prefix}Questions` })
-      .getByRole("cell", { name: "open", exact: true }),
+      .getByRole("cell", { name: "Open", exact: true }),
   ).toBeVisible();
 });

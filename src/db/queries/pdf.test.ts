@@ -4,7 +4,7 @@ const state = vi.hoisted(() => ({ tables: [] as unknown[] }));
 import { adminNotes, applications } from "@/db/schema";
 vi.mock("@/db", () => ({ getDb: () => ({ select: () => {
   let table: unknown;
-  const chain = { from: (value: unknown) => { table = value; state.tables.push(value); return chain; }, where: () => chain, limit: () => chain, orderBy: () => chain,
+  const chain = { from: (value: unknown) => { table = value; state.tables.push(value); return chain; }, leftJoin: () => chain, where: () => chain, limit: () => chain, orderBy: () => chain,
     then: (resolve: (rows: object[]) => unknown) => Promise.resolve(table === applications ? [{ primaryBrandSnapshot: "Test brand" }] : []).then(resolve) };
   return chain;
 } }) }));

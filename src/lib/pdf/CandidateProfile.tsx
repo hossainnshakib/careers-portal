@@ -3,6 +3,7 @@ import { Document, Font, Image as PdfImage, Link, Page, StyleSheet, Text, View }
 import { resolve } from "node:path";
 import { pdfDate, pdfText, type PdfModel } from "./model";
 import { safeApplicantUrl } from "@/lib/validation/review";
+import { displayAnswerValue } from "@/lib/questions/display-answer";
 
 let registered = false;
 export function registerProfileFonts() {
@@ -30,10 +31,9 @@ function displayAnswer(answer: PdfModel["answers"][number], model: PdfModel) {
     const ids = Array.isArray(answer.value) ? answer.value : [];
     return model.attachments.filter((file) => ids.includes(file.id)).map((file) => file.name).join("; ") || "Attachment unavailable";
   }
-  if (typeof answer.value === "boolean") return answer.value ? "Yes" : "No";
-  if (typeof answer.value === "string" || typeof answer.value === "number") return String(answer.value);
-  if (Array.isArray(answer.value)) return answer.value.filter((value) => typeof value === "string" || typeof value === "number").join(", ");
-  return "No answer";
+  const value = displayAnswerValue({ typeSnapshot: answer.type, value: answer.value,
+    questionOptions: answer.questionOptions, optionsSnapshot: answer.optionsSnapshot });
+  return Array.isArray(value) ? value.join(", ") : value;
 }
 export function CandidateProfile({ model }: { model: PdfModel }) {
   registerProfileFonts();

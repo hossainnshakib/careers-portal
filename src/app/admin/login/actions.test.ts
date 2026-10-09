@@ -5,18 +5,22 @@ const mocks = vi.hoisted(() => ({
   findAdmin: vi.fn(),
   signInWithPassword: vi.fn(),
   signOut: vi.fn(),
+  getClaims: vi.fn(),
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({
   createSupabaseServerClient: async () => ({ auth: mocks }),
 }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
+vi.mock("@/db/queries/admin-sessions", () => ({ hasCurrentAdminSession: async () => true }));
 import { login, logout } from "./actions";
 
 describe("authentication actions", () => {
   beforeEach(() => {
     vi.resetAllMocks();
     mocks.signOut.mockResolvedValue({ error: null });
+    mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
+    mocks.getClaims.mockResolvedValue({ data: { claims: { sub: "user-id", aal: "aal1" } }, error: null });
   });
   it("validates credentials before attempting authentication", async () => {
     expect((await login({ email: "invalid", password: "" })).ok).toBe(false);
@@ -56,5 +60,12 @@ describe("authentication actions", () => {
     mocks.findAdmin.mockResolvedValue({ userId: "user-id" });
     expect((await login({ email: "test@example.com", password: "test-password" })).ok).toBe(true);
     expect((await logout()).ok).toBe(true);
+  });
+  it("preserves an existing verified same-user AAL2 session instead of creating AAL1 again", async () => {
+    mocks.getUser.mockResolvedValue({ data: { user: { id: "user-id", email: "test@example.com" } }, error: null });
+    mocks.findAdmin.mockResolvedValue({ userId: "user-id" });
+    mocks.getClaims.mockResolvedValue({ data: { claims: { sub: "user-id", aal: "aal2", session_id: "00000000-0000-4000-8000-000000000001" } }, error: null });
+    expect((await login({ email: "test@example.com", password: "not-reused" })).ok).toBe(true);
+    expect(mocks.signInWithPassword).not.toHaveBeenCalled();
   });
 });

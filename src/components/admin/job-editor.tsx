@@ -9,6 +9,7 @@ import {
   type Department,
 } from "@/db/schema";
 import { jobInput, type JobInput } from "@/lib/validation/jobs";
+import { employmentTypeLabels, experienceLevelLabels, jobStatusLabels, workModeLabels } from "@/lib/admin/display";
 import { slugify } from "@/lib/slug";
 import { SafeMarkdown } from "@/lib/markdown/render";
 import { jobCommandAction, saveJobAction } from "@/app/admin/(protected)/jobs/actions";
@@ -97,7 +98,7 @@ export function JobEditor({
   return (
     <section className="space-y-6">
       <h1 className="text-2xl font-bold">{draft.id ? "Edit job" : "Create job"}</h1>
-      <p>Status: {status}</p>
+      <p>Status: {jobStatusLabels[status]}</p>
       <form
         noValidate
         onSubmit={(event) => {
@@ -223,7 +224,7 @@ export function JobEditor({
                 >
                   {employmentTypeEnum.enumValues.map((value) => (
                     <option key={value} value={value}>
-                      {value.replaceAll("_", " ")}
+                      {employmentTypeLabels[value]}
                     </option>
                   ))}
                 </select>
@@ -239,7 +240,7 @@ export function JobEditor({
                   }
                 >
                   {workModeEnum.enumValues.map((value) => (
-                    <option key={value}>{value}</option>
+                    <option key={value} value={value}>{workModeLabels[value]}</option>
                   ))}
                 </select>
               </label>
@@ -260,7 +261,7 @@ export function JobEditor({
                 >
                   <option value="">Not specified</option>
                   {experienceLevelEnum.enumValues.map((value) => (
-                    <option key={value}>{value}</option>
+                    <option key={value} value={value}>{experienceLevelLabels[value]}</option>
                   ))}
                 </select>
               </label>

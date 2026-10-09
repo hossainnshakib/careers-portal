@@ -3,12 +3,13 @@ const mocks = vi.hoisted(() => ({ getUser: vi.fn(), getClaims: vi.fn(), findAdmi
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createSupabaseServerClient: async () => ({ auth: { ...mocks, mfa: mocks } }) }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
+vi.mock("@/db/queries/admin-sessions", () => ({ hasCurrentAdminSession: async () => true }));
 import { enrollMfaAction, verifyMfaAction } from "./actions";
 const id = "00000000-0000-4000-8000-000000000001";
 const password = "correct horse battery staple";
 beforeEach(() => {
   vi.resetAllMocks(); mocks.getUser.mockResolvedValue({ data: { user: { id, email: "admin@example.com" } }, error: null });
-  mocks.findAdmin.mockResolvedValue({ userId: id }); mocks.getClaims.mockResolvedValue({ data: { claims: { sub: id, aal: "aal2" } }, error: null });
+  mocks.findAdmin.mockResolvedValue({ userId: id }); mocks.getClaims.mockResolvedValue({ data: { claims: { sub: id, aal: "aal2", session_id: id } }, error: null });
   mocks.signInWithPassword.mockResolvedValue({ error: null });
   mocks.listFactors.mockResolvedValue({ data: { all: [] }, error: null });
   mocks.enroll.mockResolvedValue({ error: null, data: { id, totp: { qr_code: "qr-code", secret: "setup-secret" } } });

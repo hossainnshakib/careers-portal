@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({ getUser: vi.fn(), findAdmin: vi.fn(), load: vi
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createSupabaseServerClient: async () => ({ auth: { getUser: mocks.getUser, getClaims: () => verifiedTestClaims(mocks.getUser) } }) }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
+vi.mock("@/db/queries/admin-sessions", () => ({ hasCurrentAdminSession: async () => true }));
 vi.mock("@/db/queries/pdf", () => ({ loadPdfProfile: mocks.load }));
 vi.mock("@/lib/pdf/render", () => ({ renderProfilePdf: mocks.render }));
 import { GET } from "./route";

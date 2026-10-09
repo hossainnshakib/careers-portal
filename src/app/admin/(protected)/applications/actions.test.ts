@@ -4,6 +4,7 @@ const mocks = vi.hoisted(() => ({ getUser: vi.fn(), findAdmin: vi.fn(), status: 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/supabase/server", () => ({ createSupabaseServerClient: async () => ({ auth: { getUser: mocks.getUser, getClaims: () => verifiedTestClaims(mocks.getUser) } }) }));
 vi.mock("@/db/queries/admins", () => ({ findAdmin: mocks.findAdmin }));
+vi.mock("@/db/queries/admin-sessions", () => ({ hasCurrentAdminSession: async () => true }));
 vi.mock("@/db/queries/review", () => ({ changeReviewStatus: mocks.status, addReviewNote: mocks.add, deleteReviewNote: mocks.remove, deleteReviewApplication: mocks.deletion }));
 vi.mock("next/cache", () => ({ revalidatePath: mocks.path }));
 import { addNoteAction, changeStatusAction, deleteApplicationAction, deleteNoteAction } from "./actions";

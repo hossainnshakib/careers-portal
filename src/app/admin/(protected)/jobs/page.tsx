@@ -4,6 +4,8 @@ import { listJobBrandMarks, listJobs } from "@/db/queries/jobs";
 import { listBrands } from "@/db/queries/brands";
 import { listDepartments } from "@/db/queries/departments";
 import { jobFilters } from "@/lib/validation/jobs";
+import { jobStatusLabels } from "@/lib/admin/display";
+import { jobStatusEnum } from "@/db/schema";
 import { BrandDot } from "@/components/brand-dot";
 
 export default async function JobsPage({
@@ -51,8 +53,8 @@ export default async function JobsPage({
             className="block rounded border border-input p-2"
           >
             <option value="">All statuses</option>
-            {["draft", "open", "closed"].map((status) => (
-              <option key={status}>{status}</option>
+            {jobStatusEnum.enumValues.map((status) => (
+              <option key={status} value={status}>{jobStatusLabels[status]}</option>
             ))}
           </select>
         </label>
@@ -113,7 +115,7 @@ export default async function JobsPage({
                   <td className="p-3">{row.title}</td>
                   <td className="p-3">{row.department}</td>
                   <td className="p-3"><div className="flex flex-wrap gap-3">{marks.filter(mark => mark.jobId === row.id).map(mark => <span key={mark.id} className="inline-flex items-center gap-2"><BrandDot color={mark.accentColor} />{mark.name}</span>)}</div></td>
-                  <td className="p-3">{row.status}</td>
+                  <td className="p-3">{jobStatusLabels[row.status]}</td>
                   <td className="p-3">
                     <a href={`/admin/jobs/${row.id}/edit`}>Edit {row.title}</a>
                   </td>

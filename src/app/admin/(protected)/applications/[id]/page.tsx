@@ -9,6 +9,8 @@ import { StatusBadge } from "@/components/admin/status-badge";
 import { ViewerDate } from "@/components/admin/viewer-date";
 import { DeleteApplicationControl, DeleteNoteButton, ReviewControls } from "@/components/admin/review-controls";
 import { PdfDownload } from "@/components/admin/pdf-download";
+import { displayAnswerValue } from "@/lib/questions/display-answer";
+import { applicationStatusLabel } from "@/lib/admin/display";
 
 export default async function ApplicantPage({ params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin().catch(redirectAdminDenial);
@@ -25,9 +27,9 @@ export default async function ApplicantPage({ params }: { params: Promise<{ id: 
     }
     const url = answer.typeSnapshot === "url" ? safeApplicantUrl(answer.value) : null;
     if (url) return <a className="break-all underline" href={url} target="_blank" rel="noopener noreferrer nofollow">{url}</a>;
-    if (typeof answer.value === "boolean") return <p>{answer.value ? "Yes" : "No"}</p>;
-    if (Array.isArray(answer.value)) return <ul className="list-inside list-disc">{answer.value.map((value, index) => <li key={index}>{typeof value === "string" || typeof value === "number" ? value : "Unsupported answer"}</li>)}</ul>;
-    return <p className="whitespace-pre-wrap break-words">{typeof answer.value === "string" || typeof answer.value === "number" ? answer.value : "No answer"}</p>;
+    const value = displayAnswerValue(answer);
+    if (Array.isArray(value)) return <ul className="list-inside list-disc">{value.map((item, index) => <li key={index}>{item}</li>)}</ul>;
+    return <p className="whitespace-pre-wrap break-words">{value}</p>;
   }
   return <section className="space-y-6">
     {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
@@ -51,7 +53,7 @@ export default async function ApplicantPage({ params }: { params: Promise<{ id: 
           </section>;
         })}
         {previous.length > 0 && <section className="rounded border border-border p-5"><h2 className="mb-3 text-xl font-semibold">Previous applications from this email</h2><ul className="space-y-2">{previous.map((row) => <li key={row.id}><a href={`/admin/applications/${row.id}`} className="underline">{row.reference} · {row.jobTitle}</a> · <ViewerDate iso={row.submittedAt.toISOString()} /></li>)}</ul>{previous.length === 50 && <p className="mt-3 text-sm">Showing the latest 50 other applications.</p>}</section>}
-        <section aria-label="Status history" className="rounded border border-border p-5"><h2 className="mb-3 text-xl font-semibold">Status history</h2><ul className="space-y-3">{events.map((event) => <li key={event.id}><p className="capitalize">{event.fromStatus?.replaceAll("_", " ") ?? "Submitted"} → {event.toStatus.replaceAll("_", " ")}</p><p className="break-all text-xs text-muted-foreground"><ViewerDate iso={event.createdAt.toISOString()} /> · {event.adminEmail ?? (event.adminUserId ? `Admin ${event.adminUserId}` : "Application submission")}</p></li>)}</ul></section>
+        <section aria-label="Status history" className="rounded border border-border p-5"><h2 className="mb-3 text-xl font-semibold">Status history</h2><ul className="space-y-3">{events.map((event) => <li key={event.id}><p>{event.fromStatus ? applicationStatusLabel(event.fromStatus) : "Submitted"} → {applicationStatusLabel(event.toStatus)}</p><p className="break-all text-xs text-muted-foreground"><ViewerDate iso={event.createdAt.toISOString()} /> · {event.adminEmail ?? (event.adminUserId ? `Admin ${event.adminUserId}` : "Application submission")}</p></li>)}</ul></section>
       </div>
       <aside className="min-w-0 space-y-6">
         <PdfDownload applicationId={app.id} />
