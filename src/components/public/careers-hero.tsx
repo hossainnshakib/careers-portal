@@ -3,19 +3,22 @@ import type { JobCard, PublicBrand } from "@/lib/careers/filters";
 import { accentColor } from "@/lib/careers/presentation";
 
 export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicBrand[] }) {
-  const titles = (duplicate: boolean) => jobs.map(job => <li key={job.id}>
-    <Link href={`/jobs/${job.slug}`} tabIndex={duplicate ? -1 : undefined} className="block whitespace-nowrap rounded-lg border border-border bg-card px-4 py-3">{job.title}</Link>
+  const titles = (duplicate: boolean) => jobs.map((job, index) => <li key={job.id}>
+    <Link href={`/jobs/${job.slug}`} tabIndex={duplicate ? -1 : undefined}
+      className={`block whitespace-nowrap rounded-full border border-border bg-card px-4 py-2.5 font-bold ${index % 4 === 3 ? "text-poster" : ""}`}>{job.title}</Link>
   </li>);
-  return <section aria-labelledby="careers-title" className="pb-10 pt-14 sm:pt-20">
+  return <section aria-labelledby="careers-title" className="pb-10 pt-12 sm:pt-16">
     <div className="mx-auto max-w-3xl text-center">
-      <p className="inline-block rounded-lg border border-border px-4 py-2">{jobs.length} open {jobs.length === 1 ? "role" : "roles"} · {brands.length} {brands.length === 1 ? "brand" : "brands"}</p>
-      <h1 id="careers-title" className="mt-7 text-4xl font-bold leading-tight tracking-tight sm:text-6xl">Good <span className="relative inline-block pb-3">work
-        <span aria-hidden="true" className="absolute inset-x-0 bottom-0 flex h-1.5 gap-1">{brands.map(brand => <span key={brand.id} className="flex-1" style={{ backgroundColor: accentColor(brand.accentColor) }} />)}</span>
-      </span> starts here.</h1>
+      <p className="inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 font-bold">
+        <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-poster" />
+        We&rsquo;re hiring · {jobs.length} open {jobs.length === 1 ? "role" : "roles"} across {brands.length} {brands.length === 1 ? "brand" : "brands"}
+      </p>
+      <h1 id="careers-title" className="mt-8 text-5xl font-black leading-[0.95] tracking-tight sm:text-7xl">Good work
+        starts <span className="text-poster">here</span>.</h1>
       <p className="mt-6 text-lg text-muted-foreground">Browse open roles across our brands. No account needed.</p>
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-5">
         <a href="#roles" className="rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground">Browse roles</a>
-        <a href="#how-it-works" className="rounded-lg border border-border px-6 py-3">How applying works</a>
+        <a href="#how-it-works" className="font-bold underline">How applying works</a>
       </div>
     </div>
     {!!jobs.length && <div className="roles-marquee mt-12 overflow-hidden py-2" aria-label="Explore open roles">
@@ -24,5 +27,8 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
         <ul aria-hidden="true" className="roles-marquee-copy flex gap-3 pr-3">{titles(true)}</ul>
       </div>
     </div>}
+    <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-hidden="true">
+      {brands.slice(0, 4).map(brand => <span key={brand.id} className="h-1 w-10" style={{ backgroundColor: accentColor(brand.accentColor) }} />)}
+    </div>
   </section>;
 }

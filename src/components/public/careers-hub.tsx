@@ -42,12 +42,12 @@ export function CareersHub({ jobs, brands, departments }: {
   }
   const clear = () => { void setFilters(null); };
   function group(key: FilterKey) {
-    return <fieldset key={key}><legend className="mb-3 font-bold">{labels[key]}</legend><div className="space-y-3">{options[key].map(option => {
+    return <fieldset key={key}><legend className="mb-3 font-black">{labels[key]}</legend><div className="space-y-3">{options[key].map(option => {
       const count = optionCount(jobs, filters, key, option.value);
       const checked = filters[key].includes(option.value);
-      return <label key={option.value} className={`flex items-start gap-3 ${!count ? "text-muted-foreground" : ""}`}>
+      return <label key={option.value} className={`flex items-start gap-3 font-bold ${!count ? "text-muted-foreground" : ""}`}>
         <input className="mt-1 h-4 w-4 shrink-0" type="checkbox" checked={checked} disabled={!count && !checked} onChange={() => toggle(key, option.value)} />
-        <span>{option.label} ({count})</span>
+        <span>{option.label} <span className="text-muted-foreground">({count})</span></span>
       </label>;
     })}</div></fieldset>;
   }
@@ -68,25 +68,25 @@ export function CareersHub({ jobs, brands, departments }: {
       </div>}
     </section>
     <section id="roles" aria-label="Open roles" className="scroll-mt-8 pt-10">
-      <h2 className="mb-8 text-3xl font-bold">Find your role</h2>
+      <h2 className="mb-8 text-4xl font-black tracking-tight">Find your role</h2>
       <div className="grid gap-8 md:grid-cols-[14rem_1fr]">
         <aside aria-label="Job filters" className="hidden md:block"><div className="sticky top-6 max-h-[calc(100vh-3rem)] space-y-7 overflow-y-auto p-1">
-          {sidebarKeys.map(group)}<button onClick={clear} className="underline">Clear all</button>
+          {sidebarKeys.map(group)}<button onClick={clear} className="font-bold underline">Clear all</button>
         </div></aside>
         <div className="min-w-0">
-          <label className="block font-bold">Search roles<input aria-label="Search roles" type="search" maxLength={200} value={filters.q} onChange={event => void setFilters({ q: event.target.value })} className="mt-3 block w-full rounded-lg border border-input bg-card p-3" /></label>
-          <button onClick={() => mobileDialog.current?.showModal()} className="mt-4 rounded-lg border border-border px-4 py-3 md:hidden">Filters</button>
+          <label className="block font-black">Search roles<input aria-label="Search roles" type="search" maxLength={200} value={filters.q} onChange={event => void setFilters({ q: event.target.value })} className="mt-3 block w-full rounded-lg border border-input bg-card p-3 font-bold" /></label>
+          <button onClick={() => mobileDialog.current?.showModal()} className="mt-4 rounded-lg border-2 border-foreground px-4 py-3 font-bold md:hidden">Filters</button>
           <div className="my-5 flex flex-wrap gap-2">
-            {filterKeys.flatMap(key => filters[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="rounded-lg border border-border px-3 py-2">{options[key].find(option => option.value === value)?.label ?? value} ×</button>))}
-            {filters.q && <button aria-label="Remove search filter" onClick={() => void setFilters({ q: "" })} className="rounded-lg border border-border px-3 py-2">{filters.q} ×</button>}
+            {filterKeys.flatMap(key => filters[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="rounded-full border border-border bg-card px-3 py-1.5 font-bold">{options[key].find(option => option.value === value)?.label ?? value} ×</button>))}
+            {filters.q && <button aria-label="Remove search filter" onClick={() => void setFilters({ q: "" })} className="rounded-full border border-border bg-card px-3 py-1.5 font-bold">{filters.q} ×</button>}
           </div>
-          <p role="status" className="mb-7 text-muted-foreground">{visible.length} open {visible.length === 1 ? "role" : "roles"}</p>
+          <p role="status" className="mb-7 font-bold">{visible.length} open {visible.length === 1 ? "role" : "roles"}</p>
           <CareersResults jobs={visible} departments={departments} onClear={clear} />
         </div>
       </div>
     </section>
     <dialog ref={mobileDialog} aria-label="Job filters" className="fixed inset-x-0 bottom-0 top-auto m-0 max-h-[85vh] w-full max-w-none overflow-y-auto rounded-t-lg border border-border bg-card p-6 text-foreground backdrop:bg-black/40">
-      <div className="mb-6 flex justify-between gap-4"><button onClick={() => mobileDialog.current?.close()} className="underline">Done filtering</button><button onClick={clear} className="underline">Clear all</button></div>
+      <div className="mb-6 flex justify-between gap-4"><button onClick={() => mobileDialog.current?.close()} className="font-bold underline">Done filtering</button><button onClick={clear} className="font-bold underline">Clear all</button></div>
       <div className="space-y-7">{sidebarKeys.map(group)}</div>
     </dialog>
     <CareersInfo />

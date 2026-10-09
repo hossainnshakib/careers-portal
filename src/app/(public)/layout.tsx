@@ -7,5 +7,9 @@ import { PublicFooter } from "@/components/public/public-footer";
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const configured = isServerEnvConfigured();
   const brands = configured ? (await loadPublicCatalog().catch(() => { throw new Error("Unable to load careers information."); })).brands : [];
-  return <><PublicHeader />{children}<PublicFooter brands={brands} contactEmail={getPublicContactEmail()} /></>;
+  return <div className="public-theme flex min-h-screen flex-col bg-background text-foreground">
+    <PublicHeader />
+    <div className="flex-1">{children}</div>
+    <PublicFooter brands={brands} contactEmail={getPublicContactEmail()} />
+  </div>;
 }
