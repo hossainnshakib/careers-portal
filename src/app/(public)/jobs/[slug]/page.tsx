@@ -40,26 +40,34 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
     job.vacancies ? `${job.vacancies} ${job.vacancies === 1 ? "vacancy" : "vacancies"}` : null,
     job.locationText,
   ].filter((value): value is string => !!value);
-  return <main id="main" className="mx-auto max-w-3xl space-y-8 px-5 py-10 pb-28">
-    <Link href="/" className="underline">All roles</Link>
+  return <main id="main" className="mx-auto max-w-3xl space-y-10 px-5 py-10 pb-28">
+    <Link href="/" className="font-bold underline">All roles</Link>
     <header>
-      <h1 className="text-4xl font-bold leading-tight">{job.title}</h1><p className="mt-4">Department · {department.name}</p>
-      <div className="mt-4 flex flex-wrap gap-2">{tags.map(value => <span key={value} className="rounded-lg border border-border px-3 py-2">{value}</span>)}</div>
-      <div className="mt-5 flex flex-wrap items-center gap-4" aria-label="Hiring brands"><span className="text-muted-foreground">Hiring for</span>
-        {visibleBrands.map(({ brand }) => <span key={brand.id} className="flex items-center gap-2">
+      <p className="font-bold">We&rsquo;re hiring · <span className="text-poster">{department.name}</span></p>
+      <h1 className="mt-3 text-4xl font-black leading-[1.02] tracking-tight sm:text-5xl">{job.title}</h1>
+      <div className="mt-5 flex flex-wrap gap-2">{tags.map(value => <span key={value} className="rounded-full border border-border bg-card px-3 py-1.5 font-bold">{value}</span>)}</div>
+      <div className="mt-6 flex flex-wrap items-center gap-4" aria-label="Hiring brands"><span className="font-bold text-muted-foreground">Hiring for</span>
+        {visibleBrands.map(({ brand }) => <span key={brand.id} className="flex items-center gap-2 font-bold">
           {brand.logoUrl && <BrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} size="tiny" decorative />}<span>{brand.name}</span>
         </span>)}
-      </div><p className="mt-5 leading-relaxed text-muted-foreground">{job.summary}</p>
+      </div><p className="mt-6 text-lg leading-relaxed text-muted-foreground">{job.summary}</p>
     </header>
-    {closed ? <section role="status" className="rounded-lg border border-border p-5"><h2 className="font-bold">No longer accepting applications</h2><Link href="/" className="mt-3 inline-block underline">Explore open roles</Link></section> :
-      <a href="#apply" className="inline-block rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground">Apply</a>}
-    {[["About the role", job.descriptionMd], ["Responsibilities", job.responsibilitiesMd], ["Requirements", job.requirementsMd], ...(job.niceToHaveMd ? [["Nice to have", job.niceToHaveMd] as const] : [])].map(([heading, text]) => <section key={heading}><h2 className="mb-4 text-2xl font-bold">{heading}</h2><SafeMarkdown text={text} /></section>)}
-    {job.skills.length > 0 && <section><h2 className="mb-4 text-2xl font-bold">Skills & expertise</h2><ul className="flex flex-wrap gap-2">{job.skills.map(skill => <li key={skill} className="rounded-lg border border-border px-3 py-2">{skill}</li>)}</ul></section>}
-    {job.benefits.length > 0 && <section><h2 className="mb-4 text-2xl font-bold">Compensation & benefits</h2><ul className="list-disc space-y-2 pl-5">{job.benefits.map(benefit => <li key={benefit}>{benefit}</li>)}</ul></section>}
-    {!closed && <section id="apply" tabIndex={-1} aria-labelledby="apply-title" className="scroll-mt-8 border-t border-border pt-10">
-      <h2 id="apply-title" className="mb-6 text-3xl font-bold">Apply for {job.title}</h2>
-      <ApplicationForm jobSlug={job.slug} questions={definition.questions} cvRequired={definition.job.cvRequired} />
-    </section>}
+    {!closed && <a href="#apply" className="inline-block rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground">Apply</a>}
+    {[["About the role", job.descriptionMd], ["Responsibilities", job.responsibilitiesMd], ["Requirements", job.requirementsMd], ...(job.niceToHaveMd ? [["Nice to have", job.niceToHaveMd] as const] : [])].map(([heading, text]) => <section key={heading}><h2 className="mb-4 text-2xl font-black tracking-tight">{heading}</h2><SafeMarkdown text={text} /></section>)}
+    {job.skills.length > 0 && <section><h2 className="mb-4 text-2xl font-black tracking-tight">Skills &amp; expertise</h2><ul className="flex flex-wrap gap-2">{job.skills.map(skill => <li key={skill} className="rounded-full border border-border bg-card px-3 py-1.5 font-bold">{skill}</li>)}</ul></section>}
+    {job.benefits.length > 0 && <section><h2 className="mb-4 text-2xl font-black tracking-tight">Compensation &amp; benefits</h2><ul className="space-y-2">{job.benefits.map(benefit => <li key={benefit} className="flex gap-2.5"><span aria-hidden="true" className="font-black text-poster">▶</span><span>{benefit}</span></li>)}</ul></section>}
+    {closed ? <section role="status" className="rounded-xl bg-ink px-6 py-10 text-background sm:px-10">
+      <h2 className="text-3xl font-black tracking-tight">No longer accepting applications</h2>
+      <p className="mt-3">This role has been filled or the application window has closed.</p>
+      <Link href="/" className="mt-5 inline-block rounded-lg bg-primary px-6 py-3 font-bold text-primary-foreground">Explore open roles</Link>
+    </section> :
+      <section id="apply" tabIndex={-1} aria-labelledby="apply-title" className="scroll-mt-8 rounded-xl bg-ink px-6 py-10 text-background sm:px-10">
+        <h2 id="apply-title" className="text-3xl font-black tracking-tight">Apply for {job.title}</h2>
+        <p className="mt-3">No account needed. Your answers go straight to the internal hiring team.</p>
+        <div className="mt-8 rounded-lg bg-card p-6 text-foreground sm:p-8">
+          <ApplicationForm jobSlug={job.slug} questions={definition.questions} cvRequired={definition.job.cvRequired} />
+        </div>
+      </section>}
     {!closed && <a href="#apply" className="fixed inset-x-5 bottom-5 z-20 rounded-lg bg-primary p-4 text-center font-bold text-primary-foreground md:hidden">Apply</a>}
   </main>;
 }
