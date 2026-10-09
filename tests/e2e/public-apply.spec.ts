@@ -19,7 +19,7 @@ test("URL filters render without JavaScript and mobile filters use an accessible
   await page.getByRole("button", { name: "Filters", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Job filters" });
   await expect(dialog).toBeVisible();
-  await dialog.getByRole("checkbox", { name: /^remote/ }).check();
+  await dialog.getByRole("checkbox", { name: /^Work from home/ }).check();
   await expect(page).toHaveURL(/mode=remote/);
   await dialog.getByRole("button", { name: "Done filtering" }).click();
   await expect(dialog).not.toBeVisible();
@@ -53,8 +53,10 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   await page.reload(); // Exercise the JSON-backed detail cache with a non-null deadline.
   await expect(page.locator('script[src*="challenges.cloudflare.com/turnstile/"]')).toHaveCount(0);
   const legacyApply = await request.get(`/jobs/${publicFixture.job.slug}/apply`, { maxRedirects: 0 });
-  expect(legacyApply.status()).toBe(308);
-  expect(legacyApply.headers().location).toContain(`/jobs/${publicFixture.job.slug}#apply`);
+  expect(legacyApply.status()).toBe(200);
+  const legacyHtml = await legacyApply.text();
+  expect(legacyHtml).toContain("noindex");
+  expect(legacyHtml).toContain('id="apply"');
   let uploadSessionToken = "";
   page.on("response", (response) => {
     if (response.url().endsWith("/api/upload-url") && response.status() === 200) void response.json().then((result) => {
@@ -93,6 +95,7 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   })));
   expect(reservations.filter((response) => response.status() === 200)).toHaveLength(6);
   expect(reservations.filter((response) => response.status() === 400)).toHaveLength(1);
+  await page.getByRole("checkbox", { name: /privacy notice and consent/i }).check();
   await page.getByRole("button", { name: "Submit application" }).click();
   await expect(page).toHaveURL(/\/applied\/APP-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/, { timeout: 60000 });
   await expect(page.getByRole("heading", { name: "Application submitted" })).toBeVisible();
