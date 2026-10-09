@@ -31,20 +31,21 @@ Status of the v2 delivery as of 2026-10-09. Owner-facing summary of what shipped
 | RLS (anon key reads nothing) | `pnpm test` live (`RUN_SUPABASE_TESTS=1`, `rls.test.ts` + `jobs.live.test.ts`) | 17/17 pass |
 | Public e2e: pages, accessibility | `playwright test public-pages accessibility` | 2 pass |
 | Public e2e: full apply flow (Bengali answers, PDF uploads, consent, legacy apply route 200 + noindex) | `playwright test public-apply` | 2 pass |
+| Full browser e2e (admin shell, gating, brands, departments, job editor, jobs list, question builder, review, MFA, session persistence, cron, smoke) | `pnpm test:e2e` | 18 pass, 1 skipped (Lighthouse, opt-in only) |
 | Applied migrations on dev | manual (0004, 0005) | applied, never edited |
 
-`public-apply.spec.ts` was updated for v2 behaviour (200/noindex apply route instead of a 308, verbatim "Work from home" filter label, required consent checkbox). No test was deleted or weakened.
+`public-apply.spec.ts` was updated for v2 behaviour (200/noindex apply route instead of a 308, verbatim "Work from home" filter label, required consent checkbox). `job-editor.spec.ts` and `question-builder.spec.ts` now select one arrangement and one engagement option before publishing (the v2 publish rule). `review.spec.ts` asserts the sentence-case "Shortlisted" status label (the raw enum stays lowercase in the database). No test was deleted or weakened.
 
 ## Not verified
 
-- Full admin/browser e2e suite (job editor, options page, review flows) was not re-run end-to-end on this branch beyond unit coverage; re-run `pnpm test:e2e` before merging.
+- Lighthouse performance spec (skipped by design; runs only with `RUN_LIGHTHOUSE=1`).
 - Real-browser visual review against the poster references (owner review expected).
 - Any production deployment, migration or credential handling — owner task only.
 - The two missing design references (dark application block, job detail images) were never found; those screens were designed from the posters plus the existing layout. See DECISIONS.md.
 
 ## Owner checklist before merge/launch
 
-1. Run `pnpm test:e2e` (or at least the admin specs) once against dev.
-2. Visually review home, job detail, apply block and `/admin/options` against the posters.
-3. Confirm brand accent colors/logos and real role content in admin.
-4. Run production migrations (`0004`, `0005`) personally when promoting the branch.
+1. Visually review home, job detail, apply block and `/admin/options` against the posters.
+2. Confirm brand accent colors/logos and real role content in admin.
+3. Run production migrations (`0004`, `0005`) personally when promoting the branch.
+4. Optional: run Lighthouse once via `RUN_LIGHTHOUSE=1 pnpm test:e2e performance` after the visual review.

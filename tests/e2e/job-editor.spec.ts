@@ -28,6 +28,8 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/jobs\/[a-f0-9-]+\/edit$/, { timeout: 30000 });
+  await page.getByRole("group", { name: /^Work arrangement/ }).getByRole("checkbox", { name: "On-site", exact: true }).check();
+  await page.getByRole("group", { name: /^Engagement type/ }).getByRole("checkbox", { name: "Full-time", exact: true }).check();
   await page.getByRole("button", { name: "Publish job", exact: true }).click();
   await expect(page.getByLabel("Slug", { exact: true })).toHaveAttribute("readonly", "");
   await page.getByRole("button", { name: "Close job", exact: true }).click();
