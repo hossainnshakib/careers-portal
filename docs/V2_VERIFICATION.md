@@ -1,6 +1,6 @@
 # V2 Verification — `v2-job-model-and-ui` branch
 
-Status of the v2 delivery as of 2026-10-09. Owner-facing summary of what shipped, what was verified and what remains.
+Status of the v2 delivery as of 2026-10-10. Owner-facing summary of what shipped, what was verified and what remains.
 
 ## What shipped
 
@@ -19,6 +19,11 @@ Status of the v2 delivery as of 2026-10-09. Owner-facing summary of what shipped
 
 ### Workstream C — job detail page (commit `ff21817`)
 - Poster hiring header with pill tags, red-triangle benefit bullets, skills pills, dark `bg-ink` apply block wrapping the form in a light card; closed roles get the same dark block with no `id="apply"` and no form.
+
+### Workstream D — tests, seeds and docs (commits `9703e09`, `d947186` + doc sync)
+- Unit/integration tests and fixtures cover the v2 model; demo seed links options per job and stores consent timestamps; shells create no option links.
+- Playwright suite updated for v2 behaviour and fully passing.
+- PRODUCT, DESIGN, SEED_DATA, UI_REDESIGN, RUNBOOK, ARCHITECTURE (plus already-current SCHEMA/DECISIONS) are in line with the shipped behaviour: managed options, publish rule, consent, inline noindex apply route, poster theme, shells and seeds.
 
 ## Verification matrix (all against dev data only)
 

@@ -27,8 +27,8 @@ src/
   app/
     (public)/
       page.tsx                       # careers home + filters
-      jobs/[slug]/page.tsx           # job detail
-      jobs/[slug]/apply/page.tsx     # dynamic application form
+      jobs/[slug]/page.tsx           # job detail (+ inline apply form at #apply)
+      jobs/[slug]/apply/page.tsx     # same job page, robots noindex follow
       applied/[reference]/page.tsx   # success
     admin/
       login/page.tsx
@@ -37,6 +37,7 @@ src/
         applications/page.tsx
         applications/[id]/page.tsx
         jobs/ (list, new, [id]/edit)
+        options/                     # managed job option lists
         brands/
         departments/
     api/
@@ -77,16 +78,16 @@ docs/  prompts/  design/
 
 ## Caching
 - The public job list and job detail pages are cached with tags (`jobs`, `job:<slug>`, `brands`, `departments`). Every admin mutation that affects public data calls `revalidateTag` for the affected tags. Use the caching API of the installed Next.js version (check its docs; do not rely on memory).
-- Careers home: the server loads ALL open jobs (with brands, department, type, mode, level) once from cache; a client component filters them in memory and syncs filters to the URL with nuqs. Counts per option are computed from the same data. The initial HTML is already filtered according to the URL so links and crawlers work. If open jobs ever exceed a few hundred, move filtering to the server behind the same UI.
+- Careers home: the server loads ALL open jobs (with brands, department, option tags and salary/vacancy fields) once from cache; a client component filters them in memory and syncs filters to the URL with nuqs. Counts per option are computed from the same data. The initial HTML is already filtered according to the URL so links and crawlers work. If open jobs ever exceed a few hundred, move filtering to the server behind the same UI. Managed option rows (`job_options`) load with the catalog under the `jobs` tag; the admin editor loads them uncached.
 - Phase 2 catalog/detail caches use JSON-safe public projections and a five-minute fallback TTL alongside the existing mutation tags. Expired deadlines are excluded when refreshing the catalog. Hidden brands are omitted from public branding; a job with no active brand is unavailable publicly. If its primary brand is hidden, the first visible linked brand supplies the card logo, while application snapshots retain the actual database primary.
 - Facet counts apply every other selected filter and replace the counted facet with the individual option. This preserves OR semantics when adding options. The homepage has no streaming loading boundary that would hide its filtered HTML without JavaScript; the application page retains its own loading state.
-- Job pages combine cached public content with an uncached authoritative form definition/status/CV policy; submissions still reload under the job/session locks. Admin pages are dynamic (no shared cache). Legacy apply URLs redirect to the job anchor with HTTP 308.
+- Job pages combine cached public content with an uncached authoritative form definition/status/CV policy; submissions still reload under the job/session locks. Legacy apply URLs render the same job page inline with `robots: noindex, follow` (no redirect). Admin pages are dynamic (no shared cache).
 - Phase 4 private navigation uses fresh document loads for admin links, authentication transitions and job/review mutation refreshes. This renews the document CSP nonce, rechecks authorization and avoids stale private router-cache/production Flight navigation behavior. Nuqs is scoped to the public careers hub. Successful mutations still perform server cache/path invalidation.
 
 ## Dynamic form
 - The apply page loads the job and its non-archived questions on the server and renders the form from that data.
 - `buildSchema(questions)` produces the Zod schema. The SAME function validates on the client and on the server. Question `type` maps to validation: short_text/long_text (trim, max length), single_choice (value ∈ options), multiple_choice (subset of options, min/max if configured), yes_no (boolean), number (min/max/integer), url (http/https only), email, phone (Bangladesh-friendly: allow +880 and local 01XXXXXXXXX plus general international), file_upload (references uploaded file tokens, see below).
-- Fixed fields on every application: full name, email, phone, location (city/country). A CV upload is fixed and required unless the job sets `cv_required = false`.
+- Fixed fields on every application: full name, email, phone, location (city/country) and the required privacy-consent checkbox (`consent: true`, stored as `applications.consent_at`). A CV upload is fixed and required unless the job sets `cv_required = false`.
 - `date` answers are Gregorian ISO calendar strings with inclusive absolute or UTC-`today` bounds resolved when validating. Single choice supports radio/dropdown; permitted Other is plain text (one free-text value in a multiple-choice array). Phase 1's shared field renderer and local preview exercise these without submitting applicants/files.
 
 ## File upload flow
@@ -111,7 +112,7 @@ Small admin logos are separate: authenticated server actions accept SVG/PNG/WebP
 Phase 4 adds bounded sharp decoding (20-million input pixel limit) before publishing a logo, rejecting malformed header-shaped rasters and huge SVG canvases. Candidate files retain bounded first-byte signature checks and download-only access; no antivirus/full Office/archive parsing is claimed.
 
 ## Submit flow (`submitApplication` server action)
-Verify Turnstile → load job (must be `open`) and its non-archived questions → validate with `buildSchema` and reject submissions whose written answers exceed the shared 50,000-character budget (`validateApplicationAnswers`, which bounds storage, list reads and PDF rendering together) → verify uploads (above) → generate unique `reference` (`APP-` + 6 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ`, retry on collision) → transaction: insert `applications` (with job title, slug, brand names, department name snapshots), `application_answers` (with label/type/section snapshots), `attachments` → redirect to `/applied/<reference>`. Honeypot field and a minimum fill time are checked as well.
+Verify Turnstile → load job (must be `open`) and its non-archived questions → validate with `buildSchema`, the required privacy-consent acceptance and reject submissions whose written answers exceed the shared 50,000-character budget (`validateApplicationAnswers`, which bounds storage, list reads and PDF rendering together) → verify uploads (above) → generate unique `reference` (`APP-` + 6 chars from `23456789ABCDEFGHJKLMNPQRSTUVWXYZ`, retry on collision) → transaction: insert `applications` (with job title, slug, brand names, department name snapshots and `consent_at`), `application_answers` (with label/type/section snapshots), `attachments` → redirect to `/applied/<reference>`. Honeypot field and a minimum fill time are checked as well.
 
 The public acknowledgement validates and displays only the reference syntax. It performs no applicant lookup and exposes no applicant details or confirmation that a reference exists; it is excluded from indexing. Actual receipt is established by the successful submission redirect.
 Public absolute URLs resolve from explicit NEXT_PUBLIC_SITE_URL, else on Vercel from its project production/deployment hostname with HTTPS, else localhost. Next config bakes the resolved origin for browser/server consistency, and public validation accepts a missing raw site override. Malformed configured origins fail clearly. APP_ENV/Turnstile startup guards are unchanged. Relative/request-bound redirects stay within the current deployment. Optional public contact is validated independently of database settings. Privacy is an owner-review draft; sitemap contains only public roles/home/privacy. Success metadata is generic and contains no reference or applicant values.
@@ -159,4 +160,4 @@ Storage bootstrap sets a 10 MB ceiling and the supported candidate MIME union pl
 - CI runs credential-free checks by default. The `DEV_TESTS_ENABLED=true` opt-in push-only job uses dev-pinned secrets for real authorization/RLS/review checks and the full production-mode browser suite, with serialized shared-dev concurrency. Fork PRs do not receive these secrets. GitHub execution is not verified until the owner enables/configures the job.
 
 ## Owner launch maintenance
-Owner setup commands validate explicit APP_ENV, independent ALLOWED_SUPABASE_PROJECT_REF, the dev identifier, the API host and both DB targets before I/O. Development must match the existing dev pin; production must differ from it. The separate owner migration/base/bucket/admin commands do not relax demo/reset or ordinary dev-only admin/bootstrap guards. `jobs:seed-shells` creates missing final drafts through on-conflict-do-nothing and no applicant/question/brand inserts. Required type/mode values are editable full-time/onsite placeholders. `links:generate` reads public open/unexpired/visible-brand job fields only and writes ignored UTF-8 poster CSV with validated UTMs and spreadsheet-safe quoting. No schema/dependency change is required. Production commands are prepared, never executed by the agent; see RUNBOOK, VERCEL_CHECKLIST and BRAND_LINKS.
+Owner setup commands validate explicit APP_ENV, independent ALLOWED_SUPABASE_PROJECT_REF, the dev identifier, the API host and both DB targets before I/O. Development must match the existing dev pin; production must differ from it. The separate owner migration/base/bucket/admin commands do not relax demo/reset or ordinary dev-only admin/bootstrap guards. `jobs:seed-shells` creates missing final drafts through on-conflict-do-nothing and no applicant/question/brand inserts; shells carry no option links (select arrangement/engagement in admin before publishing). `links:generate` reads public open/unexpired/visible-brand job fields only and writes ignored UTF-8 poster CSV with validated UTMs and spreadsheet-safe quoting. No schema/dependency change is required. Production commands are prepared, never executed by the agent; see RUNBOOK, VERCEL_CHECKLIST and BRAND_LINKS.

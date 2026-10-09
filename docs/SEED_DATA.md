@@ -4,7 +4,28 @@ Two seed commands, both idempotent (upsert by slug):
 - `pnpm seed:base` — departments + brands only. Safe for production.
 - `pnpm seed:demo` — base + 19 jobs with demo content, demo questions, and demo applicants. **DEV ONLY**: must refuse to run when `APP_ENV=production` or when the database URL does not match the dev project; include a test for this guard. `pnpm db:reset:dev` drops, migrates and runs `seed:demo`, with the same guard.
 
-Real job content (descriptions, requirements, questions, brand assignment, employment type) is entered later through the admin panel. The 19 titles, slugs and departments below are FINAL; do not change them.
+Real job content (descriptions, requirements, questions, brand assignment, options) is entered later through the admin panel. The 19 titles, slugs and departments below are FINAL; do not change them.
+
+## Managed job options (final; seeded by migration 0004 and `seed:base`, idempotent)
+Labels are displayed verbatim everywhere. Slugs equal the pre-v2 enum values so old shared filter URLs (`?mode=remote`, `?type=full_time`, `?level=entry`) keep working.
+
+| Group | Label | Slug | Sort |
+|---|---|---|---|
+| arrangement | On-site | `onsite` | 1 |
+| arrangement | Hybrid | `hybrid` | 2 |
+| arrangement | Work from home | `remote` | 3 |
+| engagement | Full-time | `full_time` | 1 |
+| engagement | Part-time | `part_time` | 2 |
+| engagement | Project-based | `project-based` | 3 |
+| engagement | Duration-based | `contract` | 4 |
+| engagement | Internship | `internship` | 5 |
+| engagement | Freelance | `freelance` | 6 |
+| experience | Fresher welcome | `fresher-welcome` | 1 |
+| experience | Entry-level | `entry` | 2 |
+| experience | Mid-level | `mid` | 3 |
+| experience | Senior | `senior` | 4 |
+
+Admins can add/edit/reorder/activate further options under `/admin/options`; the 13 above are the final defaults. Do not rename the slugs above.
 
 ## Departments (final; `sort_order` = number)
 | # | Name | Slug |
@@ -75,21 +96,20 @@ Do not ask for age, religion, marital status, or photos. Demo jobs must include 
 ## Demo jobs (for `seed:demo` only)
 Use the real 19 titles/slugs above but assign DEMO values chosen to exercise every feature. Mark nothing in the UI as "demo" (the database is dev-only), but make the text obviously placeholder-ish (for example "Demo description for ...").
 - Status mix: 16 `open`, 2 `draft`, 1 `closed`.
-- Employment types: at least 3 `part_time`, 2 `freelance`, 1 `internship`, 1 `contract`, the rest `full_time`.
-- Work modes: mix of `onsite`, `remote`, `hybrid`.
+- Options: link every job to one arrangement and one engagement from the table above (rotate through them: at least 3 `part_time`, 2 `freelance`, 1 `internship`, 1 `contract`/Duration-based, the rest `full_time`; arrangements mix of `onsite`, `remote`, `hybrid`); link an experience option on about half the jobs, with `creative-director-production-lead` as `senior` and at least one `fresher-welcome`.
+- Other v2 fields: exercise salary `range` with text on a few jobs (rest `negotiable`), a few with vacancies and experience text, skills and benefits lists, and nice-to-have markdown on some.
 - Brands: spread across all 8 brands; at least 3 jobs belong to 2+ brands (one primary each); at least one brand has no open jobs (tests the empty state/hidden option).
-- Levels: set `experience_level` on about half; `creative-director-production-lead` is `senior`.
 - Content: summary (≤ 200 chars), markdown description with a list, responsibilities, requirements. Include a few markdown edge cases (links, bold, a list) and one attempted raw HTML snippet to prove it is NOT rendered.
 - Questions (Phase 1 onward): the seven standard questions above plus 4–8 role-specific questions per job from sensible templates per department (for example Web: GitHub URL, best live projects (long text), React/Next.js experience (single choice)). `web-developer` must exercise ALL eleven question types overall, required and optional mixed, including a file_upload question. Each question has a section. Include radio/dropdown choice presentation and "Other" examples across the demo jobs.
 - Existing Phase 0 demo questions are upgraded only when the job timestamps and every deterministic question field still match the original seed. Three overlapping legacy questions are archived, never removed from historical answers; standard copies and a role question are inserted, and unchanged choice configs are extended. Edited or already-upgraded jobs are preserved. A fresh Phase 1 seed has 212 active questions; an untouched upgraded Phase 0 database has 269 total questions including 57 archived legacy definitions.
 
 ## Demo applicants (for `seed:demo` only)
-- About 30 applications across open and closed jobs, spread over several weeks, statuses covering all five values.
+- About 30 applications across open and closed jobs, spread over several weeks, statuses covering all five values. Each stores a `consent_at` timestamp (the submit-time consent acceptance).
 - At least 6 Bengali names and 2 Bengali long-text answers (include conjunct-heavy words such as ক্ষ, স্ত্র, দ্ব, ঞ্জ, শ্রী); the rest English.
 - A few emails repeated across jobs (to test the "previous applications" flag).
 - Each has a tiny generated placeholder PDF as its CV in the private bucket (generate on the fly; do not commit binary files), and a few have a second attachment.
 - Some admin notes and status events.
 
 ## Real data later
-When the owner moves to real data: run `seed:base` on production, then create the 19 jobs through the admin panel (or a one-off script that creates them as `draft` shells with the final titles/slugs/departments and no demo content). Keep slugs exactly as above.
-The implemented owner path is `seed:base:owner` -> `jobs:seed-shells` -> fill content/questions/brands/type/mode in admin -> publish. The shell CLI requires the independent allowed-target gate and preserves every existing slug. It inserts blank drafts only, with editable full-time/onsite and CV-required initial values demanded by the current schema; these are not approved role choices. No applicants, questions or job-brand links are seeded. `links:generate` exports only actual public roles after publication.
+When the owner moves to real data: run `seed:base` on production (it also upserts the 13 default options), then create the 19 jobs through the admin panel (or a one-off script that creates them as `draft` shells with the final titles/slugs/departments and no demo content). Keep slugs exactly as above.
+The implemented owner path is `seed:base:owner` -> `jobs:seed-shells` -> fill content/questions/brands/options in admin -> publish. The shell CLI requires the independent allowed-target gate and preserves every existing slug. It inserts blank drafts only, with no option links (select at least one arrangement and one engagement before publishing), negotiable salary and CV-required defaults; these are not approved role choices. No applicants, questions or job-brand links are seeded. `links:generate` exports only actual public roles after publication.

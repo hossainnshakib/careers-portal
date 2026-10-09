@@ -1,4 +1,22 @@
-# V1 public UI redesign
+# Public UI redesign history
+
+## V2 — managed job options + poster-family redesign (branch `v2-job-model-and-ui`)
+
+### Data model and admin
+- Replaced the fixed `employment_type` / `work_mode` / `experience_level` columns with managed option lists (`job_options` + `job_option_links`, migrations 0004/0005). Option slugs equal the legacy enum values so old filter URLs keep working; labels render verbatim everywhere.
+- Job editor: per-group checkbox fieldsets (experience optional), publish pre-check (`missingPublishGroups`: ≥1 arrangement + ≥1 engagement), plus salary (negotiable/range + text), vacancies, experience text, engagement note, skills, benefits and nice-to-have markdown fields. Jobs list shows option tags per row.
+- New `/admin/options` surface (protected, in the admin nav) to create/edit/activate/reorder options; delete only while unlinked.
+- Applications require an explicit privacy-consent checkbox; `applications.consent_at` is stored and shown on the admin profile header and the candidate PDF.
+- `/jobs/:slug/apply` renders the same job page inline with `robots: noindex, follow` (the v1 HTTP 308 redirect is gone); the deployment smoke check asserts 200 + noindex + inline `#apply` form. Brand default accents: `seed:base` fills an accent only when a brand has none; owner edits are never overwritten.
+
+### Public design system (scoped `.public-theme`)
+- Public layout subtree opts into a poster-family theme (warm grey canvas `#edece7`, ink `#141412`, card `#f8f7f2`, red accent `#e0341f` with black-on-red AA buttons, hairline borders, 0.375rem radius, font-black display type); admin keeps the existing root tokens untouched.
+- Header: bold wordmark with red dot. Footer: dark ink band with brand-website links and contact email.
+- Hero: "We're hiring · N roles" pill kicker, huge headline with a red accent word, dual CTA, and a reduced-motion-safe marquee of real job titles as pills (every fourth title in red). Filters/chips/tags are pill-shaped; results show red department numbers, pill tags (fresher-welcome in red) and salary pills. How-it-works uses red step numbers; FAQ and info sections use heavier display type.
+- Job detail: poster hiring header with pill tags, red-triangle benefit bullets, skills pills, and a dark `bg-ink` apply block containing the form in a light card; the closed state is the same dark block without `id="apply"` or a form. Success and privacy pages inherit the theme with heavier headings.
+- Verification: typecheck/lint/unit (528 passed) and the full Playwright suite (18 passed, Lighthouse opt-in skip) pass; `pnpm build` with the PDF trace guard passes. See V2_VERIFICATION.md.
+
+## V1 — first public UI pass
 
 ## Implemented — careers home
 - Public route-group shell: Careers wordmark, Roles/How it works/FAQ navigation, website/contact/privacy footer. Admin layout remains separate; root still supplies fonts, skip link and document CSP nonce.
