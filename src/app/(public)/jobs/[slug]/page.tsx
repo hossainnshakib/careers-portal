@@ -93,7 +93,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         })}</div></section>
         {closed ? <section role="status" className="ui-glass space-y-3 rounded-[26px] px-[30px] py-7"><h2 className="text-[22px] font-extrabold">No longer accepting applications</h2><p className="text-ui-muted">This role has been filled or the application window has closed.</p><Link href="/#roles" className="inline-block font-semibold text-ui-blue-text underline">Explore open roles</Link></section> : <section className="ui-glass flex flex-wrap items-center justify-between gap-5 rounded-[26px] px-[30px] py-7"><div><h2 className="text-[22px] font-extrabold tracking-[-.02em]">Ready to apply?</h2><p className="mt-1 text-[14.5px] text-ui-muted">It takes a few minutes. No account needed.</p></div><Link href={applyUrl} className="ui-button">Apply now <PublicIcon name="arrow" /></Link></section>}
       </div>
-      <aside aria-label="Job summary" data-testid="job-summary-panel" className="ui-glass self-start rounded-[26px] px-6 pb-[26px] pt-6">
+      <aside aria-label="Job summary" data-testid="job-summary-panel" className="ui-sticky-panel ui-glass self-start rounded-[26px] px-6 pb-[26px] pt-6">
         <h2 className="ui-label mb-1.5 text-ui-muted">Job summary</h2>
         <dl>{rows.filter(([, value]) => value).map(([label, value, icon]) => <div key={label} className="flex items-center gap-[14px] border-b border-ui-border py-[13px]">
           <span aria-hidden="true" className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-ui-neutral-surface text-ui-chip"><SummaryIcon name={icon} /></span>

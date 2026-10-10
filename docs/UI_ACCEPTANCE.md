@@ -58,7 +58,7 @@ These values govern the public theme; scope them to the public layout when imple
 | Search / inputs / buttons | 18px / 14px / 16px radius |
 | Job hero band | 36px radius |
 | Floating-card breakpoint | Hidden at widths <=1180px |
-| Two-column breakpoint | Single column and sticky disabled at widths <=900px |
+| Two-column breakpoint | Single column and sticky disabled below 900px; 900px is desktop |
 
 Glass requires both standard and WebKit backdrop-filter declarations. Brand-coloured decorative orbs use 90–110px blur and approximately .18–.55 opacity. Contain decorative overflow locally without breaking page-level sticky positioning. Correct the mock's inline-display override so floating cards actually hide at the breakpoint.
 
@@ -88,7 +88,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | H10 | Glass filter panel has Filters heading, functional Clear all, department checkboxes with counts, and Brand, Work arrangement, Engagement type and Experience pill groups. Sector is absent from the UI. | |
 | H11 | Active filter pills have dark selected treatment; query state survives reload, browser history and shared URLs. Preserve OR within facets and AND across facets. | |
 | H12 | Desktop filter panel stays 24px from the viewport top while scrolling results and stops at the end of its grid container. Verify with browser bounding boxes at multiple scroll positions. | |
-| H13 | <=900px has usable single-column filtering with sticky disabled; controls remain keyboard accessible. | |
+| H13 | Below 900px has usable single-column filtering with sticky disabled; controls remain keyboard accessible. | |
 | H14 | Glass 56px search field has search icon and accessible label; result count and individually removable blue selected chips appear below. | |
 | H15 | Only nonempty department groups render in database order, with stable blue numbering, heading, accurate role count and hairline divider. | |
 | H16 | Glass whole-card links have 20px radii, primary-brand accent top border, primary-first brand marks/names, title, verbatim options, salary pill, optional summary and View role arrow. | |
@@ -105,7 +105,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | --- | --- | --- |
 | J01 | Rounded dark gradient hero band has brand-coloured blurred orbs, All roles link, department label, actual title and optional summary. | |
 | J02 | White/translucent hero pills show real options, optional location and deadline. Hiring for badges use actual primary-first brand assets/names. | |
-| J03 | Content and summary use flexible/340px columns with a 44px gap. <=900px is single column with static summary. | |
+| J03 | Content and summary use flexible/340px columns with a 44px gap. Below 900px is single column with static summary. | |
 | J04 | Description renders under About the role / Why this role exists with sanitised Markdown. | |
 | J05 | Responsibilities render under What you will do / Key responsibilities with blue numbered list styling where the content is a list. Preserve other valid Markdown structure. | |
 | J06 | Requirements and optional nice-to-have sections use mock headings and green check list styling without flattening valid Markdown. | |
