@@ -60,11 +60,20 @@ export function anonymousDenied(response: SmokeResponse, origin: string): boolea
       && ["Administrator access required.", "Unauthorized.", "Unauthorized", "Forbidden"].includes(body.error);
   } catch { return false; }
 }
-/** The legacy /jobs/:slug/apply route must render the inline form and stay out of indexes. */
-export function applyRouteInlineForm(response: SmokeResponse): boolean {
+/** The independent /jobs/:slug/apply route must render a form and stay out of indexes. */
+export function applyRouteForm(response: SmokeResponse): boolean {
   if (response.status !== 200 || response.headers.has("location")) return false;
   const robots = /<meta[^>]*name=["']robots["'][^>]*>/i.exec(response.body)?.[0] ?? "";
-  return /noindex/i.test(robots) && /id=["']apply["']/.test(response.body);
+  return /noindex/i.test(robots) && /<form\b/i.test(response.body) && !/id=["']apply["']/.test(response.body);
+}
+export function jobRouteWithoutForm(response: SmokeResponse): boolean {
+  return response.status === 200 && !response.headers.has("location") && !/<form\b/i.test(response.body)
+    && !/<script\b[^>]*\bsrc\s*=\s*["'][^"']*challenges\.cloudflare\.com\/turnstile\//i.test(response.body);
+}
+export function publicSitemapContainsJob(response: SmokeResponse, jobPath: string): boolean {
+  return response.status === 200 && /<urlset\b/.test(response.body) && response.body.includes(`${jobPath}</loc>`)
+    && !/\/(?:admin|applied|api)(?:[\/<\s?#]|$)/.test(response.body)
+    && !/\/jobs\/[^<\s]+\/apply(?:[\/<\s?#]|$)/.test(response.body);
 }
 
 async function boundedBody(response: Response): Promise<string> {
@@ -102,10 +111,11 @@ export async function runSmoke(base: string, fetcher: typeof fetch = fetch, emit
   check("home has a public job link", !!job);
   const role = job ? await request(job) : undefined;
   check("public job HTTP 200", role?.status === 200);
+  check("job detail has no form or Turnstile script", !!role && jobRouteWithoutForm(role));
   const unknown = await request(`/jobs/smoke-unknown-${randomUUID()}`);
   check("unknown job HTTP 404", unknown?.status === 404);
-  const legacy = job ? await request(`${job}/apply`) : undefined;
-  check("legacy apply route renders inline form with noindex", !!legacy && applyRouteInlineForm(legacy));
+  const apply = job ? await request(`${job}/apply`) : undefined;
+  check("independent apply route renders form with noindex", !!apply && applyRouteForm(apply));
   check("home security headers and enforced production CSP", !!home && securityHeaders(home.headers));
   check("job security headers and enforced production CSP", !!role && securityHeaders(role.headers));
   const admin = await request("/admin");
@@ -117,7 +127,7 @@ export async function runSmoke(base: string, fetcher: typeof fetch = fetch, emit
   const cron = await request("/api/cron/daily");
   check("cron without secret HTTP 401", cron?.status === 401 && anonymousDenied(cron, origin));
   const sitemap = await request("/sitemap.xml");
-  check("public sitemap responds", sitemap?.status === 200 && /<urlset\b/.test(sitemap.body) && !/\/(?:admin|applied)\//.test(sitemap.body));
+  check("public sitemap contains job and excludes apply/private pages", !!sitemap && !!job && publicSitemapContainsJob(sitemap, job));
   const robots = await request("/robots.txt");
   check("robots responds and excludes admin/API", robots?.status === 200 && /User-agent:/i.test(robots.body) && /Disallow:\s*\/admin/.test(robots.body) && /Disallow:\s*\/api/.test(robots.body));
   check("responses contain no detected stack/private configuration leaks", leakFree);

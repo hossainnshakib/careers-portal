@@ -1,6 +1,6 @@
 import { expect, it, vi } from "vitest";
 import { createCsp } from "@/lib/security/csp";
-import { anonymousDenied, applyRouteInlineForm, publicJobPath, responseLeaks, runSmoke, securityHeaders, smokeOrigin } from "./smoke";
+import { anonymousDenied, applyRouteForm, jobRouteWithoutForm, publicSitemapContainsJob, publicJobPath, responseLeaks, runSmoke, securityHeaders, smokeOrigin } from "./smoke";
 
 const origin = "https://preview.example.test";
 const safeHeaders = () => new Headers({
@@ -29,13 +29,28 @@ it("accepts only same-origin login redirects or generic denials, never private c
   expect(anonymousDenied(snapshot("%PDF-private", 200), origin)).toBe(false);
   expect(anonymousDenied(snapshot("", 302, new Headers({ location: "https://storage.example.test/signed" })), origin)).toBe(false);
 });
-const applyBody = '<meta name="robots" content="noindex, nofollow"/><div id="apply">Form</div>';
-it("requires the legacy apply route to render the inline form with noindex", () => {
-  expect(applyRouteInlineForm(snapshot(applyBody))).toBe(true);
-  expect(applyRouteInlineForm(snapshot(applyBody, 200, new Headers({ location: "/jobs/role#apply" })))).toBe(false);
-  expect(applyRouteInlineForm(snapshot(applyBody, 308, new Headers({ location: "/jobs/role#apply" })))).toBe(false);
-  expect(applyRouteInlineForm(snapshot('<div id="apply">Form</div>'))).toBe(false);
-  expect(applyRouteInlineForm(snapshot('<meta name="robots" content="noindex, nofollow"/>'))).toBe(false);
+const applyBody = '<meta name="robots" content="noindex, nofollow"/><form>Form</form>';
+it("requires the independent apply route to render a real form with noindex and no legacy anchor", () => {
+  expect(applyRouteForm(snapshot(applyBody))).toBe(true);
+  expect(applyRouteForm(snapshot(applyBody, 200, new Headers({ location: "/jobs/role#apply" })))).toBe(false);
+  expect(applyRouteForm(snapshot(applyBody, 308, new Headers({ location: "/jobs/role#apply" })))).toBe(false);
+  expect(applyRouteForm(snapshot('<form>Form</form>'))).toBe(false);
+  expect(applyRouteForm(snapshot('<meta name="robots" content="noindex, nofollow"/>'))).toBe(false);
+  expect(applyRouteForm(snapshot(applyBody.replace("<form>", '<form id="apply">')))).toBe(false);
+});
+it("keeps forms and CAPTCHA scripts off Job detail without rejecting ordinary text links", () => {
+  expect(jobRouteWithoutForm(snapshot('Public role <a href="/jobs/role/apply">Apply</a>'))).toBe(true);
+  expect(jobRouteWithoutForm(snapshot("<form></form>"))).toBe(false);
+  expect(jobRouteWithoutForm(snapshot('<script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>'))).toBe(false);
+  expect(jobRouteWithoutForm(snapshot('<a href="https://challenges.cloudflare.com/turnstile/">Documentation</a>'))).toBe(true);
+});
+it("requires the public Job in sitemap and excludes Apply, private and success paths", () => {
+  const xml = '<urlset><url><loc>https://preview.example.test/jobs/role</loc></url></urlset>';
+  expect(publicSitemapContainsJob(snapshot(xml), "/jobs/role")).toBe(true);
+  expect(publicSitemapContainsJob(snapshot(xml), "/jobs/missing")).toBe(false);
+  for (const path of ["/jobs/role/apply", "/jobs/role/apply/", "/admin", "/admin?view=jobs", "/applied/APP-234567", "/api/health"]) {
+    expect(publicSitemapContainsJob(snapshot(xml.replace("</urlset>", `<url><loc>https://preview.example.test${path}</loc></url></urlset>`)), "/jobs/role")).toBe(false);
+  }
 });
 it.each([
   "Error: failure\n    at async work (/var/task/app.js:10:4)",
