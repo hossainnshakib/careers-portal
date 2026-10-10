@@ -10,6 +10,9 @@ import { CareersInfo } from "./careers-info";
 import { PublicIcon } from "./public-icon";
 
 const panelKeys: FilterKey[] = ["dept", "brand", "mode", "type", "level"];
+// Module-level flag: survives component remounts within the same page load.
+// Ensures the #roles deep-link scroll fires at most once per full page load.
+let careersScrolledOnce = false;
 const labels: Record<FilterKey, string> = {
   brand: "Brand", dept: "Department", type: optionGroupLabels.engagement,
   mode: optionGroupLabels.arrangement, sector: "Sector", level: optionGroupLabels.experience,
@@ -26,6 +29,19 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
 }) {
   const [filters, setFilters] = useQueryStates(filterParsers, { shallow: true, history: "replace" });
   const mobileDialog = useRef<HTMLDialogElement>(null);
+  // Brand sites deep-link with /?brand=<slug>. On the FIRST load only, scroll once to #roles.
+  // A module-level flag survives component remounts within the same page load, so later
+  // client-side filter changes (which may remount this component) do not re-scroll.
+  useEffect(() => {
+    if (careersScrolledOnce) return;
+    careersScrolledOnce = true;
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const hasFilterParam = filterKeys.some(key => params.get(key)) || !!params.get("q");
+    if (!hasFilterParam) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById("roles")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  }, []);
   useEffect(() => {
     const dialog = mobileDialog.current;
     if (!dialog) return;
