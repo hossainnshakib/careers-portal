@@ -79,6 +79,11 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 1280, height: 720
     await page.getByLabel("Email").fill(publicFixture.email); await page.getByLabel("Password").fill(publicFixture.password);
     await page.getByRole("button", { name: "Sign in" }).click(); await completeAdminMfa(page, publicFixture);
     await page.goto(`/admin/jobs/${publicFixture.job.id}/edit`);
+    // The synthetic fixture stores negotiable salary with no range text.
+    // Check the hydrated editor before changing anything, not only SSR markup.
+    await expect(page.getByRole("radio", { name: "Negotiable", exact: true })).toBeChecked();
+    await expect(page.getByRole("radio", { name: "Show a range", exact: true })).not.toBeChecked();
+    await expect(page.getByLabel("Salary range", { exact: true })).toHaveCount(0);
     await page.getByLabel("Description (Markdown)", { exact: true }).fill("A thoughtful role with meaningful work and clear responsibilities.\n\n".repeat(100));
     await Promise.all([
       page.waitForEvent("framenavigated", { predicate: frame => frame === page.mainFrame() }),
