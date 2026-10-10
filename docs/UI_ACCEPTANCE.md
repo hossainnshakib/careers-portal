@@ -51,7 +51,7 @@ These values govern the public theme; scope them to the public layout when imple
 | Apply maximum | 820px, including side padding |
 | Home columns | 270px + flexible results, 32px gap |
 | Job columns | Flexible content + 340px summary, 44px gap |
-| Desktop sticky offset | 24px, `align-self: start` |
+| Desktop sticky offset | 96px (header height + gap), `align-self: start` |
 | Pills / header | 999px radius |
 | Panels | 24px / 26px / 28px radius |
 | Job cards / floating cards | 20px / 22px radius |
@@ -66,7 +66,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| S01 | Floating glass pill header, centred 1200px container, 20px top spacing, Careers wordmark and blue dot. | Implemented |
+| S01 | Floating glass pill header, centred 1200px container, 20px top spacing, Careers wordmark and blue dot. Sticky at top on desktop (>=900px); static below. | Implemented |
 | S02 | Roles, How it works and FAQ navigation targets the Home sections from every public page. Dark Browse roles pill is functional. | Implemented |
 | S03 | Header wraps cleanly on mobile with no horizontal page overflow. | Implemented |
 | S04 | Light footer with hairline separator, Careers name, conversation tagline, configured contact only, safe brand website links and Privacy link. | Implemented |
@@ -87,7 +87,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | H09 | Find your role heading and grouped-by-department subtitle precede the 270px/flexible results grid. | Implemented |
 | H10 | Glass filter panel has Filters heading, functional Clear all, department checkboxes with counts, and Brand, Work arrangement, Engagement type and Experience pill groups. Sector is absent from the UI. | Deviation — compact desktop rows/chips and collapsible groups meet the viewport-fit requirement; filtering is unchanged. |
 | H11 | Active filter pills have dark selected treatment; query state survives reload, browser history and shared URLs. Preserve OR within facets and AND across facets. | Implemented |
-| H12 | Desktop filter panel stays 24px from the viewport top while scrolling results and stops at the end of its grid container. Verify with browser bounding boxes at multiple scroll positions. | Implemented |
+| H12 | Desktop filter panel stays 96px from the viewport top while scrolling results and stops at the end of its grid container. Verify with browser bounding boxes at multiple scroll positions. | Implemented |
 | H13 | Below 900px has usable single-column filtering with sticky disabled; controls remain keyboard accessible. | Implemented |
 | H14 | Glass 56px search field has search icon and accessible label; result count and individually removable blue selected chips appear below. | Implemented |
 | H15 | Only nonempty department groups render in database order, with stable blue numbering, heading, accurate role count and hairline divider. | Implemented |
@@ -114,7 +114,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | J09 | Glass Ready to apply panel links to `/jobs/<slug>/apply`; job detail contains no application form or Turnstile widget. | Implemented |
 | J10 | Glass Job summary has icon tiles and real Salary, optional Vacancy, Experience, Work arrangement, Engagement, Location and Deadline rows. Unset optional rows are absent. | Implemented |
 | J11 | Summary Apply now button links to the separate Apply page. All selected active option labels and relevant engagement note remain visible. | Implemented |
-| J12 | Desktop summary stays 24px from the viewport top and stops at the content container boundary; prove with bounding boxes at multiple scroll positions. | Implemented |
+| J12 | Desktop summary stays 96px from the viewport top and stops at the content container boundary; prove with bounding boxes at multiple scroll positions. | Implemented |
 | J13 | Closed/expired jobs expose a clear closed state without an active application CTA; drafts and hidden-only jobs remain 404. | Implemented |
 | J14 | Shared chrome, canonical metadata and mobile layout work; browser tests assert navigation rather than legacy `#apply` anchors. | Implemented |
 
@@ -145,7 +145,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| F01 | Diagnose the reported salary-radio initial-state discrepancy, fix a confirmed cause and verify stored negotiable/range modes in the editor. Record unreproduced behavior explicitly rather than claiming a speculative fix. | Not implemented — no confirmed cause/fix: SSR and hydrated stored-mode checks pass. Specific role/browser/reproduction steps are needed; no speculative state/data rewrite. |
+| F01 | Diagnose the reported salary-radio initial-state discrepancy, fix a confirmed cause and verify stored negotiable/range modes in the editor. Record unreproduced behavior explicitly rather than claiming a speculative fix. | Implemented — DB CHECK constraint (migration 0006) prevents range+blank; public renderer falls back to "Negotiable" when range text is empty; editor regression test covers stored range+blank. |
 | F02 | Success, privacy, 404 and public error recovery use shared public chrome/glass while retaining reference-only acknowledgement and the privacy draft/actual policy text. | Implemented |
 | F03 | GET-only deployment smoke proves Job has no form/Turnstile, Apply is 200/noindex with a form, and sitemap includes Jobs but excludes Apply/private/success routes. | Implemented |
 
