@@ -181,7 +181,7 @@ body {
 .public-ui .question-field select,
 .public-ui .question-field textarea {
   display: block; width: 100%; height: 50px; min-width: 0; border: 1px solid var(--ui-input-border); border-radius: 14px;
-  background: var(--ui-input-surface); padding: 0 16px; font: inherit; font-size: 15px; font-weight: 400; color: var(--ui-ink);
+  background: var(--ui-input-surface); padding: 0 16px; font: inherit; font-size: 16px; font-weight: 400; color: var(--ui-ink);
 }
 .public-ui .question-field textarea { height: auto; min-height: 132px; padding: 14px 16px; resize: vertical; }
 .public-ui .question-label { font-size: 13.5px; font-weight: 700; }
@@ -201,10 +201,6 @@ body {
 .public-ui [aria-invalid="true"] { border-color: #b42318; }
 @media (max-width: 599px) {
   .ui-form-grid { grid-template-columns: minmax(0,1fr); }
-  .public-ui .ui-form-input,
-  .public-ui .question-field input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
-  .public-ui .question-field select,
-  .public-ui .question-field textarea { font-size: 16px; }
   .public-ui .question-field[data-question-type="single_choice"] .question-choices { grid-template-columns: minmax(0,1fr); }
 }
 .ui-roles-grid { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 32px; align-items: start; }
@@ -258,11 +254,17 @@ body {
   .ui-job-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 899px) {
-  .ui-detail-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .ui-roles-grid { grid-template-columns: minmax(0, 1fr); }
+  .ui-detail-grid { grid-template-columns: minmax(0,1fr); gap: 32px; }
+  /* On mobile the Job summary must appear right after the hero, before the long content. */
+  .ui-detail-grid > [data-testid="job-summary-panel"] { order: -1; }
+  .ui-roles-grid { grid-template-columns: minmax(0,1fr); }
   .ui-desktop-filter { display: none; }
   .ui-mobile-filter { display: inline-flex; }
-  .ui-job-grid { grid-template-columns: minmax(0, 1fr); }
+  .ui-job-grid { grid-template-columns: minmax(0,1fr); }
+  /* Enlarge small interactive controls to a 44px minimum tap target on touch widths. */
+  .public-ui button:not(.ui-button):not([class*="rounded-full"][class*="px-"]) { min-height: 44px; }
+  /* Long unbroken job titles must wrap, not create horizontal scroll. */
+  .public-ui h1, .public-ui h2, .public-ui h3 { overflow-wrap: anywhere; word-break: break-word; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .public-ui .ui-glass { background: #ffffff; -webkit-backdrop-filter: none; backdrop-filter: none; }

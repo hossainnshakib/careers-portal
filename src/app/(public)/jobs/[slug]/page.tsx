@@ -48,7 +48,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
     ["Location", job.locationText, "location"],
     ["Deadline", deadline, "calendar"],
   ] as const;
-  return <main id="main" className="pb-2">
+  return <main id="main" className="pb-24 md:pb-2">
     <header className="relative isolate mx-3 mt-5 rounded-[28px] bg-ui-ink text-white sm:mx-5 sm:rounded-[36px]" style={{ backgroundImage: `linear-gradient(135deg, ${primaryAccent}2e, #0e1626)` }}>
       <div aria-hidden="true" className="ui-orbs pointer-events-none absolute inset-0 -z-10 overflow-clip rounded-[inherit] opacity-[.22]">
         <span className="absolute -top-[140px] left-[62%] h-[460px] w-[460px] rounded-full blur-[100px]" style={{ backgroundColor: primaryAccent }} />
@@ -101,6 +101,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         {!closed && <Link href={applyUrl} className="ui-button ui-button-block mt-5 shadow-[0_10px_30px_rgba(11,18,32,.22)]">Apply now <PublicIcon name="arrow" /></Link>}
       </aside>
     </div>
+    {!closed && <div data-testid="mobile-apply-bar" className="fixed inset-x-0 bottom-0 z-40 border-t border-ui-border bg-white/95 px-4 py-3 backdrop-blur md:hidden">
+      <Link href={applyUrl} className="ui-button ui-button-block">Apply now <PublicIcon name="arrow" /></Link>
+    </div>}
   </main>;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryStates } from "nuqs";
 import { filterKeys, filterParsers, humanize, matchesJob, optionCount, type FilterKey, type JobCard, type PublicBrand } from "@/lib/careers/filters";
 import { optionGroupLabels, type OptionGroup, type OptionTag } from "@/lib/careers/option-labels";
@@ -26,6 +26,19 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
 }) {
   const [filters, setFilters] = useQueryStates(filterParsers, { shallow: true, history: "replace" });
   const mobileDialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = mobileDialog.current;
+    if (!dialog) return;
+    // Native dialog fires "close" (Escape, form method=dialog) but not a reliable "open" in every Chromium build.
+    const unlock = () => { document.documentElement.style.overflow = ""; };
+    dialog.addEventListener("close", unlock);
+    return () => { dialog.removeEventListener("close", unlock); document.documentElement.style.overflow = ""; };
+  }, []);
+  const openFilters = () => {
+    document.documentElement.style.overflow = "hidden";
+    mobileDialog.current?.showModal();
+  };
+  const closeFilters = () => mobileDialog.current?.close();
   const visible = jobs.filter(job => matchesJob(job, filters));
   const catalogOptions = jobOptions ?? jobs.flatMap(job => job.options);
   const options: Record<FilterKey, { value: string; label: string }[]> = {
@@ -68,9 +81,9 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
         <div className="min-w-0">
           <div className="ui-glass flex h-14 items-center gap-3 rounded-[18px] px-[18px] text-ui-muted"><PublicIcon name="search" size={20} />
             <label htmlFor="role-search" className="sr-only">Search roles</label>
-            <input id="role-search" type="search" maxLength={200} placeholder="Search roles" value={filters.q} onChange={event => void setFilters({ q: event.target.value })} className="min-w-0 flex-1 bg-transparent py-3 text-[16px] text-ui-ink sm:text-[15px]" />
+            <input id="role-search" type="search" maxLength={200} placeholder="Search roles" value={filters.q} onChange={event => void setFilters({ q: event.target.value })} className="min-w-0 flex-1 bg-transparent py-3 text-[16px] text-ui-ink" />
           </div>
-          <button onClick={() => mobileDialog.current?.showModal()} className="ui-mobile-filter mt-4 items-center gap-2 rounded-full border border-ui-border bg-white/70 px-4 py-2.5 text-[14px] font-bold" aria-haspopup="dialog">Filters{activeCount > 0 && <span aria-label={`${activeCount} active filters`} className="rounded-full bg-ui-blue-surface px-2 text-ui-blue-text">{activeCount}</span>}</button>
+          <button onClick={openFilters} className="ui-mobile-filter mt-4 items-center gap-2 rounded-full border border-ui-border bg-white/70 px-4 py-2.5 text-[14px] font-bold" aria-haspopup="dialog">Filters{activeCount > 0 && <span aria-label={`${activeCount} active filters`} className="rounded-full bg-ui-blue-surface px-2 text-ui-blue-text">{activeCount}</span>}</button>
           <div className="mb-9 mt-[14px] flex flex-wrap items-center gap-2">
             <p role="status" className="text-[13px] font-semibold text-ui-muted">{visible.length} open {visible.length === 1 ? "role" : "roles"}</p>
             {filterKeys.flatMap(key => filters[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{options[key].find(option => option.value === value)?.label ?? value}<PublicIcon name="close" size={13} /></button>))}
@@ -80,8 +93,8 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
         </div>
       </div>
     </section>
-    <dialog ref={mobileDialog} aria-label="Job filters" className="ui-glass fixed inset-x-0 bottom-0 top-auto m-0 max-h-[85dvh] w-full max-w-none overflow-y-auto rounded-t-[28px] p-6 text-ui-ink backdrop:bg-ui-ink/40">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h2 className="font-extrabold">Filters · {activeCount} active</h2><button onClick={clear} className="text-[13px] font-semibold text-ui-blue-text">Clear all</button><button onClick={() => mobileDialog.current?.close()} className="rounded-full bg-ui-ink px-4 py-2 text-[14px] font-bold text-white">Done filtering</button></div>
+    <dialog ref={mobileDialog} aria-label="Job filters" onClick={event => { if (event.target === mobileDialog.current) closeFilters(); }} className="ui-glass fixed inset-x-0 bottom-0 top-auto m-0 max-h-[85dvh] w-full max-w-none overflow-y-auto rounded-t-[28px] p-6 text-ui-ink backdrop:bg-ui-ink/40">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h2 className="font-extrabold">Filters · {activeCount} active</h2><button onClick={clear} className="text-[13px] font-semibold text-ui-blue-text">Clear all</button><button onClick={closeFilters} className="rounded-full bg-ui-ink px-4 py-2 text-[14px] font-bold text-white">Done filtering</button></div>
       <div className="space-y-[22px]">{panelKeys.map(group)}</div>
     </dialog>
     <CareersInfo />
