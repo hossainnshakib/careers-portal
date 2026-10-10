@@ -514,3 +514,35 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
 
 ## 2026-10-10 - V2 documentation sync (v2 branch, workstream D follow-up)
 - Brought PRODUCT, DESIGN, SEED_DATA, UI_REDESIGN, RUNBOOK and ARCHITECTURE in line with the shipped v2 behaviour: managed option lists and their 13 seeded defaults (verbatim labels, legacy slugs), the /admin/options surface, publish rule, new job fields, consent checkbox + consent_at, inline noindex apply route (replacing the documented v1 HTTP 308), poster-family public theme scoped to .public-theme, shells with no option links, and demo-seed option/consent rules. SCHEMA.md and DECISIONS.md were already current. No code or schema changes.
+
+## 2026-10-10 - Mock-up UI acceptance baseline
+- On `public-ui-from-mockup`, captured numbered shared/Home/Job/Apply acceptance checks in `docs/UI_ACCEPTANCE.md` from the three supplied HTML mock-ups. Status cells remain blank until verified. Mock data and square-bracket placeholders must not become invented production content or fixed application questions.
+- Added scoped `--ui-*` mock colour/radius tokens, corresponding Tailwind utilities and a reusable `ui-glass` utility to `globals.css`. Existing presentation adopts them during the page rebuild; token capture alone is not a completed visual redesign.
+- The approved target changes Job detail to a content/summary page linking to a separate noindex Apply page. Sector is removed from the visible filter picker; existing URL parsing/matching contracts are retained. These target decisions supersede the earlier poster/inline-apply presentation entries when implemented. PRODUCT/DESIGN/ARCHITECTURE and smoke/browser assertions must be updated with that implementation.
+- Desktop sticky targets are the Home filter panel and Job summary, top 24px, bounded by their grid containers, disabled at <=900px. Avoid overflow ancestors that break sticky positioning; fix the mock's inline-display override at the <=1180px floating-card breakpoint.
+
+## 2026-10-10 - UI rebuild handoff
+
+### Current checkpoint
+- Branch: `public-ui-from-mockup`, based on `v2-job-model-and-ui`. No page rebuild, commit or push was performed in this continuation.
+- Step 1 baseline is captured: `docs/UI_ACCEPTANCE.md` contains extracted tokens and numbered shared/Home/Job/Apply checklists with blank verification status. `src/app/globals.css` exposes scoped `--ui-*` colours/radii, Tailwind mappings and `ui-glass`; current poster presentation has not adopted them yet.
+- `eslint.config.mjs` now ignores the three reference directories. Initial lint failed on mock bundled/vendor JavaScript; lint passed after excluding reference assets. Typecheck and `git diff --check` passed. Full tests/build/Playwright and actual visual/sticky behaviour are deferred to implementation/final verification.
+- Worktree also contains the earlier `.gitignore` changes for generated reference/comparison images and untracked owner-provided `design/mockup/`. Preserve those originals; do not commit reference screenshots or bundled vendor assets.
+
+### Next work
+1. Rebuild Home and public chrome using the acceptance baseline. Relevant files: `src/components/public/careers-hub.tsx`, `careers-hero.tsx`, `careers-results.tsx`, `careers-info.tsx`, `public-header.tsx`, `public-footer.tsx`, public layout and globals.css. Remove old title marquee/brand strip/poster presentation while retaining catalog/filter/URL logic. Sidebar target groups are Department, Brand, Work arrangement, Engagement type and Experience. Existing sector URL values should remain removable even though there is no sector picker.
+2. Add self-hosted Plus Jakarta Sans with its licence and public-scoped font selection. Root currently loads Inter and Hind Siliguri from `assets/fonts/` (not `src/assets/fonts/`); retain admin typography. Document the deterministic floating-role selection rule and real hiring-brand count before implementing the hero.
+3. Build independent Job detail and Apply pages; retain server validation/storage/submit code. Update tests that currently assert the apply page re-exports JobPage, inline form and `#apply` anchors. `src/lib/deployment/smoke.ts` currently checks the legacy inline form; update its tests and sitemap assertions with the route split.
+4. Prove both sticky panels with Playwright bounding-box measurements, including container-boundary and <=900px cases. Compare pages with ignored reference screenshots at 1440px and 390px; improve mobile instead of duplicating the mock's squeezed desktop grid.
+5. Reproduce the reported salary-radio initial-state problem before fixing it. Inspection found the editor uses `useState(initial)`, edit page maps `job.salaryMode` directly and defaults only nullable salaryText to an empty string, and server validation rejects range without text. No root cause or bug fix is established; do not normalise stored data speculatively.
+6. Update PRODUCT/DESIGN/ARCHITECTURE/UI_REDESIGN and decisions for the shipped presentation, run the planned per-page checks and commit/push checkpoints, then perform the full final verification once and write `docs/UI_VERIFICATION.md`.
+
+### Reference resources
+- Original rendered references: `design/mockup-reference/{home,job,apply}-{1440,390}.png` (ignored).
+- Readable HTML copies: `C:\Users\Hossa\AppData\Local\Temp\opencode\mocks\{home,job,apply}.html`. Original mocks depend on their bundled React/support scripts; screenshots need JavaScript enabled.
+- Use installed `@playwright/test` for screenshot scripts. Put temporary scripts inside the workspace for module resolution and remove them afterwards.
+- Follow the owner's rebuild workflow: small page checkpoints, no main merge/force push, final verification report and context handoff around 60% rather than starting a page rewrite without enough context.
+
+## 2026-10-10 - Baseline publication and mock-up references
+- The owner explicitly requested publication of the existing baseline before further implementation, including `design/mockup/` if its total size is below about 5 MB. The complete reference folder contains 27 files totalling 940,268 bytes (0.897 MiB), so the supplied HTML, bundled rendering scripts and logo assets are included. This supersedes the earlier handoff instruction to leave bundled reference vendor files untracked; they remain reference-only and excluded from lint.
+- Generated `design/mockup-reference/` and `design/mockup-compare/` images remain ignored and are not staged. The baseline is published as separate reference/configuration, scoped-token and acceptance/decision commits on `public-ui-from-mockup`.
