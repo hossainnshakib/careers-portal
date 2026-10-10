@@ -19,7 +19,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
       <div aria-hidden="true" className="ui-orbs pointer-events-none absolute inset-0 -z-10 overflow-clip">
         {hiring.slice(0, 6).map((brand, index) => <span key={brand.id} className="absolute h-[380px] w-[380px] rounded-full opacity-30 blur-[90px]" style={{ backgroundColor: accentColor(brand.accentColor), left: `${4 + index * 16}%`, top: index % 2 ? "60px" : "-120px" }} />)}
       </div>
-      <div className="relative mx-auto max-w-[1360px] px-6 pb-16 pt-14">
+      <div className="relative mx-auto max-w-[1360px] px-6 pb-16 pt-20">
         {featured && <Link href={`/jobs/${featured.slug}`} className="ui-float-card ui-glass absolute left-8 top-24 w-[236px] -rotate-5 flex-col gap-2.5 rounded-[22px] p-4">
           <span className="text-[10.5px] font-bold uppercase tracking-[.06em] text-ui-muted">{featured.department.name}</span>
           <span className="text-[17px] font-extrabold tracking-[-.01em]">{featured.title}</span>

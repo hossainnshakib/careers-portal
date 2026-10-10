@@ -49,7 +49,7 @@
   --ui-radius-form: 28px;
   --ui-radius-input: 14px;
   --ui-radius-button: 16px;
-  --ui-sticky-top: 24px;
+  --ui-sticky-top: 96px;
   --background: var(--ui-canvas);
   --foreground: var(--ui-ink);
   --card: #ffffff;
@@ -229,9 +229,16 @@ body {
 .ui-desktop-filter .ui-filter-group label:last-child { margin-bottom: 0; }
 .ui-desktop-filter .ui-filter-group button { padding: 5px 10px; font-size: 12px; line-height: 15px; }
 @media (min-width: 900px) {
+  .public-header {
+    position: sticky; top: 0; z-index: 50;
+    background: transparent;
+  }
+  .public-header .ui-glass {
+    position: relative;
+  }
   .ui-sticky-panel {
     position: sticky; top: var(--ui-sticky-top); align-self: start;
-    max-height: calc(100vh - 48px); overflow-y: auto;
+    max-height: calc(100vh - var(--ui-sticky-top) - 24px); overflow-y: auto;
     scrollbar-width: thin; scrollbar-color: rgba(38,50,74,.3) transparent;
   }
   .ui-sticky-panel::-webkit-scrollbar { width: 6px; }

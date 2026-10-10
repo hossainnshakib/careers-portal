@@ -21,13 +21,13 @@ async function proveSticky(page: Page, panel: Locator, container: Locator, conte
     return { top: rect.top + window.scrollY, bottom: rect.bottom + window.scrollY, height: rect.height };
   });
   const panelHeight = (await panel.boundingBox())!.height;
-  expect(panelHeight).toBeLessThanOrEqual(page.viewportSize()!.height - 48 + 1);
+  expect(panelHeight).toBeLessThanOrEqual(page.viewportSize()!.height - 96 - 24 + 1);
   expect(bounds.height).toBeGreaterThan(panelHeight + 700);
   const contentTops: number[] = [];
   const panelTops: number[] = [];
   for (const extra of [200, 550]) {
     await page.evaluate(y => window.scrollTo(0, y), bounds.top + extra);
-    await expect.poll(async () => Math.abs((await panel.boundingBox())!.y - 24)).toBeLessThanOrEqual(3);
+    await expect.poll(async () => Math.abs((await panel.boundingBox())!.y - 96)).toBeLessThanOrEqual(3);
     panelTops.push((await panel.boundingBox())!.y);
     contentTops.push((await content.boundingBox())!.y);
   }
@@ -55,6 +55,21 @@ async function proveSticky(page: Page, panel: Locator, container: Locator, conte
 }
 
 for (const viewport of [{ width: 1440, height: 900 }, { width: 1280, height: 720 }]) {
+  test(`Public header stays sticky at top after scroll at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const header = page.getByTestId("public-header");
+    await expect(header).toHaveCSS("position", "sticky");
+    await expect(header).toHaveCSS("top", "0px");
+    await page.evaluate(() => window.scrollTo(0, 600));
+    const headerBox = (await header.boundingBox())!;
+    expect(headerBox.y).toBeGreaterThanOrEqual(0);
+    expect(headerBox.y).toBeLessThanOrEqual(4);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(header).toHaveCSS("position", "static");
+  });
+
   test(`Home filter stays sticky and bounded at ${viewport.width}x${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/");

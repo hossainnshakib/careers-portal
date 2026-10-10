@@ -58,7 +58,7 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
   }
   return <main id="main" className="pb-2">
     <CareersHero jobs={jobs} brands={brands} />
-    <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-6 pb-6 pt-12">
+    <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-24 pb-6 pt-12">
       <div className="mb-7 space-y-1.5"><h2 className="text-[36px] font-extrabold tracking-[-.03em]">Find your role</h2><p className="text-[15px] text-ui-muted">Every open role, grouped by department.</p></div>
       <div className="ui-roles-grid" data-testid="roles-grid">
         <aside aria-label="Job filters" className="ui-desktop-filter ui-sticky-panel ui-glass space-y-4 self-start rounded-[24px] p-[22px]" data-testid="home-filter-panel">
