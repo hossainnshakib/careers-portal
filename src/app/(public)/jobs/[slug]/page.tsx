@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 import { loadApplicationJob, loadPublicJob } from "@/db/queries/public-jobs";
 import { SafeMarkdown } from "@/lib/markdown/render";
-import { getPublicEnv } from "@/lib/env-public";
+import { getPublicEnv, getPublicSiteUrl } from "@/lib/env-public";
 import { accentColor, publicWebsite } from "@/lib/careers/presentation";
 import { groupLabels } from "@/lib/careers/option-labels";
+import { buildJobPosting } from "@/lib/careers/json-ld";
 import { PublicBrandLogo } from "@/components/public/public-brand-logo";
 import { PublicIcon } from "@/components/public/public-icon";
 import { PublicDeadline } from "@/components/public/public-deadline";
@@ -25,7 +26,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { job } = await getJob(params);
   const url = `${getPublicEnv().NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")}/jobs/${job.slug}`;
   const description = job.summary || `Explore the ${job.title} role, read the requirements and apply without an account.`;
-  return { title: `${job.title} · Careers`, description, alternates: { canonical: url }, openGraph: { title: job.title, description, url, type: "website", siteName: "Careers" } };
+  return {
+    title: `${job.title} · Careers`, description, alternates: { canonical: url },
+    openGraph: { title: job.title, description, url, type: "website", siteName: "Careers", images: [{ url: `/jobs/${job.slug}/opengraph-image`, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", title: job.title, description },
+  };
 }
 export default async function JobPage({ params }: { params: Promise<{ slug: string }> }) {
   const { job, department, options } = await getJob(params);
@@ -33,12 +38,20 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   const current = await loadApplicationJob(job.slug).catch(() => { throw new Error("Unable to load this role."); });
   if (!current || current.job.status === "draft" || !current.brands.some(item => item.brand.status === "active")) notFound();
   const visibleBrands = current.brands.filter(item => item.brand.status === "active").sort((a, b) => Number(b.primary) - Number(a.primary));
-  const primaryAccent = accentColor(visibleBrands[0]?.brand.accentColor);
+  const primaryBrand = visibleBrands[0]?.brand ?? null;
+  const primaryAccent = accentColor(primaryBrand?.accentColor);
   const closed = current.job.status !== "open" || (!!current.job.deadlineAt && current.job.deadlineAt.getTime() <= Date.now());
   const deadline = current.job.deadlineAt?.toISOString() ?? null;
   const applyUrl = `/jobs/${job.slug}/apply`;
   const experience = [job.experienceText, ...groupLabels(options, "experience")].filter(Boolean).join(" · ");
   const engagement = [...groupLabels(options, "engagement"), job.engagementNote].filter(Boolean).join(" · ");
+  const jobPosting = closed ? null : buildJobPosting({
+    title: job.title, summary: job.summary, descriptionMd: job.descriptionMd, slug: job.slug,
+    locationText: job.locationText, status: job.status, deadlineAt: deadline,
+    publishedAt: job.publishedAt, departmentName: department.name, options,
+    brand: primaryBrand ? { name: primaryBrand.name, website: publicWebsite(primaryBrand.website), logoUrl: primaryBrand.logoUrl } : null,
+    siteOrigin: getPublicSiteUrl(),
+  });
   const rows = [
     ["Salary", job.salaryMode === "range" && job.salaryText ? job.salaryText : "Negotiable", "salary"],
     ["Vacancy", job.vacancies?.toString(), "people"],
@@ -49,6 +62,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
     ["Deadline", deadline, "calendar"],
   ] as const;
   return <main id="main" className="pb-24 md:pb-2">
+    {jobPosting && <script type="application/ld+json" nonce={undefined} dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPosting).replace(/</g, "\\u003c") }} />}
     <header className="relative isolate mx-3 mt-5 rounded-[28px] bg-ui-ink text-white sm:mx-5 sm:rounded-[36px]" style={{ backgroundImage: `linear-gradient(135deg, ${primaryAccent}2e, #0e1626)` }}>
       <div aria-hidden="true" className="ui-orbs pointer-events-none absolute inset-0 -z-10 overflow-clip rounded-[inherit] opacity-[.22]">
         <span className="absolute -top-[140px] left-[62%] h-[460px] w-[460px] rounded-full blur-[100px]" style={{ backgroundColor: primaryAccent }} />

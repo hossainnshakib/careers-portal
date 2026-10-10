@@ -9,6 +9,7 @@ export const metadata = {
   description: "Browse open roles across our brands. No account needed.",
   alternates: { canonical: getPublicSiteUrl() },
   openGraph: { title: "Careers · Good work starts here", description: "Browse open roles across our brands. No account needed.", url: getPublicSiteUrl(), type: "website" as const },
+  twitter: { card: "summary_large_image" as const, title: "Careers · Good work starts here", description: "Browse open roles across our brands. No account needed." },
 };
 
 export default async function Home({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {

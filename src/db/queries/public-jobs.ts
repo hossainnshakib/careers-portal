@@ -76,6 +76,7 @@ export function loadPublicJob(slug: string) {
         experienceText: job.experienceText, skills: job.skills, benefits: job.benefits,
         niceToHaveMd: job.niceToHaveMd, cvRequired: job.cvRequired,
         deadlineAt: job.deadlineAt?.toISOString() ?? null,
+        publishedAt: job.publishedAt?.toISOString() ?? null,
         descriptionMd: job.descriptionMd, responsibilitiesMd: job.responsibilitiesMd, requirementsMd: job.requirementsMd },
       department: { name: department.name, slug: department.slug },
       options: options.filter((option) => option.isActive)

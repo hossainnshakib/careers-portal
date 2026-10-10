@@ -27,7 +27,9 @@ export const metadata: Metadata = {
   title: "Careers",
   description: "Browse open roles across our brands. No account needed.",
   openGraph: { title: "Careers", description: "Good work starts here. Browse open roles across our brands.", siteName: "Careers", type: "website" },
-  twitter: { card: "summary" },
+  twitter: { card: "summary_large_image", title: "Careers", description: "Good work starts here. Browse open roles across our brands." },
+  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }], apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }] },
+  manifest: "/manifest.webmanifest",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

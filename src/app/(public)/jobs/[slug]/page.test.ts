@@ -5,12 +5,12 @@ import { beforeEach, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ cached: vi.fn(), current: vi.fn(), form: vi.fn() }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/db/queries/public-jobs", () => ({ loadPublicJob: mocks.cached, loadApplicationJob: mocks.current }));
-vi.mock("@/lib/env-public", () => ({ getPublicEnv: () => ({ NEXT_PUBLIC_SITE_URL: "https://careers.example.test" }) }));
+vi.mock("@/lib/env-public", () => ({ getPublicEnv: () => ({ NEXT_PUBLIC_SITE_URL: "https://careers.example.test" }), getPublicSiteUrl: () => "https://careers.example.test" }));
 vi.mock("@/components/public/application-form", () => ({ ApplicationForm: mocks.form }));
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not-found"); } }));
 import JobPage, { generateMetadata } from "./page";
 
-const job = { id: "synthetic-job", slug: "web-developer", title: "Web Developer", status: "open", summary: "A thoughtful role", locationText: "Dhaka", engagementNote: null, salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null, skills: [], benefits: [], niceToHaveMd: "", cvRequired: true, deadlineAt: null, descriptionMd: "**Meaningful work**\n\n<script>unsafe()</script>", responsibilitiesMd: "Build", requirementsMd: "Learn" };
+const job = { id: "synthetic-job", slug: "web-developer", title: "Web Developer", status: "open", summary: "A thoughtful role", locationText: "Dhaka", engagementNote: null, salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null, skills: [], benefits: [], niceToHaveMd: "", cvRequired: true, deadlineAt: null, publishedAt: "2026-09-01T00:00:00Z", descriptionMd: "**Meaningful work**\n\n<script>unsafe()</script>", responsibilitiesMd: "Build", requirementsMd: "Learn" };
 const brand = { id: "brand", name: "Brand", slug: "brand", status: "active", logoUrl: null };
 const optionTags = [{ group: "arrangement", slug: "remote", label: "Work from home" }, { group: "engagement", slug: "full_time", label: "Full-time" }];
 const cached = { job, department: { name: "Technical", slug: "technical" }, brands: [{ brand, primary: true }], questions: [], options: optionTags };
@@ -22,12 +22,18 @@ beforeEach(() => {
   mocks.current.mockResolvedValue({ ...cached, job: { ...job, cvRequired: false }, questions: [freshQuestion] });
   mocks.form.mockImplementation(() => createElement("form", null, "Synthetic application form"));
 });
-it("renders sanitized job content and two real Apply links without form or Turnstile", async () => {
+it("renders sanitized job content, JSON-LD and real Apply links without form or Turnstile", async () => {
   const html = renderToStaticMarkup(await JobPage({ params: params() }));
   expect(html).not.toContain('id="apply"'); expect(html).not.toContain('href="#apply"');
-  expect(html.match(/href="\/jobs\/web-developer\/apply"/g)).toHaveLength(2);
+  expect(html.match(/href="\/jobs\/web-developer\/apply"/g)).toHaveLength(3);
   expect(html).not.toContain("<form"); expect(html).not.toContain("turnstile");
-  expect(html).toContain("<strong>Meaningful work</strong>"); expect(html).not.toContain("<script");
+  expect(html).toContain("<strong>Meaningful work</strong>");
+  // Only the JSON-LD script is allowed; markdown must not inject scripts.
+  const scriptMatches = html.match(/<script[^>]*>/g) ?? [];
+  expect(scriptMatches).toHaveLength(1);
+  expect(html).toContain('type="application/ld+json"');
+  expect(html).toContain('"@type":"JobPosting"');
+  expect(html).toContain('"title":"Web Developer"');
   expect(html).toContain("Job summary"); expect(html).toContain("Negotiable");
   expect(mocks.form).not.toHaveBeenCalled();
 });
@@ -37,6 +43,7 @@ it.each(["closed", "expired"])("shows current %s state without a form or apply a
   expect(html).toContain("No longer accepting applications");
   expect(html).not.toContain('id="apply"'); expect(mocks.form).not.toHaveBeenCalled();
   expect(html).not.toContain('href="/jobs/web-developer/apply"');
+  expect(html).not.toContain('type="application/ld+json"');
 });
 it.each(["draft", "hidden", "missing"])("returns 404 for a current %s role", async (kind) => {
   mocks.current.mockResolvedValue(kind === "missing" ? null : { ...cached, job: { ...job, status: kind === "draft" ? "draft" : "open" }, brands: [{ brand: { ...brand, status: kind === "hidden" ? "hidden" : "active" } }] });
