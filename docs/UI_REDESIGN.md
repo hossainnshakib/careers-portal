@@ -1,5 +1,13 @@
 # Public UI redesign history
 
+## Final local mock-up checkpoint
+
+Home, Job, standalone noindex Apply, shared chrome, public utilities and both viewport-bounded sticky panels are implemented on `public-ui-from-mockup`. The poster/title carousel/brand strip/inline apply presentation is removed; accepted v2 data/admin/security rules remain.
+
+Final evidence is in `UI_VERIFICATION.md`: all 23 browser cases have passing evidence after concrete failure fixes, all 85 dev-gated live checks pass, build/PDF trace/audit/secret/HTTP smoke checks pass, and production mobile Lighthouse is Home 95/100/100, Job 95/100/100, Apply 93/100/100 (performance/accessibility/best practices). The necessary reserved-query adapter prevents the observed mixed-query runtime failure; unused Inter preload, small-text contrast and summary semantics were corrected without dropping glass styling.
+
+Acceptance is 49 Implemented / 10 Deviation / 1 Not implemented. The sole outstanding requested fix is the unreproduced salary-radio report; stored-mode SSR/hydrated checks pass, so no speculative editor rewrite was made. Real-data/presentation deviations and owner preview/contact/brand/privacy actions are explicitly listed. No merge or production sign-off is implied; historical checkpoint statements below describe their time, not current remaining work.
+
 ## Mock-up rebuild — Home checkpoint (branch `public-ui-from-mockup`)
 
 ### Job detail and route split checkpoint

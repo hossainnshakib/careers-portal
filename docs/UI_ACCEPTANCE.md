@@ -2,7 +2,7 @@
 
 Reference sources: `design/mockup/Home-html`, `design/mockup/Job detail-html`, and `design/mockup/Apply-html`. Rendered reference images live in the ignored `design/mockup-reference/` directory.
 
-Status cells are intentionally blank until implementation and verification. Record evidence in `docs/UI_VERIFICATION.md`; an implemented feature is not automatically a verified feature.
+Final statuses reflect local implementation, production browser checks and visual review. Evidence and unverified external checks are in `docs/UI_VERIFICATION.md`.
 
 ## Content and behaviour rules
 
@@ -66,78 +66,78 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| S01 | Floating glass pill header, centred 1200px container, 20px top spacing, Careers wordmark and blue dot. | |
-| S02 | Roles, How it works and FAQ navigation targets the Home sections from every public page. Dark Browse roles pill is functional. | |
-| S03 | Header wraps cleanly on mobile with no horizontal page overflow. | |
-| S04 | Light footer with hairline separator, Careers name, conversation tagline, configured contact only, safe brand website links and Privacy link. | |
-| S05 | Public typography, glass surfaces, focus indicators and spacing match the token reference. Bengali text renders correctly. | |
+| S01 | Floating glass pill header, centred 1200px container, 20px top spacing, Careers wordmark and blue dot. | Implemented |
+| S02 | Roles, How it works and FAQ navigation targets the Home sections from every public page. Dark Browse roles pill is functional. | Implemented |
+| S03 | Header wraps cleanly on mobile with no horizontal page overflow. | Implemented |
+| S04 | Light footer with hairline separator, Careers name, conversation tagline, configured contact only, safe brand website links and Privacy link. | Implemented |
+| S05 | Public typography, glass surfaces, focus indicators and spacing match the token reference. Bengali text renders correctly. | Deviation — slightly darker nav/salary text passes measured contrast; Bengali synthetic field visually checked. |
 
 ## Home
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| H01 | Multicolour blurred hero orbs sit behind the centred content without obstructing interaction. | |
-| H02 | Glass hiring pill shows a green dot, actual open-role count and actual hiring-brand count. | |
-| H03 | Headline reads “Good work starts here.” with muted “Find your place across our brands.” secondary line; explanatory copy and two CTAs match the mock. | |
-| H04 | Browse roles and How applying works CTAs navigate to their sections. | |
-| H05 | Rotated left glass card shows a deterministically selected real role, department, options and brand. Selection rule is documented; zero roles has a sensible state. | |
-| H06 | Rotated right card shows live role/brand counts and overlapping real-brand marks using readable foreground colours. | |
-| H07 | Floating cards hide at <=1180px. Hero type and spacing adapt on narrow screens. | |
-| H08 | Hiring across our brands logo marquee uses actual brand assets, grayscale/opacity treatment and faded edges. Duplicates are hidden from assistive technology; focus/hover pause motion and reduced motion is static. | |
-| H09 | Find your role heading and grouped-by-department subtitle precede the 270px/flexible results grid. | |
-| H10 | Glass filter panel has Filters heading, functional Clear all, department checkboxes with counts, and Brand, Work arrangement, Engagement type and Experience pill groups. Sector is absent from the UI. | |
-| H11 | Active filter pills have dark selected treatment; query state survives reload, browser history and shared URLs. Preserve OR within facets and AND across facets. | |
-| H12 | Desktop filter panel stays 24px from the viewport top while scrolling results and stops at the end of its grid container. Verify with browser bounding boxes at multiple scroll positions. | |
-| H13 | Below 900px has usable single-column filtering with sticky disabled; controls remain keyboard accessible. | |
-| H14 | Glass 56px search field has search icon and accessible label; result count and individually removable blue selected chips appear below. | |
-| H15 | Only nonempty department groups render in database order, with stable blue numbering, heading, accurate role count and hairline divider. | |
-| H16 | Glass whole-card links have 20px radii, primary-brand accent top border, primary-first brand marks/names, title, verbatim options, salary pill, optional summary and View role arrow. | |
-| H17 | Salary pills show Negotiable or actual configured range; fresher-welcome has blue treatment, other options neutral. No sample data is copied into jobs. | |
-| H18 | Card grid adapts from desktop columns to mobile; long titles, salaries and Bengali text fit without clipping. Hover lift respects reduced motion. | |
-| H19 | Empty search/filter and empty catalog states are clear and offer an appropriate reset. Existing no-JavaScript search/filter behaviour remains usable. | |
-| H20 | How applying works has three glass cards: Find your role, Tell us about yourself, Keep your reference; blue 01–03 numbers and mock explanatory copy. | |
-| H21 | Five accessible FAQ disclosures cover accounts, files, Bengali, multiple roles and data use. File guidance reflects actual enforced limits and privacy links work. | |
-| H22 | Shared footer and metadata are present. Screenshot comparisons cover desktop and mobile with data differences explained. | |
+| H01 | Multicolour blurred hero orbs sit behind the centred content without obstructing interaction. | Implemented |
+| H02 | Glass hiring pill shows a green dot, actual open-role count and actual hiring-brand count. | Implemented |
+| H03 | Headline reads “Good work starts here.” with muted “Find your place across our brands.” secondary line; explanatory copy and two CTAs match the mock. | Implemented |
+| H04 | Browse roles and How applying works CTAs navigate to their sections. | Implemented |
+| H05 | Rotated left glass card shows a deterministically selected real role, department, options and brand. Selection rule is documented; zero roles has a sensible state. | Deviation — first catalog role is Web Developer, not the sample Cinematographer; zero roles omit the card. |
+| H06 | Rotated right card shows live role/brand counts and overlapping real-brand marks using readable foreground colours. | Deviation — actual data has 16 roles and 7 hiring brands, not 8; all active brands remain in the marquee. |
+| H07 | Floating cards hide at <=1180px. Hero type and spacing adapt on narrow screens. | Implemented |
+| H08 | Hiring across our brands logo marquee uses actual brand assets, grayscale/opacity treatment and faded edges. Duplicates are hidden from assistive technology; focus/hover pause motion and reduced motion is static. | Implemented |
+| H09 | Find your role heading and grouped-by-department subtitle precede the 270px/flexible results grid. | Implemented |
+| H10 | Glass filter panel has Filters heading, functional Clear all, department checkboxes with counts, and Brand, Work arrangement, Engagement type and Experience pill groups. Sector is absent from the UI. | Deviation — compact desktop rows/chips and collapsible groups meet the viewport-fit requirement; filtering is unchanged. |
+| H11 | Active filter pills have dark selected treatment; query state survives reload, browser history and shared URLs. Preserve OR within facets and AND across facets. | Implemented |
+| H12 | Desktop filter panel stays 24px from the viewport top while scrolling results and stops at the end of its grid container. Verify with browser bounding boxes at multiple scroll positions. | Implemented |
+| H13 | Below 900px has usable single-column filtering with sticky disabled; controls remain keyboard accessible. | Implemented |
+| H14 | Glass 56px search field has search icon and accessible label; result count and individually removable blue selected chips appear below. | Implemented |
+| H15 | Only nonempty department groups render in database order, with stable blue numbering, heading, accurate role count and hairline divider. | Implemented |
+| H16 | Glass whole-card links have 20px radii, primary-brand accent top border, primary-first brand marks/names, title, verbatim options, salary pill, optional summary and View role arrow. | Implemented |
+| H17 | Salary pills show Negotiable or actual configured range; fresher-welcome has blue treatment, other options neutral. No sample data is copied into jobs. | Deviation — current dev jobs retain actual negotiable modes/options, not the sample salaries/fresher selections; configured range/highlight rendering is tested. |
+| H18 | Card grid adapts from desktop columns to mobile; long titles, salaries and Bengali text fit without clipping. Hover lift respects reduced motion. | Implemented |
+| H19 | Empty search/filter and empty catalog states are clear and offer an appropriate reset. Existing no-JavaScript search/filter behaviour remains usable. | Implemented |
+| H20 | How applying works has three glass cards: Find your role, Tell us about yourself, Keep your reference; blue 01–03 numbers and mock explanatory copy. | Implemented |
+| H21 | Five accessible FAQ disclosures cover accounts, files, Bengali, multiple roles and data use. File guidance reflects actual enforced limits and privacy links work. | Deviation — upload answer also explains actual per-role limits and eight-file policy instead of copying incomplete sample guidance. |
+| H22 | Shared footer and metadata are present. Screenshot comparisons cover desktop and mobile with data differences explained. | Implemented |
 
 ## Job detail
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| J01 | Rounded dark gradient hero band has brand-coloured blurred orbs, All roles link, department label, actual title and optional summary. | |
-| J02 | White/translucent hero pills show real options, optional location and deadline. Hiring for badges use actual primary-first brand assets/names. | |
-| J03 | Content and summary use flexible/340px columns with a 44px gap. Below 900px is single column with static summary. | |
-| J04 | Description renders under About the role / Why this role exists with sanitised Markdown. | |
-| J05 | Responsibilities render under What you will do / Key responsibilities with blue numbered list styling where the content is a list. Preserve other valid Markdown structure. | |
-| J06 | Requirements and optional nice-to-have sections use mock headings and green check list styling without flattening valid Markdown. | |
-| J07 | Nonempty skills render as glass pills; nonempty benefits render as glass tiles with blue check badges. Empty optional sections are omitted. | |
-| J08 | Hiring-brand cards use real logos/names, optional descriptions and validated website links. Placeholder descriptions are absent. | |
-| J09 | Glass Ready to apply panel links to `/jobs/<slug>/apply`; job detail contains no application form or Turnstile widget. | |
-| J10 | Glass Job summary has icon tiles and real Salary, optional Vacancy, Experience, Work arrangement, Engagement, Location and Deadline rows. Unset optional rows are absent. | |
-| J11 | Summary Apply now button links to the separate Apply page. All selected active option labels and relevant engagement note remain visible. | |
-| J12 | Desktop summary stays 24px from the viewport top and stops at the content container boundary; prove with bounding boxes at multiple scroll positions. | |
-| J13 | Closed/expired jobs expose a clear closed state without an active application CTA; drafts and hidden-only jobs remain 404. | |
-| J14 | Shared chrome, canonical metadata and mobile layout work; browser tests assert navigation rather than legacy `#apply` anchors. | |
+| J01 | Rounded dark gradient hero band has brand-coloured blurred orbs, All roles link, department label, actual title and optional summary. | Deviation — bounded accent/orb opacity keeps supporting white text readable even for bright owner accents. |
+| J02 | White/translucent hero pills show real options, optional location and deadline. Hiring for badges use actual primary-first brand assets/names. | Implemented |
+| J03 | Content and summary use flexible/340px columns with a 44px gap. Below 900px is single column with static summary. | Implemented |
+| J04 | Description renders under About the role / Why this role exists with sanitised Markdown. | Implemented |
+| J05 | Responsibilities render under What you will do / Key responsibilities with blue numbered list styling where the content is a list. Preserve other valid Markdown structure. | Implemented |
+| J06 | Requirements and optional nice-to-have sections use mock headings and green check list styling without flattening valid Markdown. | Implemented |
+| J07 | Nonempty skills render as glass pills; nonempty benefits render as glass tiles with blue check badges. Empty optional sections are omitted. | Deviation — captured dev role has no configured skills/benefits/nice-to-have; conditional sections are implemented and tested, not filled with sample text. |
+| J08 | Hiring-brand cards use real logos/names, optional descriptions and validated website links. Placeholder descriptions are absent. | Implemented |
+| J09 | Glass Ready to apply panel links to `/jobs/<slug>/apply`; job detail contains no application form or Turnstile widget. | Implemented |
+| J10 | Glass Job summary has icon tiles and real Salary, optional Vacancy, Experience, Work arrangement, Engagement, Location and Deadline rows. Unset optional rows are absent. | Implemented |
+| J11 | Summary Apply now button links to the separate Apply page. All selected active option labels and relevant engagement note remain visible. | Implemented |
+| J12 | Desktop summary stays 24px from the viewport top and stops at the content container boundary; prove with bounding boxes at multiple scroll positions. | Implemented |
+| J13 | Closed/expired jobs expose a clear closed state without an active application CTA; drafts and hidden-only jobs remain 404. | Implemented |
+| J14 | Shared chrome, canonical metadata and mobile layout work; browser tests assert navigation rather than legacy `#apply` anchors. | Implemented |
 
 ## Apply
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| A01 | Independent `/jobs/<slug>/apply` page returns 200 for an applicable role and has noindex metadata. It is excluded from sitemap. | |
-| A02 | 820px centred layout has subtle decorative orbs and functional Back to job link. | |
-| A03 | Glass 28px introduction card shows department, Apply for actual job title, real hiring brands, options, salary and optional location/deadline. | |
-| A04 | Separate glass form panel uses mock spacing, blue uppercase section labels and a responsive two-column field grid. | |
-| A05 | Personal & contact fields preserve existing labels, requiredness, autocomplete and server validation. CV requiredness follows the actual job. | |
-| A06 | Configured question sections render from database definitions, in their existing order. Mock Professional/Experience/Skills/Role-specific questions are examples, not mandatory new fields. | |
-| A07 | Text, email, URL, number, date and select controls use 50px height, 14px radius and pale input surface; textareas span the grid with usable vertical resizing. | |
-| A08 | Single-choice cards and multiple-choice pills have blue selected border/surface styling, accessible grouping and working Other answers where configured. Boolean controls retain correct answer values. | |
-| A09 | Dashed upload panels have upload icon, actual type/size guidance and Choose file control. Any advertised drop interaction works; progress, failure, removal and replacement states remain usable. | |
-| A10 | Red required markers, help text and inline validation errors are associated with fields. Failed submission focuses or identifies invalid fields without losing entered answers. | |
-| A11 | Consent checkbox and Privacy notice link are functional; unchecked consent is rejected server-side. | |
-| A12 | Submit application is a real submit button, with pending/error state and existing duplicate-submit protection. Internal-team/reference explanatory text matches actual behaviour. | |
-| A13 | Turnstile and existing private upload/submit flow remain functional; definitions and open/deadline state reload on the server. | |
-| A14 | Successful submission reaches the reference confirmation page; Bengali name/answer and configured question types survive the apply/review happy path. | |
-| A15 | Closed/expired roles have no usable form; invalid/draft/hidden-only jobs remain denied. | |
-| A16 | Shared footer, keyboard flow and mobile single-column form have no overflow or obscured controls. Desktop/mobile screenshots are compared against the reference. | |
+| A01 | Independent `/jobs/<slug>/apply` page returns 200 for an applicable role and has noindex metadata. It is excluded from sitemap. | Implemented |
+| A02 | 820px centred layout has subtle decorative orbs and functional Back to job link. | Implemented |
+| A03 | Glass 28px introduction card shows department, Apply for actual job title, real hiring brands, options, salary and optional location/deadline. | Implemented |
+| A04 | Separate glass form panel uses mock spacing, blue uppercase section labels and a responsive two-column field grid. | Implemented |
+| A05 | Personal & contact fields preserve existing labels, requiredness, autocomplete and server validation. CV requiredness follows the actual job. | Implemented |
+| A06 | Configured question sections render from database definitions, in their existing order. Mock Professional/Experience/Skills/Role-specific questions are examples, not mandatory new fields. | Deviation — actual sections include Portfolio and extra configured contact questions; labels/types/order are retained exactly. |
+| A07 | Text, email, URL, number, date and select controls use 50px height, 14px radius and pale input surface; textareas span the grid with usable vertical resizing. | Implemented |
+| A08 | Single-choice cards and multiple-choice pills have blue selected border/surface styling, accessible grouping and working Other answers where configured. Boolean controls retain correct answer values. | Implemented |
+| A09 | Dashed upload panels have upload icon, actual type/size guidance and Choose file control. Any advertised drop interaction works; progress, failure, removal and replacement states remain usable. | Deviation — real reservation-limit explanation/restart controls are retained in addition to mock styling; actual picker/drop upload passes. |
+| A10 | Red required markers, help text and inline validation errors are associated with fields. Failed submission focuses or identifies invalid fields without losing entered answers. | Implemented |
+| A11 | Consent checkbox and Privacy notice link are functional; unchecked consent is rejected server-side. | Implemented |
+| A12 | Submit application is a real submit button, with pending/error state and existing duplicate-submit protection. Internal-team/reference explanatory text matches actual behaviour. | Implemented |
+| A13 | Turnstile and existing private upload/submit flow remain functional; definitions and open/deadline state reload on the server. | Implemented |
+| A14 | Successful submission reaches the reference confirmation page; Bengali name/answer and configured question types survive the apply/review happy path. | Implemented |
+| A15 | Closed/expired roles have no usable form; invalid/draft/hidden-only jobs remain denied. | Implemented |
+| A16 | Shared footer, keyboard flow and mobile single-column form have no overflow or obscured controls. Desktop/mobile screenshots are compared against the reference. | Implemented |
 
 ## Final evidence
 
@@ -145,8 +145,8 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| F01 | Diagnose the reported salary-radio initial-state discrepancy, fix a confirmed cause and verify stored negotiable/range modes in the editor. Record unreproduced behavior explicitly rather than claiming a speculative fix. | |
-| F02 | Success, privacy, 404 and public error recovery use shared public chrome/glass while retaining reference-only acknowledgement and the privacy draft/actual policy text. | |
-| F03 | GET-only deployment smoke proves Job has no form/Turnstile, Apply is 200/noindex with a form, and sitemap includes Jobs but excludes Apply/private/success routes. | |
+| F01 | Diagnose the reported salary-radio initial-state discrepancy, fix a confirmed cause and verify stored negotiable/range modes in the editor. Record unreproduced behavior explicitly rather than claiming a speculative fix. | Not implemented — no confirmed cause/fix: SSR and hydrated stored-mode checks pass. Specific role/browser/reproduction steps are needed; no speculative state/data rewrite. |
+| F02 | Success, privacy, 404 and public error recovery use shared public chrome/glass while retaining reference-only acknowledgement and the privacy draft/actual policy text. | Implemented |
+| F03 | GET-only deployment smoke proves Job has no form/Turnstile, Apply is 200/noindex with a form, and sitemap includes Jobs but excludes Apply/private/success routes. | Implemented |
 
 Record typecheck, lint, unit tests, relevant Playwright flows, sticky-position measurements and screenshot review in `docs/UI_VERIFICATION.md`. Document confirmed fixes, deviations from the mock, unverified checks and remaining owner questions explicitly. Do not mark this checklist passed based solely on source inspection.
