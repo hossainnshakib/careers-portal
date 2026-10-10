@@ -99,7 +99,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
           <span aria-hidden="true" className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-ui-neutral-surface text-ui-chip"><SummaryIcon name={icon} /></span>
           <div className="min-w-0 space-y-0.5"><dt className="text-[11.5px] font-extrabold uppercase tracking-[.08em] text-ui-muted">{label}</dt><dd className="break-words text-[15px] font-bold">{label === "Deadline" ? <PublicDeadline value={value!} /> : value}</dd></div>
         </div>)}</dl>
-        {!closed && <Link href={applyUrl} className="ui-button mt-5 flex shadow-[0_10px_30px_rgba(11,18,32,.22)]">Apply now <PublicIcon name="arrow" /></Link>}
+        {!closed && <Link href={applyUrl} className="ui-button ui-button-block mt-5 shadow-[0_10px_30px_rgba(11,18,32,.22)]">Apply now <PublicIcon name="arrow" /></Link>}
       </aside>
     </div>
   </main>;

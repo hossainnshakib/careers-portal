@@ -172,6 +172,7 @@ body {
 .ui-pill-salary { background: var(--ui-salary-surface); color: var(--ui-salary-text); }
 .ui-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: 16px; padding: 15px 26px; font-size: 15px; font-weight: 700; background: var(--ui-ink); color: white; }
 .ui-button-pill { border-radius: 999px; }
+.ui-button-block { display: flex; width: 100%; }
 .ui-button:hover { background: #26324a; }
 .ui-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .ui-form-wide { grid-column: 1 / -1; }
@@ -264,7 +265,7 @@ body {
   .brand-marquee { overflow: visible; mask-image: none; }
   .brand-marquee-track { animation: none; width: 100%; }
   .brand-marquee-track > ul { flex-wrap: wrap; justify-content: center; gap: 24px; padding-right: 0; }
-  .brand-marquee-copy { display: none; }
+  .brand-marquee-track > .brand-marquee-copy { display: none; }
   .ui-lift { transition: none; }
   .ui-lift:hover { transform: none; }
 }
