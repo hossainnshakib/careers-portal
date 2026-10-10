@@ -141,4 +141,12 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 
 ## Final evidence
 
+### Supporting flows and fixes
+
+| ID | Acceptance check | Status |
+| --- | --- | --- |
+| F01 | Diagnose the reported salary-radio initial-state discrepancy, fix a confirmed cause and verify stored negotiable/range modes in the editor. Record unreproduced behavior explicitly rather than claiming a speculative fix. | |
+| F02 | Success, privacy, 404 and public error recovery use shared public chrome/glass while retaining reference-only acknowledgement and the privacy draft/actual policy text. | |
+| F03 | GET-only deployment smoke proves Job has no form/Turnstile, Apply is 200/noindex with a form, and sitemap includes Jobs but excludes Apply/private/success routes. | |
+
 Record typecheck, lint, unit tests, relevant Playwright flows, sticky-position measurements and screenshot review in `docs/UI_VERIFICATION.md`. Document confirmed fixes, deviations from the mock, unverified checks and remaining owner questions explicitly. Do not mark this checklist passed based solely on source inspection.
