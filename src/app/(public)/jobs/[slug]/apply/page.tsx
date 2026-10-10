@@ -43,7 +43,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
         <div className="flex flex-wrap gap-2">
           {options.filter(option => option.isActive).map(option => <span key={option.id} className="ui-pill">{option.label}</span>)}
           {job.locationText && <span className="ui-pill">{job.locationText}</span>}
-          <span className="ui-pill ui-pill-salary">{job.salaryMode === "range" ? job.salaryText : "Negotiable"}</span>
+          <span className="ui-pill ui-pill-salary">{job.salaryMode === "range" && job.salaryText ? job.salaryText : "Negotiable"}</span>
           {deadline && <span className="ui-pill">Apply before <PublicDeadline value={deadline} /></span>}
         </div>
       </header>

@@ -40,7 +40,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   const experience = [job.experienceText, ...groupLabels(options, "experience")].filter(Boolean).join(" · ");
   const engagement = [...groupLabels(options, "engagement"), job.engagementNote].filter(Boolean).join(" · ");
   const rows = [
-    ["Salary", job.salaryMode === "range" ? job.salaryText : "Negotiable", "salary"],
+    ["Salary", job.salaryMode === "range" && job.salaryText ? job.salaryText : "Negotiable", "salary"],
     ["Vacancy", job.vacancies?.toString(), "people"],
     ["Experience", experience, "briefcase"],
     ["Work arrangement", groupLabels(options, "arrangement").join(" · "), "building"],

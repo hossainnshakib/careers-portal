@@ -41,4 +41,9 @@ it("cards retain Bengali, verbatim experience labels, salary mode and primary-br
   const negotiable = render({ ...role, salaryMode: "negotiable", salaryText: "Ignored stale text" });
   expect(negotiable).toContain("Negotiable");
   expect(negotiable).not.toContain("Ignored stale text");
+  // Regression: a stored range row with blank text falls back to "Negotiable" on the public site.
+  // The DB CHECK constraint now prevents new rows in this state; the renderer stays defensive.
+  const blankRange = render({ ...role, salaryMode: "range", salaryText: "" });
+  expect(blankRange).toContain("Negotiable");
+  expect(blankRange).not.toContain("৳ 20,000");
 });

@@ -25,7 +25,7 @@ export function CareersResults({ jobs, departments, onClear }: { jobs: JobCard[]
         <h3 className="text-[18px] font-bold leading-[1.25] tracking-[-.01em]">{job.title}</h3>
         <div className="flex flex-wrap gap-[7px]">
           {(["engagement", "arrangement", "experience"] as const).flatMap(group => job.options.filter(option => option.group === group)).map(option => <span key={`${option.group}:${option.slug}`} className={`ui-pill ${option.group === "experience" && option.slug === "fresher-welcome" ? "ui-pill-blue" : ""}`}>{option.label}</span>)}
-          <span className="ui-pill ui-pill-salary">{job.salaryMode === "range" ? job.salaryText : "Negotiable"}</span>
+          <span className="ui-pill ui-pill-salary">{job.salaryMode === "range" && job.salaryText ? job.salaryText : "Negotiable"}</span>
         </div>
         {job.summary && <p className="line-clamp-2 text-[13.5px] leading-[1.55] text-ui-muted">{job.summary}</p>}
         <span className="mt-auto flex items-center gap-1.5 text-[13.5px] font-bold text-ui-blue-text">View role <PublicIcon name="arrow" size={16} /></span>
