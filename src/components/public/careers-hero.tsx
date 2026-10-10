@@ -11,7 +11,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
   const featuredBrand = featured ? cardBrands(featured)[0] : undefined;
   const logos = (duplicate: boolean) => brands.map(brand => <li key={brand.id} className="shrink-0">
     <Link href={`/?brand=${encodeURIComponent(brand.slug)}#roles`} tabIndex={duplicate ? -1 : undefined} aria-label={`View roles at ${brand.name}`} className="block opacity-55 grayscale transition-opacity hover:opacity-100">
-      {brand.logoUrl ? <PublicBrandLogo name={brand.name} src={brand.logoUrl} className="h-[30px] w-[100px]" decorative={duplicate} /> : <span className="text-[14px] font-bold">{brand.name}</span>}
+      {brand.logoUrl ? <PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} className="h-[30px] max-w-[110px]" decorative={duplicate} /> : <span className="text-[14px] font-bold">{brand.name}</span>}
     </Link>
   </li>);
   return <>
@@ -24,7 +24,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
           <span className="text-[10.5px] font-bold uppercase tracking-[.06em] text-ui-muted">{featured.department.name}</span>
           <span className="text-[17px] font-extrabold tracking-[-.01em]">{featured.title}</span>
           <span className="flex flex-wrap gap-1.5">{featured.options.filter(option => option.group !== "experience").map(option => <span className="ui-pill" key={`${option.group}:${option.slug}`}>{option.label}</span>)}</span>
-          {featuredBrand && <span className="flex items-center gap-[7px] text-[12px] font-semibold text-ui-muted"><PublicBrandLogo name={featuredBrand.name} src={featuredBrand.logoUrl} decorative />{featuredBrand.name}</span>}
+          {featuredBrand && <PublicBrandLogo name={featuredBrand.name} src={featuredBrand.logoUrl} slug={featuredBrand.slug} className="h-[24px] max-w-[110px]" />}
         </Link>}
         <div className="ui-float-card ui-glass absolute right-8 top-[84px] w-[220px] rotate-4 flex-col gap-2.5 rounded-[22px] p-[18px]" aria-label="Hiring statistics">
           <span className="text-[12px] font-bold text-ui-muted">Open roles</span>
