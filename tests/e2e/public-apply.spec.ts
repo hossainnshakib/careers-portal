@@ -13,13 +13,18 @@ test("URL filters render without JavaScript and mobile filters use an accessible
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.locator(".roles-marquee-track")).toHaveCSS("animation-name", "none");
-  await expect(page.locator(".roles-marquee-copy")).not.toBeVisible();
-  await expect(page.getByRole("complementary", { name: "Job filters" }).getByRole("checkbox", { name: /^Brand/ })).toHaveCount(0);
+  await expect(page.locator(".brand-marquee-track")).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".brand-marquee-copy")).not.toBeVisible();
+  await expect(page.locator(".roles-marquee-track")).toHaveCount(0);
+  await expect(page.getByRole("complementary", { name: "Job filters" })).not.toBeVisible();
+  await expect(page.getByRole("region", { name: "Hiring across our brands" }).getByRole("link").first()).toHaveAttribute("href", /\?brand=.+#roles$/);
   await page.getByRole("button", { name: "Filters", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Job filters" });
   await expect(dialog).toBeVisible();
-  await dialog.getByRole("checkbox", { name: /^Work from home/ }).check();
+  await expect(dialog.getByRole("group", { name: "Brand", exact: true })).toBeVisible();
+  await expect(dialog.getByText("Sector", { exact: true })).toHaveCount(0);
+  await dialog.getByRole("button", { name: "Work from home", exact: true }).click();
+  await expect(dialog.getByRole("button", { name: "Work from home", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page).toHaveURL(/mode=remote/);
   await dialog.getByRole("button", { name: "Done filtering" }).click();
   await expect(dialog).not.toBeVisible();
@@ -47,7 +52,7 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   const query = new URLSearchParams({ brand: publicFixture.job.brandSlug, dept: publicFixture.job.departmentSlug, mode: "remote", q: publicFixture.prefix });
   await page.goto(`/?${query}`);
   await expect(page.getByRole("heading", { name: publicFixture.job.title })).toBeVisible();
-  await expect(page.getByRole("button", { name: "See all brands" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Remove Brand filter:/ })).toBeVisible();
   await page.getByRole("region", { name: "Open roles", exact: true }).getByRole("link").filter({ hasText: publicFixture.job.title }).click();
   await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}$`), { timeout: 30000 });
   await page.reload(); // Exercise the JSON-backed detail cache with a non-null deadline.

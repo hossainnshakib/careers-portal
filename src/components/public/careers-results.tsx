@@ -1,35 +1,33 @@
 import Link from "next/link";
-import { BrandLogo } from "@/components/brand-logo";
 import type { JobCard } from "@/lib/careers/filters";
 import { accentColor, cardBrands, groupRoles } from "@/lib/careers/presentation";
-import { fresherWelcome, groupLabels } from "@/lib/careers/option-labels";
+import { PublicBrandLogo } from "./public-brand-logo";
+import { PublicIcon } from "./public-icon";
 
 export function CareersResults({ jobs, departments, onClear }: { jobs: JobCard[]; departments: { name: string; slug: string }[]; onClear: () => void }) {
-  if (!jobs.length) return <div className="rounded-lg border border-border p-8">
-    <h2 className="text-xl font-bold">No matching roles</h2><p className="mt-3 text-muted-foreground">Try another search or clear your filters.</p>
-    <button onClick={onClear} className="mt-5 underline">Clear filters</button>
+  if (!jobs.length) return <div className="ui-glass rounded-[24px] p-8">
+    <h2 className="text-xl font-bold">No matching roles</h2><p className="mt-3 text-ui-muted">Try another search or clear your filters.</p>
+    <button onClick={onClear} className="mt-5 font-semibold text-ui-blue-text underline">Clear filters</button>
   </div>;
-  return <div className="space-y-12">{groupRoles(jobs, departments).map(department => <section key={department.slug} aria-labelledby={`department-${department.slug}`}>
-    <header className="mb-5 flex flex-wrap items-baseline gap-3 border-b-2 border-foreground pb-4">
-      <span className="font-black text-poster">{String(department.number).padStart(2, "0")}</span>
-      <h2 id={`department-${department.slug}`} className="text-2xl font-black tracking-tight">{department.name}</h2>
-      <span className="font-bold text-muted-foreground">{department.roles.length} {department.roles.length === 1 ? "role" : "roles"}</span>
+  return <div className="space-y-9">{groupRoles(jobs, departments).map(department => <section key={department.slug} aria-labelledby={`department-${department.slug}`}>
+    <header className="mb-[18px] flex flex-wrap items-baseline gap-3 border-b border-ui-border pb-3">
+      <span className="text-[13px] font-bold text-ui-blue-text">{String(department.number).padStart(2, "0")}</span>
+      <h2 id={`department-${department.slug}`} className="text-[22px] font-extrabold tracking-[-.02em]">{department.name}</h2>
+      <span className="text-[13px] font-semibold text-ui-muted">{department.roles.length} {department.roles.length === 1 ? "role" : "roles"}</span>
     </header>
-    <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{department.roles.map(job => {
+    <ul className="ui-job-grid">{department.roles.map(job => {
       const brands = cardBrands(job);
-      const tags = [...groupLabels(job.options, "engagement"), ...groupLabels(job.options, "arrangement")];
-      return <li key={job.id} className="min-w-0"><Link href={`/jobs/${job.slug}`} className="block h-full rounded-lg border border-t-4 border-border bg-card p-5" style={{ borderTopColor: accentColor(brands[0]?.accentColor) }}>
-        <h3 className="text-xl font-black leading-snug tracking-tight">{job.title}</h3>
-        <div className="my-4 flex flex-wrap gap-3">{brands.map(brand => <span key={brand.id} className="flex min-w-0 items-center gap-2 font-bold">
-          {brand.logoUrl && <BrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} size="mark" decorative />}
-          <span>{brand.name}</span>
+      return <li key={job.id} className="min-w-0"><Link href={`/jobs/${job.slug}`} className="ui-glass ui-lift flex h-full min-w-0 flex-col gap-[14px] rounded-ui-card px-5 pb-[18px] pt-5" style={{ borderTopColor: accentColor(brands[0]?.accentColor), borderTopWidth: 3 }}>
+        <div className="flex min-h-6 flex-wrap gap-x-[14px] gap-y-1.5">{brands.map(brand => <span key={brand.id} className="flex items-center gap-[7px] text-[12.5px] font-semibold text-ui-muted">
+          <PublicBrandLogo name={brand.name} src={brand.logoUrl} decorative />{brand.name}
         </span>)}</div>
-        <div className="flex flex-wrap gap-2">
-          {fresherWelcome(job.options) && <span className="rounded-full border border-poster px-2.5 py-1 font-bold text-poster">Fresher welcome</span>}
-          {tags.map(tag => <span key={tag} className="rounded-full border border-border px-2.5 py-1 font-bold">{tag}</span>)}
-          {job.salaryMode === "range" && job.salaryText && <span className="rounded-full border border-border bg-secondary px-2.5 py-1 font-bold">{job.salaryText}</span>}
+        <h3 className="text-[18px] font-bold leading-[1.25] tracking-[-.01em]">{job.title}</h3>
+        <div className="flex flex-wrap gap-[7px]">
+          {(["engagement", "arrangement", "experience"] as const).flatMap(group => job.options.filter(option => option.group === group)).map(option => <span key={`${option.group}:${option.slug}`} className={`ui-pill ${option.group === "experience" && option.slug === "fresher-welcome" ? "ui-pill-blue" : ""}`}>{option.label}</span>)}
+          <span className="ui-pill ui-pill-salary">{job.salaryMode === "range" ? job.salaryText : "Negotiable"}</span>
         </div>
-        <p className="mt-4 line-clamp-2 leading-relaxed text-muted-foreground">{job.summary}</p>
+        {job.summary && <p className="line-clamp-2 text-[13.5px] leading-[1.55] text-ui-muted">{job.summary}</p>}
+        <span className="mt-auto flex items-center gap-1.5 text-[13.5px] font-bold text-ui-blue-text">View role <PublicIcon name="arrow" size={16} /></span>
       </Link></li>;
     })}</ul>
   </section>)}</div>;

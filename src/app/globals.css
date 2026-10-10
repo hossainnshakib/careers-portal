@@ -21,19 +21,10 @@
   --input: #e3e2da;
   --ring: #42493c;
   --radius: 0.5rem;
-  /* Poster family accent: used for large display words, dots, numbers and bullets. */
-  --poster: #e0341f;
-  --ink: #141412;
 }
 
-/*
- * Public site theme (poster family): warm grey canvas, near-black ink and a
- * vivid red accent. Admin keeps the root tokens above; only the public layout
- * subtree opts in through .public-theme, so utilities resolve the overridden
- * custom properties where they are applied.
- */
-.public-theme {
-  /* Approved mock-up tokens; presentation adopts these during the rebuild. */
+/* Public-only mock-up system; root/admin tokens retain their existing values. */
+.public-ui {
   --ui-canvas: #f2f5fb;
   --ui-ink: #0b1220;
   --ui-muted: #5b6577;
@@ -59,24 +50,27 @@
   --ui-radius-input: 14px;
   --ui-radius-button: 16px;
   --ui-sticky-top: 24px;
-  --background: #edece7;
-  --foreground: #141412;
-  --card: #f8f7f2;
-  --card-foreground: #141412;
-  --popover: #f8f7f2;
-  --popover-foreground: #141412;
-  --primary: #e0341f;
-  --primary-foreground: #141412;
-  --secondary: #e4e2da;
-  --secondary-foreground: #141412;
-  --muted: #e4e2da;
-  --muted-foreground: #57544c;
-  --accent: #e4e2da;
-  --accent-foreground: #141412;
-  --border: #d5d2c8;
-  --input: #d5d2c8;
-  --ring: #141412;
-  --radius: 0.375rem;
+  --background: var(--ui-canvas);
+  --foreground: var(--ui-ink);
+  --card: #ffffff;
+  --card-foreground: var(--ui-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ui-ink);
+  --primary: var(--ui-ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--ui-neutral-surface);
+  --secondary-foreground: var(--ui-chip);
+  --muted: var(--ui-neutral-surface);
+  --muted-foreground: var(--ui-muted);
+  --accent: var(--ui-blue-surface);
+  --accent-foreground: var(--ui-blue-text);
+  --border: var(--ui-border);
+  --input: var(--ui-input-border);
+  --ring: var(--ui-blue);
+  --radius: 14px;
+  --font-latin: "Plus Jakarta Sans Variable";
+  --font-bengali: "Hind Siliguri";
+  font-family: var(--font-latin), var(--font-bengali), sans-serif;
 }
 
 @theme inline {
@@ -120,8 +114,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-poster: var(--poster);
-  --color-ink: var(--ink);
   --font-sans: var(--font-latin), var(--font-bengali), sans-serif;
   --radius-sm: var(--radius);
   --radius-md: var(--radius);
@@ -138,11 +130,9 @@
 
 @layer utilities {
   .ui-glass {
-    background: var(--ui-glass-surface);
+    background: rgba(255, 255, 255, 0.92);
     border: 1px solid var(--ui-glass-border);
     box-shadow: var(--ui-glass-shadow);
-    -webkit-backdrop-filter: blur(24px) saturate(170%);
-    backdrop-filter: blur(24px) saturate(170%);
   }
   .rounded { border-radius: var(--radius); }
 }
@@ -159,13 +149,65 @@ body {
   outline-offset: 3px;
 }
 
-.roles-marquee-track { animation: roles-marquee 90s linear infinite; }
-.roles-marquee:hover .roles-marquee-track,
-.roles-marquee:focus-within .roles-marquee-track { animation-play-state: paused; }
-@keyframes roles-marquee { to { transform: translateX(-50%); } }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .public-ui .ui-glass {
+    background: var(--ui-glass-surface);
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+  }
+}
+/* Children of glass panels use translucent surfaces, never another blur layer. */
+.public-ui .ui-glass .ui-glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.public-ui .font-medium { font-weight: 500; }
+.public-ui .font-semibold { font-weight: 600; }
+.public-ui .text-sm { font-size: 14px; }
+.public-ui .text-xs { font-size: 12px; }
+.ui-container { max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
+.ui-label { font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.ui-pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 12px; font-size: 12.5px; font-weight: 600; background: var(--ui-neutral-surface); color: var(--ui-chip); overflow-wrap: anywhere; }
+.ui-pill-blue { background: var(--ui-blue-surface); color: var(--ui-blue-text); }
+.ui-pill-salary { background: var(--ui-salary-surface); color: var(--ui-salary-text); }
+.ui-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: 16px; padding: 15px 26px; font-size: 15px; font-weight: 700; background: var(--ui-ink); color: white; }
+.ui-button-pill { border-radius: 999px; }
+.ui-button:hover { background: #26324a; }
+.ui-roles-grid { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 32px; align-items: start; }
+.ui-job-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.ui-filter-group > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ui-filter-group > summary::-webkit-details-marker { display: none; }
+.ui-filter-group > summary::after { content: "+"; font-size: 16px; font-weight: 500; }
+.ui-filter-group[open] > summary::after { content: "−"; }
+.ui-mobile-filter { display: none; }
+.ui-float-card { display: flex; }
+.ui-lift { transition: transform .2s ease, box-shadow .2s ease; }
+.ui-lift:hover { transform: translateY(-3px); }
+.brand-marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, black 14%, black 86%, transparent); }
+.brand-marquee-track { display: flex; width: max-content; animation: brand-marquee 38s linear infinite; }
+.brand-marquee-track > ul { display: flex; align-items: center; gap: 64px; padding-right: 64px; }
+.brand-marquee:hover .brand-marquee-track,
+.brand-marquee:focus-within .brand-marquee-track { animation-play-state: paused; }
+@keyframes brand-marquee { to { transform: translateX(-50%); } }
+@media (max-width: 1180px) {
+  .ui-float-card { display: none; }
+  .ui-job-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 899px) {
+  .ui-roles-grid { grid-template-columns: minmax(0, 1fr); }
+  .ui-desktop-filter { display: none; }
+  .ui-mobile-filter { display: inline-flex; }
+  .ui-job-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .public-ui .ui-glass { background: #ffffff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .ui-orbs { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .roles-marquee { overflow: visible; }
-  .roles-marquee-track { animation: none; width: 100%; }
-  .roles-marquee-track > ul { flex-wrap: wrap; }
-  .roles-marquee-copy { display: none; }
+  .brand-marquee { overflow: visible; mask-image: none; }
+  .brand-marquee-track { animation: none; width: 100%; }
+  .brand-marquee-track > ul { flex-wrap: wrap; justify-content: center; gap: 24px; padding-right: 0; }
+  .brand-marquee-copy { display: none; }
+  .ui-lift { transition: none; }
+  .ui-lift:hover { transform: none; }
 }

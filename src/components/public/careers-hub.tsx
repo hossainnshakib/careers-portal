@@ -2,92 +2,87 @@
 
 import { useRef } from "react";
 import { useQueryStates } from "nuqs";
-import { BrandLogo } from "@/components/brand-logo";
 import { filterKeys, filterParsers, humanize, matchesJob, optionCount, type FilterKey, type JobCard, type PublicBrand } from "@/lib/careers/filters";
-import { optionGroupLabels, type OptionGroup } from "@/lib/careers/option-labels";
-import { accentColor } from "@/lib/careers/presentation";
+import { optionGroupLabels, type OptionGroup, type OptionTag } from "@/lib/careers/option-labels";
 import { CareersHero } from "./careers-hero";
 import { CareersResults } from "./careers-results";
 import { CareersInfo } from "./careers-info";
+import { PublicIcon } from "./public-icon";
 
-const sidebarKeys = filterKeys.filter(key => key !== "brand");
+const panelKeys: FilterKey[] = ["dept", "brand", "mode", "type", "level"];
 const labels: Record<FilterKey, string> = {
-  brand: "Brand", dept: "Department",
-  type: optionGroupLabels.engagement, mode: optionGroupLabels.arrangement, sector: "Sector", level: optionGroupLabels.experience,
+  brand: "Brand", dept: "Department", type: optionGroupLabels.engagement,
+  mode: optionGroupLabels.arrangement, sector: "Sector", level: optionGroupLabels.experience,
 };
-/** Distinct option facets from the open catalog, in first-seen (stored) order. */
-function optionFacet(jobs: JobCard[], group: OptionGroup) {
+function optionFacet(jobs: JobCard[], catalogOptions: OptionTag[], group: OptionGroup) {
+  const linked = new Set(jobs.flatMap(job => job.options.filter(option => option.group === group).map(option => option.slug)));
   const seen = new Map<string, string>();
-  for (const job of jobs) for (const option of job.options) if (option.group === group && !seen.has(option.slug)) seen.set(option.slug, option.label);
+  for (const option of catalogOptions) if (option.group === group && linked.has(option.slug)) seen.set(option.slug, option.label);
   return [...seen].map(([value, label]) => ({ value, label }));
 }
 
-export function CareersHub({ jobs, brands, departments }: {
-  jobs: JobCard[]; brands: PublicBrand[]; departments: { name: string; slug: string }[];
+export function CareersHub({ jobs, brands, departments, jobOptions }: {
+  jobs: JobCard[]; brands: PublicBrand[]; departments: { name: string; slug: string }[]; jobOptions?: OptionTag[];
 }) {
   const [filters, setFilters] = useQueryStates(filterParsers, { shallow: true, history: "replace" });
   const mobileDialog = useRef<HTMLDialogElement>(null);
-  const selectedBrand = filters.brand.length === 1 ? brands.find(brand => brand.slug === filters.brand[0]) : undefined;
   const visible = jobs.filter(job => matchesJob(job, filters));
+  const catalogOptions = jobOptions ?? jobs.flatMap(job => job.options);
   const options: Record<FilterKey, { value: string; label: string }[]> = {
     brand: brands.map(brand => ({ value: brand.slug, label: brand.name })),
     dept: departments.map(department => ({ value: department.slug, label: department.name })),
-    type: optionFacet(jobs, "engagement"),
-    mode: optionFacet(jobs, "arrangement"),
+    type: optionFacet(jobs, catalogOptions, "engagement"), mode: optionFacet(jobs, catalogOptions, "arrangement"),
+    level: optionFacet(jobs, catalogOptions, "experience"),
     sector: [...new Set(brands.map(brand => brand.sector))].map(value => ({ value, label: humanize(value) })),
-    level: optionFacet(jobs, "experience"),
   };
+  const activeCount = filterKeys.reduce((count, key) => count + filters[key].length, filters.q ? 1 : 0);
   function toggle(key: FilterKey, value: string) {
     void setFilters({ [key]: filters[key].includes(value) ? filters[key].filter(item => item !== value) : [...filters[key], value] });
   }
   const clear = () => { void setFilters(null); };
   function group(key: FilterKey) {
-    return <fieldset key={key}><legend className="mb-3 font-black">{labels[key]}</legend><div className="space-y-3">{options[key].map(option => {
-      const count = optionCount(jobs, filters, key, option.value);
-      const checked = filters[key].includes(option.value);
-      return <label key={option.value} className={`flex items-start gap-3 font-bold ${!count ? "text-muted-foreground" : ""}`}>
-        <input className="mt-1 h-4 w-4 shrink-0" type="checkbox" checked={checked} disabled={!count && !checked} onChange={() => toggle(key, option.value)} />
-        <span>{option.label} <span className="text-muted-foreground">({count})</span></span>
-      </label>;
-    })}</div></fieldset>;
+    return <details key={key} open className="ui-filter-group">
+      <summary className="ui-label text-ui-muted">{labels[key]}</summary>
+      <fieldset className="mt-2.5"><legend className="sr-only">{labels[key]}</legend>
+        <div className={key === "dept" ? "space-y-2.5" : "flex flex-wrap gap-[7px]"}>{options[key].map(option => {
+          const count = optionCount(jobs, filters, key, option.value);
+          const checked = filters[key].includes(option.value);
+          if (key === "dept") return <label key={option.value} className={`flex items-start gap-2.5 text-[13.5px] font-medium ${!count ? "text-ui-muted" : ""}`}>
+            <input className="mt-0.5 h-4 w-4 shrink-0 accent-ui-ink" type="checkbox" checked={checked} disabled={!count && !checked} onChange={() => toggle(key, option.value)} />
+            <span className="flex-1">{option.label}</span><span className="text-[12px] text-ui-muted">{count}</span>
+          </label>;
+          return <button key={option.value} type="button" aria-pressed={checked} disabled={!count && !checked} onClick={() => toggle(key, option.value)} className={`rounded-full border px-3 py-[7px] text-[12.5px] font-semibold disabled:opacity-40 ${checked ? "border-ui-ink bg-ui-ink text-white" : "border-ui-border bg-white/70 text-ui-chip"}`}>{option.label}</button>;
+        })}</div>
+      </fieldset>
+    </details>;
   }
-  return <main id="main" className="mx-auto max-w-7xl px-5 pb-8">
+  return <main id="main" className="pb-2">
     <CareersHero jobs={jobs} brands={brands} />
-    <section aria-label="Filter by brand" className="border-y border-border py-5">
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">{brands.map(brand => {
-        const selected = filters.brand.includes(brand.slug);
-        const count = optionCount(jobs, filters, "brand", brand.slug);
-        return <button key={brand.id} aria-pressed={selected} aria-label={`Filter by ${brand.name} (${count})`} onClick={() => toggle("brand", brand.slug)} className="relative flex w-40 shrink-0 snap-start flex-col items-center gap-2 rounded-lg bg-card px-3 py-4">
-          <BrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} size="strip" decorative />
-          <span>{brand.name}</span>{selected && <span aria-hidden="true" className="absolute inset-x-8 bottom-0 h-0.5" style={{ backgroundColor: accentColor(brand.accentColor) }} />}
-        </button>;
-      })}</div>
-      {selectedBrand && <div className="mt-4 flex flex-wrap items-baseline justify-between gap-3">
-        {selectedBrand.description && <p className="max-w-2xl text-muted-foreground">{selectedBrand.description}</p>}
-        <button onClick={() => void setFilters({ brand: [] })} className="underline">See all brands</button>
-      </div>}
-    </section>
-    <section id="roles" aria-label="Open roles" className="scroll-mt-8 pt-10">
-      <h2 className="mb-8 text-4xl font-black tracking-tight">Find your role</h2>
-      <div className="grid gap-8 md:grid-cols-[14rem_1fr]">
-        <aside aria-label="Job filters" className="hidden md:block"><div className="sticky top-6 max-h-[calc(100vh-3rem)] space-y-7 overflow-y-auto p-1">
-          {sidebarKeys.map(group)}<button onClick={clear} className="font-bold underline">Clear all</button>
-        </div></aside>
+    <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-6 pb-6 pt-12">
+      <div className="mb-7 space-y-1.5"><h2 className="text-[36px] font-extrabold tracking-[-.03em]">Find your role</h2><p className="text-[15px] text-ui-muted">Every open role, grouped by department.</p></div>
+      <div className="ui-roles-grid" data-testid="roles-grid">
+        <aside aria-label="Job filters" className="ui-desktop-filter ui-glass space-y-[22px] self-start rounded-[24px] p-[22px]" data-testid="home-filter-panel">
+          <div className="flex items-center justify-between"><h3 className="text-[16px] font-extrabold">Filters</h3><button onClick={clear} className="text-[13px] font-semibold text-ui-blue-text">Clear all</button></div>
+          {panelKeys.map(group)}
+        </aside>
         <div className="min-w-0">
-          <label className="block font-black">Search roles<input aria-label="Search roles" type="search" maxLength={200} value={filters.q} onChange={event => void setFilters({ q: event.target.value })} className="mt-3 block w-full rounded-lg border border-input bg-card p-3 font-bold" /></label>
-          <button onClick={() => mobileDialog.current?.showModal()} className="mt-4 rounded-lg border-2 border-foreground px-4 py-3 font-bold md:hidden">Filters</button>
-          <div className="my-5 flex flex-wrap gap-2">
-            {filterKeys.flatMap(key => filters[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="rounded-full border border-border bg-card px-3 py-1.5 font-bold">{options[key].find(option => option.value === value)?.label ?? value} ×</button>))}
-            {filters.q && <button aria-label="Remove search filter" onClick={() => void setFilters({ q: "" })} className="rounded-full border border-border bg-card px-3 py-1.5 font-bold">{filters.q} ×</button>}
+          <div className="ui-glass flex h-14 items-center gap-3 rounded-[18px] px-[18px] text-ui-muted"><PublicIcon name="search" size={20} />
+            <label htmlFor="role-search" className="sr-only">Search roles</label>
+            <input id="role-search" type="search" maxLength={200} placeholder="Search roles" value={filters.q} onChange={event => void setFilters({ q: event.target.value })} className="min-w-0 flex-1 bg-transparent py-3 text-[16px] text-ui-ink sm:text-[15px]" />
           </div>
-          <p role="status" className="mb-7 font-bold">{visible.length} open {visible.length === 1 ? "role" : "roles"}</p>
+          <button onClick={() => mobileDialog.current?.showModal()} className="ui-mobile-filter mt-4 items-center gap-2 rounded-full border border-ui-border bg-white/70 px-4 py-2.5 text-[14px] font-bold" aria-haspopup="dialog">Filters{activeCount > 0 && <span aria-label={`${activeCount} active filters`} className="rounded-full bg-ui-blue-surface px-2 text-ui-blue-text">{activeCount}</span>}</button>
+          <div className="mb-9 mt-[14px] flex flex-wrap items-center gap-2">
+            <p role="status" className="text-[13px] font-semibold text-ui-muted">{visible.length} open {visible.length === 1 ? "role" : "roles"}</p>
+            {filterKeys.flatMap(key => filters[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{options[key].find(option => option.value === value)?.label ?? value}<PublicIcon name="close" size={13} /></button>))}
+            {filters.q && <button aria-label="Remove search filter" onClick={() => void setFilters({ q: "" })} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{filters.q}<PublicIcon name="close" size={13} /></button>}
+          </div>
           <CareersResults jobs={visible} departments={departments} onClear={clear} />
         </div>
       </div>
     </section>
-    <dialog ref={mobileDialog} aria-label="Job filters" className="fixed inset-x-0 bottom-0 top-auto m-0 max-h-[85vh] w-full max-w-none overflow-y-auto rounded-t-lg border border-border bg-card p-6 text-foreground backdrop:bg-black/40">
-      <div className="mb-6 flex justify-between gap-4"><button onClick={() => mobileDialog.current?.close()} className="font-bold underline">Done filtering</button><button onClick={clear} className="font-bold underline">Clear all</button></div>
-      <div className="space-y-7">{sidebarKeys.map(group)}</div>
+    <dialog ref={mobileDialog} aria-label="Job filters" className="ui-glass fixed inset-x-0 bottom-0 top-auto m-0 max-h-[85dvh] w-full max-w-none overflow-y-auto rounded-t-[28px] p-6 text-ui-ink backdrop:bg-ui-ink/40">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><h2 className="font-extrabold">Filters · {activeCount} active</h2><button onClick={clear} className="text-[13px] font-semibold text-ui-blue-text">Clear all</button><button onClick={() => mobileDialog.current?.close()} className="rounded-full bg-ui-ink px-4 py-2 text-[14px] font-bold text-white">Done filtering</button></div>
+      <div className="space-y-[22px]">{panelKeys.map(group)}</div>
     </dialog>
     <CareersInfo />
   </main>;

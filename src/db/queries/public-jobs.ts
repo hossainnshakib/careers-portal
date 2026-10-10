@@ -41,11 +41,11 @@ export const loadPublicCatalog = cache(unstable_cache(async () => {
       locationText: job.locationText, engagementNote: job.engagementNote,
       salaryMode: job.salaryMode, salaryText: job.salaryText, vacancies: job.vacancies,
       experienceText: job.experienceText,
-      options: tagsByJob.get(job.id) ?? [],
+      options: (tagsByJob.get(job.id) ?? []).sort((a, b) => optionRows.findIndex(option => option.group === a.group && option.slug === a.slug) - optionRows.findIndex(option => option.group === b.group && option.slug === b.slug)),
       department: { name: department.name, slug: department.slug },
       brands: visible, primaryBrandId: linked.find((l) => l.isPrimary)?.brandId ?? visible[0].id }];
   });
-  return { jobs: cards, brands: publicBrands, departments: departmentRows.map(({ name, slug }) => ({ name, slug })) };
+  return { jobs: cards, brands: publicBrands, departments: departmentRows.map(({ name, slug }) => ({ name, slug })), jobOptions: [...tagById.values()] };
 }, ["public-catalog"], { tags: ["jobs", "brands", "departments"], revalidate: 300 }));
 
 /** Uncached authoritative definition for upload and submit authorization. */

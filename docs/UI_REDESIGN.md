@@ -1,5 +1,12 @@
 # Public UI redesign history
 
+## Mock-up rebuild — Home checkpoint (branch `public-ui-from-mockup`)
+
+- The approved HTML mock-ups supersede the poster presentation below. Home and shared header/footer now use public-scoped Plus Jakarta Sans/Hind Siliguri, cool-white/ink/blue tokens, rounded glass panels and brand-coloured hero orbs. Admin/data model/security/submission logic remain accepted.
+- Removed job-title marquee, large brand-filter strip and old sidebar/card markup. Replaced them with small grayscale brand-logo filter links, a stable first-catalog-job floating card, actual hiring-brand stats, compact collapsible filter groups and mock-style department cards with salary/options/summary/View role.
+- Brand is now in both desktop/mobile filter panels; Sector is not a picker, but existing sector URLs and removable chips still work. Initial URL-driven rendering and the existing cross-facet matching/count contracts remain intact. Option ordering uses the existing cached active catalog rows.
+- Glass fallback/reduced-transparency and reduced-motion handling are implemented without animation libraries or nested blur. Contact is omitted unless configured. Job/Apply route separation, utility-page styling, sticky behaviour/tests, full screenshots and final verification are the remaining checkpoints; historical completion results below do not verify this rebuild.
+
 ## V2 — managed job options + poster-family redesign (branch `v2-job-model-and-ui`)
 
 ### Data model and admin

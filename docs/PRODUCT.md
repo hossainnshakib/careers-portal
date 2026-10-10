@@ -13,19 +13,19 @@ Fixen Media, Builtale, Doshok, Accoraze, Wiki Bangla, Ghora Fera, Mactie, Avagat
 - Admin: a few internal team members. Log in with email + password and mandatory TOTP MFA. Everyone has the same access.
 
 ## Candidate flow
-Careers home → use the brand strip, expanded sidebar/mobile filters and search → job detail → Apply scrolls to the form on the same page → fill dynamic questions, upload required files and tick the required privacy-consent checkbox → submit → success page with a reference number. Old `/jobs/<slug>/apply` links render the same job page inline with `robots: noindex, follow` (no redirect), so poster/bookmark URLs keep working.
+Careers home → use the brand links, desktop/mobile filters and search → job detail → Apply scrolls to the form on the same page → fill dynamic questions, upload required files and tick the required privacy-consent checkbox → submit → success page with a reference number. Old `/jobs/<slug>/apply` links render the same job page inline with `robots: noindex, follow` (no redirect), so poster/bookmark URLs keep working. The approved mock-up rebuild replaces this inline step with a separate Apply page in the next route checkpoint.
 
 A candidate must always see: which position, which brand(s), department, work arrangement, engagement type, experience level (optional), salary (when a range is set), vacancies, responsibilities, requirements, and the role-specific questions.
 
 ## Filters on the careers home
-- Brand (multi) in one logo strip; Department, Work arrangement, Engagement type, Sector (derived from the brand's sector), and Experience in an expanded desktop sidebar/mobile sheet; free-text search over job title above results. Filter labels show the stored option labels verbatim.
+- Brand (multi), Department, Work arrangement, Engagement type and Experience in a compact glass desktop panel/mobile sheet; free-text search over job title above results. Department uses checkboxes; the other groups use selectable chips. Filter labels show the stored active option labels verbatim. Sector has no visible picker; existing sector URLs still filter and expose removable chips.
 - Within one filter: OR. Across filters: AND.
 - All filter state lives in the URL (`?brand=doshok,builtale&dept=design-creative&type=part_time&q=editor`). Brand-site links rely on this.
-- When `?brand=<slug>` is present, preselect its strip toggle. A single selection can show its description and "See all brands" control without duplicating a large brand header.
+- When `?brand=<slug>` is present, preselect its filter chip. Small brand-logo marquee links use `/?brand=<slug>#roles`.
 - Show counts next to options; hide or grey options with zero open jobs.
-- Mobile: non-brand filters open in a bottom sheet; brand toggles remain in the snap-scrolling strip. Selected filters/search show removable chips and clear controls.
+- Mobile below 900px: all filter groups open in a frosted bottom sheet with active count, Clear all and Done filtering. Selected filters/search show removable chips and clear controls.
 - Role is not a filter. The job title is the role; use search plus department.
-- Results are grouped in department sort order, all expanded, with numbered headings/counts and whole-card links in a responsive 3/2/1 grid. The hero counts open roles/active brands from the cached live catalog and links real job titles in a reduced-motion-safe CSS marquee. Applying steps, FAQ, brand website links and an environment-configured contact placeholder complete the public home.
+- Results are grouped in department sort order, all expanded, with numbered headings/counts and glass whole-card links in a responsive 3/2/1 grid. The hero counts open roles and brands linked to those roles, and features the first catalog job in a desktop floating card. A reduced-motion-safe marquee links small active-brand logos to filters; no job-title carousel remains. Applying steps, FAQ, brand website links and a contact email only when configured complete the public home.
 
 ## Admin capabilities (V1 + V2)
 - Brands: create/edit/hide, logo upload, sector, accent colour, sort order. `seed:base` fills a default accent only when a brand has none; owner edits are never overwritten.
