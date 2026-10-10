@@ -175,6 +175,15 @@ body {
 .ui-button:hover { background: #26324a; }
 .ui-roles-grid { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 32px; align-items: start; }
 .ui-job-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.ui-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 44px; align-items: start; }
+.ui-hero-pill { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.12); font-size: 12.5px; font-weight: 600; overflow-wrap: anywhere; }
+.ui-job-markdown a { color: var(--ui-blue-text); }
+.ui-numbered-markdown ul, .ui-numbered-markdown ol { counter-reset: responsibility; list-style: none; }
+.ui-numbered-markdown li { position: relative; margin-left: 0; padding-left: 40px; margin-bottom: 12px; }
+.ui-numbered-markdown li::before { counter-increment: responsibility; content: counter(responsibility); position: absolute; left: 0; top: 1px; display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ui-blue-surface); color: var(--ui-blue-text); font-size: 13px; font-weight: 800; }
+.ui-check-markdown ul, .ui-check-markdown ol { list-style: none; }
+.ui-check-markdown li { position: relative; margin-left: 0; padding-left: 31px; margin-bottom: 12px; }
+.ui-check-markdown li::before { content: "✓"; position: absolute; left: 0; color: #087a5b; font-weight: 700; }
 .ui-filter-group > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .ui-filter-group > summary::-webkit-details-marker { display: none; }
 .ui-filter-group > summary::after { content: "+"; font-size: 16px; font-weight: 500; }
@@ -194,6 +203,7 @@ body {
   .ui-job-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 899px) {
+  .ui-detail-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .ui-roles-grid { grid-template-columns: minmax(0, 1fr); }
   .ui-desktop-filter { display: none; }
   .ui-mobile-filter { display: inline-flex; }

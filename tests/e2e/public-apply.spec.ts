@@ -39,7 +39,7 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   await page.getByLabel("Email").fill(publicFixture.email); await page.getByLabel("Password").fill(publicFixture.password);
   await page.getByRole("button", { name: "Sign in" }).click(); await completeAdminMfa(page, publicFixture);
   await page.goto(`/admin/jobs/${publicFixture.job.id}/edit`);
-  // Keep the inline form well below the fold to verify lazy CAPTCHA loading.
+  // Long content exercises the separate Job page without loading form/CAPTCHA code.
   await page.getByLabel("Description (Markdown)", { exact: true }).fill("A thoughtful role with meaningful work.\n\n".repeat(30));
   const [published] = await Promise.all([
     page.waitForResponse((response) => response.request().method() === "POST" && response.url().includes(`/admin/jobs/${publicFixture.job.id}/edit`)),
@@ -57,11 +57,13 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}$`), { timeout: 30000 });
   await page.reload(); // Exercise the JSON-backed detail cache with a non-null deadline.
   await expect(page.locator('script[src*="challenges.cloudflare.com/turnstile/"]')).toHaveCount(0);
+  await expect(page.locator("form")).toHaveCount(0);
   const legacyApply = await request.get(`/jobs/${publicFixture.job.slug}/apply`, { maxRedirects: 0 });
   expect(legacyApply.status()).toBe(200);
   const legacyHtml = await legacyApply.text();
   expect(legacyHtml).toContain("noindex");
-  expect(legacyHtml).toContain('id="apply"');
+  expect(legacyHtml).toContain("<form");
+  expect(legacyHtml).not.toContain('id="apply"');
   let uploadSessionToken = "";
   page.on("response", (response) => {
     if (response.url().endsWith("/api/upload-url") && response.status() === 200) void response.json().then((result) => {
@@ -72,8 +74,8 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
       }
     });
   });
-  await page.getByRole("link", { name: "Apply", exact: true }).click();
-  await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}#apply$`));
+  await page.getByRole("link", { name: "Apply now", exact: true }).first().click();
+  await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}/apply$`));
   await page.getByLabel("Full name", { exact: true }).fill("শ্রী ক্ষিতিশ");
   await page.getByLabel("Email", { exact: true }).fill("public-fixture@example.com");
   await page.getByLabel("Phone", { exact: true }).fill("01700000000");

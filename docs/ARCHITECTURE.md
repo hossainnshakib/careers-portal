@@ -27,8 +27,8 @@ src/
   app/
     (public)/
       page.tsx                       # careers home + filters
-      jobs/[slug]/page.tsx           # job detail (+ inline apply form at #apply)
-      jobs/[slug]/apply/page.tsx     # same job page, robots noindex follow
+      jobs/[slug]/page.tsx           # job content + summary; no form or Turnstile
+      jobs/[slug]/apply/page.tsx     # independent form/context page, robots noindex
       applied/[reference]/page.tsx   # success
     admin/
       login/page.tsx
@@ -81,7 +81,7 @@ docs/  prompts/  design/
 - Careers home: the server loads ALL open jobs (with brands, department, option tags and salary/vacancy fields) once from cache; a client component filters them in memory and syncs filters to the URL with nuqs. Counts per option are computed from the same data. The initial HTML is already filtered according to the URL so links and crawlers work. If open jobs ever exceed a few hundred, move filtering to the server behind the same UI. Managed option rows (`job_options`) load with the catalog under the `jobs` tag; the admin editor loads them uncached.
 - Phase 2 catalog/detail caches use JSON-safe public projections and a five-minute fallback TTL alongside the existing mutation tags. Expired deadlines are excluded when refreshing the catalog. Hidden brands are omitted from public branding; a job with no active brand is unavailable publicly. If its primary brand is hidden, the first visible linked brand supplies the card logo, while application snapshots retain the actual database primary.
 - Facet counts apply every other selected filter and replace the counted facet with the individual option. This preserves OR semantics when adding options. The homepage has no streaming loading boundary that would hide its filtered HTML without JavaScript; the application page retains its own loading state.
-- Job pages combine cached public content with an uncached authoritative form definition/status/CV policy; submissions still reload under the job/session locks. Legacy apply URLs render the same job page inline with `robots: noindex, follow` (no redirect). Admin pages are dynamic (no shared cache).
+- Job detail combines cached public content with the existing uncached authoritative loader for current visibility/status/deadline; it does not render/import the form or Turnstile. The independent noindex Apply page uses uncached job/questions/CV policy and keeps existing poster URLs without redirects/anchors. Submissions reload under the job/session locks. Admin pages are dynamic (no shared cache).
 - Phase 4 private navigation uses fresh document loads for admin links, authentication transitions and job/review mutation refreshes. This renews the document CSP nonce, rechecks authorization and avoids stale private router-cache/production Flight navigation behavior. Nuqs is scoped to the public careers hub. Successful mutations still perform server cache/path invalidation.
 
 ## Dynamic form

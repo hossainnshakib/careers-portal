@@ -22,17 +22,21 @@ beforeEach(() => {
   mocks.current.mockResolvedValue({ ...cached, job: { ...job, cvRequired: false }, questions: [freshQuestion] });
   mocks.form.mockImplementation(() => createElement("form", null, "Synthetic application form"));
 });
-it("composes the form into the role using current questions/CV policy, with sanitized content", async () => {
+it("renders sanitized job content and two real Apply links without form or Turnstile", async () => {
   const html = renderToStaticMarkup(await JobPage({ params: params() }));
-  expect(html).toContain('id="apply"'); expect(html).toContain('href="#apply"');
+  expect(html).not.toContain('id="apply"'); expect(html).not.toContain('href="#apply"');
+  expect(html.match(/href="\/jobs\/web-developer\/apply"/g)).toHaveLength(2);
+  expect(html).not.toContain("<form"); expect(html).not.toContain("turnstile");
   expect(html).toContain("<strong>Meaningful work</strong>"); expect(html).not.toContain("<script");
-  expect(mocks.form.mock.calls[0][0]).toMatchObject({ jobSlug: job.slug, questions: [freshQuestion], cvRequired: false });
+  expect(html).toContain("Job summary"); expect(html).toContain("Negotiable");
+  expect(mocks.form).not.toHaveBeenCalled();
 });
 it.each(["closed", "expired"])("shows current %s state without a form or apply anchors, even with an open cached role", async (kind) => {
   mocks.current.mockResolvedValue({ ...cached, job: { ...job, status: kind === "closed" ? "closed" : "open", deadlineAt: kind === "expired" ? new Date("2000-01-01") : null } });
   const html = renderToStaticMarkup(await JobPage({ params: params() }));
   expect(html).toContain("No longer accepting applications");
   expect(html).not.toContain('id="apply"'); expect(mocks.form).not.toHaveBeenCalled();
+  expect(html).not.toContain('href="/jobs/web-developer/apply"');
 });
 it.each(["draft", "hidden", "missing"])("returns 404 for a current %s role", async (kind) => {
   mocks.current.mockResolvedValue(kind === "missing" ? null : { ...cached, job: { ...job, status: kind === "draft" ? "draft" : "open" }, brands: [{ brand: { ...brand, status: kind === "hidden" ? "hidden" : "active" } }] });
@@ -43,8 +47,18 @@ it("rejects invalid slugs before database reads and hides provider diagnostics",
   await expect(JobPage({ params: Promise.resolve({ slug: "../private" }) })).rejects.toThrow("not-found");
   expect(mocks.cached).not.toHaveBeenCalled();
   mocks.current.mockRejectedValue(new Error("Sensitive provider diagnostic"));
-  await expect(JobPage({ params: params() })).rejects.toThrow("Unable to load the application form.");
+  await expect(JobPage({ params: params() })).rejects.toThrow("Unable to load this role.");
 });
 it("retains public canonical metadata without applicant data", async () => {
   expect(await generateMetadata({ params: params() })).toMatchObject({ title: "Web Developer · Careers", alternates: { canonical: "https://careers.example.test/jobs/web-developer" } });
+});
+it("omits unset optional sections/rows and preserves configured experience/options/benefits", async () => {
+  const empty = renderToStaticMarkup(await JobPage({ params: params() }));
+  expect(empty).not.toContain("What keeps you ahead"); expect(empty).not.toContain("Skills and areas of expertise");
+  expect(empty).not.toContain("Compensation &amp; benefits"); expect(empty).not.toContain(">Vacancy<");
+  const extended = { ...job, salaryMode: "range", salaryText: "৳ 20,000 – 30,000", vacancies: 2, experienceText: "1 – 2 years", engagementNote: "Six months", skills: ["React"], benefits: ["Flexible hours"], niceToHaveMd: "- Bengali communication", responsibilitiesMd: "- Build interfaces\n- Review code" };
+  mocks.cached.mockResolvedValue({ ...cached, job: extended, options: [...optionTags, { group: "experience", slug: "custom", label: "Custom exact label" }] });
+  const html = renderToStaticMarkup(await JobPage({ params: params() }));
+  for (const value of [extended.salaryText, "1 – 2 years · Custom exact label", "Full-time · Six months", "Flexible hours", "Bengali communication", "<ul>"]) expect(html).toContain(value);
+  expect(html).not.toContain("Negotiable");
 });

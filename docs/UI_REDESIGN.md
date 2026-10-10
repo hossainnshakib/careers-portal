@@ -2,6 +2,11 @@
 
 ## Mock-up rebuild — Home checkpoint (branch `public-ui-from-mockup`)
 
+### Job detail and route split checkpoint
+- Job detail now matches the dark hero/content/summary structure of `Job detail-html`, with primary-brand tint, real primary-first brands, optional sanitised sections, skill/benefit/brand cards and two real Apply URLs. It imports no application form or Turnstile; current visibility/status/deadline checks remain authoritative.
+- Apply no longer re-exports JobPage: its independent server shell uses current job/questions/CV policy, noindex metadata, Back to job and a glass context/form panel. This dependency is delivered with the Job checkpoint so removing the inline form does not break applications; detailed form and utility-page restyling follows.
+- Closed/expired roles have no usable form/Apply CTA; drafts/hidden-only remain 404. Unit coverage preserves these gates, sanitisation and metadata while asserting the new route separation. Smoke assertions and final browser execution are still pending.
+
 - The approved HTML mock-ups supersede the poster presentation below. Home and shared header/footer now use public-scoped Plus Jakarta Sans/Hind Siliguri, cool-white/ink/blue tokens, rounded glass panels and brand-coloured hero orbs. Admin/data model/security/submission logic remain accepted.
 - Removed job-title marquee, large brand-filter strip and old sidebar/card markup. Replaced them with small grayscale brand-logo filter links, a stable first-catalog-job floating card, actual hiring-brand stats, compact collapsible filter groups and mock-style department cards with salary/options/summary/View role.
 - Brand is now in both desktop/mobile filter panels; Sector is not a picker, but existing sector URLs and removable chips still work. Initial URL-driven rendering and the existing cross-facet matching/count contracts remain intact. Option ordering uses the existing cached active catalog rows.

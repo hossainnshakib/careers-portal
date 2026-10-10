@@ -13,9 +13,9 @@ Fixen Media, Builtale, Doshok, Accoraze, Wiki Bangla, Ghora Fera, Mactie, Avagat
 - Admin: a few internal team members. Log in with email + password and mandatory TOTP MFA. Everyone has the same access.
 
 ## Candidate flow
-Careers home → use the brand links, desktop/mobile filters and search → job detail → Apply scrolls to the form on the same page → fill dynamic questions, upload required files and tick the required privacy-consent checkbox → submit → success page with a reference number. Old `/jobs/<slug>/apply` links render the same job page inline with `robots: noindex, follow` (no redirect), so poster/bookmark URLs keep working. The approved mock-up rebuild replaces this inline step with a separate Apply page in the next route checkpoint.
+Careers home → use the brand links, desktop/mobile filters and search → job detail → Apply opens `/jobs/<slug>/apply` → fill dynamic questions, upload required files and tick the required privacy-consent checkbox → submit → success page with a reference number. Apply is an independent noindex page, without a redirect or inline `#apply` anchor, so existing poster/bookmark URLs keep working. Job detail contains no form or Turnstile widget.
 
-A candidate must always see: which position, which brand(s), department, work arrangement, engagement type, experience level (optional), salary (when a range is set), vacancies, responsibilities, requirements, and the role-specific questions.
+A candidate sees the position, hiring brands, department and selected work/engagement options; salary is the configured range or Negotiable. Experience, vacancies, location/deadline and content sections appear only when configured. Role-specific questions appear on the separate Apply page.
 
 ## Filters on the careers home
 - Brand (multi), Department, Work arrangement, Engagement type and Experience in a compact glass desktop panel/mobile sheet; free-text search over job title above results. Department uses checkboxes; the other groups use selectable chips. Filter labels show the stored active option labels verbatim. Sector has no visible picker; existing sector URLs still filter and expose removable chips.
