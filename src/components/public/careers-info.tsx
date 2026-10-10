@@ -20,11 +20,11 @@ export function CareersInfo() {
         <span className="text-[13px] font-extrabold text-ui-blue-text">0{index + 1}</span><h3 className="text-[19px] font-extrabold tracking-[-.01em]">{title}</h3><p className="text-[14.5px] leading-[1.6] text-ui-muted">{text}</p>
       </li>)}</ol>
     </section>
-    <section id="faq" aria-labelledby="faq-title" className="mx-auto max-w-[760px] scroll-mt-24 px-6 pb-2 pt-14">
+    <section id="faq" aria-labelledby="faq-title" className="ui-container scroll-mt-24 pb-2 pt-14">
       <h2 id="faq-title" className="mb-3 text-[32px] font-extrabold tracking-[-.03em]">Frequently asked questions</h2>
       {questions.map(([title, answer]) => <details key={title} className="group border-b border-ui-border px-1 py-[18px]">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[16px] font-bold [&::-webkit-details-marker]:hidden">{title}<span aria-hidden="true" className="text-[22px] font-normal leading-none text-ui-muted group-open:hidden">+</span><span aria-hidden="true" className="hidden text-[22px] font-normal leading-none text-ui-muted group-open:block">−</span></summary>
-        <p className="max-w-[640px] pt-2.5 text-[14.5px] leading-[1.65] text-ui-muted">{answer}{title === "How is my data used?" && <> <Link href="/privacy" className="underline underline-offset-4">Read the privacy notice</Link></>}</p>
+        <p className="max-w-[720px] pt-2.5 text-[14.5px] leading-[1.65] text-ui-muted">{answer}{title === "How is my data used?" && <> <Link href="/privacy" className="underline underline-offset-4">Read the privacy notice</Link></>}</p>
       </details>)}
     </section>
   </>;
