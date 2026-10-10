@@ -33,6 +33,32 @@
  * custom properties where they are applied.
  */
 .public-theme {
+  /* Approved mock-up tokens; presentation adopts these during the rebuild. */
+  --ui-canvas: #f2f5fb;
+  --ui-ink: #0b1220;
+  --ui-muted: #5b6577;
+  --ui-body: #2b364b;
+  --ui-chip: #26324a;
+  --ui-blue: #2f6bff;
+  --ui-blue-text: #1e4fd8;
+  --ui-success: #12b76a;
+  --ui-required: #e5484d;
+  --ui-neutral-surface: rgba(15, 23, 42, 0.06);
+  --ui-blue-surface: rgba(47, 107, 255, 0.12);
+  --ui-salary-surface: rgba(10, 162, 120, 0.13);
+  --ui-salary-text: #087a5b;
+  --ui-border: rgba(15, 23, 42, 0.1);
+  --ui-input-border: rgba(15, 23, 42, 0.12);
+  --ui-input-surface: rgba(255, 255, 255, 0.85);
+  --ui-glass-surface: rgba(255, 255, 255, 0.58);
+  --ui-glass-border: rgba(255, 255, 255, 0.78);
+  --ui-glass-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --ui-radius-card: 20px;
+  --ui-radius-panel: 26px;
+  --ui-radius-form: 28px;
+  --ui-radius-input: 14px;
+  --ui-radius-button: 16px;
+  --ui-sticky-top: 24px;
   --background: #edece7;
   --foreground: #141412;
   --card: #f8f7f2;
@@ -54,6 +80,27 @@
 }
 
 @theme inline {
+  --color-ui-canvas: var(--ui-canvas);
+  --color-ui-ink: var(--ui-ink);
+  --color-ui-muted: var(--ui-muted);
+  --color-ui-body: var(--ui-body);
+  --color-ui-chip: var(--ui-chip);
+  --color-ui-blue: var(--ui-blue);
+  --color-ui-blue-text: var(--ui-blue-text);
+  --color-ui-success: var(--ui-success);
+  --color-ui-required: var(--ui-required);
+  --color-ui-neutral-surface: var(--ui-neutral-surface);
+  --color-ui-blue-surface: var(--ui-blue-surface);
+  --color-ui-salary-surface: var(--ui-salary-surface);
+  --color-ui-salary-text: var(--ui-salary-text);
+  --color-ui-border: var(--ui-border);
+  --color-ui-input-border: var(--ui-input-border);
+  --color-ui-input-surface: var(--ui-input-surface);
+  --radius-ui-card: var(--ui-radius-card);
+  --radius-ui-panel: var(--ui-radius-panel);
+  --radius-ui-form: var(--ui-radius-form);
+  --radius-ui-input: var(--ui-radius-input);
+  --radius-ui-button: var(--ui-radius-button);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -90,6 +137,13 @@
 }
 
 @layer utilities {
+  .ui-glass {
+    background: var(--ui-glass-surface);
+    border: 1px solid var(--ui-glass-border);
+    box-shadow: var(--ui-glass-shadow);
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+  }
   .rounded { border-radius: var(--radius); }
 }
 
