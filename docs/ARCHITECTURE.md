@@ -73,6 +73,7 @@ docs/  prompts/  design/
 ## Data access
 - All reads/writes through Drizzle in `src/db/queries/*`, server-side only. RLS is enabled on every table with no policies, so the browser-exposed anon key cannot read anything even if misused.
 - Job pages and review/PDF loaders serialize their small bounded read sets to avoid the observed concurrent-read transaction-pooler stall under production-mode browser tests; the runtime driver's five-connection pool and `prepare: false` remain unchanged.
+- Overlapping standalone Drizzle statements also use postgres.js's documented `reserve()`/`release()` API through `src/db/reserved-client.ts`. Each statement owns its connection until completion, in object/array mode, then releases it even on failure; native transactions retain their existing reservation. This prevents mixed simple/extended-protocol statements sharing a connection during overlapping requests. No undocumented pipeline setting, prepared-statement enablement or authorization change is used.
 - Phase 1 catalog/job mutations use transaction advisory locks for shared ordering/slug writes. Job saves lock/reload the existing row, questions and application existence before applying ownership, immutable slug and archive rules.
 - Use transactions for multi-row writes (application submit, job save with brands + questions).
 

@@ -10,6 +10,7 @@ const latin = localFont({
   variable: "--font-latin",
   display: "swap",
   weight: "100 900",
+  preload: false,
 });
 const bengali = localFont({
   src: [
@@ -34,7 +35,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body className={`${latin.variable} ${bengali.variable} antialiased`}>
-        <a href="#main" className="sr-only focus:not-sr-only focus:block focus:p-4">
+        <a href="#main" className="sr-only focus:not-sr-only focus:block focus:p-4" style={{ fontFamily: "system-ui, sans-serif" }}>
           Skip to content
         </a>
         <NonceProvider nonce={nonce}>{children}</NonceProvider>

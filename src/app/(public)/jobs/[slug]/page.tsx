@@ -95,9 +95,9 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
       </div>
       <aside aria-label="Job summary" data-testid="job-summary-panel" className="ui-sticky-panel ui-glass self-start rounded-[26px] px-6 pb-[26px] pt-6">
         <h2 className="ui-label mb-1.5 text-ui-muted">Job summary</h2>
-        <dl>{rows.filter(([, value]) => value).map(([label, value, icon]) => <div key={label} className="flex items-center gap-[14px] border-b border-ui-border py-[13px]">
-          <span aria-hidden="true" className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-xl bg-ui-neutral-surface text-ui-chip"><SummaryIcon name={icon} /></span>
-          <div className="min-w-0 space-y-0.5"><dt className="text-[11.5px] font-extrabold uppercase tracking-[.08em] text-ui-muted">{label}</dt><dd className="break-words text-[15px] font-bold">{label === "Deadline" ? <PublicDeadline value={value!} /> : value}</dd></div>
+        <dl>{rows.filter(([, value]) => value).map(([label, value, icon]) => <div key={label} className="relative min-h-[65px] border-b border-ui-border py-[13px] pl-[52px]">
+          <dt className="text-[11.5px] font-extrabold uppercase tracking-[.08em] text-ui-muted"><span aria-hidden="true" className="absolute left-0 top-[13px] flex h-[38px] w-[38px] items-center justify-center rounded-xl bg-ui-neutral-surface text-ui-chip"><SummaryIcon name={icon} /></span>{label}</dt>
+          <dd className="mt-0.5 break-words text-[15px] font-bold">{label === "Deadline" ? <PublicDeadline value={value!} /> : value}</dd>
         </div>)}</dl>
         {!closed && <Link href={applyUrl} className="ui-button ui-button-block mt-5 shadow-[0_10px_30px_rgba(11,18,32,.22)]">Apply now <PublicIcon name="arrow" /></Link>}
       </aside>

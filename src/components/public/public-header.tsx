@@ -6,7 +6,7 @@ export function PublicHeader() {
       <Link href="/" className="flex items-center gap-[9px] text-[19px] font-extrabold tracking-[-.02em]">
         <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-ui-blue" />Careers
       </Link>
-      <nav aria-label="Careers navigation" className="order-3 flex w-full justify-center gap-7 pb-1 text-[14px] font-semibold text-ui-muted sm:order-none sm:w-auto sm:pb-0">
+      <nav aria-label="Careers navigation" className="order-3 flex w-full justify-center gap-7 pb-1 text-[14px] font-semibold text-ui-chip sm:order-none sm:w-auto sm:pb-0">
         <Link href="/#roles">Roles</Link><Link href="/#how">How it works</Link><Link href="/#faq">FAQ</Link>
       </nav>
       <Link href="/#roles" className="rounded-full bg-ui-ink px-5 py-[11px] text-[14px] font-bold text-white">Browse roles</Link>
