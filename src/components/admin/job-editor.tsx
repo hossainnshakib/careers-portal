@@ -233,6 +233,17 @@ export function JobEditor({
                     </label>
                   ))}
                 </div>
+                {(() => {
+                  const selected = brands.filter((brand) => draft.brandIds.includes(brand.id));
+                  if (!selected.length) return null;
+                  const missing = selected.filter((brand) => !brand.description?.trim());
+                  if (!missing.length) return null;
+                  return (
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Note: {missing.map((brand) => brand.name).join(", ")} {missing.length === 1 ? "has" : "have"} no description yet. Candidates will see only a logo and website link.
+                    </p>
+                  );
+                })()}
               </fieldset>
               {optionGroups.map((group) => {
                 const visible = options.filter(

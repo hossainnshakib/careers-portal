@@ -40,6 +40,13 @@ export const defaultBrandAccents: Record<string, string> = {
   avagata: "#213F6E",
 };
 
+/** Filled only when a brand row has no description yet; owner edits are never overwritten. */
+export const defaultBrandDescriptions: Record<string, string> = {
+  "fixen-media": "Creative and digital agency for brands, campaigns and content.",
+  builtale: "Branding, marketing and production for real estate.",
+  doshok: "Premium and luxury clothing.",
+};
+
 export const brandData = [
   {
     name: "Fixen Media",
@@ -47,7 +54,7 @@ export const brandData = [
     sector: "creative_agency",
     accentColor: "#EC1C24",
     website: "https://fixenmedia.com",
-    description: "",
+    description: "Creative and digital agency for brands, campaigns and content.",
   },
   {
     name: "Builtale",
@@ -55,7 +62,7 @@ export const brandData = [
     sector: "real_estate",
     accentColor: "#565439",
     website: null,
-    description: "",
+    description: "Branding, marketing and production for real estate.",
   },
   {
     name: "Doshok",
@@ -63,7 +70,7 @@ export const brandData = [
     sector: "fashion",
     accentColor: "#2B95A0",
     website: "https://doshok.com",
-    description: "",
+    description: "Premium and luxury clothing.",
   },
   {
     name: "Accoraze",

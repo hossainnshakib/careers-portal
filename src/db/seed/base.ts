@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { sql } from "drizzle-orm";
 import { closeDb, getDb } from "@/db";
 import { brands, departments, jobOptions } from "@/db/schema";
-import { brandData, defaultBrandAccents, departmentData, optionData } from "./data";
+import { brandData, defaultBrandAccents, defaultBrandDescriptions, departmentData, optionData } from "./data";
 
 export async function seedBase() {
   // Repeat runs preserve owner edits: insert missing rows without resetting descriptions/order.
@@ -26,6 +26,12 @@ export async function seedBase() {
           .update(brands)
           .set({ accentColor: defaultBrandAccents[brand.slug] })
           .where(sql`${brands.slug} = ${brand.slug} and ${brands.accentColor} is null`);
+      // Draft descriptions apply only where the brand has none yet.
+      if (defaultBrandDescriptions[brand.slug])
+        await tx
+          .update(brands)
+          .set({ description: defaultBrandDescriptions[brand.slug] })
+          .where(sql`${brands.slug} = ${brand.slug} and (${brands.description} is null or ${brands.description} = '')`);
     }
     for (const option of optionData) {
       await tx

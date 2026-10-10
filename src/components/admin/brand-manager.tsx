@@ -231,7 +231,12 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
                   </td>
                   <td className="p-3">{row.name}</td>
                   <td className="p-3">{sectorLabels[row.sector]}</td>
-                  <td className="p-3">{row.status === "active" ? "Active" : "Hidden"}</td>
+                  <td className="p-3">
+                    {row.status === "active" ? "Active" : "Hidden"}
+                    {row.status === "active" && !row.description?.trim() && (
+                      <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800">No description</span>
+                    )}
+                  </td>
                   <td className="flex gap-2 p-3">
                     <button
                       className={buttonClass}
