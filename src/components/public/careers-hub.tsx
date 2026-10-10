@@ -39,7 +39,19 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
     mobileDialog.current?.showModal();
   };
   const closeFilters = () => mobileDialog.current?.close();
-  const visible = jobs.filter(job => matchesJob(job, filters));
+  // Drop unknown/disabled URL values so ?brand=nonsense is ignored gracefully.
+  const known: Record<FilterKey, Set<string>> = {
+    brand: new Set(brands.map(brand => brand.slug)),
+    dept: new Set(departments.map(department => department.slug)),
+    sector: new Set(brands.map(brand => brand.sector)),
+    type: new Set(optionFacet(jobs, jobOptions ?? jobs.flatMap(job => job.options), "engagement").map(o => o.value)),
+    mode: new Set(optionFacet(jobs, jobOptions ?? jobs.flatMap(job => job.options), "arrangement").map(o => o.value)),
+    level: new Set(optionFacet(jobs, jobOptions ?? jobs.flatMap(job => job.options), "experience").map(o => o.value)),
+  };
+  const sanitised = { ...filters } as typeof filters;
+  for (const key of filterKeys) sanitised[key] = filters[key].filter(value => known[key].has(value));
+  const activeCount = filterKeys.reduce((count, key) => count + sanitised[key].length, sanitised.q ? 1 : 0);
+  const visible = jobs.filter(job => matchesJob(job, sanitised));
   const catalogOptions = jobOptions ?? jobs.flatMap(job => job.options);
   const options: Record<FilterKey, { value: string; label: string }[]> = {
     brand: brands.map(brand => ({ value: brand.slug, label: brand.name })),
@@ -48,7 +60,6 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
     level: optionFacet(jobs, catalogOptions, "experience"),
     sector: [...new Set(brands.map(brand => brand.sector))].map(value => ({ value, label: humanize(value) })),
   };
-  const activeCount = filterKeys.reduce((count, key) => count + filters[key].length, filters.q ? 1 : 0);
   function toggle(key: FilterKey, value: string) {
     void setFilters({ [key]: filters[key].includes(value) ? filters[key].filter(item => item !== value) : [...filters[key], value] });
   }
@@ -58,8 +69,8 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
       <summary className="ui-label text-ui-muted">{labels[key]}</summary>
       <fieldset className="mt-2.5"><legend className="sr-only">{labels[key]}</legend>
         <div className={key === "dept" ? "space-y-2.5" : "flex flex-wrap gap-[7px]"}>{options[key].map(option => {
-          const count = optionCount(jobs, filters, key, option.value);
-          const checked = filters[key].includes(option.value);
+          const count = optionCount(jobs, sanitised, key, option.value);
+          const checked = sanitised[key].includes(option.value);
           if (key === "dept") return <label key={option.value} className={`flex items-start gap-2.5 text-[13.5px] font-medium ${!count ? "text-ui-muted" : ""}`}>
             <input className="mt-0.5 h-4 w-4 shrink-0 accent-ui-ink" type="checkbox" checked={checked} disabled={!count && !checked} onChange={() => toggle(key, option.value)} />
             <span className="flex-1">{option.label}</span><span className="text-[12px] text-ui-muted">{count}</span>
@@ -69,6 +80,16 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
       </fieldset>
     </details>;
   }
+  if (!jobs.length) return <main id="main" className="pb-2">
+    <CareersHero jobs={jobs} brands={brands} />
+    <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-24 pb-6 pt-12">
+      <div className="ui-glass rounded-[24px] p-8">
+        <h2 className="text-[28px] font-extrabold tracking-[-.03em]">No open roles right now</h2>
+        <p className="mt-3 text-ui-muted">We don&rsquo;t have any vacancies at the moment. Check back soon — new opportunities open regularly.</p>
+      </div>
+    </section>
+    <CareersInfo />
+  </main>;
   return <main id="main" className="pb-2">
     <CareersHero jobs={jobs} brands={brands} />
     <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-24 pb-6 pt-12">
@@ -86,10 +107,10 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
           <button onClick={openFilters} className="ui-mobile-filter mt-4 items-center gap-2 rounded-full border border-ui-border bg-white/70 px-4 py-2.5 text-[14px] font-bold" aria-haspopup="dialog">Filters{activeCount > 0 && <span aria-label={`${activeCount} active filters`} className="rounded-full bg-ui-blue-surface px-2 text-ui-blue-text">{activeCount}</span>}</button>
           <div className="mb-9 mt-[14px] flex flex-wrap items-center gap-2">
             <p role="status" className="text-[13px] font-semibold text-ui-muted">{visible.length} open {visible.length === 1 ? "role" : "roles"}</p>
-            {filterKeys.flatMap(key => filters[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{options[key].find(option => option.value === value)?.label ?? value}<PublicIcon name="close" size={13} /></button>))}
-            {filters.q && <button aria-label="Remove search filter" onClick={() => void setFilters({ q: "" })} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{filters.q}<PublicIcon name="close" size={13} /></button>}
+            {filterKeys.flatMap(key => sanitised[key].map(value => <button key={`${key}:${value}`} aria-label={`Remove ${labels[key]} filter: ${options[key].find(option => option.value === value)?.label ?? value}`} onClick={() => toggle(key, value)} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{options[key].find(option => option.value === value)?.label ?? value}<PublicIcon name="close" size={13} /></button>))}
+            {sanitised.q && <button aria-label="Remove search filter" onClick={() => void setFilters({ q: "" })} className="inline-flex items-center gap-1.5 rounded-full bg-ui-blue-surface py-1.5 pl-3 pr-2 text-[12.5px] font-bold text-ui-blue-text">{sanitised.q}<PublicIcon name="close" size={13} /></button>}
           </div>
-          <CareersResults jobs={visible} departments={departments} onClear={clear} />
+          <CareersResults jobs={visible} departments={departments} onClear={clear} activeFilters={activeCount > 0} />
         </div>
       </div>
     </section>

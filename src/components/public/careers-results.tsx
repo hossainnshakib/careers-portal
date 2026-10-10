@@ -4,9 +4,10 @@ import { accentColor, cardBrands, groupRoles } from "@/lib/careers/presentation"
 import { PublicBrandLogo } from "./public-brand-logo";
 import { PublicIcon } from "./public-icon";
 
-export function CareersResults({ jobs, departments, onClear }: { jobs: JobCard[]; departments: { name: string; slug: string }[]; onClear: () => void }) {
+export function CareersResults({ jobs, departments, onClear, activeFilters = false }: { jobs: JobCard[]; departments: { name: string; slug: string }[]; onClear: () => void; activeFilters?: boolean }) {
   if (!jobs.length) return <div className="ui-glass rounded-[24px] p-8">
-    <h2 className="text-xl font-bold">No matching roles</h2><p className="mt-3 text-ui-muted">Try another search or clear your filters.</p>
+    <h2 className="text-xl font-bold">{activeFilters ? "No roles match your filters" : "No roles found"}</h2>
+    <p className="mt-3 text-ui-muted">{activeFilters ? "Try a different search, or clear your filters to see everything." : "Try a different search term."}</p>
     <button onClick={onClear} className="mt-5 font-semibold text-ui-blue-text underline">Clear filters</button>
   </div>;
   return <div className="space-y-9">{groupRoles(jobs, departments).map(department => <section key={department.slug} aria-labelledby={`department-${department.slug}`}>

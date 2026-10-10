@@ -47,3 +47,23 @@ it("cards retain Bengali, verbatim experience labels, salary mode and primary-br
   expect(blankRange).toContain("Negotiable");
   expect(blankRange).not.toContain("৳ 20,000");
 });
+
+it("empty catalog hides the hiring pill counts, marquee and floating stats card", () => {
+  const html = renderToStaticMarkup(createElement(CareersHero, { jobs: [], brands: [primary, idle] }));
+  expect(html).toContain("No open roles right now");
+  expect(html).not.toContain("0 open roles");
+  expect(html).not.toContain("0 brands");
+  expect(html).not.toContain("brand-marquee");
+  expect(html).not.toContain("Hiring statistics");
+  expect(html).not.toContain("Browse roles");
+  expect(html).toContain("How applying works");
+});
+
+it("no-match results show a friendly message and a working Clear filters button", () => {
+  const withFilters = renderToStaticMarkup(createElement(CareersResults, { jobs: [], departments: [], onClear: () => {}, activeFilters: true }));
+  expect(withFilters).toContain("No roles match your filters");
+  expect(withFilters).toContain("Clear filters");
+  const searchOnly = renderToStaticMarkup(createElement(CareersResults, { jobs: [], departments: [], onClear: () => {}, activeFilters: false }));
+  expect(searchOnly).toContain("No roles found");
+  expect(searchOnly).not.toContain("No roles match your filters");
+});
