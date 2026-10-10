@@ -1,17 +1,17 @@
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { chromium } from "@playwright/test";
-import { test } from "../support/admin-fixture";
+import { test, expect } from "../support/admin-fixture";
 
 test.use({ trace: "off" });
 test.skip(process.env.RUN_LIGHTHOUSE !== "1", "Explicit performance run only.");
-test("mobile Lighthouse reports for home, job detail and success", async ({ publicFixture, baseURL }) => {
-  test.setTimeout(300000);
+test("mobile Lighthouse reports for home, job detail, apply and success", async ({ publicFixture, baseURL }) => {
+  test.setTimeout(420000);
   const manager = process.env.npm_execpath;
   if (!manager) throw new Error("Run the performance check through pnpm.");
   const folder = "C:/Users/Hossa/AppData/Local/Temp/opencode";
   // Success is reference-only and deliberately performs no applicant lookup.
-  const cases = { home: "/", job: `/jobs/${publicFixture.job.slug}`, success: "/applied/APP-234567" };
+  const cases = { home: "/", job: `/jobs/${publicFixture.job.slug}`, apply: `/jobs/${publicFixture.job.slug}/apply`, success: "/applied/APP-234567" };
   for (const [label, path] of Object.entries(cases)) {
     const args = ["dlx", "lighthouse@13.5.0", `${baseURL}${path}`, "--quiet", "--output=json", `--output-path=${folder}/lighthouse-${label}.json`, "--only-categories=performance,accessibility,best-practices,seo", "--chrome-flags=--headless --no-sandbox", "--no-enable-error-reporting"];
     const executable = manager.endsWith(".exe") ? manager : process.execPath;
@@ -34,5 +34,10 @@ test("mobile Lighthouse reports for home, job detail and success", async ({ publ
       cls: report.audits["cumulative-layout-shift"].numericValue,
       failedChecks: Object.entries(report.audits).filter(([, audit]) => audit.score === 0 && audit.scoreDisplayMode === "binary").map(([id]) => id),
     }));
+    if (label === "home" || label === "job") {
+      expect(report.categories.performance.score * 100, `${label} mobile performance`).toBeGreaterThanOrEqual(85);
+      expect(report.categories.accessibility.score * 100, `${label} accessibility`).toBeGreaterThanOrEqual(95);
+      expect(report.categories["best-practices"].score * 100, `${label} best practices`).toBeGreaterThanOrEqual(95);
+    }
   }
 });
