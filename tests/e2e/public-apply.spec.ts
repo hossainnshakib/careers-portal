@@ -76,6 +76,7 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   });
   await page.getByRole("link", { name: "Apply now", exact: true }).first().click();
   await expect(page).toHaveURL(new RegExp(`/jobs/${publicFixture.job.slug}/apply$`));
+  await expect(page.getByText("UTC calendar date", { exact: false })).toHaveCount(0);
   await page.getByLabel("Full name", { exact: true }).fill("শ্রী ক্ষিতিশ");
   await page.getByLabel("Email", { exact: true }).fill("public-fixture@example.com");
   await page.getByLabel("Phone", { exact: true }).fill("01700000000");
@@ -90,9 +91,15 @@ test("browse URL filters, apply with PDF CV and work sample, preserve Bengali an
   const xref = Buffer.byteLength(document);
   document += `xref\n0 5\n0000000000 65535 f \n${offsets.slice(1).map((offset) => `${String(offset).padStart(10, "0")} 00000 n \n`).join("")}trailer\n<</Size 5 /Root 1 0 R>>\nstartxref\n${xref}\n%%EOF\n`;
   const pdf = Buffer.from(document);
+  await page.getByLabel("CV *", { exact: true }).setInputFiles({ name: "invalid.txt", mimeType: "text/plain", buffer: Buffer.from("Synthetic invalid CV") });
+  await expect(page.getByRole("region", { name: "CV * upload", exact: true }).getByRole("alert")).toContainText("Choose permitted files up to 5 MB");
   await page.getByLabel("CV *", { exact: true }).setInputFiles({ name: "cv.pdf", mimeType: "application/pdf", buffer: pdf });
   await expect(page.getByRole("region", { name: "CV * upload", exact: true }).getByText("Uploaded", { exact: true })).toBeVisible({ timeout: 30000 });
-  await page.getByLabel("Work sample *", { exact: true }).setInputFiles({ name: "sample.pdf", mimeType: "application/pdf", buffer: pdf });
+  await page.getByRole("region", { name: "Work sample * upload", exact: true }).getByTestId("upload-dropzone").evaluate((element, bytes) => {
+    const transfer = new DataTransfer();
+    transfer.items.add(new File([new Uint8Array(bytes)], "sample.pdf", { type: "application/pdf" }));
+    element.dispatchEvent(new DragEvent("drop", { bubbles: true, dataTransfer: transfer }));
+  }, [...pdf]);
   await expect(page.getByRole("region", { name: "Work sample * upload", exact: true }).getByText("Uploaded", { exact: true })).toBeVisible({ timeout: 30000 });
   // Two completed files plus seven simultaneous reservations: exactly six
   // may succeed. This exercises the real cross-request DB lock and Storage count.

@@ -7,6 +7,7 @@ import { submitApplication } from "@/app/(public)/jobs/[slug]/apply/actions";
 import { QuestionFields } from "@/components/form-renderer/question-fields";
 import { UploadWidget, type PrepareUpload } from "./upload-widget";
 import { TurnstileWidget } from "./turnstile-widget";
+import { PublicIcon } from "./public-icon";
 import { contactSchema, validateApplicationAnswers } from "@/lib/validation/application";
 import { humanize } from "@/lib/careers/filters";
 import { mimeByExtension } from "@/lib/validation/uploads";
@@ -16,7 +17,7 @@ import type { Answer } from "@/lib/validation/buildSchema";
 
 type FormValues = { contact: { fullName: string; email: string; phone: string; location: string }; answers: Record<string, Answer>; cv: string[]; consent: boolean };
 export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: string; questions: QuestionDefinition[]; cvRequired: boolean }) {
-  const { register, control, handleSubmit, getValues, setError, setValue, formState: { errors, isSubmitting } } = useForm<FormValues>({ defaultValues: { contact: { fullName: "", email: "", phone: "", location: "" }, answers: {}, cv: [], consent: false } });
+  const { register, control, handleSubmit, getValues, setError, clearErrors, setValue, formState: { errors, isSubmitting } } = useForm<FormValues>({ defaultValues: { contact: { fullName: "", email: "", phone: "", location: "" }, answers: {}, cv: [], consent: false } });
   const [token, setToken] = useState("");
   const tokenRef = useRef(""); tokenRef.current = token;
   const sessionRef = useRef("");
@@ -28,6 +29,8 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
   const [message, setMessage] = useState("");
   const honeypot = useRef<HTMLInputElement>(null);
   const form = useRef<HTMLFormElement>(null);
+  const messageElement = useRef<HTMLParagraphElement>(null);
+  useEffect(() => { if (message) messageElement.current?.focus(); }, [message]);
   const [securityActive, setSecurityActive] = useState(false);
   useEffect(() => {
     if (!form.current || typeof IntersectionObserver === "undefined") return;
@@ -65,8 +68,10 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
   function fileField(label: string, slot: string, onChange: (ids: string[]) => void, accept: string[], maxMb: number, multiple = false) {
     return <UploadWidget key={`${slot}:${uploadGeneration}`} label={label} slot={slot} prepare={prepare} onChange={onChange} onBusy={busy} accept={accept} maxMb={maxMb} multiple={multiple} />;
   }
-  return <form ref={form} method="post" noValidate className="space-y-8" onInputCapture={() => setSecurityActive(true)} onFocusCapture={() => setSecurityActive(true)} onSubmit={handleSubmit(async () => {
+  return <form ref={form} method="post" noValidate className="ui-application-form space-y-[34px]" onInputCapture={() => setSecurityActive(true)} onFocusCapture={() => setSecurityActive(true)} onSubmit={handleSubmit(async () => {
     setMessage("");
+    // Keep inline errors current while preserving written answers across retries.
+    clearErrors();
     try {
       if (uploadBusy) throw new Error("Wait for every upload to finish.");
       const values = getValues();
@@ -94,34 +99,40 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
     } catch (error) {
       if (error && typeof error === "object" && "issues" in error && Array.isArray(error.issues)) {
         const issues = error.issues as { path: string[]; message: string }[];
+        for (const issue of issues) {
+          if (questions.some(question => question.id === issue.path[0])) setError(`answers.${issue.path[0]}`, { message: issue.message });
+          else if (issue.path[0] === "cv") setError("cv", { message: issue.message });
+        }
         setMessage(issues.map((issue) => `${questions.find((q) => q.id === issue.path[0])?.label ?? "Application"}: ${issue.message}`).join("; "));
       } else setMessage(error instanceof Error ? error.message : "Unable to submit. Try again.");
     }
   })}>
-    <fieldset disabled={isSubmitting} className="space-y-6">
-      <legend className="mb-4 text-2xl font-semibold">Personal & contact</legend>
-      {([ ["fullName", "Full name", "text"], ["email", "Email", "email"], ["phone", "Phone", "tel"], ["location", "Location (city/country)", "text"] ] as const).map(([name, label, type]) => <label key={name} className="block font-medium">{label} *
-        <input aria-label={label} type={type} autoComplete={name === "fullName" ? "name" : name === "phone" ? "tel" : name === "location" ? "address-level2" : "email"} {...register(`contact.${name}`)} className="mt-2 block w-full rounded border border-input p-3" />
-        {errors.contact?.[name] && <span role="alert" className="text-sm">{errors.contact[name]?.message}</span>}</label>)}
-      <Controller name="cv" control={control} render={({ field }) => fileField(`CV${cvRequired ? " *" : " (optional)"}`, "cv", field.onChange, ["pdf", "doc", "docx"], 5)} />
+    <fieldset disabled={isSubmitting}>
+      <legend className="ui-label mb-[18px] text-ui-blue-text">Personal & contact</legend>
+      <div className="ui-form-grid">
+        {([ ["fullName", "Full name", "text"], ["email", "Email", "email"], ["phone", "Phone", "tel"], ["location", "Location (city/country)", "text"] ] as const).map(([name, label, type]) => <label key={name} className="flex min-w-0 flex-col gap-[7px] text-[13.5px] font-bold"><span>{label}<span className="text-ui-required"> *</span></span>
+          <input aria-label={label} required aria-invalid={!!errors.contact?.[name]} aria-describedby={errors.contact?.[name] ? `contact-error-${name}` : undefined} type={type} autoComplete={name === "fullName" ? "name" : name === "phone" ? "tel" : name === "location" ? "address-level2" : "email"} {...register(`contact.${name}`)} className="ui-form-input" />
+          {errors.contact?.[name] && <span id={`contact-error-${name}`} role="alert" className="text-[13px] font-medium text-red-700">{errors.contact[name]?.message}</span>}</label>)}
+        <div className="ui-form-wide"><Controller name="cv" control={control} render={({ field }) => fileField(`CV${cvRequired ? " *" : " (optional)"}`, "cv", field.onChange, ["pdf", "doc", "docx"], 5)} />{errors.cv?.message && <p role="alert" className="mt-2 text-[13px] text-red-700">{errors.cv.message}</p>}</div>
+      </div>
     </fieldset>
     {questionSectionEnum.enumValues.map((section) => {
       const grouped = questions.filter((q) => q.section === section);
       if (!grouped.length) return null;
-      return <fieldset disabled={isSubmitting} key={section} className="space-y-6"><legend className="mb-4 text-2xl font-semibold capitalize">{humanize(section)}</legend>
-        {grouped.map((q) => <div key={q.id} className="rounded-xl border border-border bg-card p-5"><Controller name={`answers.${q.id}`} control={control} render={({ field }) => q.type === "file_upload" ? <>
-          {q.helpText && <p className="mb-2 text-sm">{q.helpText}</p>}{fileField(`${q.label}${q.required ? " *" : ""}`, q.id, field.onChange, Array.isArray(q.config?.accept) ? q.config.accept as string[] : ["pdf", "png", "jpg", "webp", "zip"], typeof q.config?.maxSizeMb === "number" ? q.config.maxSizeMb : 10, true)}
-        </> : <QuestionFields question={q} value={field.value} other={other[q.id] ?? ""} onChange={field.onChange} onOtherChange={(value) => setOther((current) => ({ ...current, [q.id]: value }))} /> } /></div>)}
+      return <fieldset disabled={isSubmitting} key={section}><legend className="ui-label mb-[18px] text-ui-blue-text">{humanize(section)}</legend>
+        <div className="ui-form-grid">{grouped.map((q) => <div key={q.id} className={`min-w-0 ${["long_text", "single_choice", "multiple_choice", "file_upload"].includes(q.type) ? "ui-form-wide" : ""}`}><Controller name={`answers.${q.id}`} control={control} render={({ field }) => q.type === "file_upload" ? <>
+          {q.helpText && <p className="mb-2 text-[12.5px] text-ui-muted">{q.helpText}</p>}{fileField(`${q.label}${q.required ? " *" : ""}`, q.id, field.onChange, Array.isArray(q.config?.accept) ? q.config.accept as string[] : ["pdf", "png", "jpg", "webp", "zip"], typeof q.config?.maxSizeMb === "number" ? q.config.maxSizeMb : 10, true)}
+          {errors.answers?.[q.id]?.message && <p role="alert" className="mt-2 text-[13px] text-red-700">{errors.answers[q.id]?.message}</p>}
+        </> : <QuestionFields question={q} value={field.value} other={other[q.id] ?? ""} error={errors.answers?.[q.id]?.message} onChange={field.onChange} onOtherChange={(value) => setOther((current) => ({ ...current, [q.id]: value }))} /> } /></div>)}</div>
       </fieldset>;
     })}
-    {questions.some((q) => q.type === "date") && <p className="text-sm text-muted-foreground">Date questions with “today” bounds use the UTC calendar date.</p>}
     <div className="absolute -left-[10000px]" aria-hidden="true"><label>Company website<input ref={honeypot} name="companyWebsite" tabIndex={-1} autoComplete="off" /></label></div>
-    <section className="space-y-4 rounded-xl border border-border p-5"><h3 className="font-bold">Your privacy</h3><p className="text-muted-foreground">Your contact details, answers and files are collected for recruitment and are accessible only to the internal hiring team. Please share only information relevant to this application. <Link href="/privacy" className="underline">Read the privacy notice.</Link></p>
-      <label className="flex items-start gap-3">
-        <input type="checkbox" className="mt-1 h-4 w-4 shrink-0" {...register("consent")} />
-        <span>I have read the privacy notice and consent to my application being processed for this role.</span>
+    <section className="space-y-[18px] border-t border-ui-border pt-[26px]">
+      <label className="flex items-start gap-3 text-[14px] leading-[1.55] text-ui-body">
+        <input type="checkbox" className="mt-[3px] h-[18px] w-[18px] shrink-0 accent-ui-blue" {...register("consent")} />
+        <span>I have read the <Link href="/privacy" className="underline underline-offset-4">privacy notice</Link> and consent to my application being processed for this role.</span>
       </label>
-      {securityActive ? <TurnstileWidget key={widgetKey} onToken={setToken} /> : <p className="text-muted-foreground">The security check loads when you start this form.</p>}
+      {securityActive ? <TurnstileWidget key={widgetKey} onToken={setToken} /> : <p className="text-[13px] text-ui-muted">The security check loads when you start this form.</p>}
       <button type="button" disabled={isSubmitting || uploadBusy > 0} onClick={async () => {
         await sessionPromise.current?.catch(() => undefined);
         sessionRef.current = ""; tokenRef.current = ""; setToken(""); setWidgetKey((key) => key + 1);
@@ -130,8 +141,8 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
         setUploadGeneration((generation) => generation + 1);
         setMessage("Upload session restarted. Choose your files again; your written answers are preserved.");
       }} className="block text-sm underline disabled:opacity-50">Start fresh uploads</button>
-      <button type="submit" disabled={isSubmitting || uploadBusy > 0 || !token} className="rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground disabled:opacity-50">{isSubmitting ? "Submitting…" : "Submit application"}</button>
-      <p role="alert" aria-live="polite">{message}</p>
+      <div className="flex flex-wrap items-center gap-[18px]"><button type="submit" disabled={isSubmitting || uploadBusy > 0 || !token} className="ui-button shadow-[0_10px_30px_rgba(11,18,32,.22)] disabled:opacity-50">{isSubmitting ? "Submitting…" : "Submit application"}<PublicIcon name="arrow" /></button><p className="max-w-[360px] text-[13px] leading-[1.5] text-ui-muted">Your answers go straight to the internal hiring team. You will get a reference number after submitting.</p></div>
+      <p ref={messageElement} tabIndex={-1} role="alert" aria-live="polite" className="text-[14px] text-red-700">{message}</p>
     </section>
   </form>;
 }
