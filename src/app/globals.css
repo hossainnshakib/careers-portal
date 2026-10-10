@@ -247,7 +247,8 @@ body {
 .brand-marquee-track { display: flex; width: max-content; animation: brand-marquee 38s linear infinite; }
 .brand-marquee-track > ul { display: flex; align-items: center; gap: 64px; padding-right: 64px; }
 .brand-marquee:hover .brand-marquee-track,
-.brand-marquee:focus-within .brand-marquee-track { animation-play-state: paused; }
+.brand-marquee:focus-within .brand-marquee-track,
+.brand-marquee[data-marquee-paused="true"] .brand-marquee-track { animation-play-state: paused; }
 @keyframes brand-marquee { to { transform: translateX(-50%); } }
 @media (max-width: 1180px) {
   .ui-float-card { display: none; }
@@ -269,6 +270,13 @@ body {
 @media (prefers-reduced-transparency: reduce) {
   .public-ui .ui-glass { background: #ffffff; -webkit-backdrop-filter: none; backdrop-filter: none; }
   .ui-orbs { display: none; }
+}
+@media (forced-colors: active) {
+  /* Ensure glass panels, buttons and focus rings remain visible in forced-colors mode. */
+  .public-ui .ui-glass { border: 1px solid CanvasText; background: Canvas; }
+  .public-ui .ui-button { border: 1px solid ButtonText; }
+  .public-ui .ui-pill, .public-ui .ui-pill-blue { border: 1px solid CanvasText; }
+  *:focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .brand-marquee { overflow: visible; mask-image: none; }
