@@ -635,3 +635,29 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
 ## 2026-10-10 — Front-end finishing pass branch
 
 - `main` does not contain the rebuilt public UI (`docs/UI_ACCEPTANCE.md` and the glass tokens in `src/app/globals.css` are absent from `origin/main`). The finishing pass branch `public-ui-finish` is therefore created from `public-ui-from-mockup` (the rebuilt UI branch), not from `main`. Main is not touched, not merged and not force-pushed. The design is APPROVED; this pass changes correctness, states and finishing only.
+
+## 2026-10-11 — Finishing pass items 4–5 (SEO/sharing, a11y/motion)
+
+- **JSON-LD JobPosting** lives in `src/lib/seo/job-posting.ts` (pure builder + 10 unit tests) and is injected by the Job detail page only for open, non-expired, published jobs; empty fields and `baseSalary` are omitted rather than guessed. No new dependency — plain object serialised with `JSON.stringify`.
+- **Per-job OG images** use `opengraph-image.tsx` with brand initials, because `@vercel/og`/satori cannot rasterise our SVG logos; this is a documented fallback, not a design change (recorded in `UI_ACCEPTANCE.md` J-something). The Home OG image renders the wordmark text only.
+- **Icons/manifest**: `src/app/icon.svg`, `apple-icon.png` (generated once from the SVG, committed), `manifest.webmanifest`. `robots.txt`/`sitemap.xml` were re-audited: apply/success/admin stay out of the sitemap; Apply/Success keep `noindex`.
+- **Motion**: `prefers-reduced-motion` disables the logo marquee, orb drift and card lifts; a real Pause/Play button was added to the marquee (WCAG 2.2.2) instead of hiding motion entirely. Focus rings use the documented `--ui-ring` token.
+
+## 2026-10-11 — Finishing pass item 6 (long/Bengali stress)
+
+- Stress coverage uses **temporary dev-only fixture jobs** created through the guarded public test-fixture module (prefix-tagged, removed after the run; never seeded into owner data). A `stress` mode in the shared Playwright fixture wires them in.
+- A real defect was found and fixed: a 99-character unbroken URL inside job Markdown created ~107px horizontal page overflow at 390px. Rule: `.ui-job-markdown { overflow-wrap: anywhere }` in `globals.css` (breaks only when needed, so ordinary prose is untouched).
+- The catalog read path uses `unstable_cache` (300s, tags `jobs`/`brands`/`departments`), so the fixture is published through a real admin UI save rather than cache poking.
+- CDP `CSS.getPlatformFontsForNode` is used for the glyph check: every rendered font must be a custom self-hosted font (`isCustomFont: true`, i.e. no system fallback = no missing glyphs) and "Hind Siliguri" must appear with glyphs > 0.
+
+## 2026-10-11 — Finishing pass item 7 (acceptance re-audit)
+
+- Re-audited all 60 rows in `docs/UI_ACCEPTANCE.md`; seven rows moved from Deviation to Implemented after verifying them against the code/screenshots (documented sort rule, live counts, salary pills, FAQ limits, skills/benefits, form sections from the DB enum, upload widget). Final: **57 Implemented / 3 Deviation / 0 Not implemented** — F01 was already closed by the owner fix pass (migration `0006_fix_salary_mode_text.sql`).
+- The three remaining deliberate deviations are unchanged in nature: S05 (nav/salary ink darkened for measured AA contrast), H10 (compact checkbox filter groups for viewport fit), J01 (bounded hero-orb opacity for white-text contrast).
+
+## 2026-10-11 — Finishing pass item 8 (cleanup + final validation)
+
+- Dead-code sweep removed `src/components/brand-accent.tsx` (zero importers) and the unused `hasGroup`/`fresherWelcome`/`filterGroup` exports. Verified NOT dead and kept: all `globals.css` class tokens (a `-Path` scan had false-flagged them — PowerShell wildcard semantics; `-LiteralPath` is required), all public components, `assets/fonts/*.ttf` (PDF + trace guard), `public-settings.test.ts`, and `emptyFilters` (used by `filters.test.ts`).
+- Logo-with-name audit passed with no changes: every public surface shows logo-only marks; accessible names remain in alt/title; footer brand names are text-only links without logos.
+- Final validation (run once): typecheck ✓, lint ✓, 563 unit/85 skipped (648/648 live), build + PDF trace guard ✓, production e2e **42 passed / 0 failed / 0 skipped**, Lighthouse mobile Home 97 / Job 94 / Apply 93 / Success 97 (a11y and best practices 100 everywhere; targets met).
+- **Home `meta-description` flake**: in one full e2e run Lighthouse 13.5.0 reported "Document does not have a meta description" on Home, while `document-title` (an axe/AXTree audit) passed. The audit uses the `MetaElements` gatherer (`Runtime.evaluate` over `head meta`); the failure carried no explanation (artifact-level miss, not empty content) and did not reproduce — a direct rerun passed, another direct rerun failed. SSR HTML was curl-verified to contain exactly one correct `<meta name="description">`, and `tests/e2e/public-pages.spec.ts` asserts rendered meta descriptions in production mode. Classified as a Lighthouse flake, not an app defect; SEO is not an asserted target (perf ≥85, a11y/BP ≥95 are, and all pass). No code change was made to chase it.

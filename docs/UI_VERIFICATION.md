@@ -2,13 +2,46 @@
 
 Branch: `public-ui-from-mockup`. Local production-mode app connected only to the independently pinned DEV Supabase project. Main, production resources and applied migrations were not changed.
 
+## Finishing pass (branch `public-ui-finish`) — final result
+
+Items 4–8 of `prompts/09-public-ui-finish.md` are complete on `public-ui-finish`, branched from `public-ui-from-mockup`. This section is the current report; the sections below it are the historical first-pass record and are kept unchanged.
+
+- **Item 4 — SEO/sharing/branding:** JSON-LD `JobPosting` (pure builder + 10 unit tests), per-job and Home OG images (brand-initials fallback: satori cannot rasterise SVG logos), SVG icon + apple-touch PNG + web manifest, Twitter `summary_large_image` cards, robots/sitemap re-audit (apply/success/admin excluded, Apply/Success `noindex`).
+- **Item 5 — accessibility/motion:** `prefers-reduced-motion` handling, a real marquee Pause/Play control (WCAG 2.2.2), documented focus-ring tokens; contrast corrections already documented below were re-measured and hold.
+- **Item 6 — long/Bengali stress:** new `tests/e2e/public-content-stress.spec.ts` using temporary dev-only fixture jobs (cleaned up after the run). Found and fixed one real defect: a 99-char unbroken URL in job Markdown overflowed 107px at 390px → `.ui-job-markdown { overflow-wrap: anywhere }`. Glyph check via CDP: every rendered font is a self-hosted face (`isCustomFont: true`) and Hind Siliguri renders with glyphs > 0 — no missing glyphs.
+- **Item 7 — acceptance re-audit:** all 60 rows re-verified; **57 Implemented / 3 Deviation / 0 Not implemented** (was 49/10/1). F01 closed by the owner fix pass (migration `0006_fix_salary_mode_text.sql`); seven rows reclassified to Implemented with evidence. The three remaining deviations (S05, H10, J01) are deliberate and documented in `UI_ACCEPTANCE.md`.
+- **Item 8 — cleanup:** removed dead `brand-accent.tsx` and unused `hasGroup`/`fresherWelcome`/`filterGroup` exports; logo-only brand-mark audit passed with no changes; `DESIGN.md`, `UI_ACCEPTANCE.md`, `DECISIONS.md` updated.
+
+Final validation (run once, after all changes):
+
+| Check | Result |
+| --- | --- |
+| `pnpm typecheck` / `pnpm lint` | Passed. |
+| Unit tests (default) | 563 passed / 85 skipped (80 files). |
+| Live tests `RUN_SUPABASE_TESTS=1` | 648 passed / 648 (80 files, 68.7s). |
+| `pnpm build` | Passed, incl. PDF trace guard: Helvetica/chunks/ICC, both Bengali fonts, 8 logos. |
+| Production e2e `PLAYWRIGHT_PRODUCTION=1 RUN_LIGHTHOUSE=1` | **42 passed / 0 failed / 0 skipped** (7.2m), including the new stress spec (18.8s) and sticky/header/mobile suites. |
+
+Lighthouse mobile (same run, targets unchanged: performance ≥85, accessibility/best-practices ≥95 — all met):
+
+| Page | Performance | Accessibility | Best practices | SEO | LCP | CLS |
+| --- | --- | --- | --- | --- | --- | --- |
+| Home | 97 | 100 | 100 | 92* | 2,521ms | 0.00344 |
+| Job | 94 | 100 | 100 | 100 | 2,403ms | 0.01684 |
+| Apply | 93 | 100 | 100 | 58 | 2,734ms | 0.02470 |
+| Success | 97 | 100 | 100 | 54 | 2,069ms | 0.00202 |
+
+\* Home's 92 is a single failing audit, `meta-description`, from a **Lighthouse flake**: the full run reported "Document does not have a meta description", but SSR HTML was curl-verified to contain exactly one correct `<meta name="description">`, `document-title` (axe) passed in the same run, the failure carried no explanation (artifact-level miss by the `MetaElements` gatherer), and direct reruns against the same build alternated pass/fail (1 pass, 1 fail). `tests/e2e/public-pages.spec.ts` asserts rendered meta descriptions in production mode. SEO is not an asserted target; no code change was made to chase the flake. Apply/Success SEO 58/54 remain the intentional `noindex` findings documented below.
+
+**Not verified (finishing pass):** real physical phones/GPUs, a hosted Vercel preview, production keys/resources. Contact/deletion email, brand descriptions/websites and privacy/retention approval remain owner actions. Owner: review `docs/DESIGN.md` additions and the three remaining deviations.
+
 ## Final result
 
 All 23 browser cases have passing evidence: eight passed in the initial full run, and all 15 initially failing cases passed in affected-only reruns after fixes. No assertions were weakened, no test was deleted and Lighthouse ran with its opt-in enabled. Initial failures are retained below rather than presented as a clean first pass.
 
-Acceptance: **49 Implemented / 10 Deviation / 1 Not implemented** across 60 checks in `UI_ACCEPTANCE.md`.
+Acceptance: **49 Implemented / 10 Deviation / 1 Not implemented** across 60 checks in `UI_ACCEPTANCE.md`. *(Superseded by the finishing-pass re-audit below: **57 / 3 / 0**.)*
 
-The sole nonimplemented fix is **F01, the reported salary-radio discrepancy**. Three actual editor SSR cases cover negotiable/range state, and hydrated browser negotiable-mode checks pass; the reported mismatch was not reproduced. No speculative state reset or database rewrite was made. The owner should provide the specific role, browser and steps to reproduce it.
+The sole nonimplemented fix was **F01, the reported salary-radio discrepancy**. Three actual editor SSR cases cover negotiable/range state, and hydrated browser negotiable-mode checks pass; the reported mismatch was not reproduced. No speculative state reset or database rewrite was made. *(Closed in the owner fix pass by migration `0006_fix_salary_mode_text.sql`; see below.)*
 
 ## Checks executed
 
