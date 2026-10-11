@@ -27,7 +27,7 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   await expect(page.locator('a[href^="javascript:"]')).toHaveCount(0);
   await page.getByLabel("Application status", { exact: true }).selectOption("shortlisted");
   await page.getByRole("button", { name: "Update status" }).click();
-  await expect(page.getByRole("region", { name: "Status history" })).toContainText("shortlisted");
+  await expect(page.getByRole("region", { name: "Status history" })).toContainText("Shortlisted");
   await expect(page.getByRole("region", { name: "Status history" })).toContainText(reviewFixture.email);
   const note = "শ্রীময়ীর কাজ পর্যালোচনা করা হয়েছে।";
   await page.getByLabel("Internal note", { exact: true }).fill(note);

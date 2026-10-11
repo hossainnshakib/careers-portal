@@ -3,14 +3,17 @@ import type { PublicBrand } from "@/lib/careers/filters";
 import { publicWebsite } from "@/lib/careers/presentation";
 
 export function PublicFooter({ brands, contactEmail }: { brands: PublicBrand[]; contactEmail?: string }) {
-  return <footer className="mt-16 border-t border-border">
-    <div className="mx-auto grid max-w-7xl gap-6 px-5 py-10 sm:grid-cols-2">
-      <div><p className="font-bold">Careers</p><p className="mt-3 text-muted-foreground">Good work starts with a conversation.</p>
-        <p className="mt-3">{contactEmail ? <a className="underline" href={`mailto:${contactEmail}`}>{contactEmail}</a> : "Contact email to be confirmed."}</p>
+  return <footer className="ui-container w-full pb-10 pt-14">
+    <div className="flex flex-wrap justify-between gap-6 border-t border-ui-border pt-7 text-[14px] text-ui-muted">
+      <div className="space-y-1.5">
+        <p className="text-[17px] font-extrabold text-ui-ink">Careers</p>
+        <p>Good work starts with a conversation.</p>
+        {contactEmail && <a className="inline-block underline underline-offset-4" href={`mailto:${contactEmail}`}>{contactEmail}</a>}
       </div>
-      <div className="space-y-4"><nav aria-label="Brand websites" className="flex flex-wrap gap-x-5 gap-y-3">
-        {brands.map(brand => { const href = publicWebsite(brand.website); return href ? <a key={brand.id} href={href} target="_blank" rel="noopener noreferrer" className="underline">{brand.name}</a> : null; })}
-      </nav><Link href="/privacy" className="inline-block underline">Privacy</Link></div>
+      <nav aria-label="Brand websites" className="flex flex-wrap items-start gap-x-[22px] gap-y-3 font-semibold text-ui-ink">
+        {brands.map(brand => { const href = publicWebsite(brand.website); return href ? <a key={brand.id} href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{brand.name}</a> : null; })}
+        <Link href="/privacy" className="underline underline-offset-4">Privacy</Link>
+      </nav>
     </div>
   </footer>;
 }

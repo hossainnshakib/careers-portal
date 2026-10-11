@@ -12,9 +12,6 @@ const nextConfig: NextConfig = {
   // Bake the same resolved public origin into browser bundles; non-public
   // Vercel system variables are otherwise unavailable to client modules.
   env: { NEXT_PUBLIC_SITE_URL: resolveSiteUrl(process.env) },
-  async redirects() {
-    return [{ source: "/jobs/:slug/apply", destination: "/jobs/:slug#apply", permanent: true }];
-  },
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   logging: { incomingRequests: false },
   serverExternalPackages: ["@react-pdf/renderer", "sharp"],

@@ -10,6 +10,7 @@ const latin = localFont({
   variable: "--font-latin",
   display: "swap",
   weight: "100 900",
+  preload: false,
 });
 const bengali = localFont({
   src: [
@@ -26,7 +27,9 @@ export const metadata: Metadata = {
   title: "Careers",
   description: "Browse open roles across our brands. No account needed.",
   openGraph: { title: "Careers", description: "Good work starts here. Browse open roles across our brands.", siteName: "Careers", type: "website" },
-  twitter: { card: "summary" },
+  twitter: { card: "summary_large_image", title: "Careers", description: "Good work starts here. Browse open roles across our brands." },
+  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }], apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }] },
+  manifest: "/manifest.webmanifest",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -34,7 +37,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body className={`${latin.variable} ${bengali.variable} antialiased`}>
-        <a href="#main" className="sr-only focus:not-sr-only focus:block focus:p-4">
+        <a href="#main" className="sr-only focus:not-sr-only focus:block focus:p-4" style={{ fontFamily: "system-ui, sans-serif" }}>
           Skip to content
         </a>
         <NonceProvider nonce={nonce}>{children}</NonceProvider>

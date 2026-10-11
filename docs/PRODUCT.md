@@ -13,24 +13,25 @@ Fixen Media, Builtale, Doshok, Accoraze, Wiki Bangla, Ghora Fera, Mactie, Avagat
 - Admin: a few internal team members. Log in with email + password and mandatory TOTP MFA. Everyone has the same access.
 
 ## Candidate flow
-Careers home → use the brand strip, expanded sidebar/mobile filters and search → job detail → Apply scrolls to the form on the same page → fill dynamic questions and upload required files → submit → success page with a reference number. Old `/jobs/<slug>/apply` links permanently redirect to the job's `#apply` anchor.
+Careers home → use the brand links, desktop/mobile filters and search → job detail → Apply opens `/jobs/<slug>/apply` → fill dynamic questions, upload required files and tick the required privacy-consent checkbox → submit → success page with a reference number. Apply is an independent noindex page, without a redirect or inline `#apply` anchor, so existing poster/bookmark URLs keep working. Job detail contains no form or Turnstile widget.
 
-A candidate must always see: which position, which brand(s), department, employment type, work mode, responsibilities, requirements, and the role-specific questions.
+A candidate sees the position, hiring brands, department and selected work/engagement options; salary is the configured range or Negotiable. Experience, vacancies, location/deadline and content sections appear only when configured. Role-specific questions appear on the separate Apply page.
 
 ## Filters on the careers home
-- Brand (multi) in one logo strip; Department, Employment type, Work mode, Sector (derived from the brand's sector), and Experience level in an expanded desktop sidebar/mobile sheet; free-text search over job title above results.
+- Brand (multi), Department, Work arrangement, Engagement type and Experience in a compact glass desktop panel/mobile sheet; free-text search over job title above results. Department uses checkboxes; the other groups use selectable chips. Filter labels show the stored active option labels verbatim. Sector has no visible picker; existing sector URLs still filter and expose removable chips.
 - Within one filter: OR. Across filters: AND.
 - All filter state lives in the URL (`?brand=doshok,builtale&dept=design-creative&type=part_time&q=editor`). Brand-site links rely on this.
-- When `?brand=<slug>` is present, preselect its strip toggle. A single selection can show its description and "See all brands" control without duplicating a large brand header.
+- When `?brand=<slug>` is present, preselect its filter chip. Small brand-logo marquee links use `/?brand=<slug>#roles`.
 - Show counts next to options; hide or grey options with zero open jobs.
-- Mobile: non-brand filters open in a bottom sheet; brand toggles remain in the snap-scrolling strip. Selected filters/search show removable chips and clear controls.
+- Mobile below 900px: all filter groups open in a frosted bottom sheet with active count, Clear all and Done filtering. Selected filters/search show removable chips and clear controls.
 - Role is not a filter. The job title is the role; use search plus department.
-- Results are grouped in department sort order, all expanded, with numbered headings/counts and whole-card links in a responsive 3/2/1 grid. The hero counts open roles/active brands from the cached live catalog and links real job titles in a reduced-motion-safe CSS marquee. Applying steps, FAQ, brand website links and an environment-configured contact placeholder complete the public home.
+- Results are grouped in department sort order, all expanded, with numbered headings/counts and glass whole-card links in a responsive 3/2/1 grid. The hero counts open roles and brands linked to those roles, and features the first catalog job in a desktop floating card. A reduced-motion-safe marquee links small active-brand logos to filters; no job-title carousel remains. Applying steps, FAQ, brand website links and a contact email only when configured complete the public home.
 
-## Admin capabilities (V1)
-- Brands: create/edit/hide, logo upload, sector, accent colour, sort order.
+## Admin capabilities (V1 + V2)
+- Brands: create/edit/hide, logo upload, sector, accent colour, sort order. `seed:base` fills a default accent only when a brand has none; owner edits are never overwritten.
 - Departments: create/edit/reorder.
-- Jobs: create, edit, duplicate, publish, close, reopen; assign one or more brands (one primary), department, employment type, work mode, optional level/location/deadline; markdown description, responsibilities, requirements; dynamic questions. Copy questions from another job.
+- Options: manage the shared job option lists at `/admin/options` (one surface per group: work arrangement, engagement type, experience). Create/edit, activate/deactivate, reorder within the group; delete only while unlinked (deactivate instead when linked). Labels are displayed verbatim everywhere.
+- Jobs: create, edit, duplicate, publish, close, reopen; assign one or more brands (one primary), department; multi-select any number of options across the three groups (at least one arrangement and one engagement to publish; experience optional); optional salary (negotiable, or a range with displayed text), vacancies, experience text, engagement note, location/deadline; markdown description, responsibilities, requirements; skills and benefits lists; optional nice-to-have markdown; dynamic questions. Copy questions from another job.
 - Dynamic questions (11 types): short text, long text, single choice, multiple choice, yes/no, number, URL, email, phone, file upload, date; required flag; help text; options; section; order. Single choice can use radio buttons or a dropdown. Single/multiple choice can allow an "Other" free-text answer. Date questions support minimum/maximum absolute dates or "today". Archiving instead of deleting once a job has applications.
 - **"Add standard questions"** button in the job question builder: copies the seven defaults from `src/lib/questions/defaults.ts` (defined in `SEED_DATA.md`) into the job as ordinary editable questions. Admins can edit, reorder, or remove/archive the copies under the existing question rules. This is a code constant, not a DB table; changing the defaults does not change existing job questions. Combine these questions with role-specific ones. Do not ask for age, religion, marital status, or photos.
 - Applications dashboard: counts by status (total, new, under review, shortlisted, rejected, hired); list with filters (brand, department, job, status, date range) and search by name/email; server-side pagination; all in the URL.
@@ -41,7 +42,7 @@ A candidate must always see: which position, which brand(s), department, employm
 `new` → `under_review` → `shortlisted` → `hired` or `rejected`. Any admin can set any status at any time (no rigid workflow). Every change is logged with who and when.
 
 ## Jobs
-- One job has one employment type. A role offered both full-time and part-time is two jobs (use "Duplicate job").
+- Work arrangement, engagement type and experience are managed multi-select option lists (V2). A role offered both full-time and part-time is now ONE job with both engagement options selected (duplicating still works for genuinely separate roles).
 - A job can belong to several brands; one is marked primary (used on cards, PDF header, and reference display).
 - Slugs are stable: once a job has been published its slug can never change (posters and QR codes point to it).
 - Closed jobs stay reachable by URL and show "no longer accepting applications"; they are not listed.
@@ -55,5 +56,5 @@ Admins learn about new applications from the dashboard "New" count (no email in 
 Professional and branded, but simple. It must NOT look like a Google Form, a third-party form service, a generic HR SaaS, or a sprawling job marketplace. It should feel like a careers page for a group of well-known brands. Candidates should instantly understand the role, who is hiring, what is expected, and how to apply. Admins should be able to create a job, review, filter, update status, and export a profile with very few clicks.
 
 ## Data and privacy basics
-Applicants' personal data and CVs are sensitive. Keep it private, minimise logging, and make deletion possible (admin can delete an application and its files). A short privacy note appears on the apply form (what is collected, who sees it).
+Applicants' personal data and CVs are sensitive. Keep it private, minimise logging, and make deletion possible (admin can delete an application and its files). A short privacy note appears on the apply form (what is collected, who sees it), next to a required consent checkbox; every submission stores its consent timestamp, shown on the admin profile and the candidate PDF.
 `/privacy` describes actual collection/access/providers, manual deletion requests and current retention behavior. It is explicitly a draft for owner review: no automatic submitted-application expiry is configured, and the contact address/retention policy require owner confirmation. The reference-only success page is noindex and performs no applicant lookup.

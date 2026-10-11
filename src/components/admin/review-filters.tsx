@@ -5,30 +5,186 @@ import { applicationStatusEnum } from "@/db/schema";
 import type { ReviewFilters } from "@/lib/validation/review";
 import { applicationStatusLabel } from "@/lib/admin/display";
 
-export function ReviewFilterForm({ filters, options }: {
+const sortLabels: Record<ReviewFilters["sort"], string> = {
+  newest: "Newest first",
+  oldest: "Oldest first",
+  name_asc: "Name A–Z",
+  name_desc: "Name Z–A",
+};
+
+function filterUrl(filters: ReviewFilters, patch: Partial<ReviewFilters>) {
+  const values = new URLSearchParams();
+  const merged = { ...filters, ...patch };
+  for (const key of ["brand", "department", "job", "status", "q", "from", "to", "tz", "sort"] as const) {
+    if (merged[key] !== "" && !(key === "sort" && merged.sort === "newest")) {
+      values.set(key, String(merged[key]));
+    }
+  }
+  const url = `/admin/applications${values.size ? `?${values}` : ""}`;
+  return url;
+}
+
+export function ReviewFilterForm({
+  filters,
+  options,
+  showReset = true,
+}: {
   filters: ReviewFilters;
-  options: { brands: { id: string; name: string }[]; departments: { id: string; name: string }[]; jobs: { id: string; title: string }[] };
+  showReset?: boolean;
+  options: {
+    brands: { id: string; name: string }[];
+    departments: { id: string; name: string }[];
+    jobs: { id: string; title: string }[];
+  };
 }) {
   const [zone, setZone] = useState(filters.tz);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!filters.from && !filters.to) setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }, [filters.from, filters.to]);
-  const input = "mt-1 block w-full rounded border border-input bg-card p-2";
-  return <form action="/admin/applications" method="get" className="grid gap-3 rounded border border-border p-4 sm:grid-cols-2 xl:grid-cols-4">
-    <input type="hidden" name="tz" value={zone} />
-    <label>Search name/email<input aria-label="Search name/email" name="q" defaultValue={filters.q} maxLength={200} className={input} /></label>
-    <label>Brand<select aria-label="Brand" name="brand" defaultValue={filters.brand} className={input}><option value="">All brands</option>{options.brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}</select></label>
-    <label>Department<select aria-label="Department" name="department" defaultValue={filters.department} className={input}><option value="">All departments</option>{options.departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></label>
-    <label>Job<select aria-label="Job" name="job" defaultValue={filters.job} className={input}><option value="">All jobs</option>{options.jobs.map((j) => <option key={j.id} value={j.id}>{j.title}</option>)}</select></label>
-    <label>Status<select aria-label="Status" name="status" defaultValue={filters.status} className={input}><option value="">All statuses</option>{applicationStatusEnum.enumValues.map((status) => <option key={status} value={status}>{applicationStatusLabel(status)}</option>)}</select></label>
-    <label>From date<input aria-label="From date" type="date" name="from" defaultValue={filters.from} className={input} /></label>
-    <label>To date<input aria-label="To date" type="date" name="to" defaultValue={filters.to} className={input} /></label>
-    <label>Sort<select aria-label="Sort" name="sort" defaultValue={filters.sort} className={input}>{[["newest", "Newest first"], ["oldest", "Oldest first"], ["name_asc", "Name A–Z"], ["name_desc", "Name Z–A"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-    <p className="text-xs text-muted-foreground sm:col-span-2">Date range uses {zone}; the end date is inclusive.</p>
-    <div className="flex items-center gap-4"><button className="rounded border border-border px-4 py-2">Filter applications</button>
-      {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
-      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-      <a href="/admin/applications" className="underline">Clear filters</a>
-    </div>
-  </form>;
+
+  const chips: { key: string; label: string; href: string }[] = [];
+  if (filters.q) chips.push({ key: "q", label: `Search: ${filters.q}`, href: filterUrl(filters, { q: "" }) });
+  if (filters.brand) {
+    const brand = options.brands.find((item) => item.id === filters.brand);
+    chips.push({ key: "brand", label: `Brand: ${brand?.name ?? "Selected"}`, href: filterUrl(filters, { brand: "" }) });
+  }
+  if (filters.department) {
+    const department = options.departments.find((item) => item.id === filters.department);
+    chips.push({
+      key: "department",
+      label: `Department: ${department?.name ?? "Selected"}`,
+      href: filterUrl(filters, { department: "" }),
+    });
+  }
+  if (filters.job) {
+    const job = options.jobs.find((item) => item.id === filters.job);
+    chips.push({ key: "job", label: `Job: ${job?.title ?? "Selected"}`, href: filterUrl(filters, { job: "" }) });
+  }
+  if (filters.status) {
+    chips.push({
+      key: "status",
+      label: `Status: ${applicationStatusLabel(filters.status)}`,
+      href: filterUrl(filters, { status: "" }),
+    });
+  }
+  if (filters.from) chips.push({ key: "from", label: `From: ${filters.from}`, href: filterUrl(filters, { from: "" }) });
+  if (filters.to) chips.push({ key: "to", label: `To: ${filters.to}`, href: filterUrl(filters, { to: "" }) });
+  if (filters.sort !== "newest") chips.push({ key: "sort", label: `Sort: ${sortLabels[filters.sort]}`, href: filterUrl(filters, { sort: "newest" }) });
+
+  return (
+    <>
+      {chips.length > 0 && (
+        <div className="admin-chips" style={{ marginBottom: 12 }}>
+          {chips.map((chip) => (
+            <a key={chip.key} href={chip.href} className="admin-chip">
+              {chip.label}
+              <span className="admin-chip-remove" aria-hidden="true">
+                ✕
+              </span>
+              <span className="sr-only">— remove filter</span>
+            </a>
+          ))}
+          {/* Fresh private-document navigation renews authorization and the CSP nonce. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/admin/applications" className="admin-link">
+            Clear all
+          </a>
+        </div>
+      )}
+      <form action="/admin/applications" method="get" className="admin-card admin-review-filters admin-mobile-flat" style={{ marginBottom: 14 }}>
+        <label className="admin-review-search">
+          <span>Search name/email</span>
+          <input aria-label="Search name/email" name="q" defaultValue={filters.q} maxLength={200} placeholder="Search name or email" />
+        </label>
+        <button
+          type="button"
+          className="admin-btn admin-btn-secondary admin-filter-toggle"
+          aria-expanded={open}
+          aria-controls="review-filter-fields"
+          onClick={() => setOpen((value) => !value)}
+        >
+          Filters
+        </button>
+        <div id="review-filter-fields" className={`admin-filter-fields${open ? " is-open" : ""}`}>
+          <input type="hidden" name="tz" value={zone} />
+          <label>
+            Brand
+            <select aria-label="Brand" name="brand" defaultValue={filters.brand}>
+              <option value="">All brands</option>
+              {options.brands.map((brand) => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Department
+            <select aria-label="Department" name="department" defaultValue={filters.department}>
+              <option value="">All departments</option>
+              {options.departments.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Job
+            <select aria-label="Job" name="job" defaultValue={filters.job}>
+              <option value="">All jobs</option>
+              {options.jobs.map((job) => (
+                <option key={job.id} value={job.id}>
+                  {job.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Status
+            <select aria-label="Status" name="status" defaultValue={filters.status}>
+              <option value="">All statuses</option>
+              {applicationStatusEnum.enumValues.map((status) => (
+                <option key={status} value={status}>
+                  {applicationStatusLabel(status)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            From date
+            <input aria-label="From date" type="date" name="from" defaultValue={filters.from} />
+          </label>
+          <label>
+            To date
+            <input aria-label="To date" type="date" name="to" defaultValue={filters.to} />
+          </label>
+          <label>
+            Sort
+            <select aria-label="Sort" name="sort" defaultValue={filters.sort}>
+              {Object.entries(sortLabels).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="admin-note" style={{ gridColumn: "1 / -1", margin: 0 }}>
+            Date range uses {zone}; the end date is inclusive.
+          </p>
+          <div className="admin-filter-actions">
+            <button className="admin-btn" type="submit">
+              Filter applications
+            </button>
+            {showReset && <>
+              {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+              <a href="/admin/applications" className="admin-link">Clear filters</a>
+            </>}
+          </div>
+        </div>
+      </form>
+    </>
+  );
 }

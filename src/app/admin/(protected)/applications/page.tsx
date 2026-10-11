@@ -1,10 +1,16 @@
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
-import { listReviewApplications, reviewFilterOptions } from "@/db/queries/review";
+import { listReviewApplications, reviewFilterOptions, reviewPageSize } from "@/db/queries/review";
 import { reviewFilters } from "@/lib/validation/review";
 import { ApplicationTable } from "@/components/admin/application-table";
 import { ReviewFilterForm } from "@/components/admin/review-filters";
 import { DeleteApplicationControl } from "@/components/admin/review-controls";
+import { AdminToolbar } from "@/components/admin/admin-toolbar";
+
+function pageWindow(page: number, pages: number) {
+  const wanted = new Set<number>([1, pages, page - 1, page, page + 1]);
+  return [...wanted].filter((value) => value >= 1 && value <= pages).sort((a, b) => a - b);
+}
 
 export default async function ApplicationsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   await requireAdmin().catch(redirectAdminDenial);
@@ -21,17 +27,50 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
     return `/admin/applications?${values}`;
   }
   return (
-    <section className="space-y-6">
-      <h1 className="text-2xl font-bold">Applications</h1>
+    <section>
+      <AdminToolbar eyebrow="Applications" title="Applications" />
       {!parsed.success && <p role="status">Invalid filters were cleared.</p>}
       {filters.cleanup && <DeleteApplicationControl applicationId={filters.cleanup} reference="the selected application" retry />}
-      <ReviewFilterForm key={JSON.stringify(filters)} filters={filters} options={options} />
-      <p>{result.total} applications · Page {result.page} of {result.pages}</p>
-      <ApplicationTable rows={result.rows} brandAccents={options.brands} />
-      <nav aria-label="Application pages" className="flex gap-6">
-        {result.page > 1 && <a href={pageUrl(result.page - 1)} className="underline">Previous page</a>}
-        {result.page < result.pages && <a href={pageUrl(result.page + 1)} className="underline">Next page</a>}
-      </nav>
+      <ReviewFilterForm key={JSON.stringify(filters)} filters={filters} options={options} showReset={result.rows.length > 0} />
+      <p className="admin-mobile-result-count">{result.total} results</p>
+      <div className={result.rows.length ? "admin-card admin-mobile-flat" : undefined}>
+        <ApplicationTable rows={result.rows} brandAccents={options.brands} />
+        <div className="admin-table-footer">
+        <span>
+          {result.total} results · {reviewPageSize} per page
+        </span>
+        <nav aria-label="Application pages" className="admin-pagination">
+          {result.page > 1 && (
+            <a href={pageUrl(result.page - 1)} className="admin-page" aria-label="Previous page">
+              ‹
+            </a>
+          )}
+          {pageWindow(result.page, result.pages).map((value, index, all) => (
+            <span key={value} style={{ display: "inline-flex", gap: 6 }}>
+              {index > 0 && value - all[index - 1] > 1 && (
+                <span className="admin-muted" aria-hidden="true">
+                  …
+                </span>
+              )}
+              {value === result.page ? (
+                <span className="admin-page" aria-current="page">
+                  {value}
+                </span>
+              ) : (
+                <a href={pageUrl(value)} className="admin-page">
+                  {value}
+                </a>
+              )}
+            </span>
+          ))}
+          {result.page < result.pages && (
+            <a href={pageUrl(result.page + 1)} className="admin-page" aria-label="Next page">
+              ›
+            </a>
+          )}
+        </nav>
+        </div>
+      </div>
     </section>
   );
 }

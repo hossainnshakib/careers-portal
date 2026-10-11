@@ -5,6 +5,7 @@ import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { listBrands } from "@/db/queries/brands";
 import { listDepartments } from "@/db/queries/departments";
 import { jobHasApplications, listJobs, loadJob } from "@/db/queries/jobs";
+import { listJobOptions } from "@/db/queries/job-options";
 import { jobFilters, type JobInput } from "@/lib/validation/jobs";
 import { questionFromRow } from "@/lib/questions/from-row";
 import { JobEditor } from "@/components/admin/job-editor";
@@ -20,8 +21,9 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   const brands = await listBrands();
   const departments = await listDepartments();
   const sources = await listJobs(jobFilters.parse({}));
+  const options = await listJobOptions();
   const hasApplications = await jobHasApplications(parsed.data);
-  const { job, links, questions } = loaded;
+  const { job, links, questions, options: selectedOptions } = loaded;
   const initial: JobInput = {
     id: job.id,
     title: job.title,
@@ -29,9 +31,15 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
     departmentId: job.departmentId,
     brandIds: links.map((link) => link.brandId),
     primaryBrandId: links.find((link) => link.isPrimary)?.brandId ?? "",
-    employmentType: job.employmentType,
-    workMode: job.workMode,
-    experienceLevel: job.experienceLevel,
+    optionIds: selectedOptions.map((option) => option.id),
+    engagementNote: job.engagementNote,
+    salaryMode: job.salaryMode,
+    salaryText: job.salaryText ?? "",
+    vacancies: job.vacancies,
+    experienceText: job.experienceText,
+    skills: [...job.skills],
+    benefits: [...job.benefits],
+    niceToHaveMd: job.niceToHaveMd,
     locationText: job.locationText ?? "",
     deadlineAt: job.deadlineAt?.toISOString() ?? null,
     cvRequired: job.cvRequired,
@@ -49,6 +57,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
       brands={brands}
       departments={departments}
       sources={sources}
+      options={options}
       published={!!job.publishedAt}
       status={job.status}
       hasApplications={hasApplications}

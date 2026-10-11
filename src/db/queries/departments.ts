@@ -1,6 +1,6 @@
 import "server-only";
 
-import { asc, eq, sql } from "drizzle-orm";
+import { asc, count, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { departments, jobs } from "@/db/schema";
 import type { DepartmentInput } from "@/lib/validation/departments";
@@ -10,6 +10,15 @@ export async function listDepartments() {
     .select()
     .from(departments)
     .orderBy(asc(departments.sortOrder), asc(departments.id));
+}
+
+/** Read-only: open roles per department, for the Settings "Roles" column. */
+export async function departmentJobCounts() {
+  return getDb()
+    .select({ departmentId: jobs.departmentId, count: count() })
+    .from(jobs)
+    .where(eq(jobs.status, "open"))
+    .groupBy(jobs.departmentId);
 }
 
 export async function saveDepartment(input: DepartmentInput) {

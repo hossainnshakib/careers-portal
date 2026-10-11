@@ -25,7 +25,8 @@ export async function existingSessionApplication(tx: ApplicationTransaction, id:
 const alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 export function createReference() { return `APP-${Array.from({ length: 6 }, () => alphabet[randomInt(alphabet.length)]).join("")}`; }
 export async function insertApplication(tx: ApplicationTransaction, data: {
-  id: string; contact: z.infer<typeof contactSchema>; definition: NonNullable<Awaited<ReturnType<typeof loadApplicationJob>>>;
+  id: string; contact: z.infer<typeof contactSchema>; consent: boolean;
+  definition: NonNullable<Awaited<ReturnType<typeof loadApplicationJob>>>;
   answers: Record<string, Answer>; files: Reservation[];
 }) {
   const { job, department, brands, questions } = data.definition;
@@ -36,6 +37,7 @@ export async function insertApplication(tx: ApplicationTransaction, data: {
     const candidate = createReference();
     const [row] = await tx.insert(applications).values({
       id: data.id, reference: candidate, jobId: job.id, ...data.contact,
+      consentAt: data.consent ? new Date() : null,
       jobTitleSnapshot: job.title, jobSlugSnapshot: job.slug, departmentNameSnapshot: department.name,
       brandNamesSnapshot: brands.map((b) => b.brand.name), primaryBrandSnapshot: primary.brand.name,
     }).onConflictDoNothing({ target: applications.reference }).returning({ reference: applications.reference });

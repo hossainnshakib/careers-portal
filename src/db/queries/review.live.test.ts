@@ -28,7 +28,14 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")("dev-only live review tr
       const ids = await reviewTestApplicationIds(prefix);
       await removeReviewTestFiles([...new Set([...ids, ...(fixture ? [fixture.applicationId, fixture.previousId] : [])])]);
       await removeTestFixture(userId ?? randomUUID(), prefix);
-      if (userId && (await createSupabaseAdminClient().auth.admin.deleteUser(userId)).error) throw new Error("Review live account cleanup failed");
+      if (userId) {
+        const result = await createSupabaseAdminClient().auth.admin.deleteUser(userId);
+        if (result.error) {
+          // A concurrent sweep may have already removed the account; treat
+          // "not found" as success so parallel live runs stay green.
+          if (result.error.status !== 404) throw new Error(`Review live account cleanup failed: ${result.error.message}`);
+        }
+      }
     } finally { await closeDb(); }
   }, 60000);
   it("filters brand/status/name/email and inclusive timezone date ranges without duplicate rows", async () => {

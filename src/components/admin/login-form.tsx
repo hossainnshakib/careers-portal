@@ -11,7 +11,7 @@ export function LoginForm() {
   return (
     <form
       method="post"
-      className="space-y-4"
+      className="admin-stack"
       onSubmit={async (event) => {
         event.preventDefault();
         if (pending) return;
@@ -36,11 +36,10 @@ export function LoginForm() {
         }
       }}
     >
-      <fieldset disabled={!ready || pending} className="space-y-4">
-        <label className="block">
+      <fieldset disabled={!ready || pending} className="admin-stack">
+        <label>
           Email
           <input
-            className="mt-1 block w-full rounded border border-input p-2"
             name="email"
             type="email"
             required
@@ -48,10 +47,9 @@ export function LoginForm() {
             maxLength={254}
           />
         </label>
-        <label className="block">
+        <label>
           Password
           <input
-            className="mt-1 block w-full rounded border border-input p-2"
             name="password"
             type="password"
             required
@@ -59,11 +57,11 @@ export function LoginForm() {
             maxLength={256}
           />
         </label>
-        <p role="status" aria-live="polite" className="text-sm text-destructive">
+        <p role="status" aria-live="polite" className="admin-error">
           {error}
         </p>
         <button
-          className="w-full rounded bg-primary px-4 py-3 text-primary-foreground disabled:opacity-60"
+          className="admin-btn"
           disabled={pending}
         >
           {pending ? "Signing in…" : "Sign in"}

@@ -11,12 +11,14 @@ export function QuestionFields({
   other,
   onChange,
   onOtherChange,
+  error,
 }: {
   question: QuestionDefinition;
   value: Answer;
   other: string;
   onChange: (value: Answer) => void;
   onOtherChange: (text: string) => void;
+  error?: string;
 }) {
   const [fileError, setFileError] = useState("");
   const config = q.config ?? {};
@@ -32,17 +34,18 @@ export function QuestionFields({
     else onChange(checked ? [...selected, option] : selected.filter((v) => v !== option));
   }
   return (
-    <fieldset className="space-y-2">
-      <legend className="font-medium">
+    <fieldset className="question-field space-y-2" data-question-type={q.type} aria-describedby={[q.helpText ? `question-help-${q.id}` : "", error ? `question-error-${q.id}` : ""].filter(Boolean).join(" ") || undefined}>
+      <legend className="question-label font-medium">
         {q.label}
-        {q.required ? " *" : ""}
+        {q.required && <span className="question-required"> *</span>}
       </legend>
-      {q.helpText && <p className="text-sm text-muted-foreground">{q.helpText}</p>}
+      {q.helpText && <p id={`question-help-${q.id}`} className="question-help text-sm text-muted-foreground">{q.helpText}</p>}
       {choice ? (
         <>
           {q.type === "single_choice" && config.display === "dropdown" ? (
             <select
               aria-label={q.label}
+              aria-invalid={!!error}
               className={inputClass}
               value={otherSelected ? otherValue : ((value as string) ?? "")}
               onChange={(event) => onChange(event.target.value || undefined)}
@@ -56,12 +59,13 @@ export function QuestionFields({
               {config.allowOther === true && <option value={otherValue}>Other</option>}
             </select>
           ) : (
-            <div className="flex flex-wrap gap-4">
+            <div className="question-choices flex flex-wrap gap-4">
               {options.map((o) => (
-                <label key={o.value} className="flex gap-2">
+                <label key={o.value} className="question-choice flex gap-2" data-selected={selected.includes(o.value)}>
                   <input
                     type={q.type === "single_choice" ? "radio" : "checkbox"}
                     name={`preview-${q.id}`}
+                    aria-invalid={!!error}
                     checked={selected.includes(o.value)}
                     onChange={(event) => choose(o.value, event.target.checked)}
                   />
@@ -69,10 +73,11 @@ export function QuestionFields({
                 </label>
               ))}
               {config.allowOther === true && (
-                <label className="flex gap-2">
+                <label className="question-choice flex gap-2" data-selected={otherSelected}>
                   <input
                     type={q.type === "single_choice" ? "radio" : "checkbox"}
                     name={`preview-${q.id}`}
+                    aria-invalid={!!error}
                     checked={otherSelected}
                     onChange={(event) => choose(otherValue, event.target.checked)}
                   />
@@ -97,6 +102,7 @@ export function QuestionFields({
       ) : q.type === "yes_no" ? (
         <select
           aria-label={q.label}
+          aria-invalid={!!error}
           className={inputClass}
           value={value === true ? "yes" : value === false ? "no" : ""}
           onChange={(event) =>
@@ -110,6 +116,7 @@ export function QuestionFields({
       ) : q.type === "long_text" ? (
         <textarea
           aria-label={q.label}
+          aria-invalid={!!error}
           className={inputClass}
           value={typeof value === "string" ? value : ""}
           onChange={(event) => onChange(event.target.value)}
@@ -160,6 +167,7 @@ export function QuestionFields({
       ) : (
         <input
           aria-label={q.label}
+          aria-invalid={!!error}
           className={inputClass}
           type={
             q.type === "number"
@@ -188,6 +196,7 @@ export function QuestionFields({
         />
       )}
       {fileError && <p role="alert">{fileError}</p>}
+      {error && <p id={`question-error-${q.id}`} role="alert" className="question-error">{error}</p>}
     </fieldset>
   );
 }

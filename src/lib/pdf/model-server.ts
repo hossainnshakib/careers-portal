@@ -9,7 +9,8 @@ export async function buildPdfModel(profile: NonNullable<Awaited<ReturnType<type
   return {
     reference: app.reference, fullName: app.fullName, email: app.email, phone: app.phone, location: app.location,
     title: app.jobTitleSnapshot, brands: app.brandNamesSnapshot ?? [], department: app.departmentNameSnapshot, primaryBrand: app.primaryBrandSnapshot,
-    status: app.status, appliedAt: app.submittedAt.toISOString(), generatedAt: new Date().toISOString(), timezone, locale,
+    status: app.status, appliedAt: app.submittedAt.toISOString(),
+    consentAt: app.consentAt?.toISOString(), generatedAt: new Date().toISOString(), timezone, locale,
     accent: /^#[0-9a-f]{6}$/i.test(profile.brand?.accent ?? "") ? profile.brand!.accent! : "#30303B",
     logo: await pdfLogo(profile.brand?.logo ?? null),
     answers: profile.answers.map((answer) => ({ label: answer.labelSnapshot, type: answer.typeSnapshot, section: answer.sectionSnapshot, value: answer.value,

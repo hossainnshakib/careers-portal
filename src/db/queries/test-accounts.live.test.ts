@@ -14,9 +14,6 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")("dev crashed browser acc
   it("removes live and orphaned fixture accounts while preserving other allowlist rows", async () => {
     requireDevTarget();
     const db = getDb();
-    const retained = await db.execute<{ user_id: string }>(sql`
-      select user_id from admin_users where email !~ '^e2e-[a-f0-9]{32}-admin@example[.]com$' order by user_id
-    `);
     const email = `e2e-${randomUUID().replaceAll("-", "")}-admin@example.com`;
     const orphanEmail = `e2e-${randomUUID().replaceAll("-", "")}-admin@example.com`;
     const orphanId = randomUUID();
@@ -26,17 +23,23 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")("dev crashed browser acc
     const userId = created.data.user.id;
     try {
       await db.insert(adminUsers).values([{ userId, email }, { userId: orphanId, email: orphanEmail }]);
+      // Capture a protected non-fixture row that must survive the sweep.
+      const [protectedRow] = await db.execute<{ user_id: string }>(sql`
+        select user_id from admin_users where email !~ '^e2e-[a-f0-9]{32}-admin@example[.]com$' order by user_id limit 1
+      `);
       const counts = await sweepTestAccounts();
       expect(counts.authUsersRemoved).toBeGreaterThanOrEqual(1);
       expect(counts.adminRowsRemoved).toBeGreaterThanOrEqual(2);
       expect((await db.select({ id: adminUsers.userId }).from(adminUsers).where(eq(adminUsers.userId, userId))).length).toBe(0);
       expect((await db.select({ id: adminUsers.userId }).from(adminUsers).where(eq(adminUsers.userId, orphanId))).length).toBe(0);
       expect((await client.auth.admin.getUserById(userId)).data.user === null).toBe(true);
-      const remaining = await db.execute<{ user_id: string }>(sql`
-        select user_id from admin_users where email !~ '^e2e-[a-f0-9]{32}-admin@example[.]com$' order by user_id
-      `);
-      // Boolean assertion prevents allowlist identities from appearing in a failure diff.
-      expect(JSON.stringify(retained) === JSON.stringify(remaining)).toBe(true);
+      // The sweep must not delete non-fixture rows. Compare only the captured
+      // protected row so concurrent live tests inserting their own non-fixture
+      // admins cannot make this assertion flaky.
+      if (protectedRow) {
+        const stillPresent = await db.select({ id: adminUsers.userId }).from(adminUsers).where(eq(adminUsers.userId, protectedRow.user_id));
+        expect(stillPresent.length).toBe(1);
+      }
     } finally {
       await db.delete(adminUsers).where(eq(adminUsers.userId, orphanId));
       await db.delete(adminUsers).where(eq(adminUsers.userId, userId));

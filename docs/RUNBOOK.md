@@ -56,7 +56,7 @@ These map to the same migration/base code with an independent owner target gate.
 
 Buckets: applications PRIVATE, <=10 MB and the supported file MIME union plus server-written JSON reservations; brand-assets PUBLIC, <=1 MB SVG/PNG/WebP. The bootstrap refuses visibility mismatches rather than making applicant files public. Per-slot CV/type/signature limits remain enforced by application code.
 
-Base seeding creates only missing departments/brands, preserving owner edits. Shell seeding creates the **exact 19 final titles/slugs/departments as blank drafts**, preserves every existing slug, and creates no brands/questions/applicants/files. Full-time/onsite and CV-required are initial schema-required editable placeholders, not approved role decisions. In admin, set brands (one primary), real employment/work mode, content, questions, CV setting and deadlines before publishing.
+Base seeding creates only missing departments/brands (plus the 13 default job options), preserving owner edits. Shell seeding creates the **exact 19 final titles/slugs/departments as blank drafts**, preserves every existing slug, and creates no brands/questions/applicants/files. Shells carry no option links, negotiable salary and CV-required defaults; select at least one work arrangement and one engagement option (experience optional) in admin before publishing. In admin, set brands (one primary), options, content, questions, CV setting and deadlines before publishing.
 
 Order: **base -> draft shells -> fill content in admin -> publish**. Once published, slugs cannot change. Do not print poster links until the real roles are reviewed/published.
 
@@ -86,7 +86,7 @@ Wait for DNS propagation and Vercel's domain/certificate verification. Confirm H
 
 ## 8. Post-deploy smoke check (owner)
 - Home shows actual open counts, brand links/URL filters, keyboard focus and reduced-motion behavior. Check desktop and a real phone.
-- Draft is 404; closed/expired role has no form. Open role's Apply scrolls to its form; old apply URL returns 308 to the anchor.
+- Draft is 404; closed/expired role has no form. Open role's Apply scrolls to its form; old apply URL returns 200 with `noindex` and the same inline form (no redirect).
 - Complete a clearly synthetic application with Bengali answers and a small PDF CV using real Turnstile; retain its reference. Confirm review/status/note/CV/PDF downloads with MFA, then delete the synthetic record and files.
 - Anonymous and authenticated non-admin accounts cannot access admin pages/actions/downloads. Password-only admin goes to MFA. No applicant records are exposed by the success reference.
 - Verify sign-ups OFF, private applications bucket, RLS on every application table with no public policies, short-lived private links and correct MIME/size limits.

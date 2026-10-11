@@ -91,6 +91,8 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await preview.getByLabel("date question", { exact: true }).fill(today);
   await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
   await expect(preview.getByRole("status")).toHaveText("Preview answers are valid.");
+  await page.getByRole("group", { name: /^Work arrangement/ }).getByRole("checkbox", { name: "On-site", exact: true }).check();
+  await page.getByRole("group", { name: /^Engagement type/ }).getByRole("checkbox", { name: "Full-time", exact: true }).check();
   await page.getByRole("button", { name: "Publish job", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/jobs\/[a-f0-9-]+\/edit$/, { timeout: 30000 });
   for (const [index, type] of types.entries())

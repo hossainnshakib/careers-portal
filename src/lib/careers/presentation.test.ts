@@ -3,7 +3,10 @@ import type { JobCard, PublicBrand } from "./filters";
 import { accentColor, cardBrands, groupRoles, publicWebsite } from "./presentation";
 
 const brand = (id: string): PublicBrand => ({ id, slug: id, name: id, sector: "other", description: "", logoUrl: null, accentColor: null });
-const job = (id: string, department: string): JobCard => ({ id, title: id, slug: id, summary: "", employmentType: "full_time", workMode: "remote", experienceLevel: null, locationText: null, department: { name: department, slug: department }, brands: [brand("a"), brand("b"), brand("c")], primaryBrandId: "b" });
+const job = (id: string, department: string): JobCard => ({ id, title: id, slug: id, summary: "", locationText: null, engagementNote: null,
+  salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null,
+  options: [{ group: "engagement", slug: "full_time", label: "Full-time" }],
+  department: { name: department, slug: department }, brands: [brand("a"), brand("b"), brand("c")], primaryBrandId: "b" });
 
 it("groups in department order, preserves role order and hides empty departments without renumbering", () => {
   const groups = groupRoles([job("second", "creative"), job("first", "tech"), job("third", "tech")], [

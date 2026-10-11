@@ -29,6 +29,20 @@
       "when": 1791492886553,
       "tag": "0003_auth_security_session_revocation",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791555013018,
+      "tag": "0004_job_options_and_v2_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791555035797,
+      "tag": "0005_drop_legacy_job_enums",
+      "breakpoints": true
     }
   ]
 }

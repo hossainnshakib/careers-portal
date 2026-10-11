@@ -5,8 +5,13 @@ import { test as base, expect } from "@playwright/test";
 type Account = { email: string; password: string; prefix: string; cookieJSON: string; otp: () => Promise<string>;
   refreshCookies: (cookies: string) => Promise<string>; expireSession: (cookies: string) => Promise<void>;
   changePassword: () => Promise<string>; removeFactor: () => Promise<void> };
+type StressJobs = {
+  long: { id: string; slug: string; title: string; salaryText: string };
+  bengali: { id: string; slug: string; title: string; summary: string; salaryText: string; questionLabel: string };
+};
 type PublicFixture = Account & {
   job: { slug: string; id: string; questionId: string; textId: string; brandSlug: string; departmentSlug: string; title: string };
+  stress: StressJobs | null;
   trackSession: (id: string) => void;
   verify: (reference: string) => Promise<Record<string, number | boolean>>;
   review: { applicationId: string; previousId: string; attachmentId: string; reference: string; jobId: string; title: string; email: string; brandId: string; departmentId: string };
@@ -43,7 +48,7 @@ function waitFor(child: ChildProcess, type: string) {
   });
 }
 
-async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" | "mfa" = false) {
+async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" | "mfa" | "stress" = false) {
   const child = fork(
     fileURLToPath(new URL("./admin-worker.ts", import.meta.url)),
     typeof outsider === "string" ? [outsider] : outsider ? ["outsider"] : [],
@@ -66,6 +71,7 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
       removeFactor: async () => { const result = waitFor(child, "factor-removed"); child.send({ type: "remove-factor" }); await result; },
       job: JSON.parse(account.publicJobJSON ?? "null"),
       review: JSON.parse(account.reviewJSON ?? "null"),
+      stress: JSON.parse(account.stressJobsJSON ?? "null"),
       trackSession: (id) => child.send({ type: "session", id }),
       verify: async (reference) => {
         const verified = waitFor(child, "verified"); child.send({ type: "verify", reference });
@@ -84,7 +90,7 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
     }
   }
 }
-export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture; mfaAccount: Account }>({
+export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture; stressFixture: PublicFixture; mfaAccount: Account }>({
   adminAccount: [
     async ({}, use) => {
       await withAccount(use);
@@ -99,6 +105,7 @@ export const test = base.extend<{ adminAccount: Account; outsiderAccount: Accoun
   ],
   publicFixture: [async ({}, use) => { await withAccount(use, "public"); }, { timeout: 120000 }],
   reviewFixture: [async ({}, use) => { await withAccount(use, "review"); }, { timeout: 120000 }],
+  stressFixture: [async ({}, use) => { await withAccount(use, "stress"); }, { timeout: 120000 }],
   mfaAccount: [async ({}, use) => { await withAccount(use, "mfa"); }, { timeout: 120000 }],
 });
 export { expect };

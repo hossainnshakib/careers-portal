@@ -45,7 +45,7 @@ export function CandidateProfile({ model }: { model: PdfModel }) {
         <Text style={style.title}>{pdfText(model.title)}</Text>
         <Text>{pdfText(model.brands.join(" · "))}</Text>
         <Text>{pdfText(model.department)}</Text>
-        <Text style={style.muted}>{model.reference} · {model.status.replaceAll("_", " ")} · Applied {pdfDate(model.appliedAt, model)}</Text>
+        <Text style={style.muted}>{model.reference} · {model.status.replaceAll("_", " ")} · Applied {pdfDate(model.appliedAt, model)}{model.consentAt ? ` · Consent ${pdfDate(model.consentAt, model)}` : ""}</Text>
       </View>
       <Text style={style.section} minPresenceAhead={45}>Personal & contact</Text>
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>{[["Email", model.email], ["Phone", model.phone], ["Location", model.location]].map(([label, value]) => <View key={label} style={[style.answer, { width: "48%", marginRight: "2%" }]}><Text style={style.label}>{label}</Text><Text>{pdfText(value)}</Text></View>)}</View>

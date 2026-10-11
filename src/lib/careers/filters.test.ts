@@ -3,9 +3,29 @@ import { emptyFilters, matchesJob, optionCount, type JobCard, type PublicBrand }
 
 const brand = (slug: string, sector: string): PublicBrand => ({ id: slug, slug, sector, name: slug, logoUrl: null, description: "", accentColor: null });
 const cards: JobCard[] = [
-  { id: "1", title: "Web Developer", slug: "web", summary: "", employmentType: "full_time", workMode: "remote", experienceLevel: "mid", locationText: null, department: { name: "Technical", slug: "tech" }, brands: [brand("a", "technology"), brand("b", "media")], primaryBrandId: "a" },
-  { id: "2", title: "Video Editor", slug: "video", summary: "", employmentType: "part_time", workMode: "onsite", experienceLevel: null, locationText: null, department: { name: "Creative", slug: "creative" }, brands: [brand("b", "media")], primaryBrandId: "b" },
-  { id: "3", title: "Backend Developer", slug: "backend", summary: "", employmentType: "contract", workMode: "remote", experienceLevel: "senior", locationText: null, department: { name: "Technical", slug: "tech" }, brands: [brand("c", "technology")], primaryBrandId: "c" },
+  { id: "1", title: "Web Developer", slug: "web", summary: "", locationText: null, engagementNote: null,
+    salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null,
+    options: [
+      { group: "arrangement", slug: "remote", label: "Work from home" },
+      { group: "engagement", slug: "full_time", label: "Full-time" },
+      { group: "experience", slug: "mid", label: "Mid-level" },
+    ],
+    department: { name: "Technical", slug: "tech" }, brands: [brand("a", "technology"), brand("b", "media")], primaryBrandId: "a" },
+  { id: "2", title: "Video Editor", slug: "video", summary: "", locationText: null, engagementNote: null,
+    salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null,
+    options: [
+      { group: "arrangement", slug: "onsite", label: "On-site" },
+      { group: "engagement", slug: "part_time", label: "Part-time" },
+    ],
+    department: { name: "Creative", slug: "creative" }, brands: [brand("b", "media")], primaryBrandId: "b" },
+  { id: "3", title: "Backend Developer", slug: "backend", summary: "", locationText: null, engagementNote: null,
+    salaryMode: "negotiable", salaryText: null, vacancies: null, experienceText: null,
+    options: [
+      { group: "arrangement", slug: "remote", label: "Work from home" },
+      { group: "engagement", slug: "contract", label: "Duration-based" },
+      { group: "experience", slug: "senior", label: "Senior" },
+    ],
+    department: { name: "Technical", slug: "tech" }, brands: [brand("c", "technology")], primaryBrandId: "c" },
 ];
 it("uses OR within a filter and AND across filters, including linked brands/sectors", () => {
   const filters = { ...emptyFilters, brand: ["a", "c"], mode: ["remote"], sector: ["media"] };

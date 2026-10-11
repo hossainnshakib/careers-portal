@@ -22,12 +22,23 @@ export async function loadReviewDashboard() {
   const db = getDb();
   const counts = await db.select({ status: applications.status, count: count() }).from(applications).groupBy(applications.status);
   const latest = await db.select(summary).from(applications).orderBy(desc(applications.submittedAt), desc(applications.id)).limit(10);
-  const brandAccents = await db.select({ name: brands.name, accentColor: brands.accentColor }).from(brands);
+  const brandAccents = await db.select({ name: brands.name, accentColor: brands.accentColor, logoUrl: brands.logoUrl }).from(brands);
   return { counts, latest, brandAccents };
+}
+/** Read-only: open roles per department, for the dashboard's bar panel. */
+export async function openRolesByDepartment() {
+  const rows = await getDb()
+    .select({ departmentId: departments.id, name: departments.name, count: count() })
+    .from(jobs)
+    .innerJoin(departments, eq(jobs.departmentId, departments.id))
+    .where(eq(jobs.status, "open"))
+    .groupBy(departments.id, departments.name, departments.sortOrder)
+    .orderBy(desc(count()), asc(departments.sortOrder));
+  return rows;
 }
 export async function reviewFilterOptions() {
   const db = getDb();
-  const brandRows = await db.select({ id: brands.id, name: brands.name, accentColor: brands.accentColor }).from(brands).orderBy(asc(brands.sortOrder));
+  const brandRows = await db.select({ id: brands.id, name: brands.name, accentColor: brands.accentColor, logoUrl: brands.logoUrl }).from(brands).orderBy(asc(brands.sortOrder));
   const departmentRows = await db.select({ id: departments.id, name: departments.name }).from(departments).orderBy(asc(departments.sortOrder));
   const jobRows = await db.select({ id: jobs.id, title: jobs.title }).from(jobs).orderBy(asc(jobs.title));
   return { brands: brandRows, departments: departmentRows, jobs: jobRows };
@@ -67,7 +78,8 @@ export async function loadReviewProfile(id: string) {
       .where(eq(applicationStatusEvents.applicationId, id)).orderBy(desc(applicationStatusEvents.createdAt), desc(applicationStatusEvents.id));
   const previous = await db.select(summary).from(applications).where(and(ne(applications.id, id), sql`lower(${applications.email}) = lower(${application.email})`))
       .orderBy(desc(applications.submittedAt)).limit(50);
-  return { application, answers, files, notes, events: events.map(({ event, adminEmail }) => ({ ...event, adminEmail })), previous };
+  const brandAccents = await db.select({ name: brands.name, accentColor: brands.accentColor, logoUrl: brands.logoUrl }).from(brands);
+  return { application, answers, files, notes, events: events.map(({ event, adminEmail }) => ({ ...event, adminEmail })), previous, brandAccents };
 }
 async function lockedApplication(tx: ApplicationTransaction, id: string) {
   const [row] = await tx.select().from(applications).where(eq(applications.id, id)).for("update");

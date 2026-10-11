@@ -1,5 +1,8 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
+import dotenv from "dotenv";
+
+dotenv.config({ path: fileURLToPath(new URL("./.env.local", import.meta.url)), quiet: true });
 
 export default defineConfig({
   oxc: { jsx: { runtime: "automatic" } },

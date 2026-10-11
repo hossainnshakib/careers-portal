@@ -1,12 +1,23 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, brands, departments, jobBrands, jobQuestions, jobs } from "@/db/schema";
+import {
+  applications,
+  brands,
+  departments,
+  jobBrands,
+  jobOptionLinks,
+  jobOptions,
+  jobQuestions,
+  jobs,
+} from "@/db/schema";
 import { checkJobCommand, checkJobEdit, removedQuestionIds } from "@/lib/questions/job-policy";
+import { missingPublishGroups } from "@/lib/validation/jobs";
 import { uniqueSlug } from "@/lib/slug";
 import { jobFilters, type JobInput } from "@/lib/validation/jobs";
+import { jobOptionsFor, type OptionRow } from "./job-options";
 
 export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
   const linked = filters.brand
@@ -22,6 +33,9 @@ export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
       slug: jobs.slug,
       status: jobs.status,
       department: departments.name,
+      salaryMode: jobs.salaryMode,
+      salaryText: jobs.salaryText,
+      updatedAt: jobs.updatedAt,
       publishedAt: jobs.publishedAt,
     })
     .from(jobs)
@@ -37,6 +51,16 @@ export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
     .orderBy(asc(jobs.sortOrder), asc(jobs.title));
 }
 
+/** Read-only: application totals per job, for the jobs table "Apps" column. */
+export async function jobApplicationCounts(jobIds: string[]) {
+  if (!jobIds.length) return [];
+  return getDb()
+    .select({ jobId: applications.jobId, count: count() })
+    .from(applications)
+    .where(inArray(applications.jobId, jobIds))
+    .groupBy(applications.jobId);
+}
+
 export async function loadJob(id: string) {
   const db = getDb();
   const [job] = await db.select().from(jobs).where(eq(jobs.id, id)).limit(1);
@@ -47,13 +71,15 @@ export async function loadJob(id: string) {
     .from(jobQuestions)
     .where(eq(jobQuestions.jobId, id))
     .orderBy(asc(jobQuestions.sortOrder));
-  return { job, links, questions };
+  const options = [...((await jobOptionsFor([id])).get(id) ?? [])] as OptionRow[];
+  return { job, links, questions, options };
 }
 
 /** One bounded lookup for list marks; never duplicate the job-list rows. */
+/** Read-only: brand accents and logos for the jobs table marks. */
 export async function listJobBrandMarks(ids: string[]) {
   if (!ids.length) return [];
-  return getDb().select({ id: brands.id, jobId: jobBrands.jobId, name: brands.name, accentColor: brands.accentColor })
+  return getDb().select({ id: brands.id, jobId: jobBrands.jobId, name: brands.name, accentColor: brands.accentColor, logoUrl: brands.logoUrl })
     .from(jobBrands).innerJoin(brands, eq(brands.id, jobBrands.brandId))
     .where(inArray(jobBrands.jobId, ids)).orderBy(desc(jobBrands.isPrimary), asc(brands.sortOrder));
 }
@@ -112,11 +138,41 @@ export async function saveJob(input: JobInput) {
           .where(eq(applications.jobId, id))
           .limit(1)
       : [];
-    const { brandIds, primaryBrandId, questions, intent, deadlineAt, ...fields } = input;
+    const {
+      brandIds,
+      primaryBrandId,
+      questions,
+      intent,
+      deadlineAt,
+      optionIds,
+      engagementNote,
+      salaryMode,
+      salaryText,
+      vacancies,
+      experienceText,
+      ...fields
+    } = input;
+    const optionRows = optionIds.length
+      ? await tx.select().from(jobOptions).where(inArray(jobOptions.id, optionIds))
+      : [];
+    if (optionRows.length !== optionIds.length || new Set(optionIds).size !== optionIds.length)
+      throw new Error("Invalid job options");
+    if (input.intent === "publish") {
+      const missing = missingPublishGroups(optionRows.map((row) => row.group));
+      if (missing.length)
+        throw new Error(
+          `Publishing requires at least one ${missing.join(" and ")} option selected.`,
+        );
+    }
     const now = new Date();
     const values = {
       ...fields,
       id,
+      engagementNote: engagementNote || null,
+      salaryMode,
+      salaryText: salaryMode === "range" ? salaryText : null,
+      vacancies,
+      experienceText: experienceText || null,
       deadlineAt: deadlineAt ? new Date(deadlineAt) : null,
       status: intent === "publish" ? ("open" as const) : (existing?.status ?? ("draft" as const)),
       publishedAt: existing?.publishedAt ?? (intent === "publish" ? now : null),
@@ -131,6 +187,11 @@ export async function saveJob(input: JobInput) {
       .values(
         brandIds.map((brandId) => ({ jobId: id, brandId, isPrimary: brandId === primaryBrandId })),
       );
+    await tx.delete(jobOptionLinks).where(eq(jobOptionLinks.jobId, id));
+    if (optionRows.length)
+      await tx
+        .insert(jobOptionLinks)
+        .values(optionRows.map((row) => ({ jobId: id, optionId: row.id })));
     if (removed.length) {
       if (application)
         await tx
@@ -187,6 +248,14 @@ export async function mutateJob(id: string, command: "close" | "reopen" | "dupli
       if (!links.length || links.filter((link) => link.isPrimary).length !== 1)
         throw new Error("Invalid source brands");
       await tx.insert(jobBrands).values(links.map((link) => ({ ...link, jobId: newId })));
+      const optionLinks = await tx
+        .select()
+        .from(jobOptionLinks)
+        .where(eq(jobOptionLinks.jobId, id));
+      if (optionLinks.length)
+        await tx
+          .insert(jobOptionLinks)
+          .values(optionLinks.map((link) => ({ ...link, jobId: newId })));
       const questions = await tx
         .select()
         .from(jobQuestions)
