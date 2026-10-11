@@ -1,15 +1,28 @@
-import type { Application } from "@/db/schema";
-import { applicationStatusLabel } from "@/lib/admin/display";
+import type { Application, Job } from "@/db/schema";
+import { applicationStatusLabel, jobStatusLabels } from "@/lib/admin/display";
 
-const colors: Record<Application["status"], string> = {
-  new: "bg-blue-100 text-blue-900",
-  under_review: "bg-amber-100 text-amber-900",
-  shortlisted: "bg-violet-100 text-violet-900",
-  rejected: "bg-red-100 text-red-900",
-  hired: "bg-green-100 text-green-900",
+const applicationTone: Record<Application["status"], string> = {
+  new: "new",
+  under_review: "review",
+  shortlisted: "shortlisted",
+  rejected: "rejected",
+  hired: "hired",
 };
+
+const jobTone: Record<Job["status"], string> = {
+  open: "open",
+  draft: "review",
+  closed: "closed",
+};
+
+export function Pill({ tone, children }: { tone: string; children: React.ReactNode }) {
+  return <span className={`admin-pill admin-pill-${tone}`}>{children}</span>;
+}
+
 export function StatusBadge({ status }: { status: Application["status"] }) {
-  return <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${colors[status]}`}>
-    {status === "new" ? "● New" : applicationStatusLabel(status)}
-  </span>;
+  return <Pill tone={applicationTone[status]}>{applicationStatusLabel(status)}</Pill>;
+}
+
+export function JobStatusBadge({ status }: { status: Job["status"] }) {
+  return <Pill tone={jobTone[status]}>{jobStatusLabels[status]}</Pill>;
 }

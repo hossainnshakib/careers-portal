@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   applications,
@@ -33,6 +33,9 @@ export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
       slug: jobs.slug,
       status: jobs.status,
       department: departments.name,
+      salaryMode: jobs.salaryMode,
+      salaryText: jobs.salaryText,
+      updatedAt: jobs.updatedAt,
       publishedAt: jobs.publishedAt,
     })
     .from(jobs)
@@ -46,6 +49,16 @@ export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
       ),
     )
     .orderBy(asc(jobs.sortOrder), asc(jobs.title));
+}
+
+/** Read-only: application totals per job, for the jobs table "Apps" column. */
+export async function jobApplicationCounts(jobIds: string[]) {
+  if (!jobIds.length) return [];
+  return getDb()
+    .select({ jobId: applications.jobId, count: count() })
+    .from(applications)
+    .where(inArray(applications.jobId, jobIds))
+    .groupBy(applications.jobId);
 }
 
 export async function loadJob(id: string) {
@@ -63,9 +76,10 @@ export async function loadJob(id: string) {
 }
 
 /** One bounded lookup for list marks; never duplicate the job-list rows. */
+/** Read-only: brand accents and logos for the jobs table marks. */
 export async function listJobBrandMarks(ids: string[]) {
   if (!ids.length) return [];
-  return getDb().select({ id: brands.id, jobId: jobBrands.jobId, name: brands.name, accentColor: brands.accentColor })
+  return getDb().select({ id: brands.id, jobId: jobBrands.jobId, name: brands.name, accentColor: brands.accentColor, logoUrl: brands.logoUrl })
     .from(jobBrands).innerJoin(brands, eq(brands.id, jobBrands.brandId))
     .where(inArray(jobBrands.jobId, ids)).orderBy(desc(jobBrands.isPrimary), asc(brands.sortOrder));
 }

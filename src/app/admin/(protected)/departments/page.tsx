@@ -1,15 +1,19 @@
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
-import { listDepartments } from "@/db/queries/departments";
+import { departmentJobCounts, listDepartments } from "@/db/queries/departments";
 import { DepartmentManager } from "@/components/admin/department-manager";
+import { AdminToolbar } from "@/components/admin/admin-toolbar";
 
 export default async function DepartmentsPage() {
   await requireAdmin().catch(redirectAdminDenial);
   const rows = await listDepartments();
+  const jobCounts = await departmentJobCounts();
+  const counts: Record<string, number> = {};
+  for (const row of jobCounts) if (row.departmentId) counts[row.departmentId] = row.count;
   return (
     <section>
-      <h1 className="mb-6 text-2xl font-bold">Departments</h1>
-      <DepartmentManager rows={rows} />
+      <AdminToolbar eyebrow="Settings" title="Departments" />
+      <DepartmentManager rows={rows} counts={counts} />
     </section>
   );
 }

@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { jobStatusEnum, sectorEnum } from "@/db/schema";
-import { formatAdminDate, applicationStatusLabel, sectorLabels, jobStatusLabels } from "./display";
+import { formatAdminDate, formatAdminDay, applicationStatusLabel, sectorLabels, jobStatusLabels } from "./display";
 
 it.each([
   ["2026-10-09T01:42:53.000Z", "9 Oct 2026, 7:42 AM"],
@@ -15,6 +15,12 @@ it("never mutates stored Date values and handles invalid input safely", () => {
   const date = new Date("2026-10-09T01:42:53.000Z"); const before = date.toISOString();
   expect(formatAdminDate(date)).toBe("9 Oct 2026, 7:42 AM"); expect(date.toISOString()).toBe(before);
   expect(formatAdminDate("invalid")).toBe("Date unavailable");
+});
+it("formats table dates in Dhaka without dropping midnight/year rollover", () => {
+  expect(formatAdminDay("2026-10-09T18:00:00Z")).toBe("10 Oct 2026");
+  expect(formatAdminDay(new Date("2025-12-31T20:15:00Z"))).toBe("1 Jan 2026");
+  expect(formatAdminDay("2026-09-01T10:05:00Z")).toBe("1 Sep 2026");
+  expect(formatAdminDay("invalid")).toBe("Date unavailable");
 });
 it.each([
   ["new", "New"], ["under_review", "Under review"], ["shortlisted", "Shortlisted"], ["rejected", "Rejected"], ["hired", "Hired"],

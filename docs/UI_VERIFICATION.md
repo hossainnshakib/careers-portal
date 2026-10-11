@@ -1,5 +1,80 @@
 # Mock-up UI rebuild verification
 
+## Admin presentation replacement — 2026-10-11
+
+Branch remains `public-ui-finish`; main is untouched. Scope and deliberate
+differences: `ADMIN_UI_RESTYLE.md`. Authorization, migrations, public markup and
+global/public CSS are unchanged. The existing unrelated modification to
+`src/db/queries/test-accounts.ts` is excluded from this change.
+
+### Screen coverage
+
+- Dashboard, Applications, Applicant, Jobs, new/edit Job editor, Brands,
+  Departments and Options use the supplied glass/ink/blue admin system.
+- Login, MFA enrollment/verification, mobile navigation, application deletion,
+  empty results and loading/error markup use the same scoped system.
+- Full-page screenshots were captured at 1440×900 and 390×844 for every route,
+  both MFA states, deletion and empty job/application results; mobile navigation
+  was captured at 390. References/comparisons are local-only at
+  `C:\Users\Hossa\AppData\Local\Temp\opencode\admin-restyle\`.
+- Desktop references: Main, Applications, Applicant, Jobs, JobEditor, Brands,
+  Settings, Login, Dialogs and States. Dedicated mobile references:
+  MobileDashboard, MobileApplications, MobileApplicant and MobileMenu.
+  Actual data/retained configuration fields change content height and density;
+  these are visual comparisons, not identical-data pixel-diff assertions.
+- Comparison fixes include a glass Applications wrapper, reduced mobile toolbar,
+  mobile review rail before profile sections, question-card cascade, selected
+  checkbox chips, mobile form width, rail spacing and native dialog centering.
+
+### Checks
+
+- `pnpm typecheck` and `pnpm lint`: passed.
+- Default Vitest: **572 passed / 85 opt-in skipped** (81 files).
+- Live DEV Supabase Vitest: **657 passed / 0 skipped** (81 files), including
+  RLS, authentication gates, seed guards and persistence tests.
+- Production build and PDF trace guard: passed (both Bengali fonts, eight
+  logos and required renderer assets).
+- First complete production Playwright run: **43 passed / 1 skipped** (8.0m),
+  including a temporary screenshot spec and the new mobile focus/timezone case.
+  Lighthouse was not enabled; all original flow assertions remain unchanged.
+- Second complete production Playwright run: **43 passed / 1 skipped** (7.3m).
+  Final mobile search/card refinements and placeholder contrast were built after
+  this run and are checked by the final focused admin suite/capture rerun.
+- Focused production admin suite: **13 passed / 0 skipped** (4.3m), including
+  fresh route/state captures, auth/MFA, catalog CRUD, job lifecycle, all question
+  types, application review/download/deletion and session invalidation.
+- Final mobile Jobs row-order correction: rebuilt successfully, then **3/3**
+  production cases passed (1.3m): all-route captures, the mobile focus/TOTP/
+  timezone/dropzone/row-order assertions, and the unchanged Jobs list case.
+  Final 1440/390 captures were inspected, including the corrected first mobile
+  job card. The temporary capture spec was removed; its images remain outside
+  git. The permanent suite now has 43 cases (42 runnable + opt-in Lighthouse).
+- A subsequent live Vitest run overlapped the browser suite and reported one
+  failure in `upgrade.live.test.ts`: its global question-row snapshots differed
+  while Playwright's question-builder fixture was adding/removing rows. The
+  preceding isolated live run passed. Live/browser suites must be run serially
+  for this global snapshot assertion; the assertion has not been weakened.
+  The final isolated rerun passed **657/657** (63.4s).
+
+### Limits and owner review
+
+- No production credentials/resources, hosted Vercel preview or physical
+  phones/GPU combinations were used. Screenshot checks use Chromium only.
+- Loading/error states were restyled and code-reviewed, not forced into live
+  screenshot captures. Actual empty, deletion and MFA states were captured.
+- Small-text status tokens measure 5.50–5.92:1 on their composited base fills;
+  muted text measures 5.68:1 on glass. Tests guard the 4.5:1 floor, and fallback
+  brand initials use the tested readable black/white helper. These token checks
+  are not a complete manual WCAG audit of every ambient-orb/interaction state.
+- Review the retained full-form differences in `ADMIN_UI_RESTYLE.md`. Publish
+  and Add question are immediate actions, not new confirmation dialogs.
+- No schema, dependency or public-design change. No open security/data/scope
+  decision is required.
+- Removed unused `src/components/brand-dot.tsx` and
+  `src/components/brand-logo.tsx`. The only intentionally absent board detail is
+  the list's sample "Applied before" badge; real previous-application history
+  remains on the profile. No existing admin flow is intentionally unfinished.
+
 Branch: `public-ui-from-mockup`. Local production-mode app connected only to the independently pinned DEV Supabase project. Main, production resources and applied migrations were not changed.
 
 ## Finishing pass (branch `public-ui-finish`) — final result

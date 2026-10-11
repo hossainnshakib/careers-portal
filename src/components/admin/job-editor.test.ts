@@ -14,6 +14,20 @@ const initial: JobEditorProps["initial"] = {
 };
 
 it.each([
+  [false, "draft", false, true],
+  [false, "draft", true, false],
+  [true, "closed", true, false],
+] as const)("keeps job commands for published=%s, status=%s, applications=%s", (published, status, hasApplications, canDelete) => {
+  const html = renderToStaticMarkup(createElement(JobEditor, {
+    initial, brands: [], departments: [], sources: [], options: [], published, status, hasApplications,
+  }));
+  expect(html).toContain("Save changes");
+  expect(html).toContain("Publish job");
+  expect(html.includes("Delete draft")).toBe(canDelete);
+  expect(html.includes("Reopen job")).toBe(status === "closed");
+});
+
+it.each([
   ["negotiable", "", 0],
   ["range", "৳ 20,000 – 30,000", 1],
   ["negotiable", "Stale ignored text", 0],

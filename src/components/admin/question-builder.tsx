@@ -1,29 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { questionSectionEnum, questionTypeEnum } from "@/db/schema";
 import type { QuestionDefinition } from "@/lib/questions/definition";
+import { questionSectionEnum, questionTypeEnum } from "@/db/schema";
 import { copyJobQuestionsAction } from "@/app/admin/(protected)/jobs/actions";
 import { copyStandardQuestions } from "@/lib/questions/defaults";
 
-const inputClass = "mt-1 block w-full rounded border border-input bg-card p-2";
-const buttonClass = "rounded border border-border px-3 py-2 disabled:opacity-50";
 export function QuestionBuilder({
   questions,
   onChange,
-  hasApplications,
   sources,
+  hasApplications,
 }: {
   questions: QuestionDefinition[];
   onChange: (questions: QuestionDefinition[]) => void;
-  hasApplications: boolean;
   sources: { id: string; title: string }[];
+  hasApplications: boolean;
 }) {
   const [source, setSource] = useState("");
-  const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
-  function replace(index: number, q: QuestionDefinition) {
-    onChange(questions.map((item, i) => (i === index ? q : item)));
+  const [message, setMessage] = useState("");
+  function replace(index: number, next: QuestionDefinition) {
+    onChange(questions.map((q, i) => (i === index ? next : q)));
   }
   function move(index: number, direction: number) {
     const next = [...questions];
@@ -31,24 +29,15 @@ export function QuestionBuilder({
     onChange(next.map((q, sortOrder) => ({ ...q, sortOrder })));
   }
   return (
-    <section
-      aria-label="Question builder"
-      className="space-y-4 rounded border border-border bg-card p-5"
-    >
-      <h2 className="text-xl font-semibold">3. Questions</h2>
-      <p>Questions removed from a job with applications are archived when saved.</p>
-      <div className="flex flex-wrap items-end gap-3">
+    <section aria-label="Question builder" className="admin-card">
+      <h2 className="admin-kicker">3 · Questions</h2>
+      <p className="admin-note">
+        Questions removed from a job with applications are archived when saved.
+      </p>
+      <div className="admin-question-tools">
         <button
           type="button"
-          className={buttonClass}
-          disabled={questions.length > 93}
-          onClick={() => onChange([...questions, ...copyStandardQuestions(questions.length)])}
-        >
-          Add standard questions
-        </button>
-        <button
-          type="button"
-          className={buttonClass}
+          className="admin-btn"
           disabled={questions.length >= 100}
           onClick={() =>
             onChange([
@@ -69,14 +58,17 @@ export function QuestionBuilder({
         >
           Add question
         </button>
+        <button
+          type="button"
+          className="admin-btn admin-btn-secondary"
+          disabled={questions.length > 93}
+          onClick={() => onChange([...questions, ...copyStandardQuestions(questions.length)])}
+        >
+          Add standard questions
+        </button>
         <label>
           Copy questions from
-          <select
-            aria-label="Copy questions from"
-            className={inputClass}
-            value={source}
-            onChange={(event) => setSource(event.target.value)}
-          >
+          <select aria-label="Copy questions from" value={source} onChange={(event) => setSource(event.target.value)}>
             <option value="">Choose job</option>
             {sources.map((job) => (
               <option key={job.id} value={job.id}>
@@ -87,7 +79,7 @@ export function QuestionBuilder({
         </label>
         <button
           type="button"
-          className={buttonClass}
+          className="admin-btn admin-btn-secondary"
           disabled={!source || pending}
           onClick={async () => {
             setPending(true);
@@ -111,7 +103,9 @@ export function QuestionBuilder({
           Copy questions
         </button>
       </div>
-      <p role="status">{message}</p>
+      <p role="status" className="admin-error">
+        {message}
+      </p>
       {questions.map((q, index) => (
         <QuestionCard
           key={q.id}
@@ -166,7 +160,6 @@ function QuestionCard({
         {label}
         <input
           aria-label={`${prefix} ${label}`}
-          className={inputClass}
           type="number"
           value={typeof config[key] === "number" ? config[key] : ""}
           onChange={(event) =>
@@ -177,49 +170,75 @@ function QuestionCard({
     );
   }
   return (
-    <fieldset className="space-y-3 rounded border border-border p-4">
-      <legend className="font-semibold">{prefix}</legend>
-      <div className="grid gap-3 md:grid-cols-2">
-        <label>
-          Label
+    <fieldset className="admin-question">
+      <legend className="sr-only">{prefix}</legend>
+      <div className="admin-question-head">
+        <span className="admin-question-gutter" aria-hidden="true">
+          ⋮⋮
+        </span>
+        <input
+          aria-label={`${prefix} label`}
+          value={q.label}
+          maxLength={300}
+          onChange={(event) => onChange({ ...q, label: event.target.value })}
+        />
+        <select
+          aria-label={`${prefix} type`}
+          value={q.type}
+          onChange={(event) => {
+            const type = event.target.value as QuestionDefinition["type"];
+            const options = type.endsWith("choice")
+              ? [
+                  { value: "option_1", label: "Option 1" },
+                  { value: "option_2", label: "Option 2" },
+                ]
+              : null;
+            setOptionText(options?.map((o) => `${o.value} | ${o.label}`).join("\n") ?? "");
+            onChange({ ...q, type, config: null, options });
+          }}
+        >
+          {questionTypeEnum.enumValues.map((value) => (
+            <option key={value} value={value}>
+              {value.replaceAll("_", " ")}
+            </option>
+          ))}
+        </select>
+        <label className="admin-inline">
           <input
-            aria-label={`${prefix} label`}
-            className={inputClass}
-            value={q.label}
-            maxLength={300}
-            onChange={(event) => onChange({ ...q, label: event.target.value })}
+            aria-label={`${prefix} required`}
+            type="checkbox"
+            checked={q.required}
+            onChange={(event) => onChange({ ...q, required: event.target.checked })}
           />
+          Required
         </label>
-        <label>
-          Type
-          <select
-            aria-label={`${prefix} type`}
-            className={inputClass}
-            value={q.type}
-            onChange={(event) => {
-              const type = event.target.value as QuestionDefinition["type"];
-              const options = type.endsWith("choice")
-                ? [
-                    { value: "option_1", label: "Option 1" },
-                    { value: "option_2", label: "Option 2" },
-                  ]
-                : null;
-              setOptionText(options?.map((o) => `${o.value} | ${o.label}`).join("\n") ?? "");
-              onChange({ ...q, type, config: null, options });
-            }}
-          >
-            {questionTypeEnum.enumValues.map((value) => (
-              <option key={value} value={value}>
-                {value.replaceAll("_", " ")}
-              </option>
-            ))}
-          </select>
-        </label>
+        <button
+          type="button"
+          className="admin-btn admin-btn-secondary admin-icon-btn"
+          disabled={index === 0}
+          onClick={() => onMove(index, -1)}
+          aria-label={`${prefix} move up`}
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          className="admin-btn admin-btn-secondary admin-icon-btn"
+          disabled={index === count - 1}
+          onClick={() => onMove(index, 1)}
+          aria-label={`${prefix} move down`}
+        >
+          ↓
+        </button>
+        <button type="button" className="admin-btn admin-btn-secondary admin-btn-sm" onClick={onRemove}>
+          {hasApplications ? "Archive" : "Remove"} {prefix}
+        </button>
+      </div>
+      <div className="admin-grid admin-grid-2">
         <label>
           Help text
           <input
             aria-label={`${prefix} help text`}
-            className={inputClass}
             value={q.helpText ?? ""}
             maxLength={2000}
             onChange={(event) => onChange({ ...q, helpText: event.target.value || null })}
@@ -229,7 +248,6 @@ function QuestionCard({
           Section
           <select
             aria-label={`${prefix} section`}
-            className={inputClass}
             value={q.section}
             onChange={(event) =>
               onChange({ ...q, section: event.target.value as QuestionDefinition["section"] })
@@ -242,22 +260,12 @@ function QuestionCard({
             ))}
           </select>
         </label>
-        <label className="flex gap-2">
-          <input
-            aria-label={`${prefix} required`}
-            type="checkbox"
-            checked={q.required}
-            onChange={(event) => onChange({ ...q, required: event.target.checked })}
-          />
-          Required
-        </label>
         {q.type.endsWith("choice") && (
           <>
-            <label className="md:col-span-2">
+            <label style={{ gridColumn: "1 / -1" }}>
               Options: one value | label per line
               <textarea
                 aria-label={`${prefix} options`}
-                className={inputClass}
                 rows={4}
                 value={optionText}
                 onChange={(event) => {
@@ -279,7 +287,7 @@ function QuestionCard({
                 }}
               />
             </label>
-            <label className="flex gap-2">
+            <label className="admin-inline">
               <input
                 aria-label={`${prefix} allow Other`}
                 type="checkbox"
@@ -295,7 +303,6 @@ function QuestionCard({
             Display
             <select
               aria-label={`${prefix} display`}
-              className={inputClass}
               value={typeof config.display === "string" ? config.display : "radio"}
               onChange={(event) => configure("display", event.target.value)}
             >
@@ -320,7 +327,7 @@ function QuestionCard({
           <>
             {numeric("min", "Minimum")}
             {numeric("max", "Maximum")}
-            <label className="flex gap-2">
+            <label className="admin-inline">
               <input
                 aria-label={`${prefix} integer`}
                 type="checkbox"
@@ -338,27 +345,26 @@ function QuestionCard({
                 {key === "min" ? "Earliest" : "Latest"} date
                 <input
                   aria-label={`${prefix} ${key} date`}
-                  className={inputClass}
                   value={typeof config[key] === "string" ? config[key] : ""}
                   placeholder="YYYY-MM-DD or today"
                   onChange={(event) => configure(key, event.target.value || undefined)}
                 />
               </label>
             ))}
-            <p className="text-sm">Bounds are inclusive; today uses the UTC calendar date.</p>
+            <p className="admin-note">Bounds are inclusive; today uses the UTC calendar date.</p>
           </>
         )}
         {q.type === "file_upload" && (
           <>
             <fieldset>
-              <legend>Accepted extensions</legend>
-              <div className="flex flex-wrap gap-2">
+              <legend className="admin-kicker is-muted">Accepted extensions</legend>
+              <div className="admin-chips" style={{ marginTop: 8 }}>
                 {["pdf", "png", "jpg", "webp", "zip"].map((ext) => {
                   const accept = Array.isArray(config.accept)
                     ? (config.accept as string[])
                     : ["pdf", "png", "jpg", "webp", "zip"];
                   return (
-                    <label key={ext}>
+                    <label key={ext} className="admin-chip-check">
                       <input
                         aria-label={`${prefix} accept ${ext}`}
                         type="checkbox"
@@ -381,29 +387,6 @@ function QuestionCard({
             {numeric("maxSizeMb", "Maximum size MB")}
           </>
         )}
-      </div>
-      <div className="flex gap-2">
-        <button
-          type="button"
-          className={buttonClass}
-          disabled={index === 0}
-          onClick={() => onMove(index, -1)}
-          aria-label={`${prefix} move up`}
-        >
-          ↑
-        </button>
-        <button
-          type="button"
-          className={buttonClass}
-          disabled={index === count - 1}
-          onClick={() => onMove(index, 1)}
-          aria-label={`${prefix} move down`}
-        >
-          ↓
-        </button>
-        <button type="button" className={buttonClass} onClick={onRemove}>
-          {hasApplications ? "Archive" : "Remove"} {prefix}
-        </button>
       </div>
     </fieldset>
   );

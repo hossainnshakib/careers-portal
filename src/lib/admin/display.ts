@@ -12,6 +12,16 @@ export function formatAdminDate(iso: string | Date): string {
   const parts = Object.fromEntries(dhakaDate.formatToParts(date).map(part => [part.type, part.value]));
   return `${parts.day} ${parts.month.replace("Sept", "Sep")} ${parts.year}, ${Number(parts.hour)}:${parts.minute} ${parts.dayPeriod.toUpperCase()}`;
 }
+
+const dhakaDay = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Asia/Dhaka", day: "numeric", month: "short", year: "numeric",
+});
+/** Day-only Dhaka time, for dense tables such as the jobs list. */
+export function formatAdminDay(iso: string | Date): string {
+  const date = typeof iso === "string" ? new Date(iso) : iso;
+  if (!Number.isFinite(date.getTime())) return "Date unavailable";
+  return dhakaDay.format(date).replace("Sept", "Sep");
+}
 export const applicationStatusLabels: Record<Application["status"], string> = {
   new: "New", under_review: "Under review", shortlisted: "Shortlisted", rejected: "Rejected", hired: "Hired",
 };

@@ -661,3 +661,23 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
 - Logo-with-name audit passed with no changes: every public surface shows logo-only marks; accessible names remain in alt/title; footer brand names are text-only links without logos.
 - Final validation (run once): typecheck ✓, lint ✓, 563 unit/85 skipped (648/648 live), build + PDF trace guard ✓, production e2e **42 passed / 0 failed / 0 skipped**, Lighthouse mobile Home 97 / Job 94 / Apply 93 / Success 97 (a11y and best practices 100 everywhere; targets met).
 - **Home `meta-description` flake**: in one full e2e run Lighthouse 13.5.0 reported "Document does not have a meta description" on Home, while `document-title` (an axe/AXTree audit) passed. The audit uses the `MetaElements` gatherer (`Runtime.evaluate` over `head meta`); the failure carried no explanation (artifact-level miss, not empty content) and did not reproduce — a direct rerun passed, another direct rerun failed. SSR HTML was curl-verified to contain exactly one correct `<meta name="description">`, and `tests/e2e/public-pages.spec.ts` asserts rendered meta descriptions in production mode. Classified as a Lighthouse flake, not an app defect; SEO is not an asserted target (perf ≥85, a11y/BP ≥95 are, and all pass). No code change was made to chase it.
+
+## 2026-10-11 — Mockup-driven admin presentation replacement
+
+- The owner's admin boards supersede the earlier neutral-admin/Inter design.
+  Admin now uses its own `.admin-ui` font/token system and existing self-hosted
+  Plus Jakarta Sans/Hind Siliguri packages. Public CSS/markup is untouched.
+- All routes and authorization/action/validation/write paths are retained.
+  Read-only projections add brand logos, salary/updated dates, bulk application
+  counts and open-role department counts. Settings "Roles" counts open jobs;
+  option "Jobs" counts all existing option links. No schema/dependency change.
+- Static board controls become real GET filters/search, pagination, lifecycle
+  actions and native file uploads. Six-cell TOTP distributes autofilled/pasted
+  codes without changing the authentication actions or first-cell selector.
+  Mobile tables retain explicit semantics and the menu contains keyboard focus.
+- The seven standard questions remain shared definitions; publishing and adding
+  questions remain immediate. Live Markdown preview stays beside each textarea.
+  Full existing admin fields and security instructions are retained rather than
+  replaced with abbreviated mock form fields. Detailed differences and cleanup
+  are recorded in `ADMIN_UI_RESTYLE.md`; validation evidence is recorded after
+  browser/visual execution, not inferred from the prior public finishing pass.

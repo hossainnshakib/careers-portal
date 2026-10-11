@@ -9,7 +9,8 @@ export function LogoutButton() {
   return (
     <div>
       <button
-        className="rounded border border-border px-4 py-2 disabled:opacity-60"
+        className="admin-btn admin-btn-secondary admin-btn-sm"
+        style={{ width: "100%", marginTop: 10 }}
         disabled={pending}
         onClick={async () => {
           setPending(true);
@@ -28,7 +29,7 @@ export function LogoutButton() {
       >
         {pending ? "Signing out…" : "Sign out"}
       </button>
-      <p role="status" className="mt-2 text-sm text-destructive">
+      <p role="status" className="admin-error">
         {error}
       </p>
     </div>
