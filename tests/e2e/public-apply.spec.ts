@@ -7,7 +7,7 @@ test("URL filters render without JavaScript and mobile filters use an accessible
   try {
     const serverPage = await context.newPage();
     await serverPage.goto("/?q=no-such-public-role-7b29e8&mode=remote");
-    await expect(serverPage.getByRole("heading", { name: "No matching roles" })).toBeVisible();
+    await expect(serverPage.getByRole("heading", { name: "No roles match your filters" })).toBeVisible();
     await expect(serverPage.getByRole("region", { name: "Open roles", exact: true }).getByRole("link")).toHaveCount(0);
   } finally { await context.close(); }
   await page.setViewportSize({ width: 390, height: 844 });

@@ -207,6 +207,8 @@ body {
 .ui-job-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .ui-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 44px; align-items: start; }
 .ui-hero-pill { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.12); font-size: 12.5px; font-weight: 600; overflow-wrap: anywhere; }
+/* Long unbroken URLs pasted into job descriptions must wrap, not create horizontal scroll. */
+.ui-job-markdown { overflow-wrap: anywhere; }
 .ui-job-markdown a { color: var(--ui-blue-text); }
 .ui-numbered-markdown ul, .ui-numbered-markdown ol { counter-reset: responsibility; list-style: none; }
 .ui-numbered-markdown li { position: relative; margin-left: 0; padding-left: 40px; margin-bottom: 12px; }
