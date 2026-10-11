@@ -27,12 +27,3 @@ export function optionLabel(option: { label: string }): string {
 export function groupLabels(options: OptionTag[], group: OptionGroup): string[] {
   return options.filter((option) => option.group === group).map(optionLabel);
 }
-
-export function hasGroup(options: OptionTag[], group: OptionGroup): boolean {
-  return options.some((option) => option.group === group);
-}
-
-/** "Fresher welcome" is highlighted when the experience group includes it. */
-export function fresherWelcome(options: OptionTag[]): boolean {
-  return options.some((option) => option.group === "experience" && option.slug === "fresher-welcome");
-}

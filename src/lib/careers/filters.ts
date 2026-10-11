@@ -1,5 +1,5 @@
 import { parseAsArrayOf, parseAsString } from "nuqs/server";
-import type { OptionGroup, OptionTag } from "./option-labels";
+import type { OptionTag } from "./option-labels";
 
 /**
  * URL filter contract. Param names are stable (brand links rely on them) and
@@ -18,12 +18,6 @@ export const filterParsers = {
   q: parseAsString.withDefault(""),
 };
 export type Filters = Record<FilterKey, string[]> & { q: string };
-/** Which option group each URL param filters by. */
-export const filterGroup: Partial<Record<FilterKey, OptionGroup>> = {
-  mode: "arrangement",
-  type: "engagement",
-  level: "experience",
-};
 export type PublicBrand = {
   id: string; name: string; slug: string; sector: string; logoUrl: string | null;
   description: string; accentColor: string | null;
