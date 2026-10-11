@@ -70,7 +70,7 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | S02 | Roles, How it works and FAQ navigation targets the Home sections from every public page. Dark Browse roles pill is functional. | Implemented |
 | S03 | Header wraps cleanly on mobile with no horizontal page overflow. | Implemented |
 | S04 | Light footer with hairline separator, Careers name, conversation tagline, configured contact only, safe brand website links and Privacy link. | Implemented |
-| S05 | Public typography, glass surfaces, focus indicators and spacing match the token reference. Bengali text renders correctly. | Deviation — slightly darker nav/salary text passes measured contrast; Bengali synthetic field visually checked. |
+| S05 | Public typography, glass surfaces, focus indicators and spacing match the token reference. Bengali text renders correctly. | Deviation — nav and salary text are darkened from the reference token to keep measured AA contrast (worst 4.98:1); Bengali is verified with real jobs, answers and Hind Siliguri glyph checks (Item 6). |
 
 ## Home
 
@@ -80,36 +80,36 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | H02 | Glass hiring pill shows a green dot, actual open-role count and actual hiring-brand count. | Implemented |
 | H03 | Headline reads “Good work starts here.” with muted “Find your place across our brands.” secondary line; explanatory copy and two CTAs match the mock. | Implemented |
 | H04 | Browse roles and How applying works CTAs navigate to their sections. | Implemented |
-| H05 | Rotated left glass card shows a deterministically selected real role, department, options and brand. Selection rule is documented; zero roles has a sensible state. | Deviation — first catalog role is Web Developer, not the sample Cinematographer; zero roles omit the card. |
-| H06 | Rotated right card shows live role/brand counts and overlapping real-brand marks using readable foreground colours. | Deviation — actual data has 16 roles and 7 hiring brands, not 8; all active brands remain in the marquee. |
+| H05 | Rotated left glass card shows a deterministically selected real role, department, options and brand. Selection rule is documented; zero roles has a sensible state. | Implemented — featured card shows the first public catalog job under the existing sort order/title rule (documented in DECISIONS.md); the card is omitted when no roles exist; the mock's sample role is not copied. |
+| H06 | Rotated right card shows live role/brand counts and overlapping real-brand marks using readable foreground colours. | Implemented — live catalog counts and real brand marks (the dev seed's roles/brand counts differ from the mock's sample 8 by design); the marquee lists every active brand. |
 | H07 | Floating cards hide at <=1180px. Hero type and spacing adapt on narrow screens. | Implemented |
 | H08 | Hiring across our brands logo marquee uses actual brand assets, grayscale/opacity treatment and faded edges. Duplicates are hidden from assistive technology; focus/hover pause motion and reduced motion is static. | Implemented |
 | H09 | Find your role heading and grouped-by-department subtitle precede the 270px/flexible results grid. | Implemented |
-| H10 | Glass filter panel has Filters heading, functional Clear all, department checkboxes with counts, and Brand, Work arrangement, Engagement type and Experience pill groups. Sector is absent from the UI. | Deviation — compact desktop rows/chips and collapsible groups meet the viewport-fit requirement; filtering is unchanged. |
+| H10 | Glass filter panel has Filters heading, functional Clear all, department checkboxes with counts, and Brand, Work arrangement, Engagement type and Experience pill groups. Sector is absent from the UI. | Deviation — the desktop panel uses compact checkbox rows in collapsible groups instead of the mock's pill-group layout so the full filter set fits the viewport; every group, count and Clear all is present and filtering semantics are unchanged. |
 | H11 | Active filter pills have dark selected treatment; query state survives reload, browser history and shared URLs. Preserve OR within facets and AND across facets. | Implemented |
 | H12 | Desktop filter panel stays 96px from the viewport top while scrolling results and stops at the end of its grid container. Verify with browser bounding boxes at multiple scroll positions. | Implemented |
 | H13 | Below 900px has usable single-column filtering with sticky disabled; controls remain keyboard accessible. | Implemented |
 | H14 | Glass 56px search field has search icon and accessible label; result count and individually removable blue selected chips appear below. | Implemented |
 | H15 | Only nonempty department groups render in database order, with stable blue numbering, heading, accurate role count and hairline divider. | Implemented |
 | H16 | Glass whole-card links have 20px radii, primary-brand accent top border, primary-first brand marks/names, title, verbatim options, salary pill, optional summary and View role arrow. | Implemented |
-| H17 | Salary pills show Negotiable or actual configured range; fresher-welcome has blue treatment, other options neutral. No sample data is copied into jobs. | Deviation — current dev jobs retain actual negotiable modes/options, not the sample salaries/fresher selections; configured range/highlight rendering is tested. |
+| H17 | Salary pills show Negotiable or actual configured range; fresher-welcome has blue treatment, other options neutral. No sample data is copied into jobs. | Implemented — pills render live values: Negotiable or the configured range, fresher-welcome blue and other options neutral, verified with configured stress jobs (Item 6); the mock's sample salaries are not copied. |
 | H18 | Card grid adapts from desktop columns to mobile; long titles, salaries and Bengali text fit without clipping. Hover lift respects reduced motion. | Implemented |
 | H19 | Empty search/filter and empty catalog states are clear and offer an appropriate reset. Existing no-JavaScript search/filter behaviour remains usable. | Implemented |
 | H20 | How applying works has three glass cards: Find your role, Tell us about yourself, Keep your reference; blue 01–03 numbers and mock explanatory copy. | Implemented |
-| H21 | Five accessible FAQ disclosures cover accounts, files, Bengali, multiple roles and data use. File guidance reflects actual enforced limits and privacy links work. | Deviation — upload answer also explains actual per-role limits and eight-file policy instead of copying incomplete sample guidance. |
+| H21 | Five accessible FAQ disclosures cover accounts, files, Bengali, multiple roles and data use. File guidance reflects actual enforced limits and privacy links work. | Implemented — the upload FAQ states the enforced limits (PDF/DOC/DOCX, 5 MB per CV, 8 files per application) and each widget shows its own per-role limits, as the check requires rather than the mock's incomplete sample text; privacy links work. |
 | H22 | Shared footer and metadata are present. Screenshot comparisons cover desktop and mobile with data differences explained. | Implemented |
 
 ## Job detail
 
 | ID | Acceptance check | Status |
 | --- | --- | --- |
-| J01 | Rounded dark gradient hero band has brand-coloured blurred orbs, All roles link, department label, actual title and optional summary. | Deviation — bounded accent/orb opacity keeps supporting white text readable even for bright owner accents. |
+| J01 | Rounded dark gradient hero band has brand-coloured blurred orbs, All roles link, department label, actual title and optional summary. | Deviation — hero orb opacity is bounded to 0.22–0.30 (inside the reference range's low end) so supporting white text stays readable for bright owner-chosen accent colours. |
 | J02 | White/translucent hero pills show real options, optional location and deadline. Hiring for badges use actual primary-first brand assets/names. | Implemented |
 | J03 | Content and summary use flexible/340px columns with a 44px gap. Below 900px is single column with static summary. | Implemented |
 | J04 | Description renders under About the role / Why this role exists with sanitised Markdown. | Implemented |
 | J05 | Responsibilities render under What you will do / Key responsibilities with blue numbered list styling where the content is a list. Preserve other valid Markdown structure. | Implemented |
 | J06 | Requirements and optional nice-to-have sections use mock headings and green check list styling without flattening valid Markdown. | Implemented |
-| J07 | Nonempty skills render as glass pills; nonempty benefits render as glass tiles with blue check badges. Empty optional sections are omitted. | Deviation — captured dev role has no configured skills/benefits/nice-to-have; conditional sections are implemented and tested, not filled with sample text. |
+| J07 | Nonempty skills render as glass pills; nonempty benefits render as glass tiles with blue check badges. Empty optional sections are omitted. | Implemented — verified with configured jobs (Item 6): 20 skill pills, 12 benefit tiles with blue check badges and a nice-to-have section render when set, and empty sections are omitted without sample text. |
 | J08 | Hiring-brand cards use real logos/names, optional descriptions and validated website links. Placeholder descriptions are absent. | Implemented |
 | J09 | Glass Ready to apply panel links to `/jobs/<slug>/apply`; job detail contains no application form or Turnstile widget. | Implemented |
 | J10 | Glass Job summary has icon tiles and real Salary, optional Vacancy, Experience, Work arrangement, Engagement, Location and Deadline rows. Unset optional rows are absent. | Implemented |
@@ -127,10 +127,10 @@ Glass requires both standard and WebKit backdrop-filter declarations. Brand-colo
 | A03 | Glass 28px introduction card shows department, Apply for actual job title, real hiring brands, options, salary and optional location/deadline. | Implemented |
 | A04 | Separate glass form panel uses mock spacing, blue uppercase section labels and a responsive two-column field grid. | Implemented |
 | A05 | Personal & contact fields preserve existing labels, requiredness, autocomplete and server validation. CV requiredness follows the actual job. | Implemented |
-| A06 | Configured question sections render from database definitions, in their existing order. Mock Professional/Experience/Skills/Role-specific questions are examples, not mandatory new fields. | Deviation — actual sections include Portfolio and extra configured contact questions; labels/types/order are retained exactly. |
+| A06 | Configured question sections render from database definitions, in their existing order. Mock Professional/Experience/Skills/Role-specific questions are examples, not mandatory new fields. | Implemented — sections are grouped from the database section values in enum order (Portfolio and the extra contact fields are data, not mock requirements); labels, types and order are retained exactly. |
 | A07 | Text, email, URL, number, date and select controls use 50px height, 14px radius and pale input surface; textareas span the grid with usable vertical resizing. | Implemented |
 | A08 | Single-choice cards and multiple-choice pills have blue selected border/surface styling, accessible grouping and working Other answers where configured. Boolean controls retain correct answer values. | Implemented |
-| A09 | Dashed upload panels have upload icon, actual type/size guidance and Choose file control. Any advertised drop interaction works; progress, failure, removal and replacement states remain usable. | Deviation — real reservation-limit explanation/restart controls are retained in addition to mock styling; actual picker/drop upload passes. |
+| A09 | Dashed upload panels have upload icon, actual type/size guidance and Choose file control. Any advertised drop interaction works; progress, failure, removal and replacement states remain usable. | Implemented — mock-styled dashed panel with icon, per-role type/size guidance and Choose file; picker and drop both pass, and the real reservation-limit explanation plus Start fresh uploads are retained alongside the mock styling (additive). |
 | A10 | Red required markers, help text and inline validation errors are associated with fields. Failed submission focuses or identifies invalid fields without losing entered answers. | Implemented |
 | A11 | Consent checkbox and Privacy notice link are functional; unchecked consent is rejected server-side. | Implemented |
 | A12 | Submit application is a real submit button, with pending/error state and existing duplicate-submit protection. Internal-team/reference explanatory text matches actual behaviour. | Implemented |
