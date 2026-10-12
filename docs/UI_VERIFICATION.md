@@ -197,6 +197,28 @@ The sections below are historical evidence, not fidelity-pass completion claims.
 - No implementation change was needed; both rows land as Implemented. Physical
   phone/hardware testing remains unverified and is recorded as a gap.
 
+### Final verification gates (V01–V06, in progress)
+
+- V01–V05 evidence collected: final both-width audit captures inspected (plus the
+  per-block dialog/menu/empty-state/auth captures, secrets masked); CSS audit
+  confirmed the @supports-guarded blur, opaque panels, no stacked blur and the
+  @supports-not / prefers-reduced-transparency fallbacks; contrast corrections,
+  focus/keyboard e2e and Bengali/overflow checks recorded; diff audit proved
+  requireAdmin() on every protected page/action/API handler and zero diff in
+  dependencies, middleware, schema, migrations, validation, auth lib and storage;
+  V05 behaviors all covered by permanent e2e without weakened assertions.
+- Broad gates: default vitest suite passed 621 (one stale "Verify authenticator"
+  label assertion in presentation.test.ts updated to the drawn "Continue" wording,
+  committed as 2279724; nothing dropped). Live suite with RUN_SUPABASE_TESTS=1
+  passed 707 when serialized with --no-file-parallelism: in the default parallel
+  run, src/db/seed/upgrade.live.test.ts fails because its applications-table
+  snapshot races the concurrent review.live.test.ts fixture writes on the shared
+  dev database — a test-isolation race, not a product regression (the upgrade test
+  passes standalone and in the serialized run). Production `pnpm build` and the
+  PDF-trace guard passed (Helvetica/ICC chunks, both Bengali fonts, 8 logos).
+  Complete production e2e with RUN_LIGHTHOUSE=1 is running; its result and the
+  production-console check close V06/V07.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate
