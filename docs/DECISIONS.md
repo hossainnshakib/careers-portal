@@ -1190,3 +1190,26 @@ HANDOFF READY
   tmp/admin-capture.config.ts. Captures/helpers/traces/videos stay untracked.
 
 HANDOFF READY
+
+## 2026-10-12 — Editor block 2: Basics
+
+- Top grid now matches drawn labels/field heights and inline published-slug lock.
+  Brands/options use plain labels and 5px/12px pills, selected blue options and
+  selected dark salary. Range input/guidance matches the board; stored salary-mode
+  and empty-range regressions remain. Vacancies/location/date share the drawn row.
+- Additional settings retains experience text, engagement note, original field
+  limits and local deadline time. Both date/time edit the existing UTC instant;
+  changing date preserves local cutoff including seconds/milliseconds. New dates
+  default explicitly to local 00:00, clearing date clears the instant. Advisory
+  UI conversion is separate from unchanged authorized server validation.
+- Existing automatic/manual/locked slug, primary-brand fallback, configured
+  option order and linked-inactive option availability remain. No dependency,
+  migration, permission/auth/storage changes. Only new deviation is E09: additional
+  controls avoid deleting existing fields/time-editing functionality.
+- Typecheck/lint and two touched unit files / 12 tests passed. Guarded no-save
+  both-width captures/browser checks passed state retention, cutoff editing,
+  date clearing, auto/manual slug, primary fallback and overflow. Card captures
+  are cropped from full-page screenshots to avoid sticky chrome obscuring the
+  isolated block. Actual persistence e2e remains queued for the final run.
+- **Editor completed blocks: 1 and 2. Next: 3 Content/Write-Preview; blocks 4 and
+  5 remain pending. Content implementation has not started at this checkpoint.**

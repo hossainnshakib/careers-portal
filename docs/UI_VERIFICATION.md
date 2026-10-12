@@ -79,6 +79,18 @@ The sections below are historical evidence, not fidelity-pass completion claims.
 - Basics, Content, questions/dialog/options and candidate preview are NOT reconciled
   by this shell block. All broad gates remain final-only.
 
+### Editor block 2 — Basics checkpoint
+
+- Drawn labels/top fields/chips/salary/three-field row reconciled; original extra
+  fields and local deadline time moved into Additional settings without a schema
+  or validation change. Deadline-date changes preserve the existing cutoff.
+- Typecheck/lint, two touched unit files / 12 tests passed. Isolated Basics captures
+  at 1440/390 inspected; browser checks passed overflow, disclosure-state retention,
+  cutoff preservation/clearing, auto/manual slug and primary-brand fallback.
+  Captures do not save any job. Unit cases retain salary-mode regressions and test
+  linked inactive options/readonly slug/seconds preservation. Permanent persistence
+  assertions queued for final e2e; all broad gates remain final-only.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

@@ -32,8 +32,9 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: applicant profile and delete dialog (screen checkpoint; final workflows pending).
 - Complete: jobs list and row menu (screen checkpoint; mutations queued for final e2e).
 - Complete: editor block 1 — shell/sticky action bar and Publish confirmation (confirm mutation queued for final e2e).
-- In progress: editor block 2 — Basics (implementation not started).
-- Editor blocks pending: 3 Content/Write-Preview; 4 question builder/Add-question/options; 5 candidate preview. Commit each block separately.
+- Complete: editor block 2 — Basics (screen checkpoint; persistence e2e queued).
+- In progress: editor block 3 — Content/Write-Preview (implementation not started).
+- Editor blocks pending: 4 question builder/Add-question/options; 5 candidate preview. Commit each block separately.
 - Pending: brands list/editor.
 - Pending: combined departments/options.
 - Pending: login and MFA.
@@ -136,11 +137,11 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | E02 | Sticky action bar top 8px, padding 12px 16px, 24px radius, .58 glass, status left and Duplicate/Save draft/Publish right | Deviation A: drawn labels/secondary draft-save/geometry restored, with one compact More job actions disclosure for Close/Reopen/Delete. Those existing commands would otherwise disappear; Duplicate job/Publish job accessible names retained. Missing-group guidance moved out of chrome to Basics as drawn |
 | E03 | Sticky action bar remains visible while content scrolls, container release and mobile viewport safety; save existing open/closed, close/reopen/delete retained without crowding | Deviation C: three full desktop commands plus status/extra actions do not fit 390. Mobile Duplicate moves into More actions, while Save/Publish remain visible and bar stays at 8px. Both-width 500px-scroll checks passed; container-release audit remains final-only |
 | E04 | Four blocks in 1.4fr:1fr grid: 1 Basics/2 Content left; 3 Questions/4 Candidate form preview right; 14px gaps and margins | Implemented; shell grid matches; individual block internals remain explicitly Pending until their separate commits |
-| E05 | Basics title/slug/department/primary brand two-column fields, locked published slug and editable draft/auto slug; brand chips and one primary | Pending |
-| E06 | Work arrangement, Engagement type, Experience chip groups in stored order; correct selected blue states, inactive linked options preserved | Pending |
-| E07 | Salary Negotiable/Show a range pills with dark selected range; one-line range text and 80-character guidance | Pending |
-| E08 | Vacancies/location/deadline three-column row; CV required checkbox and missing-publication-group amber guidance | Pending |
-| E09 | Experience text/engagement note/order and all real fields absent from abbreviated mock remain compactly accessible via additional-settings disclosure | Pending |
+| E05 | Basics title/slug/department/primary brand two-column fields, locked published slug and editable draft/auto slug; brand chips and one primary | Implemented; equal-height top fields/inline lock, plain Brands label; browser auto/manual slug and primary-brand fallback checks, published readonly SSR check |
+| E06 | Work arrangement, Engagement type, Experience chip groups in stored order; correct selected blue states, inactive linked options preserved | Implemented; drawn 5px/12px pills and plain 13px labels, selected #1E4FD8 blue; stored array order unchanged; render regression distinguishes linked vs unlinked inactive options |
+| E07 | Salary Negotiable/Show a range pills with dark selected range; one-line range text and 80-character guidance | Implemented; dark selected radio, drawn normal-weight one-line text/guidance and 80 limit; stored-mode/empty-range regressions retained |
+| E08 | Vacancies/location/deadline three-column row; CV required checkbox and missing-publication-group amber guidance | Implemented; drawn date control now shares the original UTC deadline instant with time in Additional settings; changing date preserves cutoff including seconds; CV/warning below row. Mobile fields stack without overflow |
+| E09 | Experience text/engagement note/order and all real fields absent from abbreviated mock remain compactly accessible via additional-settings disclosure | Deviation A: additional disclosure is not drawn but prevents removal of experience text, engagement note, deadline-time editing and slug/brand guidance. Original limits/state preserved. New dates explicitly default to local 00:00; existing cutoffs preserved; clearing date clears instant. No schema/validation changes |
 | E10 | Summary textarea two rows and live 0/200 counter; Description, Responsibilities, Requirements, Nice to have fields | Pending |
 | E11 | Write/Preview toggle for every markdown field, dark selected pill; no simultaneous side-by-side preview; switching preserves edits | Pending; previous live-preview-only decision is superseded |
 | E12 | Preview uses existing sanitised Markdown, raw HTML disabled, links/text wrap and empty preview feedback | Pending |
@@ -248,7 +249,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-50 Implemented / 18 Deviation / 54 Pending / 0 classified Not implemented**.
+54 Implemented / 19 Deviation / 49 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -257,7 +258,8 @@ extra-filter access), A06 (shared measured contrast corrections), P02 (initial i
 P06 (prior reference/time), P08 (privacy/PDF guidance), P11 (mobile metadata),
 P13 (red button contrast), J01 (submit/reset function), J03 (shared contrast),
 J06 (mobile column/action accessibility), E02 (lifecycle-command access), E03
-(mobile bar fit), E19 (readiness text contrast). All reasons are on their rows.
+(mobile bar fit), E19 (readiness text contrast), E09 (extra-field/time editing).
+All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -294,6 +296,12 @@ Guarded before/after shell/Publish captures at both widths; Cancel/Escape, uncha
 draft, missing-group blockers/disabled confirm, unsaved title preservation, 8px
 sticky offset and overflow checks passed. No job publication/mutation was executed.
 Basics/Content/question builder/candidate preview internals remain unreconciled.
+Editor block 2 supersedes the Basics part of that pending statement: typecheck/lint,
+two touched unit files / 12 tests and both-width no-save capture checks passed.
+Extra-field state, local cutoff preservation/clearing, primary-brand fallback and
+new-job auto/manual slug checks passed. Captures isolate the Basics card from a
+full-page image so sticky chrome does not falsely cover its heading. Persistence,
+full live/build/production e2e and physical/hosted platforms remain unverified.
 Synthetic before/after/dialog captures at both widths inspected. Capture checked
 overflow, Cancel/Escape focus return, no deletion and mobile-to-desktop disclosure
 reachability. Initial render-test name count included the toolbar data attribute;

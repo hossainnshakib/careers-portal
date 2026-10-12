@@ -16,6 +16,17 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   const title = `${adminAccount.prefix}Role`;
   await page.getByLabel("Title", { exact: true }).fill(title);
   await page.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}role`);
+  const basics = page.getByRole("region", { name: "1 · Basics", exact: true });
+  await basics.getByText("Additional settings", { exact: true }).click();
+  await basics.getByLabel("Experience text", { exact: true }).fill("1 – 4 years");
+  await basics.getByLabel("Engagement note", { exact: true }).fill("Six months");
+  await basics.getByLabel("Deadline", { exact: true }).fill("2027-02-12");
+  await basics.getByLabel("Deadline time", { exact: true }).fill("14:30");
+  await basics.getByLabel("Deadline", { exact: true }).fill("2027-02-13");
+  await expect(basics.getByLabel("Deadline time", { exact: true })).toHaveValue("14:30");
+  await basics.getByLabel("Deadline", { exact: true }).fill("");
+  await expect(basics.getByLabel("Deadline time", { exact: true })).toBeDisabled();
+  await basics.getByText("Additional settings", { exact: true }).click();
   await page.getByLabel("Summary", { exact: true }).fill("A thoughtful role");
   await page
     .getByLabel("Description (Markdown)", { exact: true })
@@ -28,6 +39,10 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/jobs\/[a-f0-9-]+\/edit$/, { timeout: 30000 });
+  await basics.getByText("Additional settings", { exact: true }).click();
+  await expect(basics.getByLabel("Experience text", { exact: true })).toHaveValue("1 – 4 years");
+  await expect(basics.getByLabel("Engagement note", { exact: true })).toHaveValue("Six months");
+  await basics.getByText("Additional settings", { exact: true }).click();
   await page.getByRole("group", { name: /^Work arrangement/ }).getByRole("checkbox", { name: "On-site", exact: true }).check();
   await page.getByRole("group", { name: /^Engagement type/ }).getByRole("checkbox", { name: "Full-time", exact: true }).check();
   await page.getByRole("button", { name: "Publish job", exact: true }).click();

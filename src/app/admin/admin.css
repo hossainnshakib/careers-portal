@@ -1500,6 +1500,20 @@
 
 /* ---------- accessibility preferences ---------- */
 
+.admin-ui .admin-job-basics legend { font-size: 13px; font-weight: 600; }
+.admin-job-basics .admin-grid { align-items: start; }
+.admin-ui .admin-job-basics > fieldset { margin-top: 12px; }
+.admin-ui .admin-job-basics label.admin-chip-check { padding: 5px 12px; font-size: 12px; color: var(--admin-ink); }
+.admin-ui .admin-job-basics label.admin-chip-check:has(input:checked) { background: rgba(47,107,255,.12); color: #1e4fd8; }
+.admin-ui .admin-job-basics .admin-salary-mode label.admin-chip-check:has(input:checked) { background: #0b1220; color: #fff; }
+.admin-job-basics .admin-note { font-size: 12px; font-weight: 400; }
+.admin-job-basics input[aria-label="Salary range"] { font-weight: 400; }
+.admin-ui .admin-cv-required { margin-top: 12px; }
+.admin-slug-lock { display: inline; }
+.admin-basics-extra { margin-top: 12px; font-size: 13px; }
+.admin-basics-extra > .admin-stack { margin-top: 12px; }
+.admin-basics-extra .admin-note { margin: 0; }
+
 .admin-job-editor > .admin-error:empty { display: none; }
 .admin-editor-more { position: relative; }
 .admin-ui .admin-editor-more > summary { list-style: none; padding: 11px 14px; }

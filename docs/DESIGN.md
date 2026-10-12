@@ -56,6 +56,12 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   Mobile Duplicate is disclosed to fit the viewport. Native Publish modal shows
   actual title/path/slug warning and advisory readiness/blockers; only confirmation
   invokes the existing authorized server save. Other editor blocks remain pending.
+- Basics fidelity: compact plain labels, drawn chip density/blue selection/dark
+  salary selection and vacancies/location/date row. Additional settings preserves
+  experience text, engagement note and local deadline time. Date/time edit one
+  UTC instant; date changes preserve the existing cutoff, new dates default to
+  local midnight, and clearing the date removes the deadline. Slug/primary-brand
+  and inactive-linked option rules remain unchanged.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

@@ -68,3 +68,22 @@ it.each([
     expect(html).not.toContain('aria-label="Salary range"'); expect(html).not.toContain("Stale ignored text");
   }
 });
+
+it("matches compact Basics labels and keeps every extra field and linked inactive option editable", () => {
+  const selected = "00000000-0000-4000-8000-000000000004";
+  const hidden = "00000000-0000-4000-8000-000000000005";
+  const html = renderToStaticMarkup(createElement(JobEditor, {
+    initial: { ...initial, optionIds: [selected], engagementNote: "Six months", experienceText: "1 – 4 years" },
+    brands: [], departments: [], sources: [], published: true, status: "open", hasApplications: false,
+    options: [{ id: selected, group: "arrangement", label: "Inactive linked option", slug: "linked", isActive: false }, { id: hidden, group: "arrangement", label: "Inactive unlinked option", slug: "unlinked", isActive: false }],
+  }));
+  const basics = html.slice(html.indexOf('aria-labelledby="job-basics"'), html.indexOf('aria-labelledby="job-content"'));
+  expect(basics).toContain("Inactive linked option"); expect(basics).not.toContain("Inactive unlinked option");
+  expect(basics).toContain('<legend>Brands</legend>'); expect(basics).toContain('<legend>Work arrangement</legend>');
+  expect(basics).not.toContain("select at least one to publish)");
+  expect(basics).toContain('class="admin-basics-extra"><summary>Additional settings</summary>');
+  expect(basics).toContain('aria-label="Experience text"'); expect(basics).toContain('value="1 – 4 years"');
+  expect(basics).toContain('aria-label="Engagement note"'); expect(basics).toContain('value="Six months"');
+  expect(basics).toContain('aria-label="Deadline" type="date"'); expect(basics).toContain('aria-label="Deadline time" type="time"');
+  expect(basics).toContain('readOnly=""');
+});
