@@ -1369,3 +1369,24 @@ HANDOFF READY
   four unit files / 17 tests and both-width no-save browser helper passed again.
   Acceptance recount: 122 = 65 Implemented / 22 Deviation / 35 Pending.
   Scoped diff check passed; owner test-accounts whitespace remains untouched.
+
+## 2026-10-12 — Editor block 5: candidate preview
+
+- Whole card (not only inner fields) scales .9 from top on desktop, matching the
+  fragment. Live Apply for title follows the controlled draft; empty title uses
+  this role, escaped text supports Bengali. Full name/Email placeholders begin a
+  single contact column, with accessible hidden labels.
+- Retained phone/location/CV/configured sections and explicit local-only notice/
+  validation because abbreviating the fragment would remove real form checks or
+  imply submission. Added required local consent, matching the actual candidate
+  flow; privacy link opens separately. No upload/persistence/server rule changes.
+  Mobile is unscaled to preserve usable field/control sizes. Deviation E18 recorded.
+- Typecheck/lint and two touched unit files / 12 tests passed. Both-width guarded
+  no-save checks/captures passed title/Bengali/state, bad/valid/optional CV, required
+  consent, local validation, scale/overflow, and no save/upload network requests.
+  Permanent eleven-type e2e retains existing checks plus title/consent assertions;
+  final production execution remains queued.
+- **All five editor blocks complete as checkpoints. Next/in progress: brands
+  list/editor, implementation not started.** Combined settings, login/MFA,
+  mobile/cross-screen and final broad gates remain. Counts: 122 = 65 Implemented /
+  23 Deviation / 34 Pending. No blocking owner question; deviations provisional.

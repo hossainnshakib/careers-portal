@@ -518,7 +518,7 @@ export function JobEditor({
                   </details>
                 </section>
               )}
-              <CandidatePreview questions={draft.questions} cvRequired={draft.cvRequired} />
+              <CandidatePreview questions={draft.questions} cvRequired={draft.cvRequired} title={draft.title} />
             </div>
           </div>
         </fieldset>

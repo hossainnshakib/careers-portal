@@ -68,6 +68,8 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByRole("button", { name: "Edit question 12", exact: true }).click();
   await page.getByLabel("Question 12 label", { exact: true }).fill("LinkedIn contact");
   const preview = page.getByRole("region", { name: "Candidate form preview", exact: true });
+  await expect(preview.getByRole("heading", { name: `Apply for ${adminAccount.prefix}Questions`, exact: true })).toBeVisible();
+  await preview.getByLabel("Preview privacy consent", { exact: true }).check();
   await preview.getByLabel("Years of relevant experience", { exact: true }).fill("3");
   await preview
     .getByLabel("Why do you want to work with us?", { exact: true })
@@ -114,6 +116,10 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
   await expect(preview.getByRole("status")).toContainText("Date is outside");
   await preview.getByLabel("date question", { exact: true }).fill(today);
+  await preview.getByLabel("Preview privacy consent", { exact: true }).uncheck();
+  await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
+  await expect(preview.getByRole("status")).toContainText("Accept the privacy notice");
+  await preview.getByLabel("Preview privacy consent", { exact: true }).check();
   await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
   await expect(preview.getByRole("status")).toHaveText("Preview answers are valid.");
   await page.getByRole("group", { name: /^Work arrangement/ }).getByRole("checkbox", { name: "On-site", exact: true }).check();

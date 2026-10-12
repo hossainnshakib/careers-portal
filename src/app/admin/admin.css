@@ -1162,8 +1162,16 @@
 }
 
 .admin-preview {
-  background: rgba(255, 255, 255, 0.72);
+  margin: 0 auto;
+  width: 100%;
 }
+.admin-preview-title { margin: 8px 0; font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
+.admin-preview-contacts { display: grid; gap: 8px; }
+.admin-preview .admin-note { margin: 0 0 8px; }
+.admin-preview .admin-stack { margin-top: 16px; }
+.admin-ui .admin-preview-consent { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0; font-size: 13px; }
+.admin-preview-consent input { flex-shrink: 0; margin-top: 3px; }
+.admin-preview [role="status"] { overflow-wrap: anywhere; }
 
 .admin-dropzone {
   display: grid;

@@ -117,6 +117,19 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   injection and full production suite remain final-only; candidate-preview block
   and physical/hosted platforms remain unverified.
 
+### Editor block 5 — candidate preview checkpoint
+
+- Live role heading and whole-card .9/top desktop scale; single-column contact
+  placeholders, all fixed/configured fields/CV and local-only notice retained.
+  Required local privacy consent added to reflect the real candidate flow.
+- Typecheck/lint and two touched unit files / 12 tests passed. Guarded both-width
+  no-save captures exercised Bengali contact/answer text, title/state updates,
+  invalid/valid/optional CV, missing/accepted consent, local validation, exact
+  desktop/mobile scale and overflow; observed no save/upload network requests.
+- Full eleven-type production e2e remains queued, now preserving existing
+  validations and adding title/required-consent assertions. Mobile/hosted devices
+  and provider/cleanup failures remain unverified. E18 deviation documented.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

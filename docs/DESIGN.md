@@ -72,6 +72,10 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   validates an independent draft before insertion; Enter-add option rows expose
   label/value/removal and strict uniqueness. Section is additionally disclosed;
   mobile card rows reflow rather than clipping controls. No schema change.
+- Candidate-preview fidelity: the whole card scales .9 from the top on desktop,
+  with live Apply for title and single-column contact placeholders. Complete fixed
+  fields/CV, configured sections, required consent and local validation remain;
+  answers/files are never submitted. Mobile is unscaled for usable controls.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

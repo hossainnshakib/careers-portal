@@ -35,8 +35,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: editor block 2 — Basics (screen checkpoint; persistence e2e queued).
 - Complete: editor block 3 — Content/Write-Preview (screen checkpoint; persistence e2e queued).
 - Complete: editor block 4 — question builder/Add-question/options (checkpoint; persistence/copy integration queued).
-- In progress: editor block 5 — candidate preview (implementation not started). Commit separately.
-- Pending: brands list/editor.
+- Complete: editor block 5 — candidate preview (checkpoint; full eleven-type production e2e queued).
+- In progress: brands list/editor (implementation not started).
 - Pending: combined departments/options.
 - Pending: login and MFA.
 - Pending: mobile variants and cross-screen audit.
@@ -151,7 +151,7 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | E15 | Question ordering control exactly drawn drag-handle affordance, working native drag and drop plus keyboard/arrow alternatives, announcements and boundary states | Implemented; native draggable handle, ID-checked internal drop, ArrowUp/ArrowDown shortcuts plus boundary-disabled editor arrows, live position feedback; reorder preserves IDs/config/options; both-width native/keyboard browser checks passed |
 | E16 | Add question, Add standard questions and Copy from another job actions below cards; seven independent defaults, copy source selector and feedback | Implemented; actions below cards as drawn, seven defaults unchanged; source selection disclosed under Copy from another job, authorized copy action/cap retained with pending protection and success/error feedback. Copy integration/persistence remain final-only |
 | E17 | Existing question remove/archive semantics and archived information; section/help/options/config edits remain possible; never lose unsaved state | Deviation A/C: additional editing controls/Section disclosure preserve existing definition fields; Archive shown only when server archives, Remove for unsaved/no-application definitions avoids falsely promising archival of deletions. Actual save/archive policy unchanged; stable IDs/edit state follow reordered cards |
-| E18 | Candidate form preview .9 scale/top origin desktop, correct title/contacts/configured sections/CV/consent, local validation without upload or persistence | Pending; abbreviated preview cannot remove functionality |
+| E18 | Candidate form preview .9 scale/top origin desktop, correct title/contacts/configured sections/CV/consent, local validation without upload or persistence | Deviation A/C: whole card now scales .9/top on desktop; live Apply for title and single-column Full name/Email placeholders match the drawn fragment. Phone/location/CV/all configured sections, local-only notice/validation and required consent remain because abbreviation would remove candidate-flow checks or falsely imply submission. Mobile is unscaled to avoid shrinking interactive fields. Both-width title/Bengali/state/CV/consent/validation/scale/overflow/no-network checks passed; full eleven-type production integration queued |
 | E19 | Publish confirmation dialog: Publish kicker, 18px Publish [title]?, actual public path and slug-lock warning, Requirements met or actual blockers, Cancel/Publish | Deviation C: drawn .9-white/420px/grid-gap dialog implemented; readiness chip uses shared #08694F contrast correction because #087A5B can fall below 4.5:1 on composited glass (4.42:1 on #DCEEE8 vs 5.55:1). Actual groups and existing field schema determine blockers; server remains authoritative |
 | E20 | Publish cancel/Escape retains draft; confirm invokes unchanged server validation; pending/failed publish does not fabricate success; successful publish locks slug | Implemented; native modal Cancel/Escape preserves edits/status/focus, missing-group confirm disabled. Confirm calls unchanged validated save("publish"), pending blocks dismissal, errors remain visible. Actual confirm/slug-lock lifecycle is queued for final production e2e, not claimed newly verified |
 | E21 | Add-question dialog: Add question kicker, New question heading, type chooser with all eleven types in drawn order | Implemented; 420px/.9-white native modal, exact chooser order (Date before File upload), fresh independent definition only added on valid confirm; all eleven dialog type creations passed guarded browser check |
@@ -250,7 +250,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-65 Implemented / 22 Deviation / 35 Pending / 0 classified Not implemented**.
+65 Implemented / 23 Deviation / 34 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -261,7 +261,8 @@ P13 (red button contrast), J01 (submit/reset function), J03 (shared contrast),
 J06 (mobile column/action accessibility), E02 (lifecycle-command access), E03
 (mobile bar fit), E19 (readiness text contrast), E09 (extra-field/time editing).
 E13 (list-item removal), E14 (mobile question row fit), E17 (full-definition
-editing/destructive-action clarity). All reasons are on their rows.
+editing/destructive-action clarity), E18 (complete local-only candidate flow/mobile
+interaction size). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
