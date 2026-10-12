@@ -1213,3 +1213,24 @@ HANDOFF READY
   isolated block. Actual persistence e2e remains queued for the final run.
 - **Editor completed blocks: 1 and 2. Next: 3 Content/Write-Preview; blocks 4 and
   5 remain pending. Content implementation has not started at this checkpoint.**
+
+## 2026-10-12 — Editor block 3: Content
+
+- Summary matches two rows/inline live counter; all four markdown fields match
+  drawn order/row counts and independent dark selected Write/Preview pills.
+  Description's toggle precedes its label; other toggles follow their labels.
+- `MarkdownEditor` retains controlled textarea values while hiding inactive input,
+  renders existing SafeMarkdown only in Preview, and gives empty preview feedback.
+  Button groups are labelled/aria-pressed/keyboard operable; no simultaneous
+  side-by-side preview or nested backdrop blur remains. Raw HTML stays disabled.
+- Benefits precedes Skills; Enter inputs/normal labels/pills match the board,
+  benefits fill their row. Labelled removal crosses preserve the existing deletion
+  function (E13 deviation A); original count/length limits remain with linked
+  screen-reader guidance instead of extra visual count lines.
+- Typecheck/lint and two touched unit files / 14 tests passed. Guarded both-width
+  no-save captures/browser checks passed four-field mode/state preservation,
+  Bengali rendering, no raw scripts, empty feedback, counter, add/remove and
+  overflow. Existing persistence test adapted to explicit Preview then Write;
+  confirmed save remains queued for final production e2e.
+- **Completed editor blocks: 1, 2, 3. Next/in progress: 4 question builder,
+  Add-question dialog and options editor (NOT started). Block 5 preview pending.**

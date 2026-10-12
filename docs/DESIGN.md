@@ -62,6 +62,10 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   UTC instant; date changes preserve the existing cutoff, new dates default to
   local midnight, and clearing the date removes the deadline. Slug/primary-brand
   and inactive-linked option rules remain unchanged.
+- Content fidelity: two-row Summary with inline counter, independent dark-pill
+  Write/Preview controls for all four markdown fields, one visible mode at a time.
+  Previews reuse SafeMarkdown without nested glass blur. Benefits precede Skills
+  in Enter-add pill inputs; labelled remove crosses preserve item deletion.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

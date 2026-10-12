@@ -1500,6 +1500,24 @@
 
 /* ---------- accessibility preferences ---------- */
 
+.admin-markdown-editor { margin-top: 12px; }
+.admin-markdown-editor > label, .admin-content-list-label { font-size: 13px; font-weight: 600; }
+.admin-markdown-editor > textarea { margin-top: 6px; }
+.admin-markdown-editor > textarea[hidden] { display: none; }
+.admin-write-preview { display: flex; gap: 6px; margin: 6px 0 8px; }
+.is-description .admin-write-preview { margin: 12px 0; }
+.admin-write-preview button { padding: 5px 12px; border: 0; border-radius: 999px; font: inherit; font-size: 12px; font-weight: 600; background: rgba(15,23,42,.06); color: #0b1220; cursor: pointer; }
+.admin-write-preview button[aria-pressed="true"] { background: #0b1220; color: #fff; }
+.admin-markdown-editor-preview { margin-top: 6px; padding: 11px 14px; min-height: 90px; border: 1px solid var(--admin-line); border-radius: 14px; background: rgba(255,255,255,.8); }
+.admin-markdown-editor-preview > :first-child { margin-top: 0; }
+.admin-content-lists { margin-top: 12px; gap: 12px; }
+.admin-job-content .admin-chip { font-size: 12px; padding: 5px 12px; }
+.admin-content-list[data-list-kind="Benefits"] .admin-chip { width: 100%; justify-content: space-between; }
+.admin-job-content > label { margin-top: 0; }
+.admin-job-content .admin-kicker { margin-bottom: 0; }
+.admin-job-content textarea { min-height: 0; }
+.admin-markdown-editor > textarea { font-size: 13px; font-weight: 600; }
+
 .admin-ui .admin-job-basics legend { font-size: 13px; font-weight: 600; }
 .admin-job-basics .admin-grid { align-items: start; }
 .admin-ui .admin-job-basics > fieldset { margin-top: 12px; }

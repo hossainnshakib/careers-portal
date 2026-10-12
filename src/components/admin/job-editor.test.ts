@@ -87,3 +87,13 @@ it("matches compact Basics labels and keeps every extra field and linked inactiv
   expect(basics).toContain('aria-label="Deadline" type="date"'); expect(basics).toContain('aria-label="Deadline time" type="time"');
   expect(basics).toContain('readOnly=""');
 });
+
+it("matches Content order, inline summary counter, four independent toggles and list input limits", () => {
+  const html = renderToStaticMarkup(createElement(JobEditor, { initial: { ...initial, summary: "Hello", benefits: ["Festival bonus"], skills: ["React"] }, brands: [], departments: [], sources: [], options: [], published: false, status: "draft", hasApplications: false }));
+  const content = html.slice(html.indexOf('aria-labelledby="job-content"'), html.indexOf('aria-label="Question builder"'));
+  expect(content).toContain("Summary (5/200)"); expect(content).toContain('rows="2"');
+  expect([...content.matchAll(/aria-pressed="false">Preview/g)]).toHaveLength(4);
+  expect(content.indexOf('data-list-kind="Benefits"')).toBeLessThan(content.indexOf('data-list-kind="Skills"'));
+  expect(content).toContain('aria-label="Benefits" maxLength="60"'); expect(content).toContain('aria-label="Skills" maxLength="40"');
+  expect(content).toContain('aria-label="Remove Festival bonus"'); expect(content).toContain('aria-label="Remove React"');
+});

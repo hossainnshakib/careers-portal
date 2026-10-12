@@ -31,12 +31,15 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   await page
     .getByLabel("Description (Markdown)", { exact: true })
     .fill("**Meaningful work**\n\n<script>alert(1)</script>");
+  await page.getByRole("group", { name: "Description mode", exact: true }).getByRole("button", { name: "Preview", exact: true }).click();
   await expect(
     page.getByRole("region", { name: "Description preview", exact: true }).locator("strong"),
   ).toHaveText("Meaningful work");
   await expect(
     page.getByRole("region", { name: "Description preview", exact: true }).locator("script"),
   ).toHaveCount(0);
+  await page.getByRole("group", { name: "Description mode", exact: true }).getByRole("button", { name: "Write", exact: true }).click();
+  await expect(page.getByLabel("Description (Markdown)", { exact: true })).toHaveValue("**Meaningful work**\n\n<script>alert(1)</script>");
   await page.getByRole("button", { name: "Save draft", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/jobs\/[a-f0-9-]+\/edit$/, { timeout: 30000 });
   await basics.getByText("Additional settings", { exact: true }).click();

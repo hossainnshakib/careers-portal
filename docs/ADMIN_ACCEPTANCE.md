@@ -33,8 +33,9 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: jobs list and row menu (screen checkpoint; mutations queued for final e2e).
 - Complete: editor block 1 — shell/sticky action bar and Publish confirmation (confirm mutation queued for final e2e).
 - Complete: editor block 2 — Basics (screen checkpoint; persistence e2e queued).
-- In progress: editor block 3 — Content/Write-Preview (implementation not started).
-- Editor blocks pending: 4 question builder/Add-question/options; 5 candidate preview. Commit each block separately.
+- Complete: editor block 3 — Content/Write-Preview (screen checkpoint; persistence e2e queued).
+- In progress: editor block 4 — question builder/Add-question/options (implementation not started).
+- Editor block pending: 5 candidate preview. Commit each block separately.
 - Pending: brands list/editor.
 - Pending: combined departments/options.
 - Pending: login and MFA.
@@ -142,10 +143,10 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | E07 | Salary Negotiable/Show a range pills with dark selected range; one-line range text and 80-character guidance | Implemented; dark selected radio, drawn normal-weight one-line text/guidance and 80 limit; stored-mode/empty-range regressions retained |
 | E08 | Vacancies/location/deadline three-column row; CV required checkbox and missing-publication-group amber guidance | Implemented; drawn date control now shares the original UTC deadline instant with time in Additional settings; changing date preserves cutoff including seconds; CV/warning below row. Mobile fields stack without overflow |
 | E09 | Experience text/engagement note/order and all real fields absent from abbreviated mock remain compactly accessible via additional-settings disclosure | Deviation A: additional disclosure is not drawn but prevents removal of experience text, engagement note, deadline-time editing and slug/brand guidance. Original limits/state preserved. New dates explicitly default to local 00:00; existing cutoffs preserved; clearing date clears instant. No schema/validation changes |
-| E10 | Summary textarea two rows and live 0/200 counter; Description, Responsibilities, Requirements, Nice to have fields | Pending |
-| E11 | Write/Preview toggle for every markdown field, dark selected pill; no simultaneous side-by-side preview; switching preserves edits | Pending; previous live-preview-only decision is superseded |
-| E12 | Preview uses existing sanitised Markdown, raw HTML disabled, links/text wrap and empty preview feedback | Pending |
-| E13 | Benefits and Skills Add item, press Enter inputs and pill items; keyboard add/remove and validated limits preserved (not multiline textareas) | Pending |
+| E10 | Summary textarea two rows and live 0/200 counter; Description, Responsibilities, Requirements, Nice to have fields | Implemented; drawn inline counter/rows/field order, four markdown values and limits retained; browser live-counter and SSR order assertions |
+| E11 | Write/Preview toggle for every markdown field, dark selected pill; no simultaneous side-by-side preview; switching preserves edits | Implemented; independent labelled button groups/aria-pressed, Description toggle before its label as drawn, other toggles below labels; preview hides textarea, Write restores it; both-width four-field preservation checks |
+| E12 | Preview uses existing sanitised Markdown, raw HTML disabled, links/text wrap and empty preview feedback | Implemented; existing SafeMarkdown reused in unblurred preview region; Bengali strong text and no raw script checked in browser at both widths; empty preview feedback verified; no renderer/security changes |
+| E13 | Benefits and Skills Add item, press Enter inputs and pill items; keyboard add/remove and validated limits preserved (not multiline textareas) | Deviation A: drawn Benefits-before-Skills inputs/pills and Enter-add restored, with small labelled remove crosses retained because deleting them removes item deletion. Benefits pills span their row as drawn; original item/count/length limits remain, descriptive limit guidance is screen-reader-linked rather than extra visible lines |
 | E14 | Questions compact .9-white cards, padding 12px 16px, 8px spacing, label/type/Required/Archive; full type-specific edit controls through disclosure/dialog | Pending |
 | E15 | Question ordering control exactly drawn drag-handle affordance, working native drag and drop plus keyboard/arrow alternatives, announcements and boundary states | Pending; no library; arrow-only alternative requires recorded deviation |
 | E16 | Add question, Add standard questions and Copy from another job actions below cards; seven independent defaults, copy source selector and feedback | Pending |
@@ -249,7 +250,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-54 Implemented / 19 Deviation / 49 Pending / 0 classified Not implemented**.
+57 Implemented / 20 Deviation / 45 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -259,7 +260,7 @@ P06 (prior reference/time), P08 (privacy/PDF guidance), P11 (mobile metadata),
 P13 (red button contrast), J01 (submit/reset function), J03 (shared contrast),
 J06 (mobile column/action accessibility), E02 (lifecycle-command access), E03
 (mobile bar fit), E19 (readiness text contrast), E09 (extra-field/time editing).
-All reasons are on their rows.
+E13 (list-item removal). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -302,6 +303,11 @@ Extra-field state, local cutoff preservation/clearing, primary-brand fallback an
 new-job auto/manual slug checks passed. Captures isolate the Basics card from a
 full-page image so sticky chrome does not falsely cover its heading. Persistence,
 full live/build/production e2e and physical/hosted platforms remain unverified.
+Editor block 3: typecheck/lint, two touched unit files / 14 tests and guarded
+both-width Content/preview captures passed. Four independent mode switches,
+unsaved Bengali/Markdown preservation, no raw script, empty preview, summary
+counter and Enter-add/removal checked. No save/publication/upload executed;
+question builder/dialog/options and candidate preview remain pending.
 Synthetic before/after/dialog captures at both widths inspected. Capture checked
 overflow, Cancel/Escape focus return, no deletion and mobile-to-desktop disclosure
 reachability. Initial render-test name count included the toolbar data attribute;

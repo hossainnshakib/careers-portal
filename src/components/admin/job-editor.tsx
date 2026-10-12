@@ -10,7 +10,7 @@ import {
   type OptionGroup,
 } from "@/lib/careers/option-labels";
 import { slugify } from "@/lib/slug";
-import { SafeMarkdown } from "@/lib/markdown/render";
+import { MarkdownEditor } from "./markdown-editor";
 import { jobCommandAction, saveJobAction } from "@/app/admin/(protected)/jobs/actions";
 import { QuestionBuilder } from "./question-builder";
 import { CandidatePreview } from "./candidate-preview";
@@ -62,13 +62,14 @@ function ChipInput({
     setText("");
   }
   return (
-    <div>
-      <span className="admin-kicker is-muted">{label}</span>
+    <div className="admin-content-list" data-list-kind={label}>
+      <span className="admin-content-list-label">{label === "Benefits" ? "Benefits (short list)" : label}</span>
       <input
         aria-label={label}
         value={text}
         maxLength={maxLength}
         placeholder={placeholder}
+        aria-describedby={`${label.toLowerCase()}-limits`}
         style={{ marginTop: 6 }}
         onChange={(event) => setText(event.target.value)}
         onKeyDown={(event) => {
@@ -93,7 +94,7 @@ function ChipInput({
           </span>
         ))}
       </div>
-      <span className="admin-note">
+      <span id={`${label.toLowerCase()}-limits`} className="sr-only">
         {values.length}/{max} · each up to {maxLength} characters
       </span>
     </div>
@@ -458,74 +459,37 @@ export function JobEditor({
                 </details>
               </section>
 
-              <section aria-labelledby="job-content" className="admin-card">
+              <section aria-labelledby="job-content" className="admin-card admin-job-content">
                 <h2 id="job-content" className="admin-kicker">2 · Content</h2>
-                <label style={{ marginTop: 12 }}>
-                  Summary
+                <label>
+                  Summary ({draft.summary.length}/200)
                   <textarea
                     aria-label="Summary"
                     value={draft.summary}
                     maxLength={200}
+                    rows={2}
                     onChange={(event) => field("summary", event.target.value)}
                   />
-                  <span className="admin-note" style={{ textAlign: "right" }}>{draft.summary.length}/200</span>
                 </label>
                 {(
                   [
                     ["descriptionMd", "Description"],
                     ["responsibilitiesMd", "Responsibilities"],
                     ["requirementsMd", "Requirements"],
+                    ["niceToHaveMd", "Nice to have"],
                   ] as const
                 ).map(([name, label]) => (
-                  <div key={name} className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
-                    <label>
-                      {label} (Markdown)
-                      <textarea
-                        aria-label={`${label} (Markdown)`}
-                        rows={6}
-                        value={draft[name]}
-                        maxLength={50000}
-                        onChange={(event) => field(name, event.target.value)}
-                      />
-                    </label>
-                    <section aria-label={`${label} preview`} className="admin-card admin-markdown">
-                      <h3 className="admin-kicker">{label} preview</h3>
-                      <SafeMarkdown text={draft[name]} />
-                    </section>
-                  </div>
+                  <MarkdownEditor key={name} label={label} value={draft[name]} onChange={(value) => field(name, value)} description={name === "descriptionMd"} />
                 ))}
-                <div className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
-                  <label>
-                    Nice to have (Markdown, optional)
-                    <textarea
-                      aria-label="Nice to have (Markdown)"
-                      rows={4}
-                      value={draft.niceToHaveMd}
-                      maxLength={50000}
-                      onChange={(event) => field("niceToHaveMd", event.target.value)}
-                    />
-                  </label>
-                  <section aria-label="Nice to have preview" className="admin-card admin-markdown">
-                    <h3 className="admin-kicker">Nice to have preview</h3>
-                    <SafeMarkdown text={draft.niceToHaveMd} />
-                  </section>
-                </div>
-                <div className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
+                <div className="admin-stack admin-content-lists">
+                  <ChipInput label="Benefits" values={draft.benefits} max={12} maxLength={60} placeholder="Add a benefit, press Enter" onValues={(benefits) => field("benefits", benefits)} />
                   <ChipInput
                     label="Skills"
                     values={draft.skills}
                     max={20}
                     maxLength={40}
-                    placeholder="Add a skill and press Enter"
+                    placeholder="Add a skill, press Enter"
                     onValues={(skills) => field("skills", skills)}
-                  />
-                  <ChipInput
-                    label="Benefits"
-                    values={draft.benefits}
-                    max={12}
-                    maxLength={60}
-                    placeholder="Add a benefit and press Enter"
-                    onValues={(benefits) => field("benefits", benefits)}
                   />
                 </div>
               </section>

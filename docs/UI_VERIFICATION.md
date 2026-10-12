@@ -91,6 +91,17 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   linked inactive options/readonly slug/seconds preservation. Permanent persistence
   assertions queued for final e2e; all broad gates remain final-only.
 
+### Editor block 3 — Content checkpoint
+
+- Drawn counter/rows/labels/toggles/list order reconciled. Independent Write/Preview
+  buttons retain edits, hide the inactive textarea and use existing SafeMarkdown;
+  empty preview is explicit. Benefits/Skills retain Enter-add/removal and limits.
+- Typecheck/lint and two touched unit files / 14 tests passed. Both-width isolated
+  Content and preview captures; browser checks passed four-field state preservation,
+  Bengali strong text, raw-script absence, empty preview, live counter, item removal
+  and overflow. No persistence/upload executed. Permanent save-flow assertions
+  now switch to Preview/Write explicitly, queued for final production e2e.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate
