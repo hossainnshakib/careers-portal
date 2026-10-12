@@ -1218,7 +1218,13 @@
 }
 
 .admin-auth { position: relative; overflow: clip; display: flex; align-items: center; justify-content: center; width: 100%; min-height: calc(100vh - 44px); padding: 40px 16px; }
-.admin-auth-card { position: relative; z-index: 1; width: 380px; max-width: 100%; display: grid; gap: 12px; background: rgba(255,255,255,.72); }
+.admin-auth-card { position: relative; z-index: 1; width: 380px; max-width: 100%; display: grid; gap: 12px; padding: 20px; background: rgba(255,255,255,.72); }
+.admin-auth-card .admin-stack { gap: 12px; }
+.admin-auth-card .admin-kicker, .admin-auth-card .admin-error { margin: 0; }
+.admin-auth-card .admin-error:empty { display: none; }
+.admin-auth-help { font-size: 12px; color: var(--admin-muted); }
+.admin-auth-help .admin-note { margin: 8px 0; }
+.admin-mfa-key { display: block; }
 .admin-auth-card .admin-wordmark { padding: 0; }
 .admin-mfa-qr { display: grid; place-items: center; padding: 16px; border: 2px dashed var(--admin-line); border-radius: 16px; background: white; }
 .admin-mfa-key { overflow-wrap: anywhere; padding: 12px; border-radius: 14px; background: rgba(15,23,42,.06); }
@@ -1226,6 +1232,14 @@
 .admin-digits {
   display: flex;
   gap: 8px;
+}
+.admin-auth-card .admin-digit { flex: 0 0 44px; font-weight: 700; }
+@media (max-width: 800px) {
+  .admin-auth { padding: 40px 12px; }
+}
+@media (max-width: 380px) {
+  .admin-auth-card .admin-digits { gap: 4px; }
+  .admin-auth-card .admin-digit { flex-basis: 38px; width: 38px; }
 }
 
 .admin-ui dialog {

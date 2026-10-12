@@ -1534,3 +1534,28 @@ HANDOFF READY
 - Next/in progress: login/MFA, implementation not started. Counts now 122 =
   74 Implemented / 31 Deviation / 17 Pending. Actual mutation/pending/failure and
   full production gates remain queued. No blocking owner decision.
+
+## 2026-10-12 — Login/MFA fidelity checkpoint
+
+- Centred 380px/.72-white/20px/12px auth card with drawn wordmark/orbs; redundant
+  Admin sign in heading replaced by the drawn Sign in kicker. Existing generic
+  credential error, pending guard, password clearing and pre-hydration disabled
+  fieldset unchanged (no new security rule or removed control).
+- MFA: drawn Set up two-step / Enter code / Continue/Verify hierarchy. Mandatory
+  password re-verification server gate untouched; permanent e2e now proves wrong
+  password is denied before any QR exists. Setup key moved into the required
+  Setup key and recovery disclosure together with owner-only recovery and
+  password-only-bypass warning; key only exists after enrollment.
+- Six 44x52px cells with 8px gap (narrower gap only below 380px so six stay on a
+  390 screen), first-cell one-time-code autofill, paste, backspace/left/right focus,
+  six-digit enablement. Both forms gate presentation on hydration and pending;
+  verify input resets after submission. Multiple-factor selection retained.
+- Captures at 1440/390 mask password inputs, QR, setup key and cells; secrets never
+  enter screenshots/logs/git. Wrong-credentials capture passed both widths.
+- Typecheck/lint, two unit files / 34 tests passed; guarded auth capture passed
+  error/clearing, cell CSS/paste/arrow/backspace, wrong-password denial, disclosure
+  and overflow. mfa-login helper and shell/mfa e2e labels updated to the drawn
+  Continue/Verify/Sign in wording; full production auth/CSP re-run remains final-only.
+- Next/in progress: mobile variants and cross-screen audit (S18/E27, V01–V08),
+  implementation not started. Counts: 122 = 81 Implemented / 31 Deviation /
+  10 Pending. No blocking owner decision.

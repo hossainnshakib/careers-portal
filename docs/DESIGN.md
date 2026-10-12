@@ -88,6 +88,11 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   Create/edit form right. Compact real controls retain ordering, activation and
   confirmed unused-option delete. Mobile rows stack with labelled counts and no
   nested blur. Original independent authorization and server guards stay unchanged.
+- Login/MFA fidelity: centred .72-white glass card with wordmark/orbs and drawn
+  Sign in kicker; no redundant heading. MFA keeps mandatory password re-verification
+  before QR enrolment, six 44x52px cells/8px gap, paste/autofill/backspace/arrow
+  focus and Continue. Setup key and owner-only recovery sit in a compact disclosure;
+  challenge shows Enter code. Hydration/pending disable both auth forms.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

@@ -11,7 +11,7 @@ export default async function LoginPage() {
   catch (error) {
     if (error instanceof AdminMfaRequiredError) redirect("/admin/mfa");
     if (!(error instanceof AdminAccessError)) throw error;
-    return <AdminAuthFrame><h1 className="admin-kicker">Admin sign in</h1><LoginForm /></AdminAuthFrame>;
+    return <AdminAuthFrame><h1 className="admin-kicker">Sign in</h1><LoginForm /></AdminAuthFrame>;
   }
   redirect("/admin");
 }

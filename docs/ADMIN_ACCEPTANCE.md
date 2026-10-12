@@ -38,8 +38,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: editor block 5 — candidate preview (checkpoint; full eleven-type production e2e queued).
 - Complete: brands list/editor (checkpoint; save/hide/order/logo mutations queued for final e2e).
 - Complete: combined departments/options (checkpoint; mutation/persistence e2e queued).
-- In progress: login and MFA (implementation not started).
-- Pending: mobile variants and cross-screen audit.
+- Complete: login and MFA (checkpoint; full production auth/CSP e2e re-run queued).
+- In progress: mobile variants and cross-screen audit (S18/E27 and V01–V08).
 - Pending: final default/live/build/production-browser gates and final captures.
 
 ## 1. Shell, shared controls and glass (Main + all desktop boards + MobileMenu)
@@ -193,13 +193,13 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| L01 | Centred 380px/.72-white/24px-radius card, 20px padding, 12px gaps; blue/red orbs and Careers admin wordmark | Pending |
-| L02 | Sign in blue kicker, Email and Password labelled fields, primary Sign in; incorrect credentials red message and pending/disabled/hydration safety | Pending; prior Admin sign in heading must match visual hierarchy without redundant visible heading |
-| L03 | MFA enrolment Set up two-step kicker, password re-verification before setup, actual QR, six 44x52px cells, 8px gap and Verify | Pending; password gate cannot be removed |
-| L04 | Setup key and recovery instructions preserved through compact disclosure; no setup secrets in screenshots/logs/git | Pending; explicit owner-only recovery wording |
-| L05 | MFA challenge Enter code kicker, six-cell TOTP and Continue; paste/autofill/single-digit/backspace/arrows/focus/error handling | Pending |
-| L06 | Invalid/expired code, password denial, pending verification, already-AAL2 redirect and sign-out preserve unchanged auth checks | Pending |
-| L07 | Mobile cards fit 390 width; six cells remain usable, fields text readable and no clipped QR/input/button | Pending |
+| L01 | Centred 380px/.72-white/24px-radius card, 20px padding, 12px gaps; blue/red orbs and Careers admin wordmark | Implemented; drawn geometry/wordmark/orbs restored with opaque fallback; both-width captures inspected with all secrets masked |
+| L02 | Sign in blue kicker, Email and Password labelled fields, primary Sign in; incorrect credentials red message and pending/disabled/hydration safety | Implemented; redundant heading removed so the Sign in kicker matches drawn hierarchy. Generic existing red error (no credential probing detail), pending label, password clearing and pre-hydration disabled fieldset retained; wrong-credentials capture passed at both widths |
+| L03 | MFA enrolment Set up two-step kicker, password re-verification before setup, actual QR, six 44x52px cells, 8px gap and Verify | Implemented; password re-verification server gate unchanged (wrong password denied before QR in permanent e2e), drawn kicker/actual QR/44x52px cells/8px gap/Verify restored; QR masked in captures |
+| L04 | Setup key and recovery instructions preserved through compact disclosure; no setup secrets in screenshots/logs/git | Implemented; key only appears after enrollment inside Setup key and recovery disclosure with owner-only manual recovery/no-password-bypass wording; masked disclosure capture passed, no secret in repo/logs |
+| L05 | MFA challenge Enter code kicker, six-cell TOTP and Continue; paste/autofill/single-digit/backspace/arrows/focus/error handling | Implemented; drawn Enter code/Continue labels, first-cell one-time-code autofill, 6-cell paste, backspace/arrow focus, incomplete-code disable; guarded cell-by-cell paste/arrows/focus/enable checks passed |
+| L06 | Invalid/expired code, password denial, pending verification, already-AAL2 redirect and sign-out preserve unchanged auth checks | Implemented; client checks only gate presentation, server actions/requireAdmin/allowMfaSetup/AAL2 redirect and logout unchanged; wrong-password enrollment denial and existing full MFA/CSP e2e assertions retained, final production re-run queued |
+| L07 | Mobile cards fit 390 width; six cells remain usable, fields text readable and no clipped QR/input/button | Implemented; mobile card padding/narrow-cell gap keeps six 44px cells at 390, unscaled QR/fields/buttons; both-width overflow and cell-size checks passed with QR/key masked |
 
 ## 10. Cross-screen/mobile/final audit
 
@@ -250,7 +250,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-74 Implemented / 31 Deviation / 17 Pending / 0 classified Not implemented**.
+81 Implemented / 31 Deviation / 10 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable

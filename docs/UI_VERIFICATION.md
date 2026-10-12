@@ -162,6 +162,24 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   added no-save both-route settings e2e. Mutation/failed action/pending injection
   execution and full production gates remain final-only. O03/O07/O08 documented.
 
+### Login and MFA checkpoint
+
+- Drawn centred auth card/wordmark/orbs, Sign in kicker (redundant heading removed),
+  generic existing credential error, hydration/pending guards. MFA keeps password
+  re-verification, actual QR, six 44x52px/8px cells, Continue/Verify buttons and
+  owner-only recovery/setup-key disclosure; challenge uses Enter code/Continue.
+- Typecheck/lint, two touched unit files / 34 tests passed. Guarded both-width
+  1440/390 captures (QR, setup key, passwords and cells masked) inspected for login,
+  wrong-credentials error, challenge, password gate and setup+disclosure; checks
+  covered error/password clearing, six-cell CSS size, complete-code enable, arrow/
+  backspace focus, cell-by-cell paste, wrong-password denial before QR and overflow.
+- Capture-helper adjustments: wrong-credentials text expectation updated to the
+  existing generic message (correctness check retained), hydration retry before
+  setup click, and cookie clearing instead of Sign out for cross-account navigation.
+  No assertion dropped; permanent mfa e2e now also asserts password denial before
+  enrolment. Full production auth/CSP suite remains final-only; setup secrets were
+  never written to disk or logged.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate
