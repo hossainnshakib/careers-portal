@@ -681,3 +681,28 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
   replaced with abbreviated mock form fields. Detailed differences and cleanup
   are recorded in `ADMIN_UI_RESTYLE.md`; validation evidence is recorded after
   browser/visual execution, not inferred from the prior public finishing pass.
+
+## 2026-10-12 — Admin fidelity authorization and acceptance baseline
+
+- Owner approved autonomous implementation of the entire admin fidelity pass.
+  Newer instruction explicitly authorizes fetch, checkout main, fast-forward
+  pull and creating `admin-fidelity` from latest main (already merged public UI).
+  Base is `41e3768`; `admin-fidelity` is published. No merge, force-push or main
+  content update was performed. Do not request approval again per screen.
+- `docs/ADMIN_ACCEPTANCE.md` is the pre-code acceptance contract for every board,
+  visible state and interaction. Immediate publish/add-question, absent markdown
+  toggle/repeat indicator, separate Settings presentation and test-driven visual
+  differences from the first admin pass are not approved exceptions.
+- All 14 HTML/CSS boards were read; identical CSS hash is recorded in acceptance.
+  References at 1440/390 were rendered/viewed without executing design runtime
+  scripts. Installed self-hosted fonts replace remote font loading for offline
+  reproducibility. Unmodified source folder totals 118,285 bytes and is authorized
+  for commit; screenshots remain ignored. Static boards' broken mobile overflow
+  is not a reason to remove functions: use dedicated mobile boards and document
+  only necessary accessibility fixes.
+- Preserve direct requireAdmin/MFA/validation/storage; no dependency/migration or
+  non-dev access. Per screen only typecheck/lint/touched unit tests; reserve full
+  default/live/build+PDF trace/production e2e for final checkpoint. Screenshot
+  capture is distinct from a broad e2e verification run.
+- Unrelated `src/db/queries/test-accounts.ts` remains untouched/unstaged (diff stat
+  only: 8 insertions, 1 deletion). Untracked owner prompts remain unstaged too.
