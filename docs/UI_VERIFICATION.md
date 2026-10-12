@@ -29,6 +29,18 @@
 
 The sections below are historical evidence, not fidelity-pass completion claims.
 
+### Applications fidelity checkpoint
+
+- Compact filter/chip/table/mobile/empty-state layout reconciled; Applied before
+  projected read-only without a migration or per-row network query. Reference
+  column widths retain wrap behaviour even for long real values.
+- Typecheck/lint: passed. Three touched unit files: 12 passed. Initial SQL alias
+  regression and obsolete lint directive fixed without assertion suppression.
+- Ignored masked before/after/empty captures at 1440/390; capture checks passed for
+  overflow, disclosure and synthetic earlier/first submission flags. New live
+  case-insensitivity/equal-time/filter-independence cases and permanent e2e are
+  queued for the final run. Full default/live/build/production gates NOT run.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

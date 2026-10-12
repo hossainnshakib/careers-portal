@@ -4,7 +4,7 @@ import { ViewerDate } from "./viewer-date";
 import { BrandMarks } from "./brand-mark";
 import { snapshotAccent } from "@/lib/brands/contrast";
 
-type Row = Awaited<ReturnType<typeof loadReviewDashboard>>["latest"][number];
+type Row = Awaited<ReturnType<typeof loadReviewDashboard>>["latest"][number] & { appliedBefore?: boolean };
 type Accent = { name: string; accentColor: string | null; logoUrl?: string | null };
 
 /**
@@ -12,8 +12,8 @@ type Accent = { name: string; accentColor: string | null; logoUrl?: string | nul
  * Explicit ARIA roles keep table semantics valid at mobile widths, where the
  * CSS turns each row into a stacked card.
  */
-export function ApplicationTable({ rows, brandAccents = [], initialsOnly = false }: { rows: Row[]; brandAccents?: Accent[]; initialsOnly?: boolean }) {
-  if (!rows.length) return <ApplicationEmptyState />;
+export function ApplicationTable({ rows, brandAccents = [], initialsOnly = false, emptyUnfiltered = false }: { rows: Row[]; brandAccents?: Accent[]; initialsOnly?: boolean; emptyUnfiltered?: boolean }) {
+  if (!rows.length) return <ApplicationEmptyState unfiltered={emptyUnfiltered} />;
   return (
     <div className="admin-table admin-table-rows">
       <table role="table" aria-label="Applications">
@@ -58,6 +58,7 @@ export function ApplicationTable({ rows, brandAccents = [], initialsOnly = false
               </td>
               <td role="cell" className="admin-cell-date">
                 <ViewerDate iso={row.submittedAt.toISOString()} />
+                {row.appliedBefore && <span className="admin-chip admin-applied-before">Applied before</span>}
               </td>
             </tr>
           ))}
@@ -67,17 +68,16 @@ export function ApplicationTable({ rows, brandAccents = [], initialsOnly = false
   );
 }
 
-export function ApplicationEmptyState() {
+export function ApplicationEmptyState({ unfiltered = false }: { unfiltered?: boolean }) {
   return (
     <div className="admin-card admin-empty">
-      <b>No applications match these filters</b>
+      <b>{unfiltered ? "No applications yet" : "No applications match these filters"}</b>
       <p className="admin-muted" style={{ margin: 0 }}>
-        Try a different name or remove a filter.
+        {unfiltered ? "Applications will appear here when candidates apply." : "Try a different name or remove a filter."}
       </p>
       {/* Fresh private-document navigation renews authorization and the CSP nonce. */}
-      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-      <a href="/admin/applications" className="admin-btn">
-        Clear filters
+      <a href={unfiltered ? "/admin/jobs/new" : "/admin/applications"} className="admin-btn">
+        {unfiltered ? "New job" : "Clear filters"}
       </a>
     </div>
   );

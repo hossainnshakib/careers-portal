@@ -38,6 +38,10 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   markdown toggles and publish/add-question dialogs are required pending work,
   not accepted omissions. Existing logo rendering remains for the brand uploader
   and unreconciled screens until their own checkpoints. All real fields survive.
+- Applications fidelity: compact filter row, More filters for inclusive end date/
+  sort/timezone guidance, chips below/on the mobile Filters row, reference column
+  proportions, accent initials and Applied before pills. Read-only email history
+  is computed server-side, not inferred from names. All filters remain URL-driven.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

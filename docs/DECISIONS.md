@@ -876,3 +876,26 @@ ignored capture helper with applications list before editing. Keep one todo in
 progress and continue autonomously from applications, not from completed shell.
 
 HANDOFF READY
+
+## 2026-10-12 — Admin fidelity applications list checkpoint
+
+- Applications matches the compact board row/chips/column proportions/mobile
+  cards and pagination. Pointer submit and More filters are compact icon controls
+  with accessible labels/tooltips; To date/sort/timezone guidance remain available,
+  as does every original GET parameter. Mobile Filters/chips now share the drawn
+  row. Genuine-empty and filtered-empty messages/actions are distinct.
+- Added Applied before using a correlated read-only EXISTS within the existing
+  bounded list SELECT. It uses indexed lower(email), strictly earlier timestamps
+  and no list-filter restriction; equal timestamps do not imply ordering. No
+  migration, N+1 network read, applicant-name inference or additional PII output.
+- Desktop/mobile marks use drawn initials, with previously measured readable ink
+  corrections. Current allowed deviations A02 (accessible submission/extra-filter
+  access) and A06 (shared contrast corrections) are listed in acceptance.
+- Typecheck/lint passed; three touched unit files / 12 cases passed. SQL regression
+  caught Drizzle rendering an aliased table interpolation as the alias alone;
+  explicit original table AS identifier fixes it, and the assertion remains.
+- Masked before/after/empty 1440/390 captures saved locally; actual current-screen
+  before/after/reference images inspected. Capture checks passed for disclosure,
+  overflow and real synthetic first/earlier flags. Full live/default/build/e2e
+  remains final-only. Additional live equal-time/case-insensitive/independent-filter
+  cases and permanent e2e were written, not yet production-run.

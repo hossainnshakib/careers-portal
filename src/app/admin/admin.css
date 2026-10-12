@@ -1500,6 +1500,130 @@
 
 /* ---------- accessibility preferences ---------- */
 
+/* Applications: compact board row, additive filters disclosed rather than removed. */
+.admin-review-filter-block {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.admin-review-filters {
+  padding: 14px;
+  grid-template-columns: minmax(200px, 1fr) 90px 132px 74px 92px 150px 40px 42px;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-review-primary {
+  display: contents;
+}
+
+.admin-review-filters input,
+.admin-review-filters select {
+  font-weight: 400;
+}
+
+.admin-applications-list .admin-table table { table-layout: fixed; }
+.admin-applications-list .admin-table th:nth-child(1) { width: 16%; }
+.admin-applications-list .admin-table th:nth-child(2) { width: 32%; }
+.admin-applications-list .admin-table th:nth-child(3) { width: 7%; }
+.admin-applications-list .admin-table th:nth-child(4) { width: 15%; }
+.admin-applications-list .admin-table th:nth-child(5) { width: 30%; }
+.admin-applications-list .admin-brand-marks { flex-wrap: wrap; max-width: 100%; }
+.admin-applications-list .admin-page { background: none; color: var(--admin-muted); }
+.admin-applications-list .admin-page[aria-current="page"] { color: var(--admin-ink); }
+
+.admin-review-more,
+.admin-review-submit {
+  padding: 10px;
+  height: 42px;
+}
+
+.admin-review-submit {
+  grid-column: 8;
+  grid-row: 1;
+}
+
+.admin-review-submit-label {
+  display: none;
+}
+
+.admin-review-extra {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+
+.admin-review-extra[hidden] {
+  display: none;
+}
+
+.admin-review-filter-controls {
+  display: none;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-review-filter-controls:has(.admin-chips) {
+  display: flex;
+}
+
+.admin-applied-before {
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.admin-page.is-disabled {
+  background: none;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1180px) and (min-width: 801px) {
+  .admin-review-filters {
+    grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(0, 1fr));
+  }
+  .admin-review-submit {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 800px) {
+  .admin-review-filter-block {
+    display: flex;
+    flex-direction: column;
+  }
+  .admin-review-filters {
+    display: contents;
+  }
+  .admin-review-search { order: 1; }
+  .admin-review-filter-controls { display: flex; order: 2; }
+  .admin-review-filter-controls .admin-filter-toggle { margin: 0; }
+  .admin-review-primary { display: none; order: 3; }
+  .admin-review-primary.is-open {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .admin-review-primary .sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    clip: auto;
+  }
+  .admin-review-more { display: none; }
+  .admin-review-extra { order: 4; }
+  .admin-review-submit { display: none; order: 5; }
+  .admin-review-submit.is-open { display: flex; }
+  .admin-review-submit-icon { display: none; }
+  .admin-review-submit-label { display: inline; }
+  .admin-applied-before { margin-left: auto; display: block; width: max-content; margin-top: 4px; }
+}
+
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .admin-card,
   .admin-sidebar,

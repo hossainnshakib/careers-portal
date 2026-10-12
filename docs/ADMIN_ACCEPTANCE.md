@@ -28,8 +28,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: acceptance baseline and reference review (`5a32b0e`).
 - Complete: shell and mobile menu (screen checkpoint; final production audit pending).
 - Complete: dashboard (screen checkpoint; final production audit pending).
-- In progress: applications list.
-- Pending: applicant profile and delete dialog.
+- Complete: applications list (screen checkpoint; final live/production audit pending).
+- In progress: applicant profile and delete dialog.
 - Pending: jobs list and row menu.
 - Pending: job editor, question builder and all dialogs.
 - Pending: brands list/editor.
@@ -81,18 +81,18 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| A01 | Applications eyebrow/title and desktop toolbar; compact glass filter row with 14px padding/10px gaps | Pending |
-| A02 | Inline name/email search with 200px minimum, Brand, Department, Job, Status and date control in drawn order | Pending |
-| A03 | Preserve inclusive From/To, timezone, sort and explicit submit/clear controls via More filters; no existing filter removed | Pending; previous fully expanded grid is not approved |
-| A04 | Active filter chips with removable cross and Clear all below filters, each removal preserves other filters and date timezone | Pending |
-| A05 | .76-white table card, columns Candidate, Position, Brands, Status, Applied (Dhaka), 13.5px table, 12px headers and drawn cell padding | Pending |
-| A06 | Bold clickable names and blue New dot; brand initial marks; sentence-case status colours and Dhaka date | Pending |
-| A07 | Applied before indicator beside applied date, case-insensitive email, another earlier application; additive read-only lookup per listed email, no migration and no name inference | Pending; previously omitted without approval |
-| A08 | Result total, 25 per page and previous/number/ellipsis/next pagination; selected page and disabled boundaries | Pending |
-| A09 | Mobile search remains visible; Filters control with collapsed full filter set; active chip alongside it, result count above cards | Pending |
-| A10 | Mobile card name/status row, role line, brands left/date right; repeat indicator remains reachable without overflow | Pending |
-| A11 | Empty state exact title No applications match these filters, explanatory text, centred 48px padding, working Clear filters button | Pending |
-| A12 | Unfiltered empty state, invalid filters, cleanup retry, pending/error states preserve working behaviour with compact presentation | Pending |
+| A01 | Applications eyebrow/title and desktop toolbar; compact glass filter row with 14px padding/10px gaps | Implemented; before/after 1440/390 captures; large expanded grid removed |
+| A02 | Inline name/email search with 200px minimum, Brand, Department, Job, Status and date control in drawn order | Deviation A/C: drawn order retained, with two compact labelled icon controls appended (More filters and explicit submit). Removing pointer submission would leave no mouse/touch way to apply edits; omitting disclosure would make To date/sort unavailable. Labels/tooltips/keyboard states retained; not an automatic filter/navigation rewrite |
+| A03 | Preserve inclusive From/To, timezone, sort and explicit submit/clear controls via More filters; no existing filter removed | Implemented; To date/sort/timezone guidance disclosed, From date in drawn row; all submitted names retained; unit and capture disclosure checks pass |
+| A04 | Active filter chips with removable cross and Clear all below filters, each removal preserves other filters and date timezone | Implemented; chips moved below form; timezone/from/to/sort preservation unit test; mobile controls beside chips |
+| A05 | .76-white table card, columns Candidate, Position, Brands, Status, Applied (Dhaka), 13.5px table, 12px headers and drawn cell padding | Implemented; reference column proportions fixed so long values wrap within the drawn layout; dashboard table unaffected |
+| A06 | Bold clickable names and blue New dot; brand initial marks; sentence-case status colours and Dhaka date | Deviation C: shape/marks/date match; shared measured green/initial ink contrast corrections S13/D06 retained rather than unsafe mock colours. Candidate cells masked in screenshot inspection; synthetic render assertions retain names/links |
+| A07 | Applied before indicator beside applied date, case-insensitive email, another earlier application; additive read-only lookup per listed email, no migration and no name inference | Implemented; correlated EXISTS within bounded list query, lower(email) index, strictly earlier timestamp (ties do not qualify), independent of list filters; unit SQL projection and real synthetic capture checks pass; additional live cases queued |
+| A08 | Result total, 25 per page and previous/number/ellipsis/next pagination; selected page and disabled boundaries | Implemented; plain drawn pagination with aria-current and disabled end arrows; server pagination/URL semantics unchanged |
+| A09 | Mobile search remains visible; Filters control with collapsed full filter set; active chip alongside it, result count above cards | Implemented; 390 capture and disclosure checks, desktop/mobile placeholders and legible controls |
+| A10 | Mobile card name/status row, role line, brands left/date right; repeat indicator remains reachable without overflow | Implemented; Applied before wraps into a right-aligned pill beneath date; both width overflow checks passed |
+| A11 | Empty state exact title No applications match these filters, explanatory text, centred 48px padding, working Clear filters button | Implemented; empty captures both widths and render test; no duplicate reset control in empty form |
+| A12 | Unfiltered empty state, invalid filters, cleanup retry, pending/error states preserve working behaviour with compact presentation | Implemented; genuine empty state has No applications yet/New job, tested; invalid-filter message/cleanup control and generic read-error boundary remain directly gated; provider outage/cleanup failure not forced into screenshots |
 
 ## 4. Applicant profile (Applicant + MobileApplicant + Dialogs)
 
@@ -246,11 +246,12 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-23 Implemented / 5 Deviation / 94 Pending / 0 classified Not implemented**.
+33 Implemented / 7 Deviation / 82 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
-that the pass is complete. The five current deviations are S13 (green contrast),
+that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
-brand initials), D10 (mobile statistics access). All reasons are on their rows.
+brand initials), D10 (mobile statistics access), A02 (retained accessible submission/
+extra-filter access), A06 (shared measured contrast corrections). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -270,4 +271,12 @@ on expansion, mobile statistics disclosure and menu checks. Viewed both masked
 full-page widths; fixed a visible mid-word status wrap with normal pill wrapping,
 then recaptured. Permanent browser assertions are queued for the final run.
 No query, auth gate, mutation, dependency or migration changed in this checkpoint.
+Applications checkpoint: typecheck/lint and three touched unit files / 12 tests
+passed. Before/after/empty captures at both widths are ignored and candidate cells
+are masked. Capture checks passed for More filters/mobile Filters, page overflow,
+and synthetic first/earlier application flags. SQL unit initially caught alias-only
+FROM rendering; corrected real-table AS alias without weakening the assertion.
+New live equal-timestamp/case-insensitive/filter-independent flags and permanent
+browser assertions are queued, not executed as broad verification. No migration,
+dependency, validation, storage or authorization changes.
 Hosted Vercel, real physical phones and non-dev resources are not verified.

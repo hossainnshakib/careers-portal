@@ -19,6 +19,7 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   await page.getByRole("button", { name: "Filter applications" }).click();
   await expect(page).toHaveURL(/status=new/);
   await expect(page.getByRole("table").getByRole("row")).toHaveCount(2);
+  await expect(page.getByRole("table").getByText("Applied before", { exact: true })).toBeVisible();
   const candidate = page.getByRole("link", { name: "শ্রী ক্ষিতিশ", exact: true });
   await candidate.focus(); await candidate.press("Enter");
   await expect(page).toHaveURL(new RegExp(`/admin/applications/${fixture.applicationId}$`));
@@ -54,4 +55,7 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   expect(await reviewFixture.verifyReview(fixture.applicationId)).toMatchObject({ exists: false, notes: 0, events: 0, attachments: 0, answers: 0, filesAbsent: true });
   await page.goto(`/admin/applications/${fixture.previousId}`);
   await expect(page.getByRole("heading", { name: "শ্রী ক্ষিতিশ", exact: true })).toBeVisible();
+  await page.goto(`/admin/applications?job=${fixture.jobId}`);
+  await expect(page.getByRole("table").getByRole("row")).toHaveCount(2);
+  await expect(page.getByRole("table").getByText("Applied before", { exact: true })).toHaveCount(0);
 });

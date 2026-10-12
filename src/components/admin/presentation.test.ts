@@ -5,6 +5,7 @@ import { expect, it, vi } from "vitest";
 import { contrastRatio } from "@/lib/brands/contrast";
 import { BrandMark } from "./brand-mark";
 import { ApplicationTable } from "./application-table";
+import { ApplicationEmptyState } from "./application-table";
 
 vi.mock("@/app/admin/mfa/actions", () => ({ enrollMfaAction: vi.fn(), verifyMfaAction: vi.fn() }));
 import { MfaForm } from "./mfa-form";
@@ -76,4 +77,24 @@ it("matches reference glass density without nested blur and supplies opaque fall
   expect(css).toContain("@media (prefers-reduced-transparency: reduce)");
   expect(css).toMatch(/\.admin-sidebar nav\s*\{\s*display: grid;\s*gap: 4px;/);
   expect(css).toContain("line-height: normal;");
+});
+
+it("shows Applied before only for the additive earlier-email flag, never by matching candidate names", () => {
+  const base = { id: "fixture", reference: "APP-234567", fullName: "Synthetic candidate", email: "fixture@example.com", status: "new" as const, submittedAt: new Date("2026-10-09T01:42:00Z"), jobTitle: "Fixture role", brandNames: ["Fixture"], department: "Fixture department" };
+  const html = renderToStaticMarkup(createElement(ApplicationTable, { rows: [{ ...base, appliedBefore: true }, { ...base, id: "second", appliedBefore: false }], initialsOnly: true, brandAccents: [{ name: "Fixture", accentColor: "#123456", logoUrl: "/fixture.svg" }] }));
+  expect([...html.matchAll(/>Applied before</g)]).toHaveLength(1);
+  expect(html).not.toContain("fixture@example.com");
+  expect(html).not.toContain("/fixture.svg");
+  expect(html).toContain("admin-applied-before");
+});
+
+it("distinguishes genuinely empty applications from filtered misses without a useless reset action", () => {
+  const empty = renderToStaticMarkup(createElement(ApplicationEmptyState, { unfiltered: true }));
+  expect(empty).toContain("No applications yet");
+  expect(empty).toContain('href="/admin/jobs/new"');
+  expect(empty).not.toContain("Clear filters");
+  const filtered = renderToStaticMarkup(createElement(ApplicationEmptyState));
+  expect(filtered).toContain("No applications match these filters");
+  expect(filtered).toContain("Try a different name or remove a filter.");
+  expect(filtered).toContain("Clear filters");
 });
