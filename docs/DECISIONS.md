@@ -1081,3 +1081,112 @@ HANDOFF READY
   No job mutation was executed. Confirmed lifecycle/slug locking remains final-e2e.
 - **Completed editor blocks: 1 only. Next/in progress: 2 Basics (not started).
   Pending: 3 Content, 4 question builder/Add-question/options, 5 candidate preview.**
+
+## Admin fidelity handoff — 2026-10-12 (Jobs + editor block 1 complete)
+
+### Current contract
+
+- Continue autonomously on pushed **admin-fidelity**, no approval request. Do not
+  merge, touch main, force-push, spawn agents, add dependencies/migrations or use
+  non-dev resources. Every current gate/input/storage rule stays independent.
+- Latest user requires editor ONE BLOCK AT A TIME, commit/push after each:
+  1 shell/sticky action bar/Publish; 2 Basics; 3 Content/Write-Preview; 4 question
+  builder/Add-question/options editor; 5 live candidate preview.
+- Deviations ONLY for broken/removed functions, schema/migration/permission/
+  dependency blockers, or security/accessibility. Simpler/kept behaviour/real data
+  alone is not a reason. Earlier deviations remain provisional for final audit,
+  not newly approved by their presence in acceptance.
+- Context saving: only current block's HTML/reference/captures, short output,
+  small acceptance edits; do not re-open completed screen references/screenshots.
+  One todo in progress. Per-block typecheck/lint/touched units plus guarded captures;
+  broad default/live/build/PDF-trace/production e2e reserved for the END. Handoff
+  again around 60% context if needed.
+
+### Published state and exact blocks
+
+- **aa7db01** — Jobs filters/table/accessible row disclosures, pushed.
+- **29c139e** — Editor block 1 shell and Publish confirmation, pushed.
+- Completed screens: shell/dashboard/applications/profile-delete/Jobs.
+- **Editor done: block 1 ONLY. In progress: block 2 Basics, code NOT started.**
+- Pending editor blocks: **3 Content; 4 question builder/Add-question/options;
+  5 live candidate preview**. None is complete merely because existing code works.
+- Remaining screens: brands, combined Departments/options, auth/MFA, mobile audit,
+  final verification. No blocking owner decision exists.
+- Acceptance counts freshly verified: **122 rows = 50 Implemented / 18 Deviation /
+  54 Pending / 0 classified Not implemented**. The pass is NOT complete.
+- This session added deviation rows J01/J03/J06/E02/E03/E19; full reasons/evidence
+  are in acceptance. Earlier 12 remain there. Final report lists ALL reasons.
+- Owner work remains untouched/unstaged: test-accounts.ts **8 insertions / 1 deletion**
+  (diff stat only; never read/print content) and the two untracked owner prompts.
+
+### Jobs notes
+
+- Drawn Status/Department/Brand/Search order, column proportions, initials, option
+  labels/salary/count/date and row-menu hint restored. Functional pointer submit/
+  reset use compact labelled icons. Mobile cards replace inaccessible 390 table
+  overflow. Original GET params and independently authorized commands unchanged.
+- JobRowMenu focuses Edit, closes on tab-away/outside pointer/Escape, flips above
+  near the bottom and preserves pending feedback. Eligible zero-application draft
+  Delete has a native irreversible confirmation. Cancel leaves the job unchanged.
+- Jobs page unit mocks exercise actual HTML/filter order/columns/values/empty states;
+  initial order test accidentally picked toolbar q, fixed by checking the filter
+  form specifically while still requiring every drawn field.
+
+### Editor block 1 notes
+
+- JobEditor retains all state/actions. Drawn labels use Duplicate and Publish,
+  retaining Duplicate job/Publish job accessible names. Draft save now says Save
+  draft; non-draft save remains Save changes. More actions contains Close/Reopen/
+  Delete, and Duplicate on mobile. Desktop duplicate remains directly visible.
+- Missing-group warning moved from bar to Basics as drawn. Basics INTERNALS have
+  not otherwise been reconciled. Grid remains 1.4fr:1fr with 14px gaps.
+- Publish dialog is native, 420px/.9 white/grid-gap12, actual title/path/slug-lock
+  warning, readiness or actual blockers, right-aligned Cancel/Publish. Advisory
+  helper `src/lib/admin/job-publish.ts` uses existing jobInput and required-group
+  rules. Server save("publish") remains authoritative and unchanged. Pending
+  prevents Escape/Cancel; failed saves stay visible without false success.
+- Cancel/Escape preserve draft and focus. No current-capture confirmation invokes
+  a save; production lifecycle tests have been updated to confirm explicitly.
+- New-job heading is New job, not Create job. Tests for lifecycle commands now
+  open More actions; existing assertions remain. Question-builder e2e also confirms
+  publication; later question/markdown changes will need further interaction edits.
+
+### Verification and gaps
+
+- Jobs: typecheck/lint; 2 touched unit files / 10 tests passed. Guarded before/after/
+  menu/empty 1440/390 captures; menu fit/focus/Escape/overflow/draft Cancel passed.
+- Editor block 1: typecheck/lint; job-editor unit file / 8 tests passed. Guarded
+  shell/Publish captures both widths; Cancel/Escape unchanged draft/focus, missing
+  groups disabling confirm, unsaved-title preservation, sticky top8 at scroll500
+  and overflow checks all passed. No job mutation/publication executed.
+- Native Publish actual confirmation/slug locking, Jobs commands, browser
+  failures/pending injections/container release are queued for final production
+  e2e, not newly verified. Next dev Issue indicator appeared in captures; no HTML
+  nesting diagnostic was emitted by focused instrumentation. Recheck clean
+  production console during final audit; do not treat dev tooling as UI evidence.
+- Broad default/live/build/PDF trace guard/production e2e still NOT run for this
+  pass. Earlier restyle evidence is historical. Final gates run serially with
+  RUN_SUPABASE_TESTS=1 and RUN_LIGHTHOUSE=1 where relevant. Hosted Vercel/physical
+  phones remain unverified. No production resources accessed.
+
+### Next block
+
+1. Read latest status/log/handoff/acceptance, continue **Basics** only. Inspect
+   job-editor.tsx Basics lines and only that portion of JobEditor.dc.html. Do not
+   re-read completed Jobs/shell screens or unrelated question/preview internals.
+2. Reconcile E05–E09: title/slug/department/primary brand grid; drawn Brands and
+   option groups/chips; selected dark salary; vacancies/location/deadline row; CV
+   and missing-group guidance. Additional-settings disclosure preserves experience
+   text, engagement note/order and any full deadline-time functionality rather
+   than deleting fields to mimic an abbreviated board. Respect locked published
+   slug and linked inactive options. No schema/dependency changes.
+3. Use ignored capture helpers with ADMIN_CAPTURE_SPEC; create a Basics-specific
+   helper or extend editor helper, no writes to owner jobs. Take before/after at
+   both widths, inspect only current block. Run gates, small acceptance/doc edits,
+   commit/push. Then Content → questions/dialog/options → preview in separate commits.
+- Helpers: tmp/admin-capture.config.ts, jobs-capture.spec.ts,
+  editor-shell-capture.spec.ts. Set ADMIN_CAPTURE_SPEC to the needed spec and
+  ADMIN_CAPTURE_STAGE=after, then run pnpm exec playwright test --config
+  tmp/admin-capture.config.ts. Captures/helpers/traces/videos stay untracked.
+
+HANDOFF READY
