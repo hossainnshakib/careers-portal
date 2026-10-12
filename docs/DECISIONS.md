@@ -1415,3 +1415,95 @@ HANDOFF READY
 - Next/in progress: combined Departments/options, implementation not started.
   Counts 122 = 68 Implemented / 28 Deviation / 26 Pending. Login/MFA,
   mobile/cross-screen and final gates remain; no blocking owner question.
+
+## Admin fidelity handoff — 2026-10-12 (editor complete, brands complete)
+
+### Contract / published state
+
+- Continue autonomously on **admin-fidelity** under the whole-pass go. Never merge,
+  force-push, use subagents, access production/non-dev resources or add dependencies,
+  migrations/permissions. Preserve every real action/field and independent auth/MFA,
+  validation/storage gate. Owner work is never reverted/staged.
+- Read only the current screen/block's mock-up pieces and necessary captures. One
+  todo in progress; short output/small acceptance edits. Per-block typecheck/lint/
+  touched units/guarded capture only; broad gates are reserved for completion.
+- Strict deviations only for broken/removed function, schema/dependency/permission
+  blocker, or security/accessibility. Existing reasons remain provisional for owner
+  review. Simpler/real data/kept behavior alone is not a reason.
+- All five editor blocks are now complete as checkpoints. Published **dab8b58**
+  question builder/Add-question/options; **faee063** candidate preview;
+  **2c221f1** brands. Earlier block commits remain 29c139e/30a64bd/24da362.
+- Sole in-progress todo: **combined Departments/options, implementation NOT
+  started**. Login/MFA, mobile/cross-screen audit, then final verification remain.
+- Fresh count: **122 = 68 Implemented / 28 Deviation / 26 Pending / 0 classified
+  Not implemented**. Pending means unfinished; this is NOT final acceptance.
+- New deviations this continuation: E14 mobile question row fit; E17 full-definition
+  editing/archive-vs-remove clarity; E18 complete local preview/mobile control size;
+  B02/B07 accent contrast; B03 retained commands/selection; B04 usable upload/WebP;
+  B05 supported description bound. Every reason is in ADMIN_ACCEPTANCE.md.
+- Owner test-accounts.ts remains untouched/unstaged: **8 insertions / 1 deletion**,
+  stat only; never inspect/print its contents. Owner prompts remain untracked.
+
+### Completed implementation / focused evidence
+
+- Question cards: .9-white/12x16/24px/8px spacing, compact label/type/Required/
+  Archive-or-Remove head. Label toggles the full existing editor; section disclosed.
+  Native ID-checked drag/drop, handle ArrowUp/Down, boundary-disabled arrows and
+  live movement feedback preserve IDs/config/options. All tools below cards.
+- Add-question: native independent cancellable draft, exact eleven-type chooser,
+  existing schema validation before insertion, all type configs/options/Section.
+  Enter-add option rows expose label/value/removal/strict uniqueness. Cancel/Escape
+  adds nothing and restores focus; generic input Enter cannot save outer form.
+  Seven standard copies/max100/authorized copy unchanged; copy pending blocks
+  competing job edits/save/lifecycle as well as builder changes.
+- File count clarification: no per-question count field exists; original shared
+  eight-file application limit stays unchanged, no schema/UI field invented.
+- Builder gates passed after final copy guard: typecheck/lint, four unit files /
+  17 tests, both-width guarded no-save checks. Eleven type additions, Cancel/Escape/
+  focus, duplicate rejection, independent edits, arrows/keys/native drop/overflow.
+- Candidate preview: live escaped Apply for title; whole card .9/top desktop scale,
+  unscaled mobile, single-column contacts. All contacts/CV/configured sections and
+  local-only notice/validation retained; required local privacy consent added.
+  Typecheck/lint, two unit files / 12 tests, both-width checks passed title/Bengali/
+  state, bad/valid/optional CV, consent, validation/scale/overflow; no save/upload
+  network requests observed. Permanent eleven-type e2e retains old assertions,
+  adapted modal/disclosure/pills and adds order/cancel/title/consent checks.
+- Brands: semantic ul/li/article grid with 40px accent initials, actual sector/
+  pills; editor alone shows persisted logo via img. First row selected; card header
+  selects, card disclosure keeps reorder; New brand/Status retain create/hide.
+  Name/three-row Description/live /3000, extra settings disclosed, sample accent
+  text/measurement outside; #EC1C24 white=4.41:1, black=4.76:1. Original contrast
+  helper chooses readable text. Logo picker/drop/WebP/explicit upload retained;
+  local file feedback complements original server validation; selection resets
+  on brand change and pending blocks competing edits.
+- Brands final rerun: typecheck/lint, two unit files / 14 tests and both-width
+  no-save picker/drop/invalid/reset/disclosure/count/selection/overflow checks
+  passed. Inspected full captures. Permanent e2e uses genuine articles/editor img,
+  preserving all create/reorder/unsafe-SVG/valid-upload/hide checks; execution queued.
+
+### Next screen and remaining gates
+
+1. Inspect only Departments/settings pieces of committed static boards, current
+   department/option manager/routes/actions and K acceptance rows. Combine the
+   required screen without adding schema/permissions/dependencies or discarding
+   existing routes/actions/ordering/linked-delete guards. Keep one todo in progress.
+2. Guarded before/after 1440/390 captures, touched units/typecheck/lint, permanent
+   browser assertions, small doc edits; commit/push the screen checkpoint.
+3. Reconcile login/MFA, mobile/cross-screen audit, then broad default/live/build/
+   PDF trace guard/full production e2e serially with RUN_SUPABASE_TESTS=1 and
+   RUN_LIGHTHOUSE=1 as relevant. No broad gates have run during this fidelity pass.
+4. Actual Publish/save/slug lock/lifecycle/question copy/archive and brand mutations
+   remain queued; do not claim guarded no-save captures prove persistence or pending/
+   failure injection. Physical phones/hosted Vercel/provider outages/cleanup-failure
+   injection remain unverified; production resources have not been accessed.
+5. Final report includes counts/every deviation/commits/branch/gaps/owner decisions;
+   stop without merging. Dev indicator is tooling; inspect production console in
+   final audit rather than using it as evidence of UI defects.
+
+Ignored helpers added: tmp/questions-capture.spec.ts,
+tmp/candidate-preview-capture.spec.ts, tmp/brands-capture.spec.ts. Existing config
+accepts ADMIN_CAPTURE_SPEC and ADMIN_CAPTURE_STAGE=after; captures stay under
+ignored design/mockup-compare-admin/. Helper traces/videos/failure screenshots off,
+ephemeral admins cleaned. sharp already installed, no dependency added.
+
+HANDOFF READY
