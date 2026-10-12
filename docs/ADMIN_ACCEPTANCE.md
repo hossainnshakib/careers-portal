@@ -27,8 +27,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 - Complete: acceptance baseline and reference review (`5a32b0e`).
 - Complete: shell and mobile menu (screen checkpoint; final production audit pending).
-- In progress: dashboard.
-- Pending: applications list.
+- Complete: dashboard (screen checkpoint; final production audit pending).
+- In progress: applications list.
 - Pending: applicant profile and delete dialog.
 - Pending: jobs list and row menu.
 - Pending: job editor, question builder and all dialogs.
@@ -65,17 +65,17 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| D01 | Overview eyebrow and Dashboard title; desktop search/New job; mobile title without desktop toolbar | Pending |
-| D02 | Six count cards in order Total, New, Under review, Shortlisted, Rejected, Hired; 16px padding, 14px gaps, 30px counts | Pending |
-| D03 | New count card has 2px blue outline; every card links to correctly filtered applications | Pending |
-| D04 | Desktop latest-applications/open-roles grid 2fr:1fr, 14px gap, top margin 14px; mobile count grid two columns/12px padding | Pending |
-| D05 | Latest applications kicker, semantic table columns Candidate, Position, Brands, Status, Applied (Dhaka), working candidate links, bold names and New dot | Pending |
-| D06 | Accent initial brand circles overlap by 4px, 22px size/white border; real brands rather than fictional logos; previous restyle substituted logos | Pending; match initial-circle design |
-| D07 | Dhaka timestamps and readable Bengali names; actual latest rows, no invented records | Pending |
-| D08 | Open roles by department kicker, stored department names/counts, blue 10px rounded progress bars and 12px vertical spacing | Pending |
-| D09 | Mobile latest-applications heading outside card wrapper; individual 14px cards: name/status top, role middle, marks/date bottom | Pending |
-| D10 | Preserve access to department statistics absent from abbreviated mobile board through disclosure, not silent deletion | Pending |
-| D11 | Empty latest applications and zero department counts; loading/error recovery styled consistently without sensitive diagnostics | Pending |
+| D01 | Overview eyebrow and Dashboard title; desktop search/New job; mobile title without desktop toolbar | Implemented; before/after 1440/390 dashboard captures |
+| D02 | Six count cards in order Total, New, Under review, Shortlisted, Rejected, Hired; 16px padding, 14px gaps, 30px counts | Implemented; actual counts, render test confirms ordered links and labels |
+| D03 | New count card has 2px blue outline; every card links to correctly filtered applications | Implemented; render test and captures |
+| D04 | Desktop latest-applications/open-roles grid 2fr:1fr, 14px gap, top margin 14px; mobile count grid two columns/12px padding | Implemented; shared line-height fix restores reference geometry |
+| D05 | Latest applications kicker, semantic table columns Candidate, Position, Brands, Status, Applied (Dhaka), working candidate links, bold names and New dot | Deviation A: table matches six drawn desktop rows/three mobile rows initially; a compact Show all latest applications control retains access to the documented latest-ten dataset instead of deleting four/seven records from dashboard access. Table columns and link semantics match; captured expansion/collapse passes |
+| D06 | Accent initial brand circles overlap by 4px, 22px size/white border; real brands rather than fictional logos; previous restyle substituted logos | Deviation C: initial-circle geometry restored; readable black/white helper replaces always-white mock initials. White is only 4.41:1 on Fixen red, 3.25:1 on Wiki green and 3.09:1 on Ghora orange; chosen black is 4.76/6.45/6.80:1 respectively. Logos remain available for real upload previews |
+| D07 | Dhaka timestamps and readable Bengali names; actual latest rows, no invented records | Implemented; actual rows preserved and synthetic Bengali/semantic date tests pass. Repeated captures mask candidate names so screenshot inspection does not print applicant data |
+| D08 | Open roles by department kicker, stored department names/counts, blue 10px rounded progress bars and 12px vertical spacing | Implemented; actual counts and proportional bars, synthetic render test; zero-row message |
+| D09 | Mobile latest-applications heading outside card wrapper; individual 14px cards: name/status top, role middle, marks/date bottom | Implemented; first three cards match MobileDashboard; complete row-set access retained via D05 disclosure |
+| D10 | Preserve access to department statistics absent from abbreviated mobile board through disclosure, not silent deletion | Deviation A: collapsed Open roles by department disclosure is added below mobile latest cards because omitting the panel entirely would remove access to existing dashboard statistics. Desktop panel is initially open. Capture verified disclosure opens/closes and re-adapts at breakpoint |
+| D11 | Empty latest applications and zero department counts; loading/error recovery styled consistently without sensitive diagnostics | Implemented; new No applications yet state avoids inappropriate list-filter reset on dashboard; No open roles yet; generic query failure test, existing loading/error presentation retained (not forced into outage screenshot) |
 
 ## 3. Applications (Applications + MobileApplications + States)
 
@@ -254,4 +254,13 @@ Viewed chrome crops and the menu panel; final per-screen captures remain pending
 An initial lint error/warning was corrected. A renamed .tsx unit test was initially
 excluded by the existing .test.ts discovery pattern; it is now .test.ts and all 7
 cases actually ran. No test skip or discovery change was introduced.
+
+Dashboard checkpoint: typecheck/lint and touched dashboard/presentation unit
+files / 10 tests passed. Initially the new unit imported a server-only marker;
+the established test-only marker mock fixed the harness import (runtime marker
+unchanged). Dev capture verified six desktop/three mobile initial rows, all ten
+on expansion, mobile statistics disclosure and menu checks. Viewed both masked
+full-page widths; fixed a visible mid-word status wrap with normal pill wrapping,
+then recaptured. Permanent browser assertions are queued for the final run.
+No query, auth gate, mutation, dependency or migration changed in this checkpoint.
 Hosted Vercel, real physical phones and non-dev resources are not verified.

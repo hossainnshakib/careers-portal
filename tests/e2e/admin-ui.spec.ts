@@ -22,6 +22,17 @@ test("mobile admin navigation contains focus and filters keep the date timezone"
   await page.keyboard.press("Backspace");
   await expect(firstDigit).toBeFocused();
   await completeAdminMfa(page, adminAccount);
+  const latestRows = page.locator(".admin-latest-applications tbody tr:visible");
+  await expect(latestRows).toHaveCount(3);
+  const latestToggle = page.getByRole("button", { name: /Show all .* latest applications/ });
+  await latestToggle.click();
+  await expect(page.locator(".admin-latest-applications tbody tr:visible")).toHaveCount(10);
+  await page.getByRole("button", { name: "Show fewer applications", exact: true }).click();
+  await expect(latestRows).toHaveCount(3);
+  const departmentStats = page.locator(".admin-dashboard-departments");
+  await expect(departmentStats).not.toHaveAttribute("open");
+  await departmentStats.locator("summary").click();
+  await expect(departmentStats).toHaveAttribute("open", "");
   const menu = page.getByRole("button", { name: "Menu", exact: true });
   await menu.click();
   const dialog = page.getByRole("dialog", { name: "Admin navigation menu" });

@@ -29,6 +29,15 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
 - Apply is its own noindex server-rendered page with Back to job, real-data glass context card and a separate form panel. Blue section labels and a responsive two-column field grid retain current definitions; long text, choices and uploads span the row. Inputs use 50px height/14px radii/pale surfaces, radio cards and checkbox pills show blue selection, and dashed upload panels support Choose file and actual drag-and-drop through the same upload pipeline. Required consent, lazy Turnstile, upload retries/removal/restart, submit pending/error states and server validation remain. Public-only CSS hooks style the shared question renderer without changing admin preview styling. Field errors are linked to help text and a focusable summary; the developer UTC-date paragraph is removed.
 - Success, privacy, public errors and 404 content use glass panels and the shared chrome. Unmatched root URLs get an explicit public layout because they have no route-group wrapper; route-group 404 content does not duplicate that shell. Success shows only a syntactically valid reference and plain next steps, with no timing promise. Privacy retains its owner-review draft and actual provider/retention/deletion wording.
 - Admin follows the 14 boards in `design/mockup/careers-admin-mockups/`, with its own `src/app/admin/admin.css` system: cool-white canvas, ink/blue accents, glass cards/sidebar, rounded controls, status pills and real brand logos with initial fallbacks. The mobile shell switches to a focus-contained slide-over below 800px; tables become semantic card stacks. Applicant profile keeps the content/340px review rail, with a native mobile disclosure. Settings is split over the existing Departments and Options routes. Auth uses a centred card and six-cell TOTP entry. Business rules and authorization stay unchanged. See `ADMIN_UI_RESTYLE.md` for deliberate differences and verification. No UI library was added.
+- Admin fidelity (2026-10-12) supersedes the prior restyle's unapproved differences;
+  `ADMIN_ACCEPTANCE.md` governs reconciliation. Data cards use .76-white/14px
+  blur, chrome .58-white/24px blur; no nested backdrop blur. Dashboard now uses
+  the board's accent initials, not tiny logos, and six desktop/three mobile latest
+  rows with disclosure of the complete existing ten-row set. Mobile department
+  statistics remain accessible in a collapsed disclosure. Combined Settings,
+  markdown toggles and publish/add-question dialogs are required pending work,
+  not accepted omissions. Existing logo rendering remains for the brand uploader
+  and unreconciled screens until their own checkpoints. All real fields survive.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

@@ -728,3 +728,28 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
 - Typecheck/lint passed; touched presentation/shell unit files: 7 passed. Full
   default/live/build/production suite has NOT run and remains final-only. Initial
   capture/lint/discovery mistakes and fixes are recorded in ADMIN_ACCEPTANCE.
+
+## 2026-10-12 — Admin fidelity dashboard checkpoint
+
+- Dashboard now matches Main/MobileDashboard: six status cards and matching
+  glass/table/card geometry, accent initial marks instead of tiny logos, six
+  initial desktop latest rows and three initial mobile rows. A compact show-all
+  control exposes all existing latest ten records; no query/data access removed.
+- Mobile department statistics become an initially collapsed native disclosure;
+  desktop panel remains initially open with actual count/proportional bars. This
+  preserves access absent from the abbreviated mobile board. These added controls
+  are recorded as allowed function-preservation deviations D05/D10, not justified
+  by convenience or real-data height. Dashboard empty state now says No
+  applications yet rather than suggesting irrelevant filters.
+- Initial marks retain the existing >=4.5 black/white contrast helper instead of
+  unsafe white: red/green/orange sample accents measure white 4.41/3.25/3.09:1,
+  chosen black 4.76/6.45/6.80:1 (D06 security/accessibility category C). Existing
+  passive logo display is still available for uploader/other screen checkpoints.
+- Before/after 1440/390 dev captures inspected. Subsequent captures mask candidate
+  names to avoid exposing applicant data during screenshot inspection; rendered
+  dimensions and real data remain unchanged. Visual inspection found mid-word
+  status wrapping; fixed pill overflow-wrap without changing colours/fields.
+- Typecheck/lint passed; touched dashboard/presentation files: 10 tests passed.
+  Capture checks passed for responsive row limits/show-all, department disclosure
+  and menu focus/close/resize. Permanent e2e additions are not yet production-run.
+  Full default/live/build/PDF trace/production suite remains final-only.

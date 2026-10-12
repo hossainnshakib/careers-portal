@@ -14,6 +14,12 @@
 - Shell typecheck/lint passed; two touched unit files / 7 tests passed. Local dev
   capture passed including menu keyboard/close/resize checks. Permanent e2e
   updated but full production execution is reserved until the final checkpoint.
+- Dashboard typecheck/lint passed; touched dashboard/presentation files / 10
+  tests passed. Initial-circle marks and reference row density restored; compact
+  disclosure preserves all latest ten records/mobile department statistics.
+  Before/after widths inspected (subsequent candidate names masked). Capture
+  checks verified responsive row limits and disclosure; visible mid-word pill
+  wrapping fixed and recaptured. D05/D06/D10 record permitted deviations.
 - Initial capture caught streamed loading markup; explicit Dashboard-heading
   wait corrected it. Initial lint/ref warning and a .tsx test-discovery mismatch
   were fixed without suppressions; the final targeted run actually ran 7 cases.

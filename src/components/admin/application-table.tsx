@@ -12,7 +12,7 @@ type Accent = { name: string; accentColor: string | null; logoUrl?: string | nul
  * Explicit ARIA roles keep table semantics valid at mobile widths, where the
  * CSS turns each row into a stacked card.
  */
-export function ApplicationTable({ rows, brandAccents = [] }: { rows: Row[]; brandAccents?: Accent[] }) {
+export function ApplicationTable({ rows, brandAccents = [], initialsOnly = false }: { rows: Row[]; brandAccents?: Accent[]; initialsOnly?: boolean }) {
   if (!rows.length) return <ApplicationEmptyState />;
   return (
     <div className="admin-table admin-table-rows">
@@ -40,6 +40,7 @@ export function ApplicationTable({ rows, brandAccents = [] }: { rows: Row[]; bra
               </td>
               <td role="cell" className="admin-cell-brands">
                 <BrandMarks
+                  initialsOnly={initialsOnly}
                   brands={(row.brandNames ?? []).map((name) => {
                     const matches = brandAccents.filter((item) => item.name === name);
                     const accent = matches.length === 1 ? matches[0] : undefined;
