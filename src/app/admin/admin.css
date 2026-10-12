@@ -1525,6 +1525,45 @@
 
 /* ---------- accessibility preferences ---------- */
 
+.admin-settings-combined { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
+.admin-settings-options { gap: 14px; }
+.admin-settings-combined table { table-layout: fixed; width: 100%; }
+.admin-settings-combined th, .admin-settings-combined td { padding: 10px 8px; overflow-wrap: anywhere; }
+.admin-settings-combined th { white-space: nowrap; }
+.admin-settings-combined th:first-child, .admin-settings-combined td:first-child { padding-left: 0; }
+.admin-settings-combined th:last-child, .admin-settings-combined td:last-child { padding-right: 0; }
+.admin-settings-combined .admin-table-depts th:nth-child(1) { width: 29%; }
+.admin-settings-combined .admin-table-depts th:nth-child(2) { width: 25%; }
+.admin-settings-combined .admin-table-depts th:nth-child(3) { width: 18%; }
+.admin-settings-combined .admin-table-depts th:nth-child(4) { width: 9%; }
+.admin-settings-combined .admin-table-depts th:nth-child(5) { width: 19%; }
+.admin-settings-combined .admin-table-options th:nth-child(1) { width: 23%; }
+.admin-settings-combined .admin-table-options th:nth-child(2) { width: 19%; }
+.admin-settings-combined .admin-table-options th:nth-child(3) { width: 18%; }
+.admin-settings-combined .admin-table-options th:nth-child(4) { width: 8%; }
+.admin-settings-combined .admin-table-options th:nth-child(5) { width: 32%; }
+.admin-settings-combined .admin-cell-actions { white-space: normal; }
+.admin-settings-action { border: 0; padding: 2px; font: inherit; font-size: 12px; color: var(--admin-muted); background: none; cursor: pointer; }
+.admin-settings-action:hover { color: var(--admin-ink); text-decoration: underline; }
+.admin-settings-action:disabled { opacity: .45; cursor: not-allowed; text-decoration: none; }
+.admin-settings-count-label { display: none; }
+.admin-department-add { display: flex; align-items: start; gap: 8px; }
+.admin-department-add label { flex: 1; min-width: 0; }
+.admin-department-settings { margin-top: 8px; font-size: 13px; }
+.admin-department-settings label { margin-top: 10px; }
+.admin-option-fields { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.admin-option-create-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 12px; }
+.admin-option-create-actions .admin-filter-actions { margin-top: 0 !important; }
+@media (max-width: 800px) {
+  .admin-settings-combined { grid-template-columns: minmax(0,1fr); }
+  .admin-option-fields { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  .admin-settings-combined td { padding: 2px 0; }
+  .admin-settings-combined td:first-child, .admin-settings-combined td:last-child { padding: 2px 0; }
+  .admin-settings-action { padding: 6px; min-width: 24px; min-height: 28px; }
+  .admin-settings-count-label { display: inline; font-size: 12px; color: var(--admin-muted); }
+  .admin-settings-combined .admin-table tbody tr { background: rgba(255,255,255,.9); }
+}
+
 .admin-question-builder { display: flex; flex-direction: column; gap: 8px; }
 .admin-question-builder .admin-kicker { margin-bottom: 2px; }
 .admin-ui .admin-question-builder > fieldset.admin-question { order: 2; margin: 0; padding: 12px 16px; border-radius: 24px; background: rgba(255,255,255,.9); box-shadow: var(--admin-glass-shadow); backdrop-filter: none; }

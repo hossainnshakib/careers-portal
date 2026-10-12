@@ -1507,3 +1507,30 @@ ignored design/mockup-compare-admin/. Helper traces/videos/failure screenshots o
 ephemeral admins cleaned. sharp already installed, no dependency added.
 
 HANDOFF READY
+
+## 2026-10-12 — Combined Departments/options fidelity checkpoint
+
+- Both original routes call their own unchanged requireAdmin then share a small
+  server-only SettingsPanels renderer. Existing queries loaded sequentially,
+  actual counts projected as before; no DB access moved out of queries. Both paths
+  invalidate on either manager's mutations. Equal columns/title/group order and
+  compact drawn actions restored, no route/schema/permission/dependency added.
+- Departments has the drawn Name/Slug/Active/Roles/Order table, compact arrows/Edit,
+  New department/Add row. Extra slug/Active and Clear/Cancel disclosed; new names
+  auto-generate slugs, manual and existing slugs remain stable. Red/green pills.
+- Option groups precede compact three-column create/edit form in DOM/visual order.
+  All fields/counts/commands and original bounds retained; group locked on edit,
+  pending disables edits. Linked delete disabled with title/accessible guidance;
+  unused delete native confirmation with Cancel/Escape/focus, pending dismissal
+  guard and visible errors, original server restriction unchanged.
+- Fixed existing activation payload (strict schema rejected spread sortOrder) and
+  new-option manual-slug overwrite; group changes preserve entered slug. Server
+  input schema/auth/query guard unchanged. Mobile uses semantic .9-white/no-blur
+  row cards with labelled counts and larger actions rather than clipped columns.
+- O03/O07 retain fields/reset/cancel absent from abbreviated board; O08 mobile
+  accessibility deviation. Typecheck/lint and three touched unit files / 34 tests
+  passed; guarded both-route/both-width no-save captures/checks passed. Permanent
+  department e2e kept mutation assertions/scoped panel; settings no-save e2e added.
+- Next/in progress: login/MFA, implementation not started. Counts now 122 =
+  74 Implemented / 31 Deviation / 17 Pending. Actual mutation/pending/failure and
+  full production gates remain queued. No blocking owner decision.

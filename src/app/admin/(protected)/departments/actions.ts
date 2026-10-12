@@ -11,6 +11,7 @@ async function invalidate(id: string) {
   revalidateTag("jobs");
   for (const { slug } of await departmentJobSlugs(id)) revalidateTag(`job:${slug}`);
   revalidatePath("/admin/departments");
+  revalidatePath("/admin/options");
 }
 
 export async function saveDepartmentAction(input: unknown): Promise<ActionResult<{ id: string }>> {

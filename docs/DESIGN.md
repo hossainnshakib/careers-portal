@@ -82,6 +82,12 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   retain ordering, Status retains hide/show, New brand retains creation. Inline
   /3000 description count preserves supported content. Accent sample text shows
   measured readable ink, not unsafe fixed white. Mobile stacks cards/editor.
+- Settings fidelity supersedes the separate-page presentation above: both original
+  Departments and Options routes render the same equal-column Departments & options
+  screen. Departments/Add/disclosed editing left; three option groups and compact
+  Create/edit form right. Compact real controls retain ordering, activation and
+  confirmed unused-option delete. Mobile rows stack with labelled counts and no
+  nested blur. Original independent authorization and server guards stay unchanged.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

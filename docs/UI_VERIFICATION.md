@@ -146,6 +146,22 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   creation/order/unsafe SVG/valid upload/hide assertions. Execution, save/upload
   failure/pending injection, production console and physical devices remain queued.
 
+### Combined settings checkpoint
+
+- Both original URLs retain direct requireAdmin and render the shared equal-column
+  screen. Departments compact table/Add/disclosed slug/status; grouped options
+  followed by compact create/edit form and native delete confirmation. Paths are
+  invalidated together; no schema/auth/validation change.
+- Typecheck/lint, three touched unit files / 34 tests (including protected-page
+  gates) passed. Guarded both-route 1440/390 captures/checks passed field/disclosure
+  preservation, manual slug, locked edit group/cancel, linked delete disabled,
+  unused-delete Cancel/Escape/focus return and overflow. Captures inspected.
+- Fixed two existing client bugs without relaxing validation: activation submitted
+  unsupported sortOrder; a manually entered new slug was overwritten by label edit.
+- Permanent department mutation assertions retained/scoped to combined panel;
+  added no-save both-route settings e2e. Mutation/failed action/pending injection
+  execution and full production gates remain final-only. O03/O07/O08 documented.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

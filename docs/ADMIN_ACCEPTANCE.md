@@ -37,8 +37,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: editor block 4 — question builder/Add-question/options (checkpoint; persistence/copy integration queued).
 - Complete: editor block 5 — candidate preview (checkpoint; full eleven-type production e2e queued).
 - Complete: brands list/editor (checkpoint; save/hide/order/logo mutations queued for final e2e).
-- In progress: combined departments/options (implementation not started).
-- Pending: login and MFA.
+- Complete: combined departments/options (checkpoint; mutation/persistence e2e queued).
+- In progress: login and MFA (implementation not started).
 - Pending: mobile variants and cross-screen audit.
 - Pending: final default/live/build/production-browser gates and final captures.
 
@@ -179,15 +179,15 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| O01 | Settings eyebrow and Departments & options title; combined screen with departments left/options right in equal columns | Pending; previous separate-page presentation is superseded; retain existing route access |
-| O02 | Departments glass panel/kicker and Name, Slug, Active, Roles, Order columns; bold names, muted slugs, green/red state pills and actual counts | Pending |
-| O03 | Compact up/down/Edit controls; New department input + Add row; retain slug/status/order via compact edit/add disclosure | Pending |
-| O04 | Work arrangement, Engagement type and Experience glass panels stacked on right, 14px spacing | Pending |
-| O05 | Option Label, Slug, Status, Jobs, Actions columns; verbatim labels, actual counts, Edit/Deactivate-or-Activate/up/down/Delete | Pending |
-| O06 | Linked options have visibly disabled Delete with Used by jobs explanation; unlinked deletion remains confirmed and server enforced | Pending |
-| O07 | Create option panel: Group/Label/Slug three-column row, Active checkbox + Create; edit/cancel/errors/pending preserve group rules | Pending |
-| O08 | Mobile combined sections stack; dense rows/card adaptations preserve names/slugs/counts/actions and do not overflow | Pending |
-| O09 | Empty departments and empty option groups/create feedback, inactive states and reorder boundaries | Pending |
+| O01 | Settings eyebrow and Departments & options title; combined screen with departments left/options right in equal columns | Implemented; both original URLs render one shared equal-column screen after their own unchanged requireAdmin gate; mutations invalidate both paths, queries remain sequential/bounded |
+| O02 | Departments glass panel/kicker and Name, Slug, Active, Roles, Order columns; bold names, muted slugs, green/red state pills and actual counts | Implemented; compact fixed table geometry with no clipped headers, actual department counts and red Inactive/green Active; inspected desktop/mobile captures |
+| O03 | Compact up/down/Edit controls; New department input + Add row; retain slug/status/order via compact edit/add disclosure | Deviation A: drawn compact actions/Add row restored; Additional settings/Edit department settings disclose slug/Active and Clear/Cancel, retaining supported fields/cancel rather than deleting them. New name auto-generates an editable slug; manual/existing slugs preserved; guarded unsaved edits survive disclosure |
+| O04 | Work arrangement, Engagement type and Experience glass panels stacked on right, 14px spacing | Implemented; exact group order with 14px spacing, Create option follows groups in DOM/visual order |
+| O05 | Option Label, Slug, Status, Jobs, Actions columns; verbatim labels, actual counts, Edit/Deactivate-or-Activate/up/down/Delete | Implemented; compact text actions/real counts and boundaries; activation now sends only the existing strict input fields (old sortOrder spread was rejected); no validation change. Mutations queued for final production e2e |
+| O06 | Linked options have visibly disabled Delete with Used by jobs explanation; unlinked deletion remains confirmed and server enforced | Implemented; disabled delete/title and linked accessible explanation; native unused-option confirmation Cancel/Escape restores focus and does not mutate, pending blocks dismissal, failures remain visible. Original server linked-delete check unchanged; confirm mutation queued |
+| O07 | Create option panel: Group/Label/Slug three-column row, Active checkbox + Create; edit/cancel/errors/pending preserve group rules | Deviation A: drawn form and Create restored; Clear/Cancel retain existing reset/unsaved-edit recovery. Editing locks group; fieldset pending guard, original limits, verbatim-label/filter-slug guidance remain. Manual new slug no longer overwritten by label changes; group changes preserve slug |
+| O08 | Mobile combined sections stack; dense rows/card adaptations preserve names/slugs/counts/actions and do not overflow | Deviation C: semantic stacked cards with readable names/slugs/labelled Roles/Jobs and wrapped larger-target actions instead of clipping dense five-column tables; one-column create form. Nested rows .9-white/no blur; both-width both-route overflow/field checks passed |
+| O09 | Empty departments and empty option groups/create feedback, inactive states and reorder boundaries | Implemented; all empty groups/departments and state/count/boundary/linked-delete rules render-tested; both-route no-save state/locked-group/cancel/confirmation checks pass. Persistence/failure injection remain final-only |
 
 ## 9. Login and MFA (Login)
 
@@ -250,7 +250,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-68 Implemented / 28 Deviation / 26 Pending / 0 classified Not implemented**.
+74 Implemented / 31 Deviation / 17 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -264,7 +264,8 @@ E13 (list-item removal), E14 (mobile question row fit), E17 (full-definition
 editing/destructive-action clarity), E18 (complete local-only candidate flow/mobile
 interaction size), B02/B07 (accent contrast), B03 (retained admin commands/selection),
 B04 (usable upload/WebP), B05 (supported description bound). All reasons are on
-their rows.
+their rows. New settings deviations: O03 (retained editing fields/cancel), O07
+(reset/cancel access), O08 (mobile readable fields/action targets).
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
