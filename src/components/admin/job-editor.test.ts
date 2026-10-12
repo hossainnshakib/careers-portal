@@ -4,6 +4,7 @@ import { expect, it, vi } from "vitest";
 
 vi.mock("@/app/admin/(protected)/jobs/actions", () => ({ saveJobAction: vi.fn(), jobCommandAction: vi.fn() }));
 import { JobEditor, type JobEditorProps } from "./job-editor";
+import { publishBlockers } from "@/lib/admin/job-publish";
 
 const initial: JobEditorProps["initial"] = {
   id: "00000000-0000-4000-8000-000000000001", title: "Synthetic role", slug: "synthetic-role",
@@ -21,10 +22,26 @@ it.each([
   const html = renderToStaticMarkup(createElement(JobEditor, {
     initial, brands: [], departments: [], sources: [], options: [], published, status, hasApplications,
   }));
-  expect(html).toContain("Save changes");
-  expect(html).toContain("Publish job");
+  expect(html).toContain(status === "draft" ? "Save draft" : "Save changes");
+  expect(html).toContain('aria-label="Publish job"');
   expect(html.includes("Delete draft")).toBe(canDelete);
   expect(html.includes("Reopen job")).toBe(status === "closed");
+  expect(html).toContain('aria-label="More job actions"');
+  expect(html).toContain('aria-label="Confirm job publication"');
+  expect(html).toContain("The slug locks after publishing.");
+  expect(html).toContain("/jobs/synthetic-role");
+});
+
+it("reports actual missing publish groups and field blockers, and marks only a valid selected draft ready", () => {
+  const brand = "00000000-0000-4000-8000-000000000003";
+  const arrangement = "00000000-0000-4000-8000-000000000004";
+  const engagement = "00000000-0000-4000-8000-000000000005";
+  const options = [{ id: arrangement, group: "arrangement" as const }, { id: engagement, group: "engagement" as const }];
+  const valid = { ...initial, brandIds: [brand], primaryBrandId: brand, optionIds: [arrangement, engagement] };
+  expect(publishBlockers(valid, options)).toEqual([]);
+  expect(publishBlockers({ ...valid, optionIds: [arrangement] }, options)).toEqual(["Select at least one engagement type."]);
+  expect(publishBlockers({ ...valid, title: "", salaryMode: "range", salaryText: "" }, options).join(" ")).toMatch(/title.*salaryText/);
+  expect(publishBlockers({ ...valid, primaryBrandId: "00000000-0000-4000-8000-000000000006" }, options).join(" ")).toContain("one primary");
 });
 
 it.each([

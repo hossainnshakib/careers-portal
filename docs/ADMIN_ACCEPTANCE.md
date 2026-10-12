@@ -31,9 +31,9 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: applications list (screen checkpoint; final live/production audit pending).
 - Complete: applicant profile and delete dialog (screen checkpoint; final workflows pending).
 - Complete: jobs list and row menu (screen checkpoint; mutations queued for final e2e).
-- In progress: job editor shell/sticky action bar and Publish confirmation.
-- Editor blocks pending: Basics; Content/Write-Preview; question builder/Add-question/options; candidate preview. Commit each block separately.
-- Pending: job editor, question builder and all dialogs.
+- Complete: editor block 1 — shell/sticky action bar and Publish confirmation (confirm mutation queued for final e2e).
+- In progress: editor block 2 — Basics (implementation not started).
+- Editor blocks pending: 3 Content/Write-Preview; 4 question builder/Add-question/options; 5 candidate preview. Commit each block separately.
 - Pending: brands list/editor.
 - Pending: combined departments/options.
 - Pending: login and MFA.
@@ -132,10 +132,10 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| E01 | Jobs / actual title eyebrow; Edit job/New job heading; desktop toolbar search/New job | Pending |
-| E02 | Sticky action bar top 8px, padding 12px 16px, 24px radius, .58 glass, status left and Duplicate/Save draft/Publish right | Pending |
-| E03 | Sticky action bar remains visible while content scrolls, container release and mobile viewport safety; save existing open/closed, close/reopen/delete retained without crowding | Pending |
-| E04 | Four blocks in 1.4fr:1fr grid: 1 Basics/2 Content left; 3 Questions/4 Candidate form preview right; 14px gaps and margins | Pending |
+| E01 | Jobs / actual title eyebrow; Edit job/New job heading; desktop toolbar search/New job | Implemented; new heading corrected; toolbar unchanged, actual initial job title retained in breadcrumb |
+| E02 | Sticky action bar top 8px, padding 12px 16px, 24px radius, .58 glass, status left and Duplicate/Save draft/Publish right | Deviation A: drawn labels/secondary draft-save/geometry restored, with one compact More job actions disclosure for Close/Reopen/Delete. Those existing commands would otherwise disappear; Duplicate job/Publish job accessible names retained. Missing-group guidance moved out of chrome to Basics as drawn |
+| E03 | Sticky action bar remains visible while content scrolls, container release and mobile viewport safety; save existing open/closed, close/reopen/delete retained without crowding | Deviation C: three full desktop commands plus status/extra actions do not fit 390. Mobile Duplicate moves into More actions, while Save/Publish remain visible and bar stays at 8px. Both-width 500px-scroll checks passed; container-release audit remains final-only |
+| E04 | Four blocks in 1.4fr:1fr grid: 1 Basics/2 Content left; 3 Questions/4 Candidate form preview right; 14px gaps and margins | Implemented; shell grid matches; individual block internals remain explicitly Pending until their separate commits |
 | E05 | Basics title/slug/department/primary brand two-column fields, locked published slug and editable draft/auto slug; brand chips and one primary | Pending |
 | E06 | Work arrangement, Engagement type, Experience chip groups in stored order; correct selected blue states, inactive linked options preserved | Pending |
 | E07 | Salary Negotiable/Show a range pills with dark selected range; one-line range text and 80-character guidance | Pending |
@@ -150,8 +150,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | E16 | Add question, Add standard questions and Copy from another job actions below cards; seven independent defaults, copy source selector and feedback | Pending |
 | E17 | Existing question remove/archive semantics and archived information; section/help/options/config edits remain possible; never lose unsaved state | Pending |
 | E18 | Candidate form preview .9 scale/top origin desktop, correct title/contacts/configured sections/CV/consent, local validation without upload or persistence | Pending; abbreviated preview cannot remove functionality |
-| E19 | Publish confirmation dialog: Publish kicker, 18px Publish [title]?, actual public path and slug-lock warning, Requirements met or actual blockers, Cancel/Publish | Pending; previous immediate Publish is superseded |
-| E20 | Publish cancel/Escape retains draft; confirm invokes unchanged server validation; pending/failed publish does not fabricate success; successful publish locks slug | Pending |
+| E19 | Publish confirmation dialog: Publish kicker, 18px Publish [title]?, actual public path and slug-lock warning, Requirements met or actual blockers, Cancel/Publish | Deviation C: drawn .9-white/420px/grid-gap dialog implemented; readiness chip uses shared #08694F contrast correction because #087A5B can fall below 4.5:1 on composited glass (4.42:1 on #DCEEE8 vs 5.55:1). Actual groups and existing field schema determine blockers; server remains authoritative |
+| E20 | Publish cancel/Escape retains draft; confirm invokes unchanged server validation; pending/failed publish does not fabricate success; successful publish locks slug | Implemented; native modal Cancel/Escape preserves edits/status/focus, missing-group confirm disabled. Confirm calls unchanged validated save("publish"), pending blocks dismissal, errors remain visible. Actual confirm/slug-lock lifecycle is queued for final production e2e, not claimed newly verified |
 | E21 | Add-question dialog: Add question kicker, New question heading, type chooser with all eleven types in drawn order | Pending; previous immediate append is superseded |
 | E22 | Dialog Label, Help text, Required, Allow Other for choices, Radio/Dropdown selected pills for single choice | Pending |
 | E23 | Dialog min/max length/value pair and options editor Add option, press Enter; label/value editing/removal retains strict unique option values | Pending |
@@ -248,7 +248,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-47 Implemented / 15 Deviation / 60 Pending / 0 classified Not implemented**.
+50 Implemented / 18 Deviation / 54 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -256,7 +256,8 @@ brand initials), D10 (mobile statistics access), A02 (retained accessible submis
 extra-filter access), A06 (shared measured contrast corrections), P02 (initial ink),
 P06 (prior reference/time), P08 (privacy/PDF guidance), P11 (mobile metadata),
 P13 (red button contrast), J01 (submit/reset function), J03 (shared contrast),
-J06 (mobile column/action accessibility). All reasons are on their rows.
+J06 (mobile column/action accessibility), E02 (lifecycle-command access), E03
+(mobile bar fit), E19 (readiness text contrast). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -288,6 +289,11 @@ Profile checkpoint: typecheck/lint and four touched unit files / 17 tests passed
 Jobs checkpoint: typecheck/lint, two touched unit files / 10 tests, guarded
 before/after/menu/empty captures and focus/overflow/draft Cancel checks passed.
 Permanent browser menu coverage queued. Full command execution remains final-only.
+Editor block 1 checkpoint: typecheck/lint and job-editor unit file / 8 tests passed.
+Guarded before/after shell/Publish captures at both widths; Cancel/Escape, unchanged
+draft, missing-group blockers/disabled confirm, unsaved title preservation, 8px
+sticky offset and overflow checks passed. No job publication/mutation was executed.
+Basics/Content/question builder/candidate preview internals remain unreconciled.
 Synthetic before/after/dialog captures at both widths inspected. Capture checked
 overflow, Cancel/Escape focus return, no deletion and mobile-to-desktop disclosure
 reachability. Initial render-test name count included the toolbar data attribute;

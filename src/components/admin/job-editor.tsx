@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Brand, Department } from "@/db/schema";
 import { jobInput, missingPublishGroups, type JobInput } from "@/lib/validation/jobs";
 import {
@@ -16,6 +16,7 @@ import { QuestionBuilder } from "./question-builder";
 import { CandidatePreview } from "./candidate-preview";
 import { AdminToolbar } from "./admin-toolbar";
 import { JobStatusBadge } from "./status-badge";
+import { publishBlockers } from "@/lib/admin/job-publish";
 
 function localDateTime(iso: string | null) {
   if (!iso) return "";
@@ -125,6 +126,7 @@ export function JobEditor({
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const [mounted, setMounted] = useState(false);
+  const publication = useRef<HTMLDialogElement>(null);
   useEffect(() => setMounted(true), []);
   function field<K extends keyof JobInput>(name: K, value: JobInput[K]) {
     setDraft((current) => ({ ...current, [name]: value }));
@@ -187,12 +189,13 @@ export function JobEditor({
     .map((id) => options.find((option) => option.id === id)?.group)
     .filter((group): group is OptionGroup => !!group);
   const missingGroups = missingPublishGroups(selectedGroups);
+  const blockers = publishBlockers(draft, options);
 
   return (
-    <section>
+    <section className="admin-job-editor">
       <AdminToolbar
         eyebrow={draft.id ? `Jobs / ${initial.title || "Untitled"}` : "Jobs"}
-        title={draft.id ? "Edit job" : "Create job"}
+        title={draft.id ? "Edit job" : "New job"}
       />
       <p role="status" aria-live="polite" className="admin-error">{message}</p>
       <form
@@ -205,25 +208,24 @@ export function JobEditor({
         <fieldset disabled={pending} className="admin-fieldset">
           <div className="admin-actions">
             <JobStatusBadge status={status} />
-            {missingGroups.length > 0 && (
-              <span className="admin-chip admin-chip-warn">
-                Select at least one {missingGroups.map((group) => optionGroupLabels[group].toLowerCase()).join(" and ")} to publish
-              </span>
-            )}
             <span className="admin-spacer" />
             {draft.id && (
-              <button type="button" className="admin-btn admin-btn-secondary" onClick={() => void command("duplicate")}>
-                Duplicate job
+              <button type="button" className="admin-btn admin-btn-secondary admin-editor-duplicate" aria-label="Duplicate job" onClick={() => void command("duplicate")}>
+                Duplicate
               </button>
             )}
-            <button type="submit" className="admin-btn">
-              {draft.id ? "Save changes" : "Save draft"}
+            <button type="submit" className="admin-btn admin-btn-secondary">
+              {status === "draft" ? "Save draft" : "Save changes"}
             </button>
             {status !== "open" && (
-              <button type="button" className="admin-btn" onClick={() => void save("publish")}>
-                Publish job
+              <button type="button" className="admin-btn" aria-label="Publish job" onClick={() => { setMessage(""); publication.current?.showModal(); }}>
+                Publish
               </button>
             )}
+            {draft.id && <details className="admin-editor-more">
+              <summary className="admin-btn admin-btn-secondary" aria-label="More job actions" title="More job actions">⋯</summary>
+              <div className="admin-editor-more-panel">
+                <button type="button" className="admin-btn admin-btn-secondary admin-editor-mobile-duplicate" aria-label="Duplicate job" onClick={() => void command("duplicate")}>Duplicate</button>
             {status === "open" && (
               <button type="button" className="admin-btn admin-btn-secondary" onClick={() => void command("close")}>
                 Close job
@@ -239,6 +241,8 @@ export function JobEditor({
                 Delete draft
               </button>
             )}
+              </div>
+            </details>}
           </div>
 
           <div className="admin-grid admin-grid-editor">
@@ -485,6 +489,7 @@ export function JobEditor({
                     CV required
                   </label>
                 </div>
+                {missingGroups.length > 0 && <span className="admin-chip admin-chip-warn" style={{ marginTop: 12 }}>Select at least one {missingGroups.map((group) => optionGroupLabels[group].toLowerCase()).join(" and ")} to publish</span>}
               </section>
 
               <section aria-labelledby="job-content" className="admin-card">
@@ -584,6 +589,17 @@ export function JobEditor({
           </div>
         </fieldset>
       </form>
+      <dialog ref={publication} className="admin-publish-dialog" aria-label="Confirm job publication" onCancel={(event) => { if (pending) event.preventDefault(); }}>
+        <div className="admin-kicker">Publish</div>
+        <h2>Publish {draft.title || "this job"}?</h2>
+        <p className="admin-muted">It becomes public at <span className="admin-publish-path">/jobs/{draft.slug || "your-slug"}</span>. The slug locks after publishing.</p>
+        {blockers.length ? <ul className="admin-publish-blockers">{blockers.map((blocker) => <li key={blocker}>{blocker}</li>)}</ul> : <span className="admin-chip admin-publish-ready">Requirements met</span>}
+        {message && <p role="status" className="admin-error">{message}</p>}
+        <div className="admin-publish-actions">
+          <button type="button" disabled={pending} className="admin-btn admin-btn-secondary" onClick={() => publication.current?.close()}>Cancel</button>
+          <button type="button" disabled={pending || blockers.length > 0} className="admin-btn" onClick={() => void save("publish")}>{pending ? "Publishing…" : "Publish"}</button>
+        </div>
+      </dialog>
     </section>
   );
 }

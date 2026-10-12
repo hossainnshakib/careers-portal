@@ -51,6 +51,11 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   proportions, accent initials and short dates. Labelled submit/reset icons retain
   filter actions. Drawn row disclosures keep keyboard focus and viewport-safe
   placement; mobile semantic cards avoid the reference's clipped actions.
+- Editor shell/Publish fidelity: .58-white sticky bar at 8px with drawn command
+  labels, secondary draft-save, additional lifecycle commands in More actions.
+  Mobile Duplicate is disclosed to fit the viewport. Native Publish modal shows
+  actual title/path/slug warning and advisory readiness/blockers; only confirmation
+  invokes the existing authorized server save. Other editor blocks remain pending.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

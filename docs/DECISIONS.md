@@ -1060,3 +1060,24 @@ HANDOFF READY
   plus Publish confirmation; (2) Basics; (3) Content with Write/Preview; (4) question
   builder/Add-question/options editor; (5) live candidate preview. Each block gets
   its own typecheck/lint/touched units/captures and commit/push. None completed yet.
+
+## 2026-10-12 — Editor block 1: shell and Publish confirmation
+
+- Shell matches title/grid/bar geometry and drawn Duplicate/Save draft/Publish
+  labels. Existing non-draft save remains Save changes. Lifecycle commands are in
+  More actions; mobile Duplicate joins that disclosure so Save/Publish stay visible.
+  Missing-group guidance belongs in Basics, not in the action bar.
+- Native Publish modal has actual title/public path/slug-lock warning, advisory
+  readiness/blockers, Cancel and explicit Publish. Advisory checks reuse jobInput
+  and required option groups; the server still reloads/validates independently.
+  Cancel/Escape changes no field or persistence; pending prevents dismissal, and
+  failed saves remain visibly reported. No authorization/validation rule changed.
+- Drawn .9-white 420px grid dialog keeps 12px gaps/right-aligned actions. Shared
+  darker-green readiness ink avoids low contrast on composited glass (reference
+  #087A5B on #DCEEE8 is 4.42:1; #08694F is 5.55:1). Deviations E02/E03/E19 only.
+- Typecheck/lint and job-editor unit file / 8 tests passed. Guarded 1440/390 shell
+  and Publish captures passed focus/state preservation, missing-group disabled
+  confirm, unsaved-title preservation, 8px stickiness at scroll500 and no overflow.
+  No job mutation was executed. Confirmed lifecycle/slug locking remains final-e2e.
+- **Completed editor blocks: 1 only. Next/in progress: 2 Basics (not started).
+  Pending: 3 Content, 4 question builder/Add-question/options, 5 candidate preview.**

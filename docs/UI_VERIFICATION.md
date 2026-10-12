@@ -65,6 +65,20 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   three documented deviations. Full mutation/default/live/build/production e2e
   remains final-only; real phones and hosted Vercel remain unverified.
 
+### Editor block 1 — shell/action bar/Publish checkpoint
+
+- Drawn chrome/grid/command labels restored; lifecycle extras remain disclosed,
+  and mobile Duplicate moves into More actions to keep Save/Publish visible.
+  Native Publish dialog uses existing schema and selected-group checks for its
+  advisory readiness; confirmation still calls the unchanged authorized save.
+- Typecheck/lint and one touched unit file / 8 tests passed. Guarded captures at
+  both widths passed Cancel/Escape focus/state preservation, disabled missing-group
+  confirmation, unchanged unsaved title, 8px sticky offset and overflow. No job
+  mutation/publication executed in this checkpoint. Permanent lifecycle/publish
+  assertions updated but remain queued for final production e2e.
+- Basics, Content, questions/dialog/options and candidate preview are NOT reconciled
+  by this shell block. All broad gates remain final-only.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

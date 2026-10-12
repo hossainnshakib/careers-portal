@@ -94,6 +94,7 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByRole("group", { name: /^Work arrangement/ }).getByRole("checkbox", { name: "On-site", exact: true }).check();
   await page.getByRole("group", { name: /^Engagement type/ }).getByRole("checkbox", { name: "Full-time", exact: true }).check();
   await page.getByRole("button", { name: "Publish job", exact: true }).click();
+  await page.getByRole("dialog", { name: "Confirm job publication" }).getByRole("button", { name: "Publish", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/jobs\/[a-f0-9-]+\/edit$/, { timeout: 30000 });
   for (const [index, type] of types.entries())
     await expect(page.getByLabel(`Question ${index + 1} type`, { exact: true })).toHaveValue(type);

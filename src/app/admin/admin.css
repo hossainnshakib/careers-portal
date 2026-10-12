@@ -1500,6 +1500,27 @@
 
 /* ---------- accessibility preferences ---------- */
 
+.admin-job-editor > .admin-error:empty { display: none; }
+.admin-editor-more { position: relative; }
+.admin-ui .admin-editor-more > summary { list-style: none; padding: 11px 14px; }
+.admin-editor-more > summary::-webkit-details-marker { display: none; }
+.admin-editor-more-panel { position: absolute; right: 0; top: calc(100% + 6px); z-index: 4; width: 220px; display: grid; gap: 8px; padding: 8px; background: #fff; border: 1px solid var(--admin-line); border-radius: 20px; box-shadow: var(--admin-glass-shadow); }
+.admin-editor-mobile-duplicate { display: none; }
+.admin-ui .admin-publish-dialog { padding: 20px; background: rgba(255,255,255,.9); }
+.admin-ui .admin-publish-dialog h2 { font-size: 18px; overflow-wrap: anywhere; }
+.admin-ui .admin-publish-dialog[open] { display: grid; gap: 12px; }
+.admin-ui .admin-publish-dialog h2, .admin-ui .admin-publish-dialog p { margin: 0; }
+.admin-publish-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.admin-publish-path, .admin-publish-blockers { overflow-wrap: anywhere; }
+.admin-publish-ready { color: #08694f; background: rgba(10,162,120,.13); }
+.admin-publish-blockers { font-size: 13px; padding-left: 18px; color: #8a4b00; }
+@media (max-width: 800px) {
+  .admin-job-editor .admin-actions { top: 8px; gap: 8px; padding: 10px 12px; }
+  .admin-job-editor .admin-actions .admin-btn { padding: 9px 10px; font-size: 12px; }
+  .admin-editor-duplicate { display: none; }
+  .admin-editor-mobile-duplicate { display: inline-flex; }
+}
+
 .admin-job-filters { display: grid; grid-template-columns: 92px 132px 90px minmax(0, 1fr) 42px 42px; padding: 14px; gap: 10px; margin-bottom: 14px; align-items: center; }
 .admin-job-filters input, .admin-job-filters select { font-weight: 400; }
 .admin-ui .admin-job-filters > label + label { margin-top: 0; }
