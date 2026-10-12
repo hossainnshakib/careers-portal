@@ -29,8 +29,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: shell and mobile menu (screen checkpoint; final production audit pending).
 - Complete: dashboard (screen checkpoint; final production audit pending).
 - Complete: applications list (screen checkpoint; final live/production audit pending).
-- In progress: applicant profile and delete dialog.
-- Pending: jobs list and row menu.
+- Complete: applicant profile and delete dialog (screen checkpoint; final workflows pending).
+- In progress: jobs list and row menu.
 - Pending: job editor, question builder and all dialogs.
 - Pending: brands list/editor.
 - Pending: combined departments/options.
@@ -98,21 +98,21 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| P01 | Toolbar breadcrumb Applications / reference and candidate name; header card repeats candidate name at 26px/800 with inline status badge | Pending; previous pass dropped duplicate name without approval; only toolbar name is h1 |
-| P02 | Role, department, reference, applied and consent date lines, brand initial circles at right, 16px gaps/wrapped header | Pending |
-| P03 | Content + 340px review rail grid, 14px gaps, rail sticky top 16px and viewport-safe reachability | Pending |
-| P04 | Personal & contact rows: actual email, phone, city/location; 150px label column and 9px vertical padding/hairline separators | Pending |
-| P05 | Professional, Experience, Skills, Portfolio and Role-specific answers panels in order with blue uppercase labels; real answers render as text/Bengali and safe links | Pending |
-| P06 | Previous applications from this email: dense nested cards with clickable job/profile, date and status; meaningful empty state | Pending |
-| P07 | Status history: actual event dates, changes and actor; never fabricate the board's Viewed event | Pending |
-| P08 | Rail Download Profile PDF, Include internal notes checkbox default off, status selector and Update status, internal-note input and Add note | Pending |
-| P09 | Internal notes title, note text, author/time; retain author-only delete control with pending/error feedback | Pending |
-| P10 | CV and other attachment names/sizes, Downloads heading and authenticated Download controls; Delete application at bottom | Pending |
-| P11 | Mobile header simplified to status/role/reference/date/brands; review disclosure before content, Status, notes & downloads summary and open state | Pending |
-| P12 | Mobile full PDF notes/status/note/download/delete functionality remains available within disclosure; personal rows remain two columns where they fit | Pending |
-| P13 | Delete confirmation dialog: Delete kicker, 18px heading Delete this application?, actual name/reference, irreversible files/notes warning, Cancel + red Delete aligned right | Pending |
-| P14 | Delete cancel/Escape restores focus and changes nothing; confirm/pending/error and cleanup retry retain original gated deletion/recovery | Pending |
-| P15 | Empty answers/attachments/history/notes/previous applications; long text/Bengali/links and consent-absent states | Pending |
+| P01 | Toolbar breadcrumb Applications / reference and candidate name; header card repeats candidate name at 26px/800 with inline status badge | Implemented; one h1, repeated header name restored; render assertion and 1440 capture |
+| P02 | Role, department, reference, applied and consent date lines, brand initial circles at right, 16px gaps/wrapped header | Deviation C: layout restored with shared readable black/white initial ink correction D06 rather than always-white mock letters; consent present/absent render checks |
+| P03 | Content + 340px review rail grid, 14px gaps, rail sticky top 16px and viewport-safe reachability | Implemented; one glass review panel instead of separate cards; viewport-limited scroll on desktop, normal mobile flow |
+| P04 | Personal & contact rows: actual email, phone, city/location; 150px label column and 9px vertical padding/hairline separators | Implemented; Location accurately labels the existing unrestricted location field; redundant name row removed, name retained twice above; two columns at 390 and stacking below 360 |
+| P05 | Professional, Experience, Skills, Portfolio and Role-specific answers panels in order with blue uppercase labels; real answers render as text/Bengali and safe links | Implemented; stored section order retained, exact Role-specific answers title; absent sections not fabricated; escaping/order/Bengali/unsafe URL render checks |
+| P06 | Previous applications from this email: dense nested cards with clickable job/profile, date and status; meaningful empty state | Deviation A: drawn nested shape/status restored but existing reference and precise submitted time retained in its small date line, rather than removing useful review fields. Link remains visibly blue/keyboard reachable; genuine empty state added |
+| P07 | Status history: actual event dates, changes and actor; never fabricate the board's Viewed event | Implemented; glass panel restored; existing actual events/actor retained, no fabricated Viewed activity; empty history message |
+| P08 | Rail Download Profile PDF, Include internal notes checkbox default off, status selector and Update status, internal-note input and Add note | Deviation A: drawn unboxed/full-width controls restored; existing private-note guidance and precise Include internal notes in PDF label retained so admins do not confuse PDF inclusion with candidate visibility. Hidden labels preserve programmatic names; SSR checks |
+| P09 | Internal notes title, note text, author/time; retain author-only delete control with pending/error feedback | Implemented; drawn separated bold notes, actual author/time, unchanged own-note deletion/result handling |
+| P10 | CV and other attachment names/sizes, Downloads heading and authenticated Download controls; Delete application at bottom | Implemented; Downloads after notes with actual filenames/KB, compact Download links retain accessible CV/file-specific names; no storage URL or gate changes |
+| P11 | Mobile header simplified to status/role/reference/date/brands; review disclosure before content, Status, notes & downloads summary and open state | Deviation A: duplicate header name hidden as drawn, but real department and consent metadata remain available instead of disappearing on mobile. Initially open one-card disclosure restored and reopens when resizing to desktop to avoid inaccessible controls |
+| P12 | Mobile full PDF notes/status/note/download/delete functionality remains available within disclosure; personal rows remain two columns where they fit | Implemented; 390 captures and disclosure/resize checks; downloads/status/note/PDF DOM retained |
+| P13 | Delete confirmation dialog: Delete kicker, 18px heading Delete this application?, actual name/reference, irreversible files/notes warning, Cancel + red Delete aligned right | Deviation C: matches geometry/copy structure with full irreversible-data warning; filled red darkened from #E5484D (white 3.91:1) to #B42318 (6.57:1). Existing Confirm deletion accessible name retained; actual name escaped; 1440/390 dialog captures |
+| P14 | Delete cancel/Escape restores focus and changes nothing; confirm/pending/error and cleanup retry retain original gated deletion/recovery | Implemented; capture verified Cancel/Escape focus and synthetic row unchanged. Escape blocked while deletion is pending; existing confirmed action/retry/error flow unchanged. Full destructive workflow remains queued for final production e2e |
+| P15 | Empty answers/attachments/history/notes/previous applications; long text/Bengali/links and consent-absent states | Implemented; render cases for genuine empties/ordered sections/consent/escaped text; synthetic Bengali/long-email captures and overflow checks. Provider failures and cleanup failures not forced into screenshots |
 
 ## 5. Jobs list and row menu (Jobs + States)
 
@@ -246,12 +246,14 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-33 Implemented / 7 Deviation / 82 Pending / 0 classified Not implemented**.
+43 Implemented / 12 Deviation / 67 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
 brand initials), D10 (mobile statistics access), A02 (retained accessible submission/
-extra-filter access), A06 (shared measured contrast corrections). All reasons are on their rows.
+extra-filter access), A06 (shared measured contrast corrections), P02 (initial ink),
+P06 (prior reference/time), P08 (privacy/PDF guidance), P11 (mobile metadata),
+P13 (red button contrast). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -279,4 +281,11 @@ FROM rendering; corrected real-table AS alias without weakening the assertion.
 New live equal-timestamp/case-insensitive/filter-independent flags and permanent
 browser assertions are queued, not executed as broad verification. No migration,
 dependency, validation, storage or authorization changes.
-Hosted Vercel, real physical phones and non-dev resources are not verified.
+Profile checkpoint: typecheck/lint and four touched unit files / 17 tests passed.
+Synthetic before/after/dialog captures at both widths inspected. Capture checked
+overflow, Cancel/Escape focus return, no deletion and mobile-to-desktop disclosure
+reachability. Initial render-test name count included the toolbar data attribute;
+replaced with exact visible toolbar/header assertions (both required). New e2e
+focus/disclosure cases queued; broad/default/live/build/production gates still
+NOT executed for this pass. Hosted Vercel, real physical phones and non-dev
+resources are not verified.

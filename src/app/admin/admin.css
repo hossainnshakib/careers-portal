@@ -1500,6 +1500,55 @@
 
 /* ---------- accessibility preferences ---------- */
 
+/* Applicant: one review glass panel, with a native open mobile disclosure. */
+.admin-profile-header {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.admin-profile-header > :first-child { flex: 1; min-width: 0; }
+.admin-profile-name { font-size: 26px; font-weight: 800; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.admin-profile-name .admin-pill { vertical-align: middle; }
+.admin-profile-rail { position: sticky; top: 16px; max-height: calc(100dvh - 32px); overflow-y: auto; }
+.admin-applicant-profile .admin-rail-details { display: block; }
+.admin-applicant-profile .admin-rail-details > :not(summary) + :not(summary) { margin-top: 12px; }
+.admin-applicant-profile .admin-kicker { margin-bottom: 6px; }
+.admin-profile-pdf, .admin-profile-review .admin-stack { gap: 12px; }
+.admin-profile-review form .admin-btn { width: 100%; }
+.admin-profile-review .admin-btn-sm { padding: 11px 18px; }
+.admin-profile-review .admin-note { font-size: 12px; }
+.admin-profile-review .admin-error:empty,
+.admin-profile-rail .admin-error:empty { display: none; }
+.admin-profile-previous { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-profile-previous .admin-card { padding: 12px 14px; max-width: 100%; overflow-wrap: anywhere; }
+.admin-profile-previous .admin-note { margin: 4px 0; }
+.admin-profile-notes li { border-top: 1px solid var(--admin-line); padding-top: 8px; }
+.admin-profile-notes li > p:first-child { font-weight: 700; font-size: 13px; }
+.admin-profile-download { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; margin-top: 10px; }
+.admin-profile-download > div { min-width: 0; overflow-wrap: anywhere; }
+.admin-profile-download .admin-note { margin: 0; }
+.admin-profile-download .admin-btn { flex-shrink: 0; }
+.admin-delete-trigger { color: #b42318; }
+.admin-ui .admin-delete-dialog h2 { font-size: 18px; }
+.admin-ui .admin-delete-dialog .admin-btn-danger { background: #b42318; color: #fff; border: 0; box-shadow: none; }
+.admin-ui .admin-delete-dialog .admin-btn-danger:hover { background: #8a1b12; }
+@media (max-width: 800px) {
+  .admin-profile-header { gap: 10px; align-items: start; }
+  .admin-profile-header > :first-child { flex-basis: 100%; }
+  .admin-profile-name > span:first-child { display: none; }
+  .admin-profile-name { font-size: inherit; margin-bottom: 6px; }
+  .admin-profile-consent { display: block; }
+  .admin-profile-rail { position: static; max-height: none; overflow: visible; }
+  .admin-applicant-profile .admin-rail-summary { padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; font-weight: 700; cursor: pointer; }
+  .admin-applicant-profile .admin-rail-summary::after { content: " ▾"; }
+  .admin-applicant-profile .admin-row { grid-template-columns: 150px minmax(0, 1fr); gap: 10px; }
+}
+@media (max-width: 359px) {
+  .admin-applicant-profile .admin-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+
 /* Applications: compact board row, additive filters disclosed rather than removed. */
 .admin-review-filter-block {
   display: grid;

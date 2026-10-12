@@ -42,6 +42,11 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   sort/timezone guidance, chips below/on the mobile Filters row, reference column
   proportions, accent initials and Applied before pills. Read-only email history
   is computed server-side, not inferred from names. All filters remain URL-driven.
+- Applicant fidelity: repeated desktop name with inline status, initial marks,
+  grouped answer/history cards and nested previous-application cards; one sticky
+  340px review glass panel becomes an open mobile disclosure above the content.
+  Personal rows retain two columns at 390px. All real metadata and PDF/privacy
+  guidance survive; the filled delete-confirmation red meets text contrast.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

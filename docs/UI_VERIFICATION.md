@@ -41,6 +41,19 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   case-insensitivity/equal-time/filter-independence cases and permanent e2e are
   queued for the final run. Full default/live/build/production gates NOT run.
 
+### Applicant/deletion fidelity checkpoint
+
+- Repeated header name/initial marks, grouped answer/history/previous cards and
+  single sticky review panel reconciled. Mobile disclosure sits above content,
+  keeps two-column contact rows, and reopens when moving to desktop.
+- Typecheck/lint passed; four touched unit files / 17 tests passed. Synthetic
+  before/after/dialog captures at 1440/390 inspected; capture passed overflow,
+  Cancel/Escape focus restoration, no deletion and disclosure/resize reachability.
+- Actual status/note/attachment/PDF/deletion code and gates retained. Confirmation
+  red contrast measured 6.57:1 versus 3.91:1 in reference. Permanent e2e additions
+  queued; broad default/live/build/production checks, failure injection, hosted
+  Vercel and physical phones NOT verified at this checkpoint.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

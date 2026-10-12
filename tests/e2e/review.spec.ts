@@ -26,6 +26,11 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   await expect(page.getByText("আমি সৃজনশীল কাজে অভিজ্ঞ।", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Previous applications from this email" })).toBeVisible();
   await expect(page.locator('a[href^="javascript:"]')).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByText("Status, notes & downloads", { exact: true }).click();
+  await expect(page.getByLabel("Application status", { exact: true })).not.toBeVisible();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByLabel("Application status", { exact: true })).toBeVisible();
   await page.getByLabel("Application status", { exact: true }).selectOption("shortlisted");
   await page.getByRole("button", { name: "Update status" }).click();
   await expect(page.getByRole("region", { name: "Status history" })).toContainText("Shortlisted");
@@ -50,6 +55,14 @@ test("admin filters, reviews Bengali snapshots, changes status, notes, downloads
   await page.getByRole("button", { name: "Delete application", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "Confirm application deletion" });
   await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Delete application", exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "Delete application", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Delete application", exact: true })).toBeFocused();
+  expect((await reviewFixture.verifyReview(fixture.applicationId)).exists).toBe(true);
+  await page.getByRole("button", { name: "Delete application", exact: true }).click();
   await dialog.getByRole("button", { name: "Confirm deletion" }).click();
   await expect(page).toHaveURL(/\/admin\/applications$/, { timeout: 30000 });
   expect(await reviewFixture.verifyReview(fixture.applicationId)).toMatchObject({ exists: false, notes: 0, events: 0, attachments: 0, answers: 0, filesAbsent: true });

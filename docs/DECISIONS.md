@@ -899,3 +899,29 @@ HANDOFF READY
   overflow and real synthetic first/earlier flags. Full live/default/build/e2e
   remains final-only. Additional live equal-time/case-insensitive/independent-filter
   cases and permanent e2e were written, not yet production-run.
+
+## 2026-10-12 — Admin fidelity applicant/deletion checkpoint
+
+- Restored repeated desktop header name with inline status and drawn initial
+  marks; personal contact rows no longer repeat the name a third time. Grouped
+  answers remain in stored section order, with Role-specific answers label.
+  Previous applications now use nested glass cards with actual status; previous,
+  history and answer empties have explicit genuine messages.
+- Review/PDF/notes/downloads/delete share one 340px sticky glass panel, with a
+  desktop viewport-limited scroll area. Mobile keeps its initially open native
+  disclosure ahead of content and two-column contact rows at 390px; below 360px
+  rows stack. Closing on mobile and resizing to desktop reopens the disclosure,
+  otherwise its hidden desktop summary would strand the review controls.
+- Preserved previous reference/time, PDF/privacy guidance and department/consent
+  metadata on mobile. Allowed deviations P02/P06/P08/P11/P13 are documented in
+  acceptance; other differences reflect real data, not fabricated sample answers.
+- Delete dialog has Delete kicker, 18px heading, real escaped name/reference,
+  irreversible-data warning and right-aligned Cancel/filled red Delete. Existing
+  Confirm deletion accessible name is retained for unambiguous action testing.
+  #B42318 replaces reference #E5484D for white contrast (6.57:1 vs 3.91:1).
+  Native Cancel/Escape focus return retained; pending deletion blocks Escape.
+- Typecheck/lint passed; four touched unit files / 17 tests passed. Synthetic
+  before/after/dialog 1440/390 captures inspected and checks passed for overflow,
+  Cancel/Escape restoring focus without deletion, and disclosure/resize access.
+  Full destructive/status/note/PDF/download production workflow is queued, not
+  newly verified here. No DB/storage/auth changes, migrations or dependencies.
