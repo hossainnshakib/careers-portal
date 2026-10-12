@@ -216,8 +216,19 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   dev database — a test-isolation race, not a product regression (the upgrade test
   passes standalone and in the serialized run). Production `pnpm build` and the
   PDF-trace guard passed (Helvetica/ICC chunks, both Bengali fonts, 8 logos).
-  Complete production e2e with RUN_LIGHTHOUSE=1 is running; its result and the
-  production-console check close V06/V07.
+- First complete production e2e (RUN_LIGHTHOUSE=1): 42/44. Both failures were
+  real findings fixed in 39d3220: the compact question-card head crushed its
+  label button to 0-8px wide (now a wrapping flex row with a readable minimum,
+  re-verified at both widths with fresh captures and width/overflow
+  assertions), and the job-editor spec clicked the More-actions summary without
+  waiting out the page reload that Close/Reopen trigger (now waits for the
+  reloaded status pill). Lighthouse (all four pages passed): home
+  97/100/100/92, job 97/100/100/100, apply 93/100/100/69, success
+  98/100/100/54 — accessibility 100 everywhere; the SEO misses are the
+  pre-existing public-page meta/crawl items. Final re-run after the fixes:
+  complete production e2e 44/44 passed (7.8m, serial worker) and the production
+  console check passed with zero console/page errors across every admin route,
+  login, MFA and an applicant profile — V06/V07 closed.
 
 ## Admin presentation replacement — 2026-10-11
 

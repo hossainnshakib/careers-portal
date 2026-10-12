@@ -1682,3 +1682,42 @@ HANDOFF READY
   PDF trace guard, complete production e2e with RUN_LIGHTHOUSE=1) and the
   final report. Physical phone testing remains unverified (gap). No blocking
   owner decision.
+
+## 2026-10-13 — Final production e2e (V06) failure triage and fixes
+
+- First complete production e2e run with RUN_LIGHTHOUSE=1: 42/44 passed; the
+  two failures were both in components/specs touched by this pass.
+- question-builder "Edit question N" reported hidden: the compact question-card
+  head (block 4) used a 5-column grid (14px minmax(0,1fr) auto auto auto); the
+  three auto columns (type pill, Required, Remove) consumed the whole card
+  width and crushed the label button to 0-8px wide (measured in-browser). A
+  real readability defect matching the Playwright "hidden" report. Fixed in
+  src/app/admin/admin.css: the head is now a wrapping flex row — label keeps a
+  6.5rem minimum (5.5rem below 800px), Required/type pill/Remove wrap to the
+  next line, Remove stays right-aligned — matching the drawn board's readable
+  wrapped label. Verified with fresh both-width captures
+  (after-question-head-1440/390.png, Bengali + long label), >=88px label-width
+  assertions and a no-overflow check at 390/1440.
+- job-editor "Reopen job" not found after Close: Close/Reopen call
+  window.location.reload() (identical to main), which resets the More-actions
+  <details> panel to closed; the spec clicked the summary again without waiting
+  for the reload, so the click raced the navigation. Test-side fix in
+  tests/e2e/job-editor.spec.ts: wait for the reloaded status pill
+  (.admin-pill-closed / .admin-pill-open) before re-opening the panel. Both
+  specs pass against the production build after the fixes (commit 39d3220).
+- Recorded gap (not changed): in dev-server runs only, window.location.reload()
+  racing the in-flight server-action response intermittently logs React Flight
+  errors (chunk.reason.enqueueModel / frame.join is not a function) and can
+  land on the error boundary. The reload-after-command code is identical to
+  main and no production run has shown it; treated as a pre-existing dev-mode
+  flake. Also noted for gate runs: `next dev` overwrites .next, so a rebuild is
+  required before any production e2e run.
+- Final gate result after 39d3220: complete production e2e with
+  RUN_LIGHTHOUSE=1 passed 44/44 (serial worker, 7.8m), Lighthouse a11y 100 on
+  all four public pages, and a production console check across every admin
+  route/login/MFA/applicant profile reported zero console or page errors.
+  Broad gates for this pass are now complete: default vitest 621, serialized
+  live vitest 707, production build + PDF-trace guard, complete production
+  e2e 44/44. Final acceptance counts: 122 = 91 Implemented / 31 Deviation /
+  0 Pending. Branch admin-fidelity is pushed and NOT merged, per the pass
+  contract; every deviation remains provisional for owner review.

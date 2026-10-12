@@ -41,10 +41,10 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: login and MFA (checkpoint; full production auth/CSP e2e re-run queued).
 - Complete: mobile variants and cross-screen audit (S18/E27; both-width overflow,
   navigation, dialog-fit and Bengali checks passed, no code change needed).
-- In progress: final verification gates — V01–V05 evidence recorded; default
-  suite (621), serialized live suite (707) and production build + PDF-trace
-  guard passed; complete production e2e with RUN_LIGHTHOUSE=1 running.
-- Pending: final default/live/build/production-browser gates and final captures.
+- Complete: final verification gates (V01–V08) — default vitest 621, serialized
+  live vitest 707, production build + PDF-trace guard, complete production e2e
+  with RUN_LIGHTHOUSE=1 44/44, production console check clean; final report
+  delivered and recorded in DECISIONS.md.
 
 ## 1. Shell, shared controls and glass (Main + all desktop boards + MobileMenu)
 
@@ -214,9 +214,9 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | V03 | >=4.5:1 text, hover/focus/selected/disabled states, long strings/Bengali, no overlaps/overflow, keyboard interaction/focus restoration | Implemented; measured contrast corrections already documented (B02/B07/E19), both-width overflow/overlap sweep passed, Bengali names/answers/titles render in inspected captures, focus rings/trap/restore covered by admin-ui/jobs/settings/question-builder e2e; physical-device keyboard testing unverified |
 | V04 | Every protected page/action/handler retains direct requireAdmin and mandatory MFA; no validation/storage/auth/schema/dependency changes | Implemented; diff audit: every protected page and all 17 requireAdmin() call sites across the seven server-action files plus both admin API handlers gate directly; zero diff in package.json/lockfile, middleware, schema, migrations, validation, auth lib and storage layer; RLS/allowlist/MFA gates untouched |
 | V05 | Tests cover publish cancel/confirm, Add-question dialog, Write/Preview, slide-over focus/Escape, ordering and Applied before without weakening previous cases | Implemented; job-editor e2e covers Publish dialog cancel/confirm and Write/Preview toggles, question-builder e2e covers Add-question cancel/focus-return plus ArrowUp/Down and drag ordering, admin-ui e2e covers slide-over trap/Escape/focus return, review e2e covers Applied before; no prior assertion removed (one stale label assertion updated to the drawn Continue wording) |
-| V06 | Per-screen typecheck/lint/touched unit tests; final once-only default/live/build+PDF trace/complete production e2e run, live/browser serialized | Pending |
-| V07 | Record all actual results/failures and final counts, every allowed deviation/reason and every nonimplemented row; no pixel-identical claim without evidence | Pending |
-| V08 | Commits/pushes per completed screen, context handoff around 60%, no merge/force-push/non-dev access; unrelated test-accounts diff unstaged | Pending |
+| V06 | Per-screen typecheck/lint/touched unit tests; final once-only default/live/build+PDF trace/complete production e2e run, live/browser serialized | Implemented; every checkpoint ran typecheck + lint + touched units + guarded captures; once-only broad gates all green — default vitest 621, live vitest (RUN_SUPABASE_TESTS=1) 707 when serialized with --no-file-parallelism (parallel run races the shared dev DB between upgrade.live and review.live; test-isolation race, not a product bug), production build + PDF-trace guard, and the complete production e2e with RUN_LIGHTHOUSE=1 44/44 after the two triage fixes committed as 39d3220; production console check clean across every admin route, login, MFA and an applicant profile |
+| V07 | Record all actual results/failures and final counts, every allowed deviation/reason and every nonimplemented row; no pixel-identical claim without evidence | Implemented; first production e2e recorded at 42/44 with both failures diagnosed (crushed question label / editor-reload spec race) and fixed, all 31 deviations listed with reasons below, final counts 122 = 91 Implemented / 31 Deviation / 0 Pending, no pixel-identical claim anywhere, Lighthouse evidence attached, gaps and owner decisions recorded in DECISIONS.md and the final report |
+| V08 | Commits/pushes per completed screen, context handoff around 60%, no merge/force-push/non-dev access; unrelated test-accounts diff unstaged | Implemented; every screen/block landed as its own commit pushed to admin-fidelity (never merged, never force-pushed), two context handoffs published at ~60%, only dev Supabase/dev servers/localhost touched, owner's unrelated test-accounts.ts diff (8 insertions / 1 deletion) kept unstaged and untouched throughout |
 
 ## Previous-pass differences: explicit disposition
 
@@ -254,7 +254,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-88 Implemented / 31 Deviation / 3 Pending / 0 classified Not implemented**.
+91 Implemented / 31 Deviation / 0 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
