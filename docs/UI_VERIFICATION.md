@@ -54,6 +54,17 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   queued; broad default/live/build/production checks, failure injection, hosted
   Vercel and physical phones NOT verified at this checkpoint.
 
+### Jobs fidelity checkpoint
+
+- Compact filters, column proportions, initials, short dates, drawn menu hint and
+  empty-state actions reconciled. Menu adds focus/tab/outside dismissal and flips
+  above near the viewport bottom; eligible draft deletion requires confirmation.
+- Typecheck/lint passed; two touched unit files / 10 tests passed. Guarded captures
+  at 1440/390 passed overflow, menu focus/Escape/fit and draft Cancel/no deletion.
+  Shared contrast, functional filter icons and accessible mobile cards are the
+  three documented deviations. Full mutation/default/live/build/production e2e
+  remains final-only; real phones and hosted Vercel remain unverified.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

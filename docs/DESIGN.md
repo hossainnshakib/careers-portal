@@ -47,6 +47,10 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   340px review glass panel becomes an open mobile disclosure above the content.
   Personal rows retain two columns at 390px. All real metadata and PDF/privacy
   guidance survive; the filled delete-confirmation red meets text contrast.
+- Jobs fidelity: compact Status/Department/Brand/Search row, reference column
+  proportions, accent initials and short dates. Labelled submit/reset icons retain
+  filter actions. Drawn row disclosures keep keyboard focus and viewport-safe
+  placement; mobile semantic cards avoid the reference's clipped actions.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

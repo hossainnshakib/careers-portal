@@ -30,7 +30,9 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: dashboard (screen checkpoint; final production audit pending).
 - Complete: applications list (screen checkpoint; final live/production audit pending).
 - Complete: applicant profile and delete dialog (screen checkpoint; final workflows pending).
-- In progress: jobs list and row menu.
+- Complete: jobs list and row menu (screen checkpoint; mutations queued for final e2e).
+- In progress: job editor shell/sticky action bar and Publish confirmation.
+- Editor blocks pending: Basics; Content/Write-Preview; question builder/Add-question/options; candidate preview. Commit each block separately.
 - Pending: job editor, question builder and all dialogs.
 - Pending: brands list/editor.
 - Pending: combined departments/options.
@@ -118,13 +120,13 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| J01 | Jobs eyebrow/title, desktop search/New job, compact glass filters Status, Department, Brand, Search jobs; preserve Apply/Clear affordances compactly | Pending |
-| J02 | Data card 14px below filters; columns Title, Department, Brands, Options, Salary, Status, Apps, Updated, actions | Pending |
-| J03 | Bold title links, verbatim options separated by dots, configured salary/Negotiable, brand initials, status colours, counts and short updated date | Pending |
-| J04 | Ellipsis row actions trigger, 220px/.9-white menu with 8px padding, 12px item radius, hover on Duplicate | Pending |
-| J05 | Working Edit, Duplicate, Close job/Reopen; eligible draft Delete preserved; focus/Escape/outside click, generic failures and mutation pending | Pending |
-| J06 | Mobile card order name/status, department, marks/options/salary/count/date and reachable row actions; no overflow or obscured menu | Pending |
-| J07 | No matching jobs and genuinely empty jobs states with Clear filters/New job; loading and error | Pending; prior single-clear-link choice must match States treatment |
+| J01 | Jobs eyebrow/title, desktop search/New job, compact glass filters Status, Department, Brand, Search jobs; preserve Apply/Clear affordances compactly | Deviation A: drawn compact order/padding restored, with labelled 42px submit/reset icons to preserve pointer submission and direct reset (neither is drawn). Removing them breaks existing filter actions; no filter parameter deleted |
+| J02 | Data card 14px below filters; columns Title, Department, Brands, Options, Salary, Status, Apps, Updated, actions | Implemented; fixed reference column proportions/padding; before/after 1440 capture, all columns retained |
+| J03 | Bold title links, verbatim options separated by dots, configured salary/Negotiable, brand initials, status colours, counts and short updated date | Deviation C: drawn initials and all stored labels/salary/count/date restored; shared green/initial contrast corrections S13/D06 retained for readable text, not logo substitution |
+| J04 | Ellipsis row actions trigger, 220px/.9-white menu with 8px padding, 12px item radius, hover on Duplicate | Implemented; drawn panel dimensions/styles, Escape focus return, first-link focus and above-trigger placement near viewport bottom; mobile menu capture inspected |
+| J05 | Working Edit, Duplicate, Close job/Reopen; eligible draft Delete preserved; focus/Escape/outside click, generic failures and mutation pending | Implemented; independently gated server commands unchanged; eligible zero-application draft Delete has irreversible confirmation. Tab-away/outside pointer closes; pending commands keep feedback and disable competing actions. Capture passed draft Cancel/focus with no deletion; destructive command coverage remains final-only |
+| J06 | Mobile card order name/status, department, marks/options/salary/count/date and reachable row actions; no overflow or obscured menu | Deviation C: Jobs board at 390 clips columns/actions horizontally. Semantic cards preserve every field and keep menu within viewport instead; filters wrap with drawn three-select order; both-width overflow/menu checks passed |
+| J07 | No matching jobs and genuinely empty jobs states with Clear filters/New job; loading and error | Implemented; empty result/create controls added, no duplicate reset action; render cases distinguish genuinely empty from filtered. Existing invalid-filter notice/read boundary retained; provider failure not injected |
 
 ## 6. Job editor (JobEditor + Dialogs)
 
@@ -246,14 +248,15 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-43 Implemented / 12 Deviation / 67 Pending / 0 classified Not implemented**.
+47 Implemented / 15 Deviation / 60 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
 brand initials), D10 (mobile statistics access), A02 (retained accessible submission/
 extra-filter access), A06 (shared measured contrast corrections), P02 (initial ink),
 P06 (prior reference/time), P08 (privacy/PDF guidance), P11 (mobile metadata),
-P13 (red button contrast). All reasons are on their rows.
+P13 (red button contrast), J01 (submit/reset function), J03 (shared contrast),
+J06 (mobile column/action accessibility). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -282,6 +285,9 @@ New live equal-timestamp/case-insensitive/filter-independent flags and permanent
 browser assertions are queued, not executed as broad verification. No migration,
 dependency, validation, storage or authorization changes.
 Profile checkpoint: typecheck/lint and four touched unit files / 17 tests passed.
+Jobs checkpoint: typecheck/lint, two touched unit files / 10 tests, guarded
+before/after/menu/empty captures and focus/overflow/draft Cancel checks passed.
+Permanent browser menu coverage queued. Full command execution remains final-only.
 Synthetic before/after/dialog captures at both widths inspected. Capture checked
 overflow, Cancel/Escape focus return, no deletion and mobile-to-desktop disclosure
 reachability. Initial render-test name count included the toolbar data attribute;

@@ -1038,3 +1038,25 @@ HANDOFF READY
   settings in PowerShell. Helpers/traces/videos/failure screenshots stay untracked.
 
 HANDOFF READY
+
+## 2026-10-12 — Jobs fidelity and editor block workflow
+
+- Jobs now uses compact Status/Department/Brand/Search filters, drawn column
+  proportions, accent initials, verbatim option/salary values, short dates and
+  row-menu hint. Submit/reset icons preserve those existing filter functions.
+  Mobile semantic cards prevent the board's clipped columns/actions. These and
+  shared contrast correction are the only recorded Jobs deviations (J01/J03/J06).
+- Menus focus Edit when opened, dismiss on Escape/tab-away/outside pointer, fit
+  the viewport and flip above near the bottom. Mutating controls are disabled
+  during requests. Eligible zero-application draft Delete uses the existing gated
+  command behind an irreversible confirmation; Cancel leaves it unchanged.
+- Typecheck/lint and two touched unit files / 10 tests passed. Guarded dev captures
+  at 1440/390 passed menu focus/fit/Escape, overflow and draft Cancel/focus without
+  deletion. Permanent browser checks queued; mutations/full gates are final-only.
+- Latest owner instruction tightens deviation discipline: only broken/removed
+  functions, schema/migration/permission/dependency blockers, or security/accessibility
+  justify differences. Simpler/real data/kept behaviour alone never justify one.
+- Editor must now be committed ONE BLOCK AT A TIME: (1) shell/sticky action bar
+  plus Publish confirmation; (2) Basics; (3) Content with Write/Preview; (4) question
+  builder/Add-question/options editor; (5) live candidate preview. Each block gets
+  its own typecheck/lint/touched units/captures and commit/push. None completed yet.

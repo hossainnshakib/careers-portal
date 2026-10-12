@@ -1500,6 +1500,31 @@
 
 /* ---------- accessibility preferences ---------- */
 
+.admin-job-filters { display: grid; grid-template-columns: 92px 132px 90px minmax(0, 1fr) 42px 42px; padding: 14px; gap: 10px; margin-bottom: 14px; align-items: center; }
+.admin-job-filters input, .admin-job-filters select { font-weight: 400; }
+.admin-ui .admin-job-filters > label + label { margin-top: 0; }
+.admin-job-filter-submit, .admin-job-filter-clear { padding: 10px; height: 42px; }
+.admin-jobs-list table { table-layout: fixed; }
+.admin-jobs-list th:nth-child(1) { width: 18%; }
+.admin-jobs-list th:nth-child(2) { width: 16%; }
+.admin-jobs-list th:nth-child(3) { width: 6%; }
+.admin-jobs-list th:nth-child(4) { width: 18%; }
+.admin-jobs-list th:nth-child(5) { width: 15%; }
+.admin-jobs-list th:nth-child(6) { width: 9%; }
+.admin-jobs-list th:nth-child(7) { width: 5%; }
+.admin-jobs-list th:nth-child(8) { width: 8%; }
+.admin-jobs-list th:nth-child(9) { width: 5%; }
+.admin-jobs-list .admin-brand-marks { flex-wrap: wrap; }
+.admin-job-menu-hint { margin-top: 10px; font-size: 12.5px; }
+.admin-menu-panel.is-above { top: auto; bottom: calc(100% + 6px); }
+.admin-menu-panel { max-height: 70dvh; overflow-y: auto; }
+@media (max-width: 800px) {
+  .admin-job-filters { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, .8fr); }
+  .admin-job-search { grid-column: 1 / -1; }
+  .admin-job-filter-submit, .admin-job-filter-clear { grid-row: 3; width: 42px; justify-self: start; }
+  .admin-job-menu-hint { display: none; }
+}
+
 /* Applicant: one review glass panel, with a native open mobile disclosure. */
 .admin-profile-header {
   margin-bottom: 14px;
