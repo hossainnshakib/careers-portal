@@ -102,6 +102,21 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   and overflow. No persistence/upload executed. Permanent save-flow assertions
   now switch to Preview/Write explicitly, queued for final production e2e.
 
+### Editor block 4 — questions/dialog/options checkpoint
+
+- Compact cards, lower action controls, working native/keyboard reorder and native
+  cancellable Add-question modal implemented. Original type configs/Section edits,
+  standard defaults, max bounds and authorized copy/archive behavior retained.
+- Typecheck/lint; four touched unit files / 17 tests passed. Both-width guarded
+  no-save captures/checks passed Cancel/Escape/focus/no insertion, duplicate-option
+  rejection, independent editing, arrow/native reorder and overflow. Additional
+  focused loop created all eleven types, including date today/number integer/
+  file-size config, without persistence. Permanent eleven-type e2e retains its
+  original validations and adds modal/order interactions; final execution pending.
+- Actual copied-definition/server archive/save integration, pending/failure
+  injection and full production suite remain final-only; candidate-preview block
+  and physical/hosted platforms remain unverified.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

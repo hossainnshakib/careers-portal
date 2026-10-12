@@ -66,6 +66,12 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   Write/Preview controls for all four markdown fields, one visible mode at a time.
   Previews reuse SafeMarkdown without nested glass blur. Benefits precede Skills
   in Enter-add pill inputs; labelled remove crosses preserve item deletion.
+- Question-builder fidelity: compact .9-white cards/handle/bold label/type/Required/
+  archive-or-remove, full editing from the label and actions below cards. Native
+  drag/drop plus keyboard/arrow reorder retains IDs. Native Add-question modal
+  validates an independent draft before insertion; Enter-add option rows expose
+  label/value/removal and strict uniqueness. Section is additionally disclosed;
+  mobile card rows reflow rather than clipping controls. No schema change.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

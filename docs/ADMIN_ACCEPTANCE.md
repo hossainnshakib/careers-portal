@@ -34,8 +34,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: editor block 1 — shell/sticky action bar and Publish confirmation (confirm mutation queued for final e2e).
 - Complete: editor block 2 — Basics (screen checkpoint; persistence e2e queued).
 - Complete: editor block 3 — Content/Write-Preview (screen checkpoint; persistence e2e queued).
-- In progress: editor block 4 — question builder/Add-question/options (implementation not started).
-- Editor block pending: 5 candidate preview. Commit each block separately.
+- Complete: editor block 4 — question builder/Add-question/options (checkpoint; persistence/copy integration queued).
+- In progress: editor block 5 — candidate preview (implementation not started). Commit separately.
 - Pending: brands list/editor.
 - Pending: combined departments/options.
 - Pending: login and MFA.
@@ -147,19 +147,19 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | E11 | Write/Preview toggle for every markdown field, dark selected pill; no simultaneous side-by-side preview; switching preserves edits | Implemented; independent labelled button groups/aria-pressed, Description toggle before its label as drawn, other toggles below labels; preview hides textarea, Write restores it; both-width four-field preservation checks |
 | E12 | Preview uses existing sanitised Markdown, raw HTML disabled, links/text wrap and empty preview feedback | Implemented; existing SafeMarkdown reused in unblurred preview region; Bengali strong text and no raw script checked in browser at both widths; empty preview feedback verified; no renderer/security changes |
 | E13 | Benefits and Skills Add item, press Enter inputs and pill items; keyboard add/remove and validated limits preserved (not multiline textareas) | Deviation A: drawn Benefits-before-Skills inputs/pills and Enter-add restored, with small labelled remove crosses retained because deleting them removes item deletion. Benefits pills span their row as drawn; original item/count/length limits remain, descriptive limit guidance is screen-reader-linked rather than extra visible lines |
-| E14 | Questions compact .9-white cards, padding 12px 16px, 8px spacing, label/type/Required/Archive; full type-specific edit controls through disclosure/dialog | Pending |
-| E15 | Question ordering control exactly drawn drag-handle affordance, working native drag and drop plus keyboard/arrow alternatives, announcements and boundary states | Pending; no library; arrow-only alternative requires recorded deviation |
-| E16 | Add question, Add standard questions and Copy from another job actions below cards; seven independent defaults, copy source selector and feedback | Pending |
-| E17 | Existing question remove/archive semantics and archived information; section/help/options/config edits remain possible; never lose unsaved state | Pending |
+| E14 | Questions compact .9-white cards, padding 12px 16px, 8px spacing, label/type/Required/Archive; full type-specific edit controls through disclosure/dialog | Deviation C: desktop geometry/12px head gaps/shadows restored with clickable bold label opening full controls. Mobile head reflows to two rows because the drawn five-part row clips controls at 390; no field/action dropped; card and dialog overflow checks passed |
+| E15 | Question ordering control exactly drawn drag-handle affordance, working native drag and drop plus keyboard/arrow alternatives, announcements and boundary states | Implemented; native draggable handle, ID-checked internal drop, ArrowUp/ArrowDown shortcuts plus boundary-disabled editor arrows, live position feedback; reorder preserves IDs/config/options; both-width native/keyboard browser checks passed |
+| E16 | Add question, Add standard questions and Copy from another job actions below cards; seven independent defaults, copy source selector and feedback | Implemented; actions below cards as drawn, seven defaults unchanged; source selection disclosed under Copy from another job, authorized copy action/cap retained with pending protection and success/error feedback. Copy integration/persistence remain final-only |
+| E17 | Existing question remove/archive semantics and archived information; section/help/options/config edits remain possible; never lose unsaved state | Deviation A/C: additional editing controls/Section disclosure preserve existing definition fields; Archive shown only when server archives, Remove for unsaved/no-application definitions avoids falsely promising archival of deletions. Actual save/archive policy unchanged; stable IDs/edit state follow reordered cards |
 | E18 | Candidate form preview .9 scale/top origin desktop, correct title/contacts/configured sections/CV/consent, local validation without upload or persistence | Pending; abbreviated preview cannot remove functionality |
 | E19 | Publish confirmation dialog: Publish kicker, 18px Publish [title]?, actual public path and slug-lock warning, Requirements met or actual blockers, Cancel/Publish | Deviation C: drawn .9-white/420px/grid-gap dialog implemented; readiness chip uses shared #08694F contrast correction because #087A5B can fall below 4.5:1 on composited glass (4.42:1 on #DCEEE8 vs 5.55:1). Actual groups and existing field schema determine blockers; server remains authoritative |
 | E20 | Publish cancel/Escape retains draft; confirm invokes unchanged server validation; pending/failed publish does not fabricate success; successful publish locks slug | Implemented; native modal Cancel/Escape preserves edits/status/focus, missing-group confirm disabled. Confirm calls unchanged validated save("publish"), pending blocks dismissal, errors remain visible. Actual confirm/slug-lock lifecycle is queued for final production e2e, not claimed newly verified |
-| E21 | Add-question dialog: Add question kicker, New question heading, type chooser with all eleven types in drawn order | Pending; previous immediate append is superseded |
-| E22 | Dialog Label, Help text, Required, Allow Other for choices, Radio/Dropdown selected pills for single choice | Pending |
-| E23 | Dialog min/max length/value pair and options editor Add option, press Enter; label/value editing/removal retains strict unique option values | Pending |
-| E24 | Date absolute/today bounds, number integer/min/max, text lengths, multichoice selection limits and file accept/size/count fields remain reachable and validated | Pending |
-| E25 | Dialog Cancel/Add question, keyboard focus/Escape, invalid feedback, cancel creates nothing and confirm inserts one independently editable definition | Pending |
-| E26 | Empty questions/add controls, max 100 limit, invalid save/publish, draft/new/existing open/closed/archived states | Pending |
+| E21 | Add-question dialog: Add question kicker, New question heading, type chooser with all eleven types in drawn order | Implemented; 420px/.9-white native modal, exact chooser order (Date before File upload), fresh independent definition only added on valid confirm; all eleven dialog type creations passed guarded browser check |
+| E22 | Dialog Label, Help text, Required, Allow Other for choices, Radio/Dropdown selected pills for single choice | Implemented; typed controls reuse existing config rules; Radio default/dark selected pills, relevant Other flags, accessible labels/keyboard actions; generic Enter never submits outer job form |
+| E23 | Dialog min/max length/value pair and options editor Add option, press Enter; label/value editing/removal retains strict unique option values | Implemented; paired numeric fields, Enter-add and separate label/value/remove controls, unused generated option values; strict original schema blocks duplicate/blank/empty choices. Duplicate confirmation stays open/adds nothing; 100-option limit retained |
+| E24 | Date absolute/today bounds, number integer/min/max, text lengths, multichoice selection limits and file accept/size/shared count bound remain reachable and validated | Implemented; all existing type-specific editors retained and render-tested; original schema unchanged. Count is the existing application-wide eight-file bound, NOT a per-question config (none exists in SCHEMA); no unsupported field/schema introduced. Date today/number/file-size dialog creation exercised |
+| E25 | Dialog Cancel/Add question, keyboard focus/Escape, invalid feedback, cancel creates nothing and confirm inserts one independently editable definition | Implemented; guarded both-width Cancel/Escape/no-insert/focus-return, duplicate validation/no-insert and successful independent edit checks passed; close resets abandoned local state |
+| E26 | Empty questions/add controls, max 100 limit, invalid save/publish, draft/new/existing open/closed/archived states | Implemented; genuine empty state/max100/seven-default bounds render-tested; existing job-level validation/status/archived labels untouched. Server persistence/archival and failed copy/save integration are queued for final full gates, not newly claimed proven |
 | E27 | Mobile four blocks stack with readable controls, unscaled preview, compact persistent action bar and viewport-fitting dialogs | Pending; desktop-board 390 overflow requires accessibility fix |
 
 ## 7. Brands (Brands)
@@ -250,7 +250,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-57 Implemented / 20 Deviation / 45 Pending / 0 classified Not implemented**.
+65 Implemented / 22 Deviation / 35 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -260,7 +260,8 @@ P06 (prior reference/time), P08 (privacy/PDF guidance), P11 (mobile metadata),
 P13 (red button contrast), J01 (submit/reset function), J03 (shared contrast),
 J06 (mobile column/action accessibility), E02 (lifecycle-command access), E03
 (mobile bar fit), E19 (readiness text contrast), E09 (extra-field/time editing).
-E13 (list-item removal). All reasons are on their rows.
+E13 (list-item removal), E14 (mobile question row fit), E17 (full-definition
+editing/destructive-action clarity). All reasons are on their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
@@ -308,6 +309,12 @@ both-width Content/preview captures passed. Four independent mode switches,
 unsaved Bengali/Markdown preservation, no raw script, empty preview, summary
 counter and Enter-add/removal checked. No save/publication/upload executed;
 question builder/dialog/options and candidate preview remain pending.
+Block 4 supersedes the question-builder part of that pending statement: typecheck,
+lint and four touched unit files / 17 tests passed. Both-width card/dialog captures
+and no-save browser checks passed all eleven type creations, Cancel/Escape/focus,
+duplicate rejection, independent edits, arrow keys/arrows/native drop and overflow.
+Existing server definition/archive/copy rules unchanged; full integration gates
+remain final-only. Candidate preview internals remain pending.
 Synthetic before/after/dialog captures at both widths inspected. Capture checked
 overflow, Cancel/Escape focus return, no deletion and mobile-to-desktop disclosure
 reachability. Initial render-test name count included the toolbar data attribute;

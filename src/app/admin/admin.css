@@ -1500,6 +1500,47 @@
 
 /* ---------- accessibility preferences ---------- */
 
+.admin-question-builder { display: flex; flex-direction: column; gap: 8px; }
+.admin-question-builder .admin-kicker { margin-bottom: 2px; }
+.admin-ui .admin-question-builder > fieldset.admin-question { order: 2; margin: 0; padding: 12px 16px; border-radius: 24px; background: rgba(255,255,255,.9); box-shadow: var(--admin-glass-shadow); backdrop-filter: none; }
+.admin-question-builder > .admin-question-tools { order: 3; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.admin-question-builder .admin-question-head { display: grid; grid-template-columns: 14px minmax(0,1fr) auto auto auto; gap: 12px; align-items: center; }
+.admin-question-builder .admin-question-head .admin-inline { margin: 0; font-size: 14px; font-weight: 400; }
+.admin-question-builder .admin-question-head > .admin-btn { padding: 6px 12px; }
+.admin-question-edit { font: inherit; font-weight: 700; text-align: left; border: 0; padding: 0; background: none; color: var(--admin-ink); overflow-wrap: anywhere; cursor: pointer; }
+.admin-question-type { padding: 5px 12px; border-radius: 999px; background: rgba(15,23,42,.06); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.admin-question-builder .admin-question-gutter { border: 0; background: none; color: var(--admin-muted); padding: 0; cursor: grab; font-size: 13px; }
+.admin-question-edit-fields { margin-top: 12px; }
+.admin-question-edit-fields[hidden] { display: none; }
+.admin-question-edit-fields > label { margin: 12px 0; }
+.admin-question-copy { flex-basis: 100%; }
+.admin-question-copy > summary { width: fit-content; list-style: none; }
+.admin-question-copy > label { margin-top: 12px; }
+.admin-question-copy > button { margin-top: 8px; }
+.admin-question-feedback { order: 4; margin: 0; font-size: 13px; }
+.admin-question-feedback:empty { display: none; }
+.admin-question-empty { order: 2; margin: 0; }
+.admin-question-options { grid-column: 1 / -1; }
+.admin-option-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) 36px; gap: 6px; margin-top: 8px; }
+.admin-option-row > button { padding: 6px; }
+.admin-ui .admin-add-question-dialog { padding: 20px; background: rgba(255,255,255,.9); max-height: calc(100dvh - 32px); overflow-y: auto; }
+.admin-ui .admin-add-question-dialog[open] { display: grid; gap: 12px; }
+.admin-ui .admin-add-question-dialog h2 { margin: 0; font-size: 18px; }
+.admin-question-dialog-fields { margin: 0; padding: 0; border: 0; min-width: 0; }
+.admin-question-dialog-fields .admin-question-edit-fields { margin-top: 0; }
+.admin-question-dialog-fields .admin-icon-btn { display: none; }
+.admin-question-dialog-fields .admin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.admin-question-dialog-fields .admin-grid > label:not(.admin-numeric-question), .admin-question-dialog-fields .admin-grid > .admin-write-preview, .admin-question-dialog-fields .admin-grid > fieldset, .admin-question-dialog-fields .admin-grid > p { grid-column: 1 / -1; }
+.admin-question-section { grid-column: 1 / -1; order: 9; font-size: 13px; }
+.admin-question-section label { margin-top: 8px; }
+.admin-question-dialog-fields .admin-question-options { order: 8; }
+@media (max-width: 800px) {
+  .admin-question-builder .admin-question-head { grid-template-columns: 14px minmax(0,1fr) auto; }
+  .admin-question-builder .admin-question-head .admin-inline { grid-column: 2; }
+  .admin-question-builder .admin-question-head > .admin-btn { grid-column: 3; }
+  .admin-question-type { font-size: 11px; padding: 5px 8px; }
+}
+
 .admin-markdown-editor { margin-top: 12px; }
 .admin-markdown-editor > label, .admin-content-list-label { font-size: 13px; font-weight: 600; }
 .admin-markdown-editor > textarea { margin-top: 6px; }

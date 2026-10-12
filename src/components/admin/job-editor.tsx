@@ -126,6 +126,7 @@ export function JobEditor({
   const [draft, setDraft] = useState(initial);
   const [manualSlug, setManualSlug] = useState(!!initial.id);
   const [pending, setPending] = useState(false);
+  const [copyingQuestions, setCopyingQuestions] = useState(false);
   const [message, setMessage] = useState("");
   const [mounted, setMounted] = useState(false);
   const publication = useRef<HTMLDialogElement>(null);
@@ -134,6 +135,7 @@ export function JobEditor({
     setDraft((current) => ({ ...current, [name]: value }));
   }
   async function save(intent: "save" | "publish") {
+    if (copyingQuestions) return;
     setMessage("");
     if (intent === "publish") {
       const selected = draft.optionIds
@@ -170,6 +172,7 @@ export function JobEditor({
     }
   }
   async function command(command: "close" | "reopen" | "duplicate" | "delete") {
+    if (copyingQuestions) return;
     if (!draft.id) return;
     setPending(true);
     setMessage("");
@@ -207,7 +210,7 @@ export function JobEditor({
           void save("save");
         }}
       >
-        <fieldset disabled={pending} className="admin-fieldset">
+        <fieldset disabled={pending || copyingQuestions} className="admin-fieldset">
           <div className="admin-actions">
             <JobStatusBadge status={status} />
             <span className="admin-spacer" />
@@ -501,6 +504,7 @@ export function JobEditor({
                 onChange={(questions) => field("questions", questions)}
                 sources={sources.filter((source) => source.id !== draft.id)}
                 hasApplications={hasApplications}
+                onCopyingChange={setCopyingQuestions}
               />
               {archivedLabels.length > 0 && (
                 <section className="admin-card">

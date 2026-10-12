@@ -1338,3 +1338,34 @@ HANDOFF READY
   no dependency was added. Traces/videos/failure screenshots stay disabled.
 
 HANDOFF READY
+
+## 2026-10-12 — Editor block 4: question builder, Add-question and options
+
+- Drawn .9-white cards/padding/shadows/header/controls and lower action placement
+  restored. Bold labels expose existing full definition editors; mobile heads
+  reflow instead of clipping. Archive vs Remove reflects the unchanged server
+  policy, not a new archival operation. Additional Section/config controls preserve
+  all fields without cluttering the drawn default. Deviations E14/E17 recorded.
+- Native draggable handles plus ArrowUp/ArrowDown/editor arrows, bounds and live
+  movement announcements preserve IDs/config/options. Drop accepts only current
+  internal definition IDs. Copy blocks competing edits and reports typed outcomes;
+  original server copy/max100/seven-standard-default logic remains.
+- Native Add-question modal creates no definition until existing schema validates
+  confirm. Exact eleven-type order, type-specific controls, independent config,
+  strict options and fresh IDs. Cancel/Escape preserves list/focus; generic Enter
+  cannot submit the outer job form. Choice label/value/remove rows replace the
+  multiline parser, generating unused option values and validating duplicates.
+- Clarified acceptance file-count wording: SCHEMA has no per-question count
+  setting; existing global eight-file upload bound stays unchanged. No new schema,
+  dependency, auth, storage, validation or permission rule was introduced.
+- Typecheck/lint and four touched unit files / 17 tests passed. Both-width guarded
+  no-save capture checks passed all eleven type additions, Cancel/Escape/focus,
+  duplicate/no-insert validation, independent editing, keyboard/arrows/native drop
+  and overflow. Original eleven-type e2e assertions retained with modal/disclosure/
+  pill interactions and new reorder/cancel assertions; final execution queued.
+- **Editor completed blocks: 1, 2, 3, 4. Next/in progress: 5 live candidate preview,
+  implementation NOT started. Server persistence/copy/archive tests remain final-only.**
+- Final block-4 rerun after the editor-wide copy pending guard: typecheck/lint,
+  four unit files / 17 tests and both-width no-save browser helper passed again.
+  Acceptance recount: 122 = 65 Implemented / 22 Deviation / 35 Pending.
+  Scoped diff check passed; owner test-accounts whitespace remains untouched.
