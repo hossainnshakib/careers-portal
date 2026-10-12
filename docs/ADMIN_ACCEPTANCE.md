@@ -39,7 +39,11 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: brands list/editor (checkpoint; save/hide/order/logo mutations queued for final e2e).
 - Complete: combined departments/options (checkpoint; mutation/persistence e2e queued).
 - Complete: login and MFA (checkpoint; full production auth/CSP e2e re-run queued).
-- In progress: mobile variants and cross-screen audit (S18/E27 and V01–V08).
+- Complete: mobile variants and cross-screen audit (S18/E27; both-width overflow,
+  navigation, dialog-fit and Bengali checks passed, no code change needed).
+- In progress: final verification rows (V01–V08: final captures, glass fallback,
+  contrast/keyboard audit, authorization audit, test coverage, broad gates,
+  final report).
 - Pending: final default/live/build/production-browser gates and final captures.
 
 ## 1. Shell, shared controls and glass (Main + all desktop boards + MobileMenu)
@@ -63,7 +67,7 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | S15 | Mobile slide-over navigation: 300px panel, .88-white, dark .35 backdrop, drawn wordmark and all six links | Implemented; 390 menu capture, see S17 for required functional/a11y changes |
 | S16 | Mobile menu open/close, focus containment, Escape and backdrop close, trigger focus restoration, inert background, scroll lock and viewport-resize handling | Implemented; capture checks verified Tab/Shift+Tab, Escape, close/backdrop restoration and desktop-resize cleanup; permanent e2e extended, final production run pending |
 | S17 | Resolve MobileMenu board's row-wrapped stretched links/hidden footer at 390 without breaking navigation, touch or sign-out access; list every resulting deviation | Deviation A/C: vertical non-stretched links and visible Sign out retain usable navigation/session termination; compact 44px close icon provides accessible dismissal instead of absent close control. Board's 390 CSS stretches selected link and hides footer; panel width/colour/backdrop preserved |
-| S18 | Mobile text/input legibility and Bengali rendering, no overlaps, horizontal page overflow or unreachable controls | Pending |
+| S18 | Mobile text/input legibility and Bengali rendering, no overlaps, horizontal page overflow or unreachable controls | Implemented; guarded 390/1440 sweep over dashboard, applications, applicant profile, Jobs, brands, settings and editor asserted no horizontal overflow and reachable slide-over navigation (Escape close); captures inspected for readable labels/inputs, Bengali names/answers/title rendering and no overlap. Physical-device testing remains unverified |
 
 ## 2. Dashboard (Main + MobileDashboard)
 
@@ -160,7 +164,7 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 | E24 | Date absolute/today bounds, number integer/min/max, text lengths, multichoice selection limits and file accept/size/shared count bound remain reachable and validated | Implemented; all existing type-specific editors retained and render-tested; original schema unchanged. Count is the existing application-wide eight-file bound, NOT a per-question config (none exists in SCHEMA); no unsupported field/schema introduced. Date today/number/file-size dialog creation exercised |
 | E25 | Dialog Cancel/Add question, keyboard focus/Escape, invalid feedback, cancel creates nothing and confirm inserts one independently editable definition | Implemented; guarded both-width Cancel/Escape/no-insert/focus-return, duplicate validation/no-insert and successful independent edit checks passed; close resets abandoned local state |
 | E26 | Empty questions/add controls, max 100 limit, invalid save/publish, draft/new/existing open/closed/archived states | Implemented; genuine empty state/max100/seven-default bounds render-tested; existing job-level validation/status/archived labels untouched. Server persistence/archival and failed copy/save integration are queued for final full gates, not newly claimed proven |
-| E27 | Mobile four blocks stack with readable controls, unscaled preview, compact persistent action bar and viewport-fitting dialogs | Pending; desktop-board 390 overflow requires accessibility fix |
+| E27 | Mobile four blocks stack with readable controls, unscaled preview, compact persistent action bar and viewport-fitting dialogs | Implemented; 390 audit confirmed stacked readable blocks, preview transform none at 390 / 0.9 top-origin at 1440, action bar within viewport with visible Save draft/Publish, and Publish/Add-question dialogs fully inside the viewport (Escape/Cancel close). The drawn desktop board's own 390 overflow is replaced by the accessible stacked layout rather than copied |
 
 ## 7. Brands (Brands)
 
@@ -250,7 +254,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-81 Implemented / 31 Deviation / 10 Pending / 0 classified Not implemented**.
+83 Implemented / 31 Deviation / 8 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable

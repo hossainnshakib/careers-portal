@@ -1656,3 +1656,29 @@ HANDOFF READY
    commits/branch, verification gaps and owner decisions; stop without merging.
 
 HANDOFF READY
+
+## 2026-10-12 — Mobile and cross-screen audit (S18/E27)
+
+- Guarded both-width (390/1440) sweep across dashboard, applications, applicant
+  profile, Jobs, brands, combined settings and the new-job editor after real
+  admin login + MFA: no horizontal overflow anywhere, slide-over navigation
+  reachable and Escape-closable, editor preview transform none at 390 vs 0.9
+  top-origin at 1440, action bar inside the viewport, and Publish/Add-question
+  dialogs fully viewport-fitting at both widths with Escape/Cancel closing them.
+  Inspected captures show readable stacked cards/inputs, Bengali candidate
+  names/answers and Bengali editor-title rendering, and the profile review rail
+  collapsed into a labelled disclosure. The round "N" badge in captures is the
+  Next.js dev overlay tooling, not app UI.
+- No implementation change was needed. S18 and E27 -> Implemented; the drawn
+  desktop board's own 390 overflow stays replaced by the accessible stacked
+  layout rather than copied. Counts: 122 = 83 Implemented / 31 Deviation /
+  8 Pending; pending rows are now exactly V01-V08.
+- Helpers: tmp/mobile-audit-capture.spec.ts and tmp/viewport-capture.spec.ts
+  (ignored; captures under design/mockup-compare-admin/).
+- Next/in progress: final verification rows V01-V08 — final captures/glass
+  fallback check, contrast and keyboard/focus audit, authorization and
+  validation audit, test-coverage check, then the once-only broad gates
+  (default tests, live tests with RUN_SUPABASE_TESTS=1, production build +
+  PDF trace guard, complete production e2e with RUN_LIGHTHOUSE=1) and the
+  final report. Physical phone testing remains unverified (gap). No blocking
+  owner decision.

@@ -180,6 +180,23 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   enrolment. Full production auth/CSP suite remains final-only; setup secrets were
   never written to disk or logged.
 
+### Mobile and cross-screen audit (S18/E27)
+
+- Guarded sweep (`tmp/mobile-audit-capture.spec.ts`, `tmp/viewport-capture.spec.ts`)
+  at 390×844 and 1440×900 over dashboard, applications, applicant profile, Jobs,
+  brands, combined settings and the new-job editor after real admin login + MFA.
+- Asserted zero horizontal page overflow on every route at both widths, reachable
+  mobile slide-over navigation (Menu button, Dashboard link visible, Escape close),
+  editor preview transform `none` at 390 vs 0.9/top-origin at 1440, action bar
+  within viewport, and Publish/Add-question dialogs fully inside the viewport at
+  both widths with Escape/Cancel closing them.
+- Full-page and viewport captures inspected: readable stacked cards and inputs,
+  Bengali candidate names/answers and Bengali editor-title rendering, profile
+  review rail collapsed into a labelled disclosure, no overlaps (the round "N"
+  badge in captures is the Next.js dev overlay tooling, not app UI).
+- No implementation change was needed; both rows land as Implemented. Physical
+  phone/hardware testing remains unverified and is recorded as a gap.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate
