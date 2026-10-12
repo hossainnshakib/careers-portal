@@ -925,3 +925,116 @@ HANDOFF READY
   Cancel/Escape restoring focus without deletion, and disclosure/resize access.
   Full destructive/status/note/PDF/download production workflow is queued, not
   newly verified here. No DB/storage/auth changes, migrations or dependencies.
+
+## Admin fidelity handoff — 2026-10-12 (applications/profile complete)
+
+### Authorization and safety
+
+- Continue autonomously on published **admin-fidelity**. Whole-pass approval
+  remains valid; no per-screen approval, subagents, merges, force-push or main
+  changes. Branch was created from latest main at 41e3768 under the owner's newer
+  instruction; initial prompt branch text is superseded.
+- No dependencies/migrations/permissions/auth changes or non-dev targets. Preserve
+  every requireAdmin/MFA/validation/storage gate and all existing functionality.
+- Leave `src/db/queries/test-accounts.ts` untouched/unstaged: **8 insertions /
+  1 deletion**, diff stat only. Do not read/print its content. Owner prompts remain
+  untracked/unstaged. No environment files, captures or tmp helpers in commits.
+- Only open the CURRENT screen's mock-up/one or two needed screenshots; do not
+  re-read completed shell/dashboard/applications/profile references. Small edits
+  to acceptance, short output, one todo in progress. Commit/push after each screen.
+- Per-screen typecheck/lint/touched units plus guarded dev captures; reserve full
+  default/live/build/PDF-trace/production-e2e gates for the end. Publish another
+  handoff around 60% context if needed. Stop only for listed owner blockers.
+
+### Published work and todo
+
+- Prior commits: 5a32b0e baseline/reference renderer, bd458cc shell, 51f5b06
+  dashboard, 249eaf0 earlier handoff.
+- **c349071**: applications compact filters/chips/mobile cards/pagination and
+  additive prior-email indicator. **eefa381**: profile/one-card review rail and
+  deletion dialog. Both pushed. This handoff is a separate documentation commit.
+- Complete checkpoints: shell, dashboard, applications, applicant/delete dialog.
+- **In progress: jobs list and row menu. Implementation has NOT started.**
+- Pending: editor/question builder/Publish/Add-question dialogs, brands, combined
+  Departments/options settings, login/MFA, mobile audit, final verification.
+- Acceptance counts verified by numbered table rows: **122 total; 43 Implemented,
+  12 Deviation, 67 Pending, 0 classified Not implemented**. Pending is unfinished,
+  not permission to call the pass done. No blocking owner decision exists.
+- Current deviations: S13/S17/D05/D06/D10/A02/A06/P02/P06/P08/P11/P13. Exact reasons
+  and evidence are on their acceptance rows; final report must list all.
+
+### Implementation notes (avoid regression)
+
+- List `appliedBefore`: correlated EXISTS in bounded list SELECT, lower(email),
+  strictly earlier submitted_at, no active-filter restrictions, no name inference,
+  no N+1 network calls/migration. Equal timestamps do not imply UUID chronology.
+  Drizzle interpolating an aliased table into raw SQL rendered alias alone; use
+  original applications table AS sql.identifier, alias columns in conditions.
+  Unit SQL assertion caught the bug and remains intact.
+- All original GET filter names and URL semantics retained. Desktop From date is
+  in the drawn row; More filters exposes To date/sort/timezone guidance. Explicit
+  pointer submit remains a labelled compact arrow. Mobile Filters and chips share
+  the drawn row; controls submit one GET form even though mobile CSS uses contents.
+- List uses fixed reference column proportions and initialsOnly. Dashboard remains
+  unaffected. Applied before wraps below the date on mobile. Genuine unfiltered
+  empty state is separate from filtered miss; invalid/cleanup paths retained.
+- Profile uses one 340px sticky review panel with a viewport-limited desktop scroll
+  area. `ProfileReviewRail` reopens on desktop resize after closing on mobile;
+  otherwise hidden desktop summary would strand every review control.
+- Name retained in toolbar and repeated desktop header (only toolbar is h1).
+  Contact rows no longer repeat it again; all email/phone/location fields remain.
+  Mobile retains department/consent instead of deleting real metadata. Reference/
+  precise date in previous cards and private-note/PDF guidance remain by deviation.
+- Files use original authenticated links, no signed/public URL exposure changes.
+  Download buttons have compact visible text but retain original accessible names
+  (Download CV / Download filename). Notes remain author-only deletable.
+- Delete dialog preserves Confirm deletion accessible action name while displaying
+  Delete, includes actual escaped candidate name/reference, and warns about all
+  removed data. Filled #B42318 red is 6.57:1 vs reference red's 3.91:1. Native
+  Cancel/Escape returns focus, and Escape is prevented while deletion is pending.
+
+### Verification evidence and gaps
+
+- Applications: typecheck/lint passed; 3 touched unit files / 12 tests passed.
+- Profile: typecheck/lint passed; 4 touched unit files / 17 tests passed (answers,
+  review-controls, review query transactions, shared presentation).
+- Ignored guarded dev captures: applications and profile before/after at 1440x900
+  and 390x844; empty applications and delete-dialog captures too. Actual references
+  and rendered current-screen states inspected. No horizontal overflow at either
+  width. List captures mask candidate cells; profile captures only ephemeral,
+  synthetic fixture data. Do not expose arbitrary dev applicant captures.
+- Applications capture asserted filter disclosure and real synthetic first/earlier
+  flags. Profile capture asserted Cancel/Escape focus restoration, unchanged row,
+  and mobile closure/desktop reopening. All passed with ephemeral account cleanup.
+- New `review.live.test.ts` case covers uppercase prior email, list-filter
+  independence, equal timestamp, and different email using ONLY guarded fixture
+  rows. It is queued for the final live run, not already proven by unit SQL tests.
+- Permanent e2e additions in admin-ui/review are queued for final production e2e:
+  filters/earlier flags/mobile rail resize and dialog Cancel/Escape before the
+  existing status/note/CV/PDF/destructive happy path. No assertion removed.
+- Full default/live/build/PDF trace guard/production-e2e have NOT run in this pass.
+  Earlier restyle verification is historical, not current evidence. At completion
+  run final gates serially, enable RUN_SUPABASE_TESTS=1 for live tests and
+  RUN_LIGHTHOUSE=1 for the existing opt-in browser case. Follow repo target guards.
+- Hosted Vercel, real physical phones, provider outages and cleanup failure
+  injection not verified here. No production resources accessed.
+
+### Next actions
+
+1. Inspect branch/status and this latest handoff; continue from Jobs, not completed
+   screens. Acceptance section 5 has J01–J07 pending. Read current jobs page,
+   job-row-actions, jobs filters/tests and Jobs/States relevant mock-up pieces.
+2. Extend ignored capture helper for synthetic jobs before/after both widths. Match
+   compact filters, all real columns/options/salary/counts/date, initial marks,
+   drawn ellipsis menu with real draft/open/closed actions and robust focus/pending.
+3. Run per-screen gates/captures, update acceptance/docs in small edits, commit/push,
+   then continue editor/dialogs → brands → combined settings → auth/MFA.
+4. At the end do mobile audit/full serial verification, inspect final screenshots,
+   report acceptance/deviations/commits/test gaps/open owner decisions; never merge.
+- Ignored helpers: `tmp/admin-capture.config.ts` accepts ADMIN_CAPTURE_SPEC;
+  applications-capture.spec.ts and profile-capture.spec.ts supplement shell helper.
+  Set ADMIN_CAPTURE_STAGE=after for their focused assertions/output names. Run
+  `pnpm exec playwright test --config tmp/admin-capture.config.ts` with those env
+  settings in PowerShell. Helpers/traces/videos/failure screenshots stay untracked.
+
+HANDOFF READY
