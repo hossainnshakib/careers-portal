@@ -15,7 +15,7 @@ it("renders six MFA cells with one unambiguous composite-code selector", () => {
   expect([...html.matchAll(/class="admin-digit"/g)]).toHaveLength(6);
   expect([...html.matchAll(/aria-label="Authenticator code"/g)]).toHaveLength(1);
   for (let index = 2; index <= 6; index++) expect(html).toContain(`aria-label="Authenticator code digit ${index}"`);
-  expect(html).toContain("Verify authenticator");
+  expect(html).toContain("Continue");
   expect(html).toContain("disabled");
 });
 
