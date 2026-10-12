@@ -36,8 +36,8 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 - Complete: editor block 3 — Content/Write-Preview (screen checkpoint; persistence e2e queued).
 - Complete: editor block 4 — question builder/Add-question/options (checkpoint; persistence/copy integration queued).
 - Complete: editor block 5 — candidate preview (checkpoint; full eleven-type production e2e queued).
-- In progress: brands list/editor (implementation not started).
-- Pending: combined departments/options.
+- Complete: brands list/editor (checkpoint; save/hide/order/logo mutations queued for final e2e).
+- In progress: combined departments/options (implementation not started).
 - Pending: login and MFA.
 - Pending: mobile variants and cross-screen audit.
 - Pending: final default/live/build/production-browser gates and final captures.
@@ -166,14 +166,14 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| B01 | Brands heading/toolbar and 2fr:1fr cards/editor grid; three-column card list, 14px gaps, 16px padding/24px radii | Pending |
-| B02 | 40px brand initial accent circle, name, /slug and actual sector; Active/Hidden and No description pills | Pending; previous logo substitution is superseded for list marks |
-| B03 | Select/Edit brand, create brand, hide/show, reorder remain compact working controls with selected/focus states and no invented sample sectors | Pending |
-| B04 | Edit brand kicker; dashed 20px-radius drop zone, real logo preview/picker/drop, SVG/PNG/WebP <=1MB guidance and original server validation | Pending; WebP retention is required existing function |
-| B05 | Name/description, live description count; preserve validated 3000 limit rather than mock's 280 using compact additional settings | Pending; record A deviation if 280 would truncate supported content |
-| B06 | Slug/sector/website/accent/status/order stay reachable in additional settings, not permanently expanded wall of fields | Pending |
-| B07 | Sample text on accent preview and actual contrast measurement; readable >=4.5:1 text instead of unsafe mock 4.3 white | Pending; C deviation requires measured reason |
-| B08 | Save brand, upload/save pending/error, invalid file feedback, empty brands/create and mobile one-column card/editor | Pending |
+| B01 | Brands heading/toolbar and 2fr:1fr cards/editor grid; three-column card list, 14px gaps, 16px padding/24px radii | Implemented; drawn toolbar/columns/card geometry restored, .76-white/14px blur with solid fallbacks; genuine ul/li/article semantics replace fake table; both-width captures/overflow checks passed |
+| B02 | 40px brand initial accent circle, name, /slug and actual sector; Active/Hidden and No description pills | Deviation C: restored initial circles and drawn fields/pills; readable black/white initial text replaces unsafe white on light accents. #EC1C24 white 4.41:1 vs black 4.76:1; same measured contrast rule as accent sample. Existing logos remain in editor only; schema sectors shown without invented labels |
+| B03 | Select/Edit brand, create brand, hide/show, reorder remain compact working controls with selected/focus states and no invented sample sectors | Deviation A/C: card header selects/edits, first available row initially selected, outline/aria-pressed expose selection. Brand actions disclosure retains reorder arrows/boundaries; New brand and disclosed Status retain creation/hide/show absent from drawn fragment. Removing them would remove documented admin functions; mutations unchanged/final-e2e-only |
+| B04 | Edit brand kicker; dashed 20px-radius drop zone, real logo preview/picker/drop, SVG/PNG/WebP <=1MB guidance and original server validation | Deviation A: persisted logo shown only via img, picker/upload button and WebP guidance retain existing upload function omitted from drawing; unsaved brand cannot upload, selection resets on brand switch. Local extension/MIME/size feedback complements unchanged authorized content validation; picker/drop/invalid/reset guarded checks passed |
+| B05 | Name/description, live description count; preserve validated 3000 limit rather than mock's 280 using compact additional settings | Deviation A: Name followed by 3-row Description with inline live /3000 count. The supported 3000 bound remains rather than truncating existing descriptions at 280; 480-character Bengali input/counter passed browser check; no schema change |
+| B06 | Slug/sector/website/accent/status stay reachable in additional settings; display order through compact card actions, not an unsupported numeric order field | Implemented; all existing fields preserved in Additional settings; order is controlled by existing authorized arrows, no writable order field/schema invented. Collapse/reopen preserves unsaved values; pending disables edits/select/reorder |
+| B07 | Sample text on accent preview and actual contrast measurement; readable >=4.5:1 text instead of unsafe mock 4.3 white | Deviation C: drawn Sample text on accent and compact measurement below, readable text chosen by existing measured helper. Actual #EC1C24 white 4.41:1/black 4.76:1, black selected; tests cover threshold. Server accent value and public/PDF rules unchanged |
+| B08 | Save brand, upload/save pending/error, invalid file feedback, empty brands/create and mobile one-column card/editor | Implemented; local invalid-file feedback and selected/drop/reset checks passed, pending edit guards, original typed save/upload errors and empty create state retained. Both-width screenshots inspected; actual save/hide/reorder/validated upload integration remains final-only |
 
 ## 8. Departments and options (Settings)
 
@@ -250,7 +250,7 @@ The following inventory supersedes the unapproved decisions in
 ## Verification and counts
 
 Provisional handoff counts (not a final acceptance result): **122 numbered rows:
-65 Implemented / 23 Deviation / 34 Pending / 0 classified Not implemented**.
+68 Implemented / 28 Deviation / 26 Pending / 0 classified Not implemented**.
 Pending screens are unfinished; zero classified Not implemented is NOT a claim
 that the pass is complete. Current deviations are S13 (green contrast),
 S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
@@ -262,7 +262,9 @@ J06 (mobile column/action accessibility), E02 (lifecycle-command access), E03
 (mobile bar fit), E19 (readiness text contrast), E09 (extra-field/time editing).
 E13 (list-item removal), E14 (mobile question row fit), E17 (full-definition
 editing/destructive-action clarity), E18 (complete local-only candidate flow/mobile
-interaction size). All reasons are on their rows.
+interaction size), B02/B07 (accent contrast), B03 (retained admin commands/selection),
+B04 (usable upload/WebP), B05 (supported description bound). All reasons are on
+their rows.
 
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;

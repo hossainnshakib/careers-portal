@@ -916,11 +916,14 @@
   background: rgba(15, 23, 42, 0.06);
 }
 
-/* Brand cards keep role="table"/"row"/"cell" while rendering as a card grid. */
+/* Semantic brand list and compact cards. */
 .admin-brand-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .admin-brand-grid .admin-brand-card {
@@ -930,26 +933,32 @@
   padding: 16px;
   box-shadow: var(--admin-glass-shadow);
   display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-  grid-template-areas:
-    "head    head"
-    "status  flags"
-    "actions actions";
-  gap: 10px 8px;
+  gap: 12px;
   align-content: start;
+  backdrop-filter: blur(14px) saturate(170%);
+  -webkit-backdrop-filter: blur(14px) saturate(170%);
 }
+.admin-brand-card .admin-brand-mark.is-lg { width: 40px; height: 40px; font-size: 16px; }
+.admin-brand-card[data-selected="true"] { outline: 2px solid var(--admin-blue); outline-offset: 2px; }
 
 .admin-brand-card-head {
-  grid-area: head;
   display: flex;
   align-items: center;
   gap: 12px;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
 }
 
 .admin-brand-card-status {
-  grid-area: status;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .admin-brand-card-flags {
@@ -961,11 +970,19 @@
 }
 
 .admin-brand-card-actions {
-  grid-area: actions;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
+.admin-brand-card-more { font-size: 12px; }
+.admin-brand-card-more > summary { color: var(--admin-muted); }
+.admin-brand-card-more[open] .admin-brand-card-actions { margin-top: 8px; }
+.admin-brand-editor .admin-brand-description { margin-top: 10px; }
+.admin-brand-settings { margin-top: 12px; font-size: 13px; }
+.admin-brand-settings label { margin-top: 10px; }
+.admin-logo-preview { width: 100%; height: 64px; object-fit: contain; }
+.admin-selected-logo { overflow-wrap: anywhere; font-size: 12px; }
+.admin-accent-contrast { margin: 4px 0 0; font-size: 12px; }
 
 .admin-ui label.admin-dropzone {
   display: grid;
@@ -1801,6 +1818,7 @@
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .admin-brand-grid .admin-brand-card,
   .admin-card,
   .admin-sidebar,
   .admin-actions,
@@ -1812,6 +1830,7 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
+  .admin-brand-grid .admin-brand-card,
   .admin-card,
   .admin-sidebar,
   .admin-actions,

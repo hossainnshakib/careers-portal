@@ -76,6 +76,12 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
   with live Apply for title and single-column contact placeholders. Complete fixed
   fields/CV, configured sections, required consent and local validation remain;
   answers/files are never submitted. Mobile is unscaled for usable controls.
+- Brands fidelity: semantic three-column accent-initial card list beside compact
+  name/description editor. Logo stays a passive img in the dashed uploader; picker/
+  drop/WebP and explicit upload remain. Extra fields are disclosed; card actions
+  retain ordering, Status retains hide/show, New brand retains creation. Inline
+  /3000 description count preserves supported content. Accent sample text shows
+  measured readable ink, not unsafe fixed white. Mobile stacks cards/editor.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

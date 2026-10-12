@@ -130,6 +130,22 @@ The sections below are historical evidence, not fidelity-pass completion claims.
   validations and adding title/required-consent assertions. Mobile/hosted devices
   and provider/cleanup failures remain unverified. E18 deviation documented.
 
+### Brands checkpoint
+
+- Semantic accent-initial cards and compact disclosed editor implemented; actual
+  logo remains a passive img in uploader. All fields/commands, 3000 description
+  bound, WebP and original authorized logo validation retained.
+- Typecheck/lint and two touched unit files / 14 tests passed. Both-width guarded
+  no-save captures inspected; checks exercised selected card, logo/initial split,
+  480-character Bengali description/count, disclosure state retention, invalid
+  local file, picker/drop selection and reset/create-disabled-upload, plus overflow.
+- Two capture failures fixed: counter text now lives in its own span (textarea
+  child text made exact lookup ambiguous); status assertion scoped to main instead
+  of including shell MFA status. No check removed or test skipped.
+- Permanent brand e2e now uses semantic articles and editor logo, preserving
+  creation/order/unsafe SVG/valid upload/hide assertions. Execution, save/upload
+  failure/pending injection, production console and physical devices remain queued.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

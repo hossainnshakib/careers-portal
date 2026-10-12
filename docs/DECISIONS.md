@@ -1390,3 +1390,28 @@ HANDOFF READY
   list/editor, implementation not started.** Combined settings, login/MFA,
   mobile/cross-screen and final broad gates remain. Counts: 122 = 65 Implemented /
   23 Deviation / 34 Pending. No blocking owner question; deviations provisional.
+
+## 2026-10-12 — Brands fidelity checkpoint
+
+- Three-column/2:1 semantic list/editor with .76-white/14px cards, exact 40px accent
+  initials and drawn fields/pills. No fake table roles or list logos; validated
+  actual logo shown only in editor via img. First row initially selected; bold
+  card header selects/edits, outline/aria-pressed expose selection.
+- Compact Name/three-row Description/live /3000 count, Additional settings for
+  slug/sector/website/accent/status; existing arrows in Brand actions disclosure
+  control order (no numeric order field exists). New brand/Status retain create/
+  hide/show. Drawn Sample text on accent and measured contrast below: #EC1C24
+  white=4.41:1, black=4.76:1, readable black chosen. B02/B03/B04/B05/B07 deviations
+  document contrast, retained commands/upload/WebP and supported description bound.
+- Dashed logo picker/drop retain explicit authorized upload. Persisted passive logo
+  only, no unvalidated inline SVG. Local extension/MIME/size feedback complements
+  unchanged server validation. Pending disables competing edits; brand switching
+  clears selected file and feedback so files cannot silently target another brand.
+- Typecheck/lint; two touched unit files / 14 tests passed. Both-width no-save
+  captures inspected, selected/initial-vs-logo/disclosure/480-char Bengali/count/
+  file-invalid/picker/drop/reset/overflow checks passed. Permanent e2e adapted to
+  genuine articles and editor img, retaining create/order/unsafe SVG/upload/hide
+  assertions; mutation execution remains queued for final full production gates.
+- Next/in progress: combined Departments/options, implementation not started.
+  Counts 122 = 68 Implemented / 28 Deviation / 26 Pending. Login/MFA,
+  mobile/cross-screen and final gates remain; no blocking owner question.
