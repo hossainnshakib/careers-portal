@@ -1582,10 +1582,13 @@
 .admin-question-builder .admin-kicker { margin-bottom: 2px; }
 .admin-ui .admin-question-builder > fieldset.admin-question { order: 2; margin: 0; padding: 12px 16px; border-radius: 24px; background: rgba(255,255,255,.9); box-shadow: var(--admin-glass-shadow); backdrop-filter: none; }
 .admin-question-builder > .admin-question-tools { order: 3; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.admin-question-builder .admin-question-head { display: grid; grid-template-columns: 14px minmax(0,1fr) auto auto auto; gap: 12px; align-items: center; }
-.admin-question-builder .admin-question-head .admin-inline { margin: 0; font-size: 14px; font-weight: 400; }
-.admin-question-builder .admin-question-head > .admin-btn { padding: 6px 12px; }
-.admin-question-edit { font: inherit; font-weight: 700; text-align: left; border: 0; padding: 0; background: none; color: var(--admin-ink); overflow-wrap: anywhere; cursor: pointer; }
+/* Wrapping flex row: the label button keeps a readable minimum width and the
+   type/required/remove controls wrap to the next line when the card is narrow,
+   instead of the label column collapsing to zero. */
+.admin-question-builder .admin-question-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.admin-question-builder .admin-question-head .admin-inline { flex: none; margin: 0; font-size: 14px; font-weight: 400; }
+.admin-question-builder .admin-question-head > .admin-btn { flex: none; margin-left: auto; padding: 6px 12px; }
+.admin-question-edit { flex: 1 1 8rem; min-width: 6.5rem; font: inherit; font-weight: 700; text-align: left; border: 0; padding: 0; background: none; color: var(--admin-ink); overflow-wrap: anywhere; cursor: pointer; }
 .admin-question-type { padding: 5px 12px; border-radius: 999px; background: rgba(15,23,42,.06); font-size: 12px; font-weight: 600; white-space: nowrap; }
 .admin-question-builder .admin-question-gutter { border: 0; background: none; color: var(--admin-muted); padding: 0; cursor: grab; font-size: 13px; }
 .admin-question-edit-fields { margin-top: 12px; }
@@ -1613,9 +1616,7 @@
 .admin-question-section label { margin-top: 8px; }
 .admin-question-dialog-fields .admin-question-options { order: 8; }
 @media (max-width: 800px) {
-  .admin-question-builder .admin-question-head { grid-template-columns: 14px minmax(0,1fr) auto; }
-  .admin-question-builder .admin-question-head .admin-inline { grid-column: 2; }
-  .admin-question-builder .admin-question-head > .admin-btn { grid-column: 3; }
+  .admin-question-builder .admin-question-edit { min-width: 5.5rem; }
   .admin-question-type { font-size: 11px; padding: 5px 8px; }
 }
 

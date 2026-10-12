@@ -59,9 +59,13 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   await expect(page.getByLabel("Slug", { exact: true })).toHaveAttribute("readonly", "");
   await page.locator('summary[aria-label="More job actions"]').click();
   await page.getByRole("button", { name: "Close job", exact: true }).click();
+  // Close/reopen reload the page, which resets the More-actions panel; wait for
+  // the reloaded status pill before opening the panel again.
+  await expect(page.locator(".admin-pill.admin-pill-closed")).toBeVisible();
   await page.locator('summary[aria-label="More job actions"]').click();
   await expect(page.getByRole("button", { name: "Reopen job", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Reopen job", exact: true }).click();
+  await expect(page.locator(".admin-pill.admin-pill-open")).toBeVisible();
   await page.locator('summary[aria-label="More job actions"]').click();
   await expect(page.getByRole("button", { name: "Close job", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Duplicate job", exact: true }).click();
