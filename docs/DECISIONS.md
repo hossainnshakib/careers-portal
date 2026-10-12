@@ -1559,3 +1559,100 @@ HANDOFF READY
 - Next/in progress: mobile variants and cross-screen audit (S18/E27, V01–V08),
   implementation not started. Counts: 122 = 81 Implemented / 31 Deviation /
   10 Pending. No blocking owner decision.
+
+## Admin fidelity handoff — 2026-10-12 (settings + auth complete)
+
+### Contract, progress and published state
+
+- This supersedes the earlier "editor and brands complete" handoff's progress and
+  published-state sections; its contract still applies: continue autonomously on
+  pushed **admin-fidelity**, whole-pass go, no merge/force-push/subagents/new
+  dependencies/migrations/permissions/non-dev access; preserve every real field,
+  action and independent auth/MFA, validation and storage gate; strict deviation
+  reasons only (broken function, schema/dependency/permission blocker, or
+  security/accessibility), provisional until owner review; one todo in progress,
+  current-screen-only references, per-block gates only, broad gates at the end.
+- Newly pushed this continuation: **aba728d** combined Departments/options,
+  **23d8501** login/MFA. Earlier: dab8b58 builder, faee063 candidate preview,
+  2c221f1 brands, 6de44d6 previous handoff, 29c139e/30a64bd/24da362 editor blocks,
+  aa7db01 Jobs and the earlier screen checkpoints.
+- Completed so far: shell, dashboard, applications, applicant/delete, Jobs,
+  editor blocks 1–5 (shell/Publish, Basics, Content, questions, candidate preview),
+  brands, combined settings, login/MFA. Each is a checkpoint; broad gates have NOT
+  run during this fidelity pass.
+- Sole in-progress todo: **mobile variants and cross-screen audit — S18, E27 and
+  V01–V08 (implementation/audit NOT started)**. Fresh count: **122 = 81 Implemented
+  / 31 Deviation / 10 Pending / 0 classified Not implemented**; the ten pending
+  rows are exactly S18, E27, V01–V08.
+- New deviations since the previous handoff: O03 (department editing fields/Clear/
+  Cancel disclosed beyond drawn Add row), O07 (option Clear/Cancel retained beyond
+  drawn Create), O08 (mobile settings cards/labelled counts/larger action targets
+  instead of clipped five-column tables). Earlier continuation deviations remain
+  E14/E17/E18, B02/B07 (accent contrast), B03 (retained commands/selection),
+  B04 (usable upload/WebP), B05 (3000 description bound). Every reason is on its row.
+- Owner work remains untouched/unstaged: `src/db/queries/test-accounts.ts`
+  **8 insertions / 1 deletion** (stat only; never inspect/print contents) and the
+  untracked owner prompts. No environment files/captures/tmp are staged.
+
+### What the two checkpoints did
+
+- Settings: both original routes keep their own unchanged `requireAdmin()` and
+  render one shared server-only `SettingsPanels` (sequential existing queries,
+  real counts). Departments panel: drawn table/compact arrows/Edit + New department
+  Add row with slug/Active/Clear/Cancel in disclosure. Three option groups then the
+  three-column create/edit form; edit locks group; linked Delete disabled with
+  title + accessible "Deactivate instead of deleting"; unused Delete opens a native
+  confirmation (Cancel/Escape/focus return, pending dismissal guard, visible errors).
+  Fixed two existing client bugs without touching validation: activation previously
+  sent an extra `sortOrder` rejected by the strict schema, and a manual new-option
+  slug was overwritten by later label edits. Both paths invalidate on mutations.
+- Auth: drawn centred card/wordmark/orbs, Sign in kicker (redundant heading removed),
+  existing generic credential error retained, hydration/pending guards. MFA keeps
+  the mandatory password re-verification server gate (permanent e2e now proves a
+  wrong password is denied before any QR), actual QR, six 44x52px/8px cells,
+  paste/autofill/backspace/arrow focus, Enter code/Continue/Verify wording; setup
+  key + owner-only recovery moved into the required compact disclosure. Mobile keeps
+  six 44px cells at 390 (gap narrows only below 380px). Captures mask QR, setup key,
+  passwords and cells; no secret entered logs/git/disk.
+
+### Focused evidence
+
+- Settings: typecheck/lint; three unit files / 34 tests (incl. protected-page
+  gates); guarded both-route 1440/390 no-save captures/checks (disclosure/unsaved
+  state, manual slug, locked group/cancel, linked delete disabled, unused delete
+  Cancel/Escape/focus, overflow). Permanent departments e2e re-scoped to the panel
+  (mutation assertions kept), new `tests/e2e/settings.spec.ts` no-save e2e.
+- Auth: typecheck/lint; two unit files / 34 tests; guarded both-width masked
+  captures (login, wrong-credentials, challenge, password gate, setup + disclosure)
+  with checks for error/password clearing, cell CSS, complete-code enable, arrow/
+  backspace focus, cell-by-cell paste, wrong-password denial before QR, overflow.
+  `mfa-login.ts`, `mfa.spec.ts` and `admin-shell.spec.ts` updated to drawn
+  Continue/Verify/Sign in labels; full production auth/CSP re-run is final-only.
+- Capture helper notes: `tmp/settings-capture.spec.ts`, `tmp/auth-capture.spec.ts`
+  (mask secrets via Playwright `mask`), config `ADMIN_CAPTURE_SPEC` +
+  `ADMIN_CAPTURE_STAGE=after`; captures stay ignored under
+  `design/mockup-compare-admin/`. Helper fixes this round were test-side (generic
+  error text, hydration retry, cookie clearing for cross-account nav); no assertion
+  was weakened or skipped.
+
+### Remaining work and gates
+
+1. Mobile/cross-screen audit: S18 (mobile legibility/Bengali/no overflow),
+   E27 (mobile editor blocks/unscaled preview/action bar/dialogs), V01–V08
+   (final full-page captures both widths incl. empty/dialog/menu/auth states with
+   secrets masked; glass/blur fallbacks; contrast/focus/long-string/Bengali/no
+   overlap; auth/validation/dependency audit; test coverage check; once-only broad
+   gates; final counts/deviations report; commits/pushes/no-merge).
+2. Then broad gates serially: default tests, live/dev (`RUN_SUPABASE_TESTS=1`),
+   production build + PDF trace guard, complete production e2e with
+   `RUN_LIGHTHOUSE=1`, final capture inspection. Do NOT claim persistence or
+   pending/failure injection from guarded no-save captures: actual Publish/save/
+   slug lock, question copy/archive, brand/department/option mutations and failure
+   paths are queued for those runs.
+3. Unverified: physical phones, hosted Vercel, provider outages, cleanup-failure
+   injection, production resources (never accessed). Dev tooling indicator is not
+   acceptance evidence; check the clean production console in the final audit.
+4. Final report must include acceptance counts, every deviation with reason,
+   commits/branch, verification gaps and owner decisions; stop without merging.
+
+HANDOFF READY
