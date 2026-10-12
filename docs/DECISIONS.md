@@ -1234,3 +1234,107 @@ HANDOFF READY
   confirmed save remains queued for final production e2e.
 - **Completed editor blocks: 1, 2, 3. Next/in progress: 4 question builder,
   Add-question dialog and options editor (NOT started). Block 5 preview pending.**
+
+## Admin fidelity handoff — 2026-10-12 (editor blocks 1–3 complete)
+
+### Contract and current state
+
+- Continue autonomously on pushed **admin-fidelity**; no per-block approval, main
+  changes, merge, force-push, subagents, new dependencies/migrations/permissions,
+  non-dev resources or auth/storage/input-validation changes. Whole pass approved.
+- Strict deviations: ONLY broken/removed function, schema/dependency/permission
+  blocker, or security/accessibility. Simpler/kept behaviour/real data alone is not
+  justification. Record each reason in acceptance. Prior deviations remain
+  provisional, not independently owner-approved. Preserve every real field/action.
+- Read only CURRENT block's mock-up piece/references/captures; completed screens
+  and editor blocks must not consume context again. Short tool output, small doc
+  edits, ONE todo in progress. Commit/push after EACH block. Per-block gates only;
+  reserve all broad gates for final completion. Handoff around 60% context.
+- Completed editor blocks EXACTLY: **1 shell/sticky bar/Publish; 2 Basics;
+  3 Content/Write-Preview**. **In progress: 4 question builder/Add-question/options,
+  implementation NOT started.** **5 live candidate preview pending.**
+- Published new commits: **30a64bd** Basics, **24da362** Content. Earlier block 1
+  is 29c139e, Jobs aa7db01. This handoff gets its own documentation commit.
+- Remaining after editor: brands, combined Departments/options, login/MFA,
+  mobile/cross-screen audit, final verification. No blocking owner question.
+- Freshly counted acceptance: **122 = 57 Implemented / 20 Deviation / 45 Pending /
+  0 classified Not implemented**. Pass is NOT complete. New deviations E09 (extra
+  fields/time editing) and E13 (list deletion controls); all reasons are on rows.
+- Working tree otherwise only owner work: test-accounts.ts **8 insertions /
+  1 deletion**, untouched/UNSTAGED, diff stat only; never read/print its contents.
+  Owner prompts remain untracked. No environment files/captures/tmp staged.
+
+### Basics implementation/evidence
+
+- Plain group labels and drawn chip sizes; blue option selection, dark salary
+  selection; equal-height top grid/inline published-slug lock; vacancies/location/
+  date row followed by CV/group guidance. Inactive linked options still render in
+  supplied order; inactive unlinked options do not. Primary selection falls back
+  to first selected brand when the primary is removed.
+- Additional settings preserves experience text, engagement note, deadline time
+  and slug/brand guidance. `src/lib/admin/deadline.ts` edits the SAME UTC instant:
+  date change preserves full local cutoff including seconds/milliseconds; explicit
+  time change uses the chosen local clock; new date defaults to local midnight;
+  clearing date clears instant. Server schema/validation unchanged.
+- Typecheck/lint and 2 touched unit files / 12 tests passed. Both-width guarded
+  no-save captures/browser assertions passed overflow, extra-field state retention,
+  cutoff editing/clearing, auto/manual slug and primary-brand fallback. Published
+  readonly/linked-inactive cases have render coverage; persistence cases queued.
+
+### Content implementation/evidence
+
+- Summary two rows with inline counter; Description/Responsibilities/Requirements/
+  Nice to have ordered fields and independent Write/Preview pills. Description
+  toggle is before label, others after. No simultaneous side-by-side preview.
+- `MarkdownEditor` holds only mode state; actual text stays in parent's draft.
+  Hidden textarea remains mounted; Preview alone renders existing SafeMarkdown,
+  with no nested glass blur and meaningful empty feedback. All 50k limits remain.
+- Benefits-before-Skills Enter-add inputs and drawn pills; Benefits spans row.
+  Labelled remove crosses retain deletion; original limits/duplicate behavior
+  unchanged. Limit hints are linked sr-only, not extra visual rows.
+- Typecheck/lint and 2 touched unit files / 14 tests passed. Both-width guarded
+  no-save Content/preview captures and browser assertions passed four-field mode/
+  unsaved-value preservation, Bengali strong text, no raw scripts, empty feedback,
+  live summary counter, Enter-add/remove and overflow. Permanent job-editor e2e
+  now explicitly enters Preview then returns Write before save; not yet final-run.
+- Block captures are cropped from FULL-page screenshots at scroll0 to avoid sticky
+  chrome falsely covering isolated card headings. Screenshots remain ignored.
+
+### Next: block 4 only
+
+1. Inspect current `src/components/admin/question-builder.tsx` and relevant question
+   definition/defaults/option-editor code/tests. Read ONLY Questions piece of
+   JobEditor.dc.html and Add-question piece of Dialogs.dc.html. Acceptance E14–E17,
+   E21–E26 describe required controls/states. Do not redo Content/Basics/shell.
+2. Match compact .9-white question cards, drawn handle/label/type/Required/Archive,
+   full editing via disclosure/dialog. Add-question must be a real cancellable
+   type-chooser dialog (all 11 types, independent config/options, no append on
+   cancel), not immediate insertion. Preserve stable IDs, archive-on-applications,
+   existing section/help/config editing and max100. No field/config loss.
+3. Implement working native drag/drop plus keyboard/arrow alternatives and
+   announcements, no new library. Preserve seven independent standard defaults,
+   copy source selection/feedback and unsaved definitions. Options support Enter
+   add, label/value edit/remove and strict unique values. Keep all type-specific
+   validation (date today/absolute bounds, numeric/text/choice/file limits).
+4. Guarded before/after/dialog/mobile captures, touched units/typecheck/lint,
+   permanent browser assertions without weakening old checks, small docs edits,
+   separate commit/push. THEN block 5 candidate preview in its own commit.
+
+### Gates and capture helpers
+
+- No job save/publication/upload executed in these captures. Full default/live/
+  build/PDF-trace/production-e2e have NOT run for this pass; previous restyle evidence
+  is historical. Final gates serially, RUN_SUPABASE_TESTS=1 and RUN_LIGHTHOUSE=1 as
+  relevant. Need actual Publish confirmation/slug lock, Jobs mutations and updated
+  admin flows in the full production suite; do not claim current broad verification.
+- Real physical phones, hosted Vercel, provider outage/cleanup failure injection
+  and production resources not verified/accessed. Dev indicator is tooling, not
+  acceptance evidence; check clean production console during final audit.
+- Ignored helpers: tmp/editor-basics-capture.spec.ts,
+  tmp/editor-content-capture.spec.ts, earlier shell/Jobs helpers. Config accepts
+  ADMIN_CAPTURE_SPEC and helpers use ADMIN_CAPTURE_STAGE=after. Run pnpm exec
+  playwright test --config tmp/admin-capture.config.ts with those PowerShell env
+  values. sharp is ALREADY installed and only used by ignored crop helpers;
+  no dependency was added. Traces/videos/failure screenshots stay disabled.
+
+HANDOFF READY
