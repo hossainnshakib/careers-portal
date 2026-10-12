@@ -245,6 +245,13 @@ The following inventory supersedes the unapproved decisions in
 
 ## Verification and counts
 
+Provisional handoff counts (not a final acceptance result): **122 numbered rows:
+23 Implemented / 5 Deviation / 94 Pending / 0 classified Not implemented**.
+Pending screens are unfinished; zero classified Not implemented is NOT a claim
+that the pass is complete. The five current deviations are S13 (green contrast),
+S17 (usable mobile menu/close/sign-out), D05 (latest-ten disclosure), D06 (readable
+brand initials), D10 (mobile statistics access). All reasons are on their rows.
+
 Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
 Temporary dev-only screenshot capture passed, including menu focus/close checks;
 all final production gates remain reserved. The initial capture hit the streaming

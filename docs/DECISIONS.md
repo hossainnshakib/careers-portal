@@ -753,3 +753,126 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
   Capture checks passed for responsive row limits/show-all, department disclosure
   and menu focus/close/resize. Permanent e2e additions are not yet production-run.
   Full default/live/build/PDF trace/production suite remains final-only.
+
+## Admin fidelity handoff — 2026-10-12 (shell/dashboard complete)
+
+### Authorization and safety (latest instructions win)
+
+- Continue autonomously on **`admin-fidelity`**; whole pass is approved, do not
+  request plan approval per screen. Owner changed the initial branch instruction:
+  create from latest main after fetch/checkout/pull. Done at `41e3768`; main was
+  already current. Work only on the published fidelity branch now. Never merge,
+  force-push or rewrite history. No subagents/delegation authorized.
+- No new dependencies/migrations/permissions/auth changes, no non-dev target.
+  Stop only for the owner's listed blockers or next context handoff (~60%).
+  Keep requireAdmin/MFA independently on every current surface; retain validation,
+  storage rules, all fields/filters/actions and all existing tests/assertions.
+- Unrelated `src/db/queries/test-accounts.ts` remains untouched and UNSTAGED:
+  diff stat only **8 insertions / 1 deletion**. Do not read/print its content or
+  stage it. Owner prompts `09-public-ui-finish.md`/`12-admin-fidelity.md` remain
+  untracked/unstaged. No environment files or rendered images are staged.
+- Every completed screen: before screenshots, differences/fix/after screenshots,
+  acceptance statuses, typecheck/lint/touched unit tests, commit and push.
+  Full default/live/build/PDF-trace/production e2e runs are FINAL ONLY and have
+  NOT run in this pass. Live and browser mutation suites must be serialized.
+
+### Done and published
+
+1. **`5a32b0e`**: read all required guidance and all 14 boards' HTML/CSS. Committed
+   unmodified mock-up folder (118,285 bytes, below 5MB). Pre-code acceptance has
+   122 numbered checks plus explicit dispositions for every first-pass difference.
+   `scripts/render-admin-references.mjs` extracts static markup/CSS, embeds existing
+   installed fonts and renders all 28 width references without design-tool runtime
+   scripts. Both contact sheets viewed. Both admin image directories ignored.
+2. **`bd458cc`**: shell typography/nav spacing/control geometry, correct data/chrome
+   glass density and fallback, dedicated mobile orbs, usable/focus-contained menu,
+   compact close, background inert and resize cleanup. Shell/presentation 7 tests
+   passed; typecheck/lint passed. Capture focus/close/resize checks passed.
+3. **`51f5b06`**: dashboard initial marks, six/three initial latest rows with access
+   to all latest ten, collapsed mobile department statistics, genuine empty state,
+   normal pill wrapping. Typecheck/lint and 10 touched tests passed. Both after
+   widths inspected and visual mid-word wrap fixed/re-rendered. No DB query changed.
+
+Acceptance provisional counts: **23 Implemented / 5 Deviation / 94 Pending**
+across 122 rows; no final Not implemented classification yet. Five allowed
+deviations are S13, S17, D05, D06, D10 with measurements/reasons on their rows.
+Do not report the incomplete pass as finished or pixel-identical.
+
+### Ordered todo (one in progress)
+
+1. **IN PROGRESS: applications list** — capture 1440/390 before, match compact
+   filter row + More filters (retain inclusive dates/tz/sort/apply), chips/mobile
+   cards/pagination/empty States board, use initial circles. Add Applied before
+   read-only projection for each listed email using case-insensitive email and
+   earlier submission; avoid N+1 network reads and add no migration. Write unit,
+   live and browser coverage; only run touched unit tests at this checkpoint.
+2. Applicant profile + delete dialog: restore repeated name (not second h1),
+   header/340px rail/mobile disclosure/row geometry, all sections/downloads/notes/
+   consent and history, exact confirmation copy/layout/focus/pending/error.
+3. Jobs list: compact filters, exact columns/initial marks/row menu/empty/mobile.
+4. Job editor + builder/dialogs: four blocks, sticky actions, compact additional
+   fields, chip item editors, per-field Write/Preview, publish confirmation,
+   Add-question dialog/all eleven types/options editor, compact question cards,
+   working native drag handle + keyboard/arrow alternative and full validation.
+   Adapt old browser tests; don't preserve immediate actions to satisfy old tests.
+5. Brands: three-column initial-mark cards/editor, compact extra fields, actual
+   uploader/logo preview, description data limit retained for function preservation,
+   contrast preview, responsive and empty states.
+6. Departments/options: **combined Settings presentation as drawn**, retain
+   access at both current gated routes; departments left/options groups right,
+   compact create/edit/reorder/activate/deactivate/delete controls.
+7. Login/MFA: board hierarchy and six cells, retain password re-verification,
+   setup key/recovery via compact disclosure; never expose setup secrets in images.
+8. Mobile variants and cross-screen contrast/overflow/focus/fallback audit.
+9. FINAL ONCE: typecheck, lint, all default tests, RUN_SUPABASE_TESTS=1 live
+   checks (isolate recovery/seed if needed per existing docs), pnpm build with PDF
+   trace guard, full production e2e. Enable RUN_LIGHTHOUSE=1 so the existing
+   opt-in case is not skipped. Final captures every admin screen/state at both
+   widths; final acceptance counts/all deviations/results/limits/owner decisions,
+   commit/push then report and stop, no merge.
+
+### Files and artifacts for resumption
+
+- `docs/ADMIN_ACCEPTANCE.md` is the source acceptance contract/progress; historical
+  `ADMIN_UI_RESTYLE.md` is explicitly superseded. DESIGN/UI_VERIFICATION describe
+  the new checkpoints while keeping historical results labelled as historical.
+- Reference CSS actual hash `5f78756a...e2da87b` is recorded in acceptance (the
+  old restyle's `8e569735...` helmet claim is not the extracted CSS hash). Reference
+  script is committed and safe to rerun; no runtime support.js is needed.
+- Ignored `design/mockup-reference-admin/`: every board `Name-{1440,390}.png`,
+  contact sheets `sheet-{1440,390}.png`. Dedicated mobile boards supersede broken
+  squeezed desktop-board renderings for mobile implementation.
+- Ignored `design/mockup-compare-admin/`: `before-shell-dashboard-{1440,390}.png`,
+  `before-menu-390.png`, `after-shell-*` and `after-dashboard-*`. Earlier before
+  captures are unmasked DEV rows: keep local, do not expose via tool image output.
+  Subsequent after-dashboard captures mask candidate cells; do not infer missing
+  candidate content from mask rectangles. Real rendering/query values are unchanged.
+- Ignored helper files left intentionally for continuation: `tmp/admin-capture.spec.ts`
+  and `tmp/admin-capture.config.ts`, using existing dev-pinned ephemeral account
+  fixture and sweep cleanup with traces/videos/failure screenshots off. Current
+  helper captures/checks only shell/dashboard (NOT every admin route). Extend it
+  screen-by-screen without printing credentials or row content. Run with
+  `pnpm exec playwright test --config tmp/admin-capture.config.ts`; stage name is
+  optional `ADMIN_CAPTURE_STAGE`, e.g. `after-dashboard`. Screenshot calls mask
+  candidate cells. Never read raw Playwright error-context files containing data.
+- Permanent `tests/e2e/admin-ui.spec.ts` has additional menu/resize/dashboard
+  assertions queued for final production run. Existing flows/assertions retained.
+- Dashboard new client components `dashboard-applications.tsx` and
+  `dashboard-departments.tsx` use only serialized bounded props. BrandMark and
+  ApplicationTable have opt-in `initialsOnly`; unreconciled screens still default
+  to previous logo behaviour until their screen checkpoint. All actual application
+  rows/queries/auth/Date serialization are retained.
+- Vitest discovers `.test.ts` only. New shell test uses createElement with props,
+  not .tsx; seven shell cases actually ran. Dashboard test mocks server-only only
+  in tests. No runtime marker, discovery or assertion was suppressed.
+
+### Next command
+
+Run `git log --oneline -5`, `git status --short --branch`, read this handoff,
+AGENTS and required docs. Then inspect `src/app/admin/(protected)/applications/page.tsx`,
+`src/components/admin/review-filters.tsx`, `application-table.tsx`,
+`src/db/queries/review.ts` and existing review query/live/browser tests. Extend the
+ignored capture helper with applications list before editing. Keep one todo in
+progress and continue autonomously from applications, not from completed shell.
+
+HANDOFF READY
