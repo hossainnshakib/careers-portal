@@ -1,5 +1,13 @@
 # Admin UI restyle (mockup-driven)
 
+> Historical first-pass report. The 2026-10-12 fidelity pass on `admin-fidelity`
+> supersedes this document's deviation approvals: only function-preservation,
+> schema/dependency/permission blockers and security/accessibility reasons are
+> allowed. See `ADMIN_ACCEPTANCE.md` for explicit dispositions and live progress.
+> Existing tests are updated to the approved design, not used to reject dialogs
+> or toggles. Immediate publish/add-question and separate Settings are pending
+> reconciliation, not accepted target behaviour.
+
 Goal: replace the admin presentation layer with the design in
 `design/mockup/careers-admin-mockups/` (all 14 boards share one `<helmet>` CSS,
 sha256 `8e569735…`, which is the token/component source).

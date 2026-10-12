@@ -25,9 +25,9 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 ## Ordered todo (exactly one in progress)
 
-- In progress: acceptance baseline and reference review.
-- Pending: shell and mobile menu.
-- Pending: dashboard.
+- Complete: acceptance baseline and reference review (`5a32b0e`).
+- Complete: shell and mobile menu (screen checkpoint; final production audit pending).
+- In progress: dashboard.
 - Pending: applications list.
 - Pending: applicant profile and delete dialog.
 - Pending: jobs list and row menu.
@@ -42,23 +42,23 @@ explicit decision to reconcile, not approval of the previous restyle difference.
 
 | ID | Visible element/state/interaction | Status / evidence / decision |
 | --- | --- | --- |
-| S01 | Cool-white #F2F5FB canvas, #0B1220 ink; red/blue/green blurred ambient orbs in drawn positions, opacity .16 and blur 110px | Pending |
-| S02 | Plus Jakarta Sans and Bengali Hind Siliguri; 14px base, 30px/800/-0.03em desktop titles, 12px eyebrows, 12px uppercase blue kickers | Pending |
-| S03 | 248px sidebar, 12px margins, 20px 14px padding, 24px radius, hairline white border, inset highlight and soft shadow | Pending |
-| S04 | Wordmark 18px/800 and blue 8px dot, 4px 10px 18px padding | Pending |
-| S05 | Dashboard, Applications, Jobs, Brands, Departments, Options links in drawn order; actual destinations, selected dark pill, pale hover and focus states | Pending |
-| S06 | Sidebar link padding 10px 12px/radius 14px; 4px gaps; footer pinned low with actual signed-in email and full-width Sign out | Pending |
-| S07 | Main padding 16px 28px 40px; min-width 0; toolbar 12px gap and 22px bottom margin; eyebrow/title left, search/New job right | Pending |
-| S08 | Toolbar search 260px, Name or email placeholder, real application-search navigation; New job link on every desktop screen | Pending |
-| S09 | Glass opacity levels: data surfaces .76-white/14px blur; sidebar/topbar/action bar .58-white/24px blur/170% saturation; dialogs/nested dense cards .9-white | Pending; previous pass used .58/24px on ordinary data cards; correct it |
-| S10 | No nested backdrop-filter; opaque unsupported-blur fallback, solid reduced-transparency surfaces and hidden decorative orbs | Pending; accessibility/performance requirement |
-| S11 | Inputs .8-white, 11px 14px padding, 14px radius, .10-ink border; button 15px radius, 11px 18px, dark/white primary, translucent secondary | Pending |
-| S12 | Visible 2px blue focus rings/2px offset; hover/disabled/pending/error/selected states, readable >=4.5:1 text on composited glass | Pending |
-| S13 | Status badge colours: New blue, Under review amber, Shortlisted purple, Hired/Open/Active green, Rejected/Closed/Inactive red, Draft amber; 6px dot, 4px 11px pill | Pending; darker green allowed only if measured contrast requires it |
-| S14 | Mobile topbar 10px outer padding, 12px 16px inner padding, 24px radius, light glass, wordmark and Menu control | Pending |
-| S15 | Mobile slide-over navigation: 300px panel, .88-white, dark .35 backdrop, drawn wordmark and all six links | Pending |
-| S16 | Mobile menu open/close, focus containment, Escape and backdrop close, trigger focus restoration, inert background, scroll lock and viewport-resize handling | Pending; explicit close control allowed for accessibility |
-| S17 | Resolve MobileMenu board's row-wrapped stretched links/hidden footer at 390 without breaking navigation, touch or sign-out access; list every resulting deviation | Pending; do not claim literal parity |
+| S01 | Cool-white #F2F5FB canvas, #0B1220 ink; red/blue/green blurred ambient orbs in drawn positions, opacity .16 and blur 110px | Implemented; desktop positions retained, dedicated mobile board's single 300px red orb used |
+| S02 | Plus Jakarta Sans and Bengali Hind Siliguri; 14px base, 30px/800/-0.03em desktop titles, 12px eyebrows, 12px uppercase blue kickers | Implemented; corrected normal line height, before/after chrome captures |
+| S03 | 248px sidebar, 12px margins, 20px 14px padding, 24px radius, hairline white border, inset highlight and soft shadow | Implemented; desktop chrome capture |
+| S04 | Wordmark 18px/800 and blue 8px dot, 4px 10px 18px padding | Implemented; desktop/mobile captures |
+| S05 | Dashboard, Applications, Jobs, Brands, Departments, Options links in drawn order; actual destinations, selected dark pill, pale hover and focus states | Implemented; active aria-current added, shell unit test and rendered navigation |
+| S06 | Sidebar link padding 10px 12px/radius 14px; 4px gaps; footer pinned low with actual signed-in email and full-width Sign out | Implemented; added missing nav gaps and removed undersized footer-button variant |
+| S07 | Main padding 16px 28px 40px; min-width 0; toolbar 12px gap and 22px bottom margin; eyebrow/title left, search/New job right | Implemented; 1440 chrome matches reference geometry |
+| S08 | Toolbar search 260px, Name or email placeholder, real application-search navigation; New job link on every desktop screen | Implemented; existing real GET search/destinations retained |
+| S09 | Glass opacity levels: data surfaces .76-white/14px blur; sidebar/topbar/action bar .58-white/24px blur/170% saturation; dialogs/nested dense cards .9-white | Implemented for shared surfaces; fixed prior .58/24px ordinary cards; editor/dialog-specific styles audited at their screen checkpoints |
+| S10 | No nested backdrop-filter; opaque unsupported-blur fallback, solid reduced-transparency surfaces and hidden decorative orbs | Implemented; nested cards .9-white/no blur; CSS regression test; solid unsupported-blur/reduced-transparency fallback |
+| S11 | Inputs .8-white, 11px 14px padding, 14px radius, .10-ink border; button 15px radius, 11px 18px, dark/white primary, translucent secondary | Implemented; normal inherited font metrics restore drawn control sizes |
+| S12 | Visible 2px blue focus rings/2px offset; hover/disabled/pending/error/selected states, readable >=4.5:1 text on composited glass | Implemented for shared controls; CSS/state review and contrast tests; full per-screen manual audit remains V03 |
+| S13 | Status badge colours: New blue, Under review amber, Shortlisted purple, Hired/Open/Active green, Rejected/Closed/Inactive red, Draft amber; 6px dot, 4px 11px pill | Deviation C: mock green #087A5B measures 4.45:1 on #dbefec composite; existing #08694F measures 5.59:1. Other badge families/shapes retained; contrast regression passes |
+| S14 | Mobile topbar 10px outer padding, 12px 16px inner padding, 24px radius, light glass, wordmark and Menu control | Implemented; 390 chrome capture |
+| S15 | Mobile slide-over navigation: 300px panel, .88-white, dark .35 backdrop, drawn wordmark and all six links | Implemented; 390 menu capture, see S17 for required functional/a11y changes |
+| S16 | Mobile menu open/close, focus containment, Escape and backdrop close, trigger focus restoration, inert background, scroll lock and viewport-resize handling | Implemented; capture checks verified Tab/Shift+Tab, Escape, close/backdrop restoration and desktop-resize cleanup; permanent e2e extended, final production run pending |
+| S17 | Resolve MobileMenu board's row-wrapped stretched links/hidden footer at 390 without breaking navigation, touch or sign-out access; list every resulting deviation | Deviation A/C: vertical non-stretched links and visible Sign out retain usable navigation/session termination; compact 44px close icon provides accessible dismissal instead of absent close control. Board's 390 CSS stretches selected link and hides footer; panel width/colour/backdrop preserved |
 | S18 | Mobile text/input legibility and Bengali rendering, no overlaps, horizontal page overflow or unreachable controls | Pending |
 
 ## 2. Dashboard (Main + MobileDashboard)
@@ -245,6 +245,13 @@ The following inventory supersedes the unapproved decisions in
 
 ## Verification and counts
 
-Baseline only: references rendered/viewed; implementation reconciliation and
-checks have not run yet. No row is marked Implemented based on the previous pass.
+Shell checkpoint: typecheck/lint and two touched unit files / 7 tests passed.
+Temporary dev-only screenshot capture passed, including menu focus/close checks;
+all final production gates remain reserved. The initial capture hit the streaming
+loading screen; a heading wait fixed the capture rather than weakening an assertion.
+Before and after shell/dashboard captures exist at both widths, plus the menu.
+Viewed chrome crops and the menu panel; final per-screen captures remain pending.
+An initial lint error/warning was corrected. A renamed .tsx unit test was initially
+excluded by the existing .test.ts discovery pattern; it is now .test.ts and all 7
+cases actually ran. No test skip or discovery change was introduced.
 Hosted Vercel, real physical phones and non-dev resources are not verified.

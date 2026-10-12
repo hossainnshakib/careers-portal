@@ -1,5 +1,28 @@
 # Mock-up UI rebuild verification
 
+## Admin fidelity — 2026-10-12 (in progress)
+
+- Branch `admin-fidelity` starts at latest merged main `41e3768` under the owner's
+  newer explicit branch instruction. No merge/force-push or main content update.
+- Pre-code contract: `ADMIN_ACCEPTANCE.md`; 14 static boards committed (118,285
+  bytes), all CSS read and all 28 width references rendered/viewed. Local-only
+  images are in ignored `design/mockup-reference-admin/` and
+  `design/mockup-compare-admin/`. Runtime design scripts are not executed.
+- Shell: corrected typography/nav/control geometry, dense/shared glass layers,
+  mobile ambient treatment and accessible slide-over. Acceptance records two
+  allowed deviations (green contrast; usable mobile links/sign-out/close).
+- Shell typecheck/lint passed; two touched unit files / 7 tests passed. Local dev
+  capture passed including menu keyboard/close/resize checks. Permanent e2e
+  updated but full production execution is reserved until the final checkpoint.
+- Initial capture caught streamed loading markup; explicit Dashboard-heading
+  wait corrected it. Initial lint/ref warning and a .tsx test-discovery mismatch
+  were fixed without suppressions; the final targeted run actually ran 7 cases.
+- Full default/live/build/PDF-trace/production e2e and final route captures have
+  not run for this pass. Real phones/hosted Vercel are unverified. Unrelated
+  `src/db/queries/test-accounts.ts` remains untouched and unstaged.
+
+The sections below are historical evidence, not fidelity-pass completion claims.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

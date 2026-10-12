@@ -65,3 +65,15 @@ it("keeps small-text admin status and muted tokens above 4.5:1", () => {
     ["pill-hired-text", "pill-hired"], ["pill-rejected-text", "pill-rejected"],
   ]) expect(contrastRatio(token(foreground), background(token(fill))), foreground).toBeGreaterThanOrEqual(4.5);
 });
+
+it("matches reference glass density without nested blur and supplies opaque fallbacks", () => {
+  const css = readFileSync("src/app/admin/admin.css", "utf8");
+  expect(css).toContain("--admin-glass: rgba(255, 255, 255, 0.58)");
+  expect(css).toContain("--admin-glass-strong: rgba(255, 255, 255, 0.76)");
+  expect(css).toMatch(/\.admin-card\s*\{\s*background: var\(--admin-glass-strong\);\s*-webkit-backdrop-filter: blur\(14px\);\s*backdrop-filter: blur\(14px\)/);
+  expect(css).toMatch(/\.admin-card \.admin-card,[\s\S]*?backdrop-filter: none;[\s\S]*?background: rgba\(255, 255, 255, 0\.9\)/);
+  expect(css).toContain("@supports not ((backdrop-filter:");
+  expect(css).toContain("@media (prefers-reduced-transparency: reduce)");
+  expect(css).toMatch(/\.admin-sidebar nav\s*\{\s*display: grid;\s*gap: 4px;/);
+  expect(css).toContain("line-height: normal;");
+});

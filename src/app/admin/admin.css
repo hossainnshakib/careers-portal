@@ -45,7 +45,7 @@
   background: var(--admin-canvas);
   font-family: var(--font-latin), var(--font-bengali), system-ui, sans-serif;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: normal;
 }
 
 /* Ambient brand orbs behind the glass panels. */
@@ -64,7 +64,7 @@
   margin: 12px;
   padding: 20px 14px;
   border-radius: 24px;
-  background: var(--admin-glass);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--admin-glass-border);
   box-shadow: var(--admin-glass-shadow);
   display: flex;
@@ -101,6 +101,11 @@
   color: var(--admin-chip);
   font-weight: 600;
   text-decoration: none;
+}
+
+.admin-sidebar nav {
+  display: grid;
+  gap: 4px;
 }
 
 .admin-nav-link:hover {
@@ -149,6 +154,20 @@
   background: rgba(255, 255, 255, 0.88);
 }
 
+.admin-menu-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  box-shadow: none;
+}
+
+.admin-backdrop .admin-wordmark {
+  padding-right: 28px;
+}
+
 /* ---------- toolbar ---------- */
 
 .admin-toolbar {
@@ -192,16 +211,15 @@
 }
 
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .admin-card,
-  .admin-sidebar,
-  .admin-actions {
-    -webkit-backdrop-filter: blur(24px) saturate(170%);
-    backdrop-filter: blur(24px) saturate(170%);
+  .admin-card {
+    background: var(--admin-glass-strong);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
-  .admin-card { background: var(--admin-glass); }
   .admin-sidebar,
   .admin-actions,
   .admin-topbar {
+    background: var(--admin-glass);
     -webkit-backdrop-filter: blur(24px) saturate(170%);
     backdrop-filter: blur(24px) saturate(170%);
   }
@@ -212,7 +230,7 @@
 .admin-sidebar .admin-card {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .admin-kicker {
@@ -563,7 +581,6 @@
   font-weight: 700;
   background: rgba(15, 23, 42, 0.06);
   color: var(--admin-chip);
-  white-space: nowrap;
 }
 
 .admin-pill::before {
@@ -964,7 +981,7 @@
   padding: 12px 16px;
   margin-bottom: 14px;
   border: 1px solid var(--admin-glass-border);
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--admin-glass);
   box-shadow: var(--admin-glass-shadow);
 }
@@ -1199,6 +1216,18 @@
     gap: 12px;
   }
 
+  .admin-orb-red {
+    width: 300px !important;
+    height: 300px !important;
+    left: -100px !important;
+    top: -100px !important;
+  }
+
+  .admin-orb-blue,
+  .admin-orb-green {
+    display: none;
+  }
+
   .admin-ui > .admin-sidebar {
     display: none;
   }
@@ -1218,6 +1247,10 @@
 
   .admin-topbar .admin-wordmark {
     padding: 0;
+  }
+
+  .admin-menu-trigger {
+    padding: 8px 14px;
   }
 
   .admin-main {
@@ -1390,6 +1423,13 @@
     min-height: 44px;
   }
 
+  .admin-menu-close {
+    width: 44px;
+    height: 44px;
+    top: 6px;
+    right: 6px;
+  }
+
   .admin-icon-btn {
     min-width: 44px;
   }
@@ -1405,6 +1445,17 @@
 }
 
 /* ---------- accessibility preferences ---------- */
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .admin-card,
+  .admin-sidebar,
+  .admin-actions,
+  .admin-topbar,
+  .admin-backdrop .admin-sidebar,
+  .admin-menu-panel {
+    background: #ffffff;
+  }
+}
 
 @media (prefers-reduced-transparency: reduce) {
   .admin-card,

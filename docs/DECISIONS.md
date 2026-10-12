@@ -706,3 +706,25 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
   capture is distinct from a broad e2e verification run.
 - Unrelated `src/db/queries/test-accounts.ts` remains untouched/unstaged (diff stat
   only: 8 insertions, 1 deletion). Untracked owner prompts remain unstaged too.
+
+## 2026-10-12 — Admin fidelity shell checkpoint
+
+- Corrected missing 4px sidebar navigation gaps, inherited normal line height,
+  undersized Sign out/Menu controls and ordinary data-card density (.76-white,
+  14px blur; chrome remains .58-white/24px blur/170% saturation). Nested cards
+  use .9-white/no backdrop blur; unsupported blur/reduced transparency are solid.
+  Dedicated mobile boards use one 300px red orb, not all three desktop orbs.
+- Mobile slide-over keeps 300px/.88-white panel and .35-ink backdrop. Only allowed
+  A/C differences: vertical usable links instead of stretched row-wrapped links,
+  visible Sign out instead of hidden footer, compact 44px accessible close icon.
+  Background topbar is now inert as well as main; focus restores after inert is
+  removed; resizing to desktop closes the menu and releases scroll/inert state.
+- Contrast evidence justifies keeping darker green: mock #087A5B on composited
+  #dbefec is 4.45:1; #08694F is 5.59:1. Other status families stay as drawn.
+- Before/after 1440/390 shell/dashboard and 390 menu screenshots captured locally
+  against pinned dev using ephemeral fixture account/cleanup. Viewed chrome/menu.
+  Capture checks passed for focus cycling, Escape/close/backdrop restoration and
+  resize cleanup; permanent admin-ui e2e assertions added for final production run.
+- Typecheck/lint passed; touched presentation/shell unit files: 7 passed. Full
+  default/live/build/production suite has NOT run and remains final-only. Initial
+  capture/lint/discovery mistakes and fixes are recorded in ADMIN_ACCEPTANCE.
