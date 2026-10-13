@@ -34,6 +34,7 @@
     "db:migrate:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/owner-setup.ts migrate",
     "seed:base:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/owner-setup.ts base",
     "jobs:seed-shells": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/job-shells.ts",
+    "jobs:import-real": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/import-real.ts",
     "links:generate": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/generate-links.ts"
   },
   "dependencies": {
