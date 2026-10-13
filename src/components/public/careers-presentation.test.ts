@@ -33,6 +33,21 @@ it("counts hiring brands rather than all active brands and features the first ca
   expect(html).toContain('id="brand-marquee"');
 });
 
+it("hero stats card shows hiring-brand logo chips instead of accent initials", () => {
+  const withLogo = (id: string, name: string): PublicBrand => ({ ...primary, id, name, slug: id, logoUrl: `/logos/${id}.svg` });
+  const brands = ["b1", "b2", "b3", "b4", "b5", "b6"].map(id => withLogo(id, `Brand ${id}`));
+  const job: JobCard = { ...role, brands, primaryBrandId: brands[0].id };
+  const html = renderToStaticMarkup(createElement(CareersHero, { jobs: [job], brands }));
+  const stats = html.slice(html.indexOf('aria-label="Hiring statistics"'), html.indexOf('6 brands hiring'));
+  // Four white logo chips (2x2/row wrap) plus a "+2" chip; never accent-coloured initials.
+  expect(stats).toContain("/logos/b1.svg");
+  expect(stats).toContain("/logos/b4.svg");
+  expect(stats).not.toContain("/logos/b5.svg");
+  expect(stats).toContain("+2");
+  expect(stats).not.toContain("Brand b1<");
+  expect(stats).not.toContain("background-color:#2B95A0");
+});
+
 it("cards retain Bengali, verbatim experience labels, salary mode and primary-brand styling", () => {
   const render = (job: JobCard) => renderToStaticMarkup(createElement(CareersResults, { jobs: [job], departments: [role.department], onClear: () => {} }));
   const html = render(role);
