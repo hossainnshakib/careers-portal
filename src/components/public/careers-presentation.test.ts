@@ -26,10 +26,10 @@ it("counts hiring brands rather than all active brands and features the first ca
   expect(html).toContain('tabindex="-1"');
   expect(html).toContain('aria-hidden="true" class="brand-marquee-copy"');
   expect(html).not.toContain("roles-marquee");
-  // Marquee Pause/Play toggle is keyboard-accessible and controls the marquee.
-  expect(html).toContain('aria-controls="brand-marquee"');
-  expect(html).toContain('aria-pressed="false"');
-  expect(html).toContain("Pause");
+  // Owner decision: no Pause/Play button; hover/focus still pause the marquee.
+  expect(html).not.toContain("Pause");
+  expect(html).not.toContain('aria-controls="brand-marquee"');
+  expect(html).not.toContain("data-marquee-paused");
   expect(html).toContain('id="brand-marquee"');
 });
 

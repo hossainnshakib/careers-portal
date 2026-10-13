@@ -681,3 +681,9 @@ Run **`git log --oneline -10`**, then **`git status --short --branch`**. Read AG
   replaced with abbreviated mock form fields. Detailed differences and cleanup
   are recorded in `ADMIN_UI_RESTYLE.md`; validation evidence is recorded after
   browser/visual execution, not inferred from the prior public finishing pass.
+
+## 2026-10-14 — Live UI fix batch: logo rows, stats-card logos, marquee toggle removal
+
+- **Marquee Pause/Play button removed (owner decision).** The visible toggle next to "Hiring across our brands" is gone, together with `marquee-toggle.tsx`, the `data-marquee-paused` CSS hook and its unit assertions. Hover/focus still pause the marquee and `prefers-reduced-motion` still renders the static wrapped layout. Accessibility trade-off: WCAG 2.2.2 asked for a pause control, but the marquee is decorative, the same brands are reachable without motion through the Filters panel brand filter (real links to `/?brand=<slug>#roles`), and reduced-motion users never see the animation. `UI_ACCEPTANCE.md` H08 records the deviation.
+- **One logo row everywhere (item 1):** new shared `BrandLogoRow` keeps every multi-brand row on one horizontal band (nowrap, fixed row height, proportional shrink, at most three marks plus a "+N" chip). The thin vertical divider previously used between card logos was dropped in favour of the requested ~14px gap.
+- **Stats-card logos (item 2):** the Home hero stats card shows up to four real brand logos in white rounded chips plus a "+N" chip (first hiring brands in brand sort order) instead of overlapping accent-colour initial circles; tilt, glass and the "N brands hiring" line are unchanged.

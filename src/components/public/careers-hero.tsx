@@ -4,7 +4,6 @@ import { accentColor, cardBrands } from "@/lib/careers/presentation";
 import { PublicBrandLogo } from "./public-brand-logo";
 import { BrandLogoRow } from "./brand-logo-row";
 import { PublicIcon } from "./public-icon";
-import { MarqueeToggle } from "./marquee-toggle";
 
 export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicBrand[] }) {
   const hiring = brands.filter(brand => jobs.some(job => job.brands.some(link => link.id === brand.id)));
@@ -61,7 +60,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
       </div>
     </section>
     {hasRoles && !!brands.length && <section aria-label="Hiring across our brands" className="mx-auto max-w-[1100px] px-6 pb-7 pt-2 text-center">
-      <h2 className="mb-[18px] text-[12.5px] font-bold uppercase tracking-[.08em] text-ui-muted">Hiring across our brands<MarqueeToggle targetId="brand-marquee" /></h2>
+      <h2 className="mb-[18px] text-[12.5px] font-bold uppercase tracking-[.08em] text-ui-muted">Hiring across our brands</h2>
       <div id="brand-marquee" className="brand-marquee py-1"><div className="brand-marquee-track"><ul>{logos(false)}</ul><ul aria-hidden="true" className="brand-marquee-copy">{logos(true)}</ul></div></div>
     </section>}
   </>;
