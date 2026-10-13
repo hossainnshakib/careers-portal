@@ -74,8 +74,8 @@ test("stress content: very long titles, four brands, Bengali text and edge-lengt
   //    near-limit pills, all without overflow at desktop and mobile widths.
   await page.goto(`/jobs/${stress.long.slug}`);
   await expect(page.getByRole("heading", { level: 1, name: stress.long.title })).toBeVisible();
-  await expect(page.locator('[aria-label="Hiring brands"] img')).toHaveCount(4);
-  await expect(page.locator("main img")).toHaveCount(8); // 4 hero chips + 4 "Who you would work with" logos
+  await expect(page.locator('[aria-label="Hiring brands"] img')).toHaveCount(3); // three marks + a "+1" chip for the fourth
+  await expect(page.locator("main img")).toHaveCount(7); // 3 hero logos + 4 "Who you would work with" logos
   for (const heading of ["Why this role exists", "Key responsibilities", "Requirements", "What keeps you ahead"]) {
     await expect(page.getByRole("heading", { name: heading })).toBeVisible();
   }

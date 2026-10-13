@@ -8,7 +8,7 @@ import { getPublicEnv, getPublicSiteUrl } from "@/lib/env-public";
 import { accentColor, publicWebsite } from "@/lib/careers/presentation";
 import { groupLabels } from "@/lib/careers/option-labels";
 import { buildJobPosting } from "@/lib/careers/json-ld";
-import { PublicBrandLogo } from "@/components/public/public-brand-logo";
+import { BrandLogoRow } from "@/components/public/brand-logo-row";
 import { PublicIcon } from "@/components/public/public-icon";
 import { PublicDeadline } from "@/components/public/public-deadline";
 
@@ -78,8 +78,8 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
           {job.locationText && <span className="ui-hero-pill">{job.locationText}</span>}
           {deadline && <span className="ui-hero-pill">Apply before <PublicDeadline value={deadline} /></span>}
         </div>
-        <div aria-label="Hiring brands" className="mt-2 flex flex-wrap items-center gap-3"><span className="text-[13px] font-bold text-white/85">Hiring for</span>
-          {visibleBrands.map(({ brand }) => <span key={brand.id} className="inline-flex items-center rounded-full bg-white/95 px-3 py-[7px]"><PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} className="h-[26px] max-w-[110px]" /></span>)}
+        <div className="mt-2 flex flex-wrap items-center gap-3"><span className="text-[13px] font-bold text-white/85">Hiring for</span>
+          <BrandLogoRow brands={visibleBrands.map(({ brand }) => brand)} size={30} chip ariaLabel="Hiring brands" />
         </div>
       </div>
     </header>
@@ -99,7 +99,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         <section className="space-y-[14px]"><SectionHeading label="About the hiring brands" title="Who you would work with" /><div className="flex flex-wrap gap-4">{visibleBrands.map(({ brand }) => {
           const website = publicWebsite(brand.website);
           return <div key={brand.id} className="ui-glass flex flex-[1_1_260px] flex-col gap-2.5 rounded-[20px] p-5">
-            <PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} className="h-[34px] max-w-[110px]" />
+            <BrandLogoRow brands={[brand]} size={34} />
             {brand.description?.trim() && brand.description.trim() !== "TBD" && <p className="text-[13.5px] leading-[1.55] text-ui-muted">{brand.description}</p>}
             {website && <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[13px] font-bold text-ui-blue-text">Visit website <PublicIcon name="external" size={14} /></a>}
           </div>;

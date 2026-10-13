@@ -3,13 +3,14 @@ import type { JobCard, PublicBrand } from "@/lib/careers/filters";
 import { accentColor, cardBrands } from "@/lib/careers/presentation";
 import { readableAccentText } from "@/lib/brands/contrast";
 import { PublicBrandLogo } from "./public-brand-logo";
+import { BrandLogoRow } from "./brand-logo-row";
 import { PublicIcon } from "./public-icon";
 import { MarqueeToggle } from "./marquee-toggle";
 
 export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicBrand[] }) {
   const hiring = brands.filter(brand => jobs.some(job => job.brands.some(link => link.id === brand.id)));
   const featured = jobs[0];
-  const featuredBrand = featured ? cardBrands(featured)[0] : undefined;
+  const featuredBrands = featured ? cardBrands(featured) : [];
   const hasRoles = jobs.length > 0;
   const logos = (duplicate: boolean) => brands.map(brand => <li key={brand.id} className="shrink-0">
     <Link href={`/?brand=${encodeURIComponent(brand.slug)}#roles`} tabIndex={duplicate ? -1 : undefined} aria-label={`View roles at ${brand.name}`} className="block opacity-55 grayscale transition-opacity hover:opacity-100">
@@ -26,7 +27,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
           <span className="text-[10.5px] font-bold uppercase tracking-[.06em] text-ui-muted">{featured.department.name}</span>
           <span className="text-[17px] font-extrabold tracking-[-.01em]">{featured.title}</span>
           <span className="flex flex-wrap gap-1.5">{featured.options.filter(option => option.group !== "experience").map(option => <span className="ui-pill" key={`${option.group}:${option.slug}`}>{option.label}</span>)}</span>
-          {featuredBrand && <PublicBrandLogo name={featuredBrand.name} src={featuredBrand.logoUrl} slug={featuredBrand.slug} className="h-[24px] max-w-[110px]" />}
+          {!!featuredBrands.length && <BrandLogoRow brands={featuredBrands} size={30} />}
         </Link>}
         {hasRoles && <div className="ui-float-card ui-glass absolute right-8 top-[84px] w-[220px] rotate-4 flex-col gap-2.5 rounded-[22px] p-[18px]" aria-label="Hiring statistics">
           <span className="text-[12px] font-bold text-ui-muted">Open roles</span>

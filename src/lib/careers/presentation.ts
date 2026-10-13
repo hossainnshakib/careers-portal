@@ -8,7 +8,8 @@ export function groupRoles(jobs: JobCard[], departments: { name: string; slug: s
 }
 export function cardBrands(job: JobCard) {
   const primary = job.brands.find(brand => brand.id === job.primaryBrandId) ?? job.brands[0];
-  return primary ? [primary, ...job.brands.filter(brand => brand.id !== primary.id)].slice(0, 2) : [];
+  // Primary first; the logo row itself shows at most three marks plus a "+N" chip.
+  return primary ? [primary, ...job.brands.filter(brand => brand.id !== primary.id)] : [];
 }
 export function accentColor(value: string | null | undefined) {
   return value && /^#[a-f0-9]{6}$/i.test(value) ? value : "#20241f";

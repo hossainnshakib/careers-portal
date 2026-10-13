@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { JobCard } from "@/lib/careers/filters";
 import { accentColor, cardBrands, groupRoles } from "@/lib/careers/presentation";
-import { PublicBrandLogo } from "./public-brand-logo";
+import { BrandLogoRow } from "./brand-logo-row";
 import { PublicIcon } from "./public-icon";
 
 export function CareersResults({ jobs, departments, onClear, activeFilters = false }: { jobs: JobCard[]; departments: { name: string; slug: string }[]; onClear: () => void; activeFilters?: boolean }) {
@@ -19,10 +19,7 @@ export function CareersResults({ jobs, departments, onClear, activeFilters = fal
     <ul className="ui-job-grid">{department.roles.map(job => {
       const brands = cardBrands(job);
       return <li key={job.id} className="min-w-0"><Link href={`/jobs/${job.slug}`} className="ui-glass ui-lift flex h-full min-w-0 flex-col gap-[14px] rounded-ui-card px-5 pb-[18px] pt-5" style={{ borderTopColor: accentColor(brands[0]?.accentColor), borderTopWidth: 3 }}>
-        <div className="flex min-h-6 flex-wrap items-center gap-x-[14px] gap-y-1.5">{brands.map((brand, index) => <span key={brand.id} className="flex items-center">
-          {index > 0 && <span aria-hidden="true" className="mr-[14px] h-3.5 w-px bg-ui-border" />}
-          <PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} />
-        </span>)}</div>
+        <BrandLogoRow brands={brands} size={28} />
         <h3 className="text-[18px] font-bold leading-[1.25] tracking-[-.01em]">{job.title}</h3>
         <div className="flex flex-wrap gap-[7px]">
           {(["engagement", "arrangement", "experience"] as const).flatMap(group => job.options.filter(option => option.group === group)).map(option => <span key={`${option.group}:${option.slug}`} className={`ui-pill ${option.group === "experience" && option.slug === "fresher-welcome" ? "ui-pill-blue" : ""}`}>{option.label}</span>)}
