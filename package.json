@@ -25,6 +25,7 @@
     "seed:base": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/base.ts",
     "seed:demo": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/demo.ts",
     "db:reset:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/reset.ts",
+    "db:wipe-demo": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/wipe-demo.ts",
     "storage:ensure": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/storage/ensure-buckets.ts",
     "db:counts": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/counts.ts",
     "db:keepalive:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/keepalive.ts",
