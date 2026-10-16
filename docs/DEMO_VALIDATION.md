@@ -188,6 +188,114 @@ unexpected identity; private review-file cleanup is similarly namespace/domain
 restricted. These test-only lifecycles are separate from the public DEMO cleanup
 command, which never deletes any application.
 
+## Completion verification
+
+Final sequential `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` all
+passed. Default Vitest: **667 passed / 90 skipped**, **98 files passed / 8
+skipped**. The skips are existing opt-in provider suites plus newly authored
+live cases, not hidden browser failures. Build includes the passing PDF trace
+guard (Bengali fonts, PDF runtime data and logos).
+
+| Command / environment | Actual result |
+|---|---|
+| `PLAYWRIGHT_PRODUCTION=1 RUN_LIGHTHOUSE=1 pnpm test:e2e` (PowerShell environment assignments) | **48 passed / 0 failed / 0 skipped**, 7.4 minutes |
+| `pnpm exec playwright test --config playwright.live.config.ts` | **1 passed / 0 failed**, 37 seconds; real approved Vercel DEV workflow |
+| `RUN_SUPABASE_TESTS=1 pnpm exec vitest run src/db/queries/jobs.live.test.ts src/db/queries/review.live.test.ts src/lib/auth/requireAdmin.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/rls.test.ts src/db/auth-config.live.test.ts --no-file-parallelism` | **88 passed**, 6 files, 66 seconds |
+| Production-mode targeted settings / question-builder reruns | **1 passed each**, before the final full suite |
+| `pnpm demo:check-live` after all tests | **Passed**: exact five DEMO catalog slugs, zero genuine listings, five open Apply forms, disclaimers on all Job/Apply routes, approved project origin |
+| `pnpm demo:cleanup` final dry-run | Five owned jobs, zero applications, zero deletions, not blocked |
+| `pnpm demo:publish` final dry-run | Five unchanged open jobs, zero writes |
+
+These live integration files were selected explicitly. The full opt-in live
+collection was **not** run: legacy `upgrade.live.test.ts` calls the forbidden
+19-job seeder, and crashed-account recovery was not part of this selected run.
+Do not read “88 live passed” as a claim that every optional live test was run.
+
+The settings fixture's second failure was its label exceeding 40 characters;
+the full nonce is now in its slug and the short label respects the existing
+limit. A later question-builder assertion still expected the old title after
+adding the required warning; it now compares the exact complete title. No
+assertion was made partial or removed. The final full run includes all ten
+previously catalog-dependent cases, the MFA spec and these corrected fixtures.
+Earlier full results were 43/4/1, then 47/1/0, then 47/1/0, followed by 48/0/0;
+failed attempts are retained in the local logs, not represented as passes.
+
+Final Lighthouse reports (local optimized build):
+
+| Page | Performance | Accessibility | Best practices | SEO |
+|---|---:|---:|---:|---:|
+| Home | 96 | 100 | 100 | 92 |
+| Job | 92 | 100 | 100 | 69 |
+| Apply | 98 | 100 | 100 | 58 |
+| Success | 98 | 100 | 100 | 54 |
+
+Noindex on DEMO/Apply/success is deliberate. The reports also flag meta-description
+and back-forward-cache diagnostics; this task does not claim perfect SEO or that
+those advisory findings were fixed. Thresholds and assertions were not reduced.
+
+### Final DEV/live state and limits
+
+Exactly **5 published DEMO jobs / 52 questions / 0 applications** remain for owner
+review. Structural counts: **6 departments / 8 brands / 13 options**; 9 job-brand
+links and 16 job-option links. The live catalog is intentionally **not empty**:
+temporary DEMO visibility was expressly approved. Zero genuine recruitment
+listings were verified publicly, not inferred merely from local data.
+
+The live workflow's successful submission made the local DEV cleanup refuse;
+after authorized deletion it reported zero applications. This functional
+write/read correlation supplements the live CSP/API-origin and fresh dataset
+checks; private Vercel environment credentials were never inspected or printed.
+
+**Deployment limitation:** the current Vercel build has stored title/summary
+warnings prominently visible, but the final read-only check reports **0 dedicated
+banner pages / 0 noindex Job pages / 5 JobPosting pages**. The additional banner,
+noindex, sitemap exclusion, mobile/filter fixes and expanded job-deletion UX are
+tested on this branch, not claimed deployed to the existing URL. Deploying the
+reviewed branch is an owner action; the agent did not merge or change hosting.
+
+Submitted dummy files were downloaded and the corresponding synthetic
+applications deleted through the existing authorized UI. Unsubmitted private
+reservation metadata is left to normal expiry cleanup. Browser uploads exercised
+dummy PDFs; other accepted extensions have schema/unit validation coverage, not
+per-extension live submissions. Physical-device/Safari checks and remote CI
+status are not independently verified. No production credentials/resources,
+migrations, policies, real roles or unrelated local files were changed.
+
+Actual local evidence (ignored/private artifacts, not committed):
+
+- `C:\Users\Hossa\AppData\Local\Temp\opencode\task13-evidence\demo-review.png`
+- `C:\Users\Hossa\AppData\Local\Temp\opencode\task13-evidence\live-demo-job.png`
+- `C:\Users\Hossa\AppData\Local\Temp\opencode\task13-e2e-green.log`
+- `C:\Users\Hossa\AppData\Local\Temp\opencode\task13-live-e2e.log`
+- `C:\Users\Hossa\AppData\Local\Temp\opencode\task13-live-vitest.log`
+- `C:\Users\Hossa\AppData\Local\Temp\opencode\lighthouse-{home,job,apply,success}.json`
+
+### Acceptance checklist
+
+| # | Status | Evidence |
+|---|---|---|
+| 1 | Implemented | Feature worktree/branch; primary 149 entries untouched and unstaged; main unchanged |
+| 2 | Justified Deviation | Original isolation requirement superseded by explicit shared-DEV approval; exact target verified before writes and live testing |
+| 3 | Implemented | Five distinct complete fictional roles; field matrix above |
+| 4 | Implemented | 52 questions, all 11 types and five sections; all-eleven-type browser submission |
+| 5 | Implemented | Dry-run defaults, exact confirmation/ownership, repeat seed/cleanup rehearsals, no application deletion in DEMO cleanup |
+| 6 | Implemented | Authorized native confirmations in list/editor; keyboard/cancel/focus checks |
+| 7 | Implemented | Transaction/FK dependencies and competing-delete/concurrent-apply live tests |
+| 8 | Implemented | Any application blocks job deletion; real CLI refusal during synthetic workflow; server policy/FK checks |
+| 9 | Implemented | Clear-first MFA distribution; exact assertions retained; full suite passes |
+| 10 | Implemented | All previously failing cases re-evaluated in green full suite; no blanket skips |
+| 11 | Implemented | Typecheck/lint/default unit/build/full browser gates passed; selected live totals explicitly scoped |
+| 12 | Implemented | Actual public five-DEMO/zero-genuine state and live workflow verified; deployment limitations reported |
+| 13 | Implemented | No genuine roles published, no production/schema/policy writes; legacy real content unchanged |
+| 14 | Implemented | Runbook, coverage/deletion matrices, exact paths, commit history and compare URL supplied |
+
+Totals under the updated authorization: **13 Implemented / 1 Justified Deviation /
+0 Not Implemented**. This is branch implementation/verification acceptance, not
+authorization to launch genuine vacancies or a claim that new code is deployed.
+
+CI link (status unverified):
+https://github.com/hossainnshakib/careers-portal/actions?query=branch%3Ademo-jobs-and-deletion
+
 ## Exact changeset (relative to main `cd360c5`)
 
 This includes the preserved `b583191` deletion/MFA work, `ab58263` guarded DEMO
