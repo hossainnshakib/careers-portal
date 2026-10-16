@@ -87,6 +87,7 @@ pnpm demo:publish --write --confirm=xmtoccukridshadnxrlc
 pnpm demo:publish
 
 pnpm db:counts
+pnpm demo:check-live
 pnpm demo:cleanup
 # Only after confirming the dry-run reports zero applications:
 pnpm demo:cleanup --write --confirm=xmtoccukridshadnxrlc
@@ -186,3 +187,77 @@ teardown checks candidate ownership as well as job namespace and refuses an
 unexpected identity; private review-file cleanup is similarly namespace/domain
 restricted. These test-only lifecycles are separate from the public DEMO cleanup
 command, which never deletes any application.
+
+## Exact changeset (relative to main `cd360c5`)
+
+This includes the preserved `b583191` deletion/MFA work, `ab58263` guarded DEMO
+dataset, `c295864` runtime/fixture fixes and the subsequent verification changes.
+The feature branch is `demo-jobs-and-deletion`; no merge is authorized.
+
+```text
+docs/DECISIONS.md
+docs/DEMO_VALIDATION.md
+docs/DEMO_VALIDATION_STATUS.md
+docs/RUNBOOK.md
+docs/SEED_DATA.md
+package.json
+playwright.config.ts
+playwright.live.config.ts
+scripts/check-demo-live.ts
+src/app/(public)/jobs/[slug]/apply/page.tsx
+src/app/(public)/jobs/[slug]/page.tsx
+src/app/admin/(protected)/jobs/actions.test.ts
+src/app/admin/(protected)/jobs/actions.ts
+src/app/admin/(protected)/jobs/page.test.ts
+src/app/admin/(protected)/jobs/page.tsx
+src/app/globals.css
+src/app/sitemap.ts
+src/components/admin/job-editor.test.ts
+src/components/admin/job-editor.tsx
+src/components/admin/job-row-menu.test.ts
+src/components/admin/job-row-menu.tsx
+src/components/public/careers-hero.tsx
+src/components/public/careers-hub.tsx
+src/components/public/careers-presentation.test.ts
+src/components/public/careers-results.tsx
+src/components/public/demo-notice.test.ts
+src/components/public/demo-notice.tsx
+src/db/queries/counts.ts
+src/db/queries/jobs.live.test.ts
+src/db/queries/jobs.ts
+src/db/queries/public-test-fixture.ts
+src/db/queries/review-test-fixture.ts
+src/db/queries/test-fixtures.test.ts
+src/db/queries/test-fixtures.ts
+src/db/queries/validation-demo.test.ts
+src/db/queries/validation-demo.ts
+src/db/seed/validation-content.test.ts
+src/db/seed/validation-content.ts
+src/db/seed/validation-guard.test.ts
+src/db/seed/validation-policy.ts
+src/db/seed/validation.ts
+src/lib/demo.ts
+src/lib/questions/job-policy.test.ts
+src/lib/questions/job-policy.ts
+src/lib/validation/jobs.ts
+tests/e2e/admin-ui.spec.ts
+tests/e2e/demo-validation.spec.ts
+tests/e2e/job-editor.spec.ts
+tests/e2e/public-apply.spec.ts
+tests/e2e/public-states.spec.ts
+tests/e2e/question-builder.spec.ts
+tests/e2e/settings.spec.ts
+tests/support/admin-fixture.ts
+tests/support/admin-worker.ts
+tests/support/demo-setup.ts
+tests/support/live-setup.ts
+tests/support/verify-demo-target.ts
+```
+
+No changes to the real-role JSON/importer, migration SQL, `requireAdmin`, MFA
+actions, Turnstile verification, upload/signature validation, Storage privacy,
+CSP or hosting configuration. The primary worktree's 149 existing status entries
+remain untouched and unstaged; all task edits live in `G:\career-mr`.
+
+Review URL (agent does not create or merge the PR):
+https://github.com/hossainnshakib/careers-portal/compare/main...demo-jobs-and-deletion
