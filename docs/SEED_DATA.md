@@ -1,5 +1,15 @@
 # SEED DATA — Careers Portal
 
+## Prompt 13 authorized validation dataset (2026-10-16)
+
+Use `demo:seed`, `demo:publish` and `demo:cleanup` for the five explicit fictional
+DEMO jobs; each defaults to dry-run and writes only with exact DEV confirmation.
+Do not use the legacy 19-job demo seeder for this validation. Current owner
+authorization allows temporary public visibility on the existing DEV deployment.
+All application retention protections remain. See `DEMO_VALIDATION.md` for the
+complete role/field/question matrix, commands and safety boundaries. The legacy
+19 owner-authored roles and importer below are unchanged and are not published.
+
 Two seed commands, both idempotent (upsert by slug):
 - `pnpm seed:base` — departments + brands only. Safe for production.
 - `pnpm seed:demo` — base + 19 jobs with demo content, demo questions, and demo applicants. **DEV ONLY**: must refuse to run when `APP_ENV=production` or when the database URL does not match the dev project; include a test for this guard. `pnpm db:reset:dev` drops, migrates and runs `seed:demo`, with the same guard.

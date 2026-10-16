@@ -1,5 +1,10 @@
 # Task 13 - partial code-only delivery (2026-10-16)
 
+**Historical checkpoint:** the owner subsequently approved the shared DEV target
+and temporary public DEMOs. Current implementation and commands are documented in
+`DEMO_VALIDATION.md`; the isolation blocker and acceptance totals below describe
+the earlier `b583191` delivery only.
+
 ## Boundary and isolation
 
 Feature branch: `demo-jobs-and-deletion`, based on `origin/main`

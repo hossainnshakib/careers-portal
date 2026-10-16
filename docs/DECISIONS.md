@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-10-16 - Prompt 13 updated owner authorization: existing shared DEV only
+
+- The owner explicitly superseded the earlier isolation blocker: use only Supabase DEV `xmtoccukridshadnxrlc`, also backing `https://careers-portal-sigma.vercel.app`. Exactly five clearly fictional DEMO jobs may be temporarily published there. No new project/database, migrations, security-policy changes or production writes are authorized. Synthetic candidates/files only.
+- Seed/publish/cleanup default to dry-run and require both `--write` and exact project-reference confirmation. Cleanup owns only the five exact `demo-*` slugs plus the dataset content marker and disclaimer; it never deletes applications and refuses the whole deletion if any application exists. Resolve synthetic applications through the existing authorized admin deletion flow first. Structural brands/departments/options and unrelated jobs/applications must be preserved.
+- Before writes, the local API URL and both database URLs were checked against the independent approved reference and `/postgres`; read-only counts were 6 departments, 8 brands, zero jobs/questions/applications. Live `/admin/login` returned HTTP 200 with that same project origin in CSP. This proves the live API origin, not its Drizzle DB target independently; after publishing, exact demo-slug rendering will provide an additional shared-catalog check before live submissions.
+
 Newer entries override earlier planning documents. All code and database work in this phase targets development only.
 
 ## 2026-10-05 — Phase 0 foundation

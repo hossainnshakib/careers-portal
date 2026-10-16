@@ -123,6 +123,11 @@ For a code regression, use Vercel's previous known-good deployment/rollback, kee
 
 ## Task 13: safe deletion and blocked DEMO validation (2026-10-16)
 
+**Superseded authorization:** the owner subsequently approved temporary public
+DEMOs on the existing shared DEV project. Use `docs/DEMO_VALIDATION.md` for the
+current target, five-role/type matrix, guarded commands and retention rules.
+The earlier isolation restriction below is historical, not the current approval.
+
 The current deployment shares the development Supabase project. Keep its public
 catalog empty until explicit launch approval. Do **not** run generic seed/reset/
 wipe/import commands, live Vitest or Playwright against that shared project merely

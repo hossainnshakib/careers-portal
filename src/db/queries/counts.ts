@@ -2,7 +2,7 @@ import "server-only";
 
 import { count } from "drizzle-orm";
 import { getDb } from "@/db";
-import { applications, brands, departments, jobQuestions, jobs } from "@/db/schema";
+import { applications, brands, departments, jobBrands, jobOptionLinks, jobOptions, jobQuestions, jobs } from "@/db/schema";
 
 export async function getRowCounts() {
   const db = getDb();
@@ -10,7 +10,10 @@ export async function getRowCounts() {
   for (const [name, table] of Object.entries({
     departments,
     brands,
+    options: jobOptions,
     jobs,
+    jobBrands,
+    jobOptionLinks,
     questions: jobQuestions,
     applications,
   })) {

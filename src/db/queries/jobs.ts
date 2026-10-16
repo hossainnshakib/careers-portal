@@ -93,13 +93,15 @@ export async function jobHasApplications(id: string) {
   return !!row;
 }
 
-export async function saveJob(input: JobInput) {
+export async function saveJob(input: JobInput, expectedUpdatedAt?: Date) {
   return getDb().transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(1103)`);
     const [existing] = input.id
       ? await tx.select().from(jobs).where(eq(jobs.id, input.id)).for("update")
       : [];
     if (input.id && !existing) throw new Error("Job not found");
+    if (expectedUpdatedAt && (!existing || existing.updatedAt.getTime() !== expectedUpdatedAt.getTime()))
+      throw new Error("Job changed during preparation; run the dry-run again.");
     checkJobEdit(existing ?? null, input);
     const [dept] = await tx
       .select({ id: departments.id })

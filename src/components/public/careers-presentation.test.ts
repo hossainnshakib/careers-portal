@@ -15,6 +15,14 @@ const role: JobCard = {
   options: [{ group: "engagement", slug: "custom", label: "Exact custom label" }, { group: "experience", slug: "fresher-welcome", label: "নতুনদের স্বাগতম" }],
 };
 
+it("labels a demo-only catalog as validation rather than genuine recruitment", () => {
+  const html = renderToStaticMarkup(createElement(CareersHero, { jobs: [{ ...role, slug: "demo-platform-developer" }], brands: [primary] }));
+  expect(html).toContain("DEMO / TEST ONLY — Not a real job opening");
+  expect(html).toContain("Validation only");
+  expect(html).toContain("shown for testing");
+  expect(html).not.toContain("We’re hiring");
+});
+
 it("counts hiring brands rather than all active brands and features the first catalog role", () => {
   const html = renderToStaticMarkup(createElement(CareersHero, { jobs: [role], brands: [primary, idle] }));
   expect(html).toContain("1 brand hiring");

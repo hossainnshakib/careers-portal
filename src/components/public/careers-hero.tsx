@@ -4,12 +4,16 @@ import { accentColor, cardBrands } from "@/lib/careers/presentation";
 import { PublicBrandLogo } from "./public-brand-logo";
 import { BrandLogoRow } from "./brand-logo-row";
 import { PublicIcon } from "./public-icon";
+import { DemoNotice } from "./demo-notice";
+import { isDemoSlug } from "@/lib/demo";
 
 export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicBrand[] }) {
   const hiring = brands.filter(brand => jobs.some(job => job.brands.some(link => link.id === brand.id)));
   const featured = jobs[0];
   const featuredBrands = featured ? cardBrands(featured) : [];
   const hasRoles = jobs.length > 0;
+  const demosOnly = hasRoles && jobs.every(job => isDemoSlug(job.slug));
+  const demo = jobs.find(job => isDemoSlug(job.slug));
   // Stats card: the first four hiring brands (in brand sort order) that have a
   // logo, in white rounded chips, plus a "+N" chip for the rest. Decorative —
   // the "N brands hiring" line right below carries the same information.
@@ -30,11 +34,12 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
         {featured && <Link href={`/jobs/${featured.slug}`} className="ui-float-card ui-glass absolute left-8 top-24 w-[236px] -rotate-5 flex-col gap-2.5 rounded-[22px] p-4">
           <span className="text-[10.5px] font-bold uppercase tracking-[.06em] text-ui-muted">{featured.department.name}</span>
           <span className="text-[17px] font-extrabold tracking-[-.01em]">{featured.title}</span>
+          <DemoNotice slug={featured.slug} />
           <span className="flex flex-wrap gap-1.5">{featured.options.filter(option => option.group !== "experience").map(option => <span className="ui-pill" key={`${option.group}:${option.slug}`}>{option.label}</span>)}</span>
           {!!featuredBrands.length && <BrandLogoRow brands={featuredBrands} size={30} />}
         </Link>}
         {hasRoles && <div className="ui-float-card ui-glass absolute right-8 top-[84px] w-[220px] rotate-4 flex-col gap-2.5 rounded-[22px] p-[18px]" aria-label="Hiring statistics">
-          <span className="text-[12px] font-bold text-ui-muted">Open roles</span>
+          <span className="text-[12px] font-bold text-ui-muted">{demosOnly ? "DEMO listings" : "Open roles"}</span>
           <span className="text-[44px] font-extrabold leading-none tracking-[-.03em]">{jobs.length}</span>
           <div aria-hidden="true" className="flex flex-wrap items-center gap-[6px] pl-1">
             {statsLogos.map(brand => <span key={brand.id} className="flex h-[30px] min-w-0 items-center rounded-full border border-ui-border bg-white px-2">
@@ -42,13 +47,14 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
             </span>)}
             {statsHidden.length > 0 && <span className="flex h-[30px] shrink-0 items-center rounded-full border border-ui-border bg-white/80 px-2 text-[12px] font-bold text-ui-muted" title={statsHiddenNames}>+{statsHidden.length}</span>}
           </div>
-          <span className="text-[12px] font-semibold text-ui-muted">{hiring.length} {hiring.length === 1 ? "brand" : "brands"} hiring</span>
+          <span className="text-[12px] font-semibold text-ui-muted">{hiring.length} {hiring.length === 1 ? "brand" : "brands"} {demosOnly ? "shown for testing" : "hiring"}</span>
         </div>}
         <div className="mx-auto flex max-w-[760px] flex-col items-center gap-[22px] text-center">
           <p className="ui-glass inline-flex flex-wrap items-center justify-center gap-[9px] rounded-full px-4 py-2 text-[13px] font-bold">
             <span aria-hidden="true" className={`h-2 w-2 rounded-full ${hasRoles ? "bg-ui-success" : "bg-ui-muted"}`} />
-            {hasRoles ? <>We&rsquo;re hiring · {jobs.length} open {jobs.length === 1 ? "role" : "roles"} · {hiring.length} {hiring.length === 1 ? "brand" : "brands"}</> : "No open roles right now"}
+            {demosOnly ? <>Validation only · {jobs.length} DEMO listings</> : hasRoles ? <>We&rsquo;re hiring · {jobs.length} open {jobs.length === 1 ? "role" : "roles"} · {hiring.length} {hiring.length === 1 ? "brand" : "brands"}</> : "No open roles right now"}
           </p>
+          {demo && <DemoNotice slug={demo.slug} />}
           <h1 id="careers-title" className="text-[42px] font-extrabold leading-[1.04] tracking-[-.035em] sm:text-[68px]">Good work starts here.<br /><span className="mt-2 block text-[28px] tracking-[-.03em] text-ui-muted sm:text-[44px]">Find your place across our brands.</span></h1>
           {hasRoles ? <p className="max-w-[560px] text-[18px] leading-[1.6] text-ui-muted">Browse open roles, pick one that fits, and apply in a few steps. No account needed.</p>
             : <p className="max-w-[560px] text-[18px] leading-[1.6] text-ui-muted">We don&rsquo;t have any open roles at the moment. Check back soon — new opportunities open regularly.</p>}
