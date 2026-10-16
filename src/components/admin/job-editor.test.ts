@@ -18,13 +18,17 @@ it.each([
   [false, "draft", false, true],
   [false, "draft", true, false],
   [true, "closed", true, false],
+  // Zero-application jobs are deletable in every status, each behind a confirmation.
+  [true, "closed", false, true],
+  [true, "open", false, true],
 ] as const)("keeps job commands for published=%s, status=%s, applications=%s", (published, status, hasApplications, canDelete) => {
   const html = renderToStaticMarkup(createElement(JobEditor, {
     initial, brands: [], departments: [], sources: [], options: [], published, status, hasApplications,
   }));
   expect(html).toContain(status === "draft" ? "Save draft" : "Save changes");
-  expect(html).toContain('aria-label="Publish job"');
-  expect(html.includes("Delete draft")).toBe(canDelete);
+  expect(html.includes('aria-label="Publish job"')).toBe(status !== "open");
+  expect(html.includes(status === "draft" ? "Delete draft" : "Delete job")).toBe(canDelete);
+  expect(html.includes('aria-label="Confirm job deletion"')).toBe(!hasApplications);
   expect(html.includes("Reopen job")).toBe(status === "closed");
   expect(html).toContain('aria-label="More job actions"');
   expect(html).toContain('aria-label="Confirm job publication"');

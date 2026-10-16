@@ -72,7 +72,20 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   await expect(page.getByLabel("Title", { exact: true })).toHaveValue(`${title} (copy)`);
   await page.locator('summary[aria-label="More job actions"]').click();
   await page.getByRole("button", { name: "Delete draft", exact: true }).click();
-  await expect(page).toHaveURL(/\/admin\/jobs$/);
+  // Deletion always asks for explicit confirmation that identifies the job.
+  const deletion = page.getByRole("dialog", { name: "Confirm job deletion" });
+  await expect(deletion).toBeVisible();
+  await expect(deletion.getByRole("heading")).toContainText(`${title} (copy)`);
+  await deletion.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(deletion).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Delete draft", exact: true })).toBeFocused();
+  await page.getByRole("button", { name: "Delete draft", exact: true }).click();
+  await page.keyboard.press("Escape");
+  await expect(deletion).not.toBeVisible();
+  await expect(page.getByLabel("Title", { exact: true })).toHaveValue(`${title} (copy)`);
+  await page.getByRole("button", { name: "Delete draft", exact: true }).click();
+  await deletion.getByRole("button", { name: "Delete draft", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/jobs(\?.*)?$/);
   await page.getByLabel("Search", { exact: true }).fill(title);
   await page.getByRole("button", { name: "Filter jobs", exact: true }).click();
   await expect(page.getByRole("row").filter({ hasText: title })).toBeVisible();

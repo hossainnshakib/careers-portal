@@ -121,6 +121,57 @@ Rehearse restores yourself on a new isolated recovery project, never overwrite l
 
 For a code regression, use Vercel's previous known-good deployment/rollback, keeping compatible environment settings. Rollback also restores that deployment's cron definition. An application rollback does **not** undo migrations or lost data: use forward corrective migrations and a separately rehearsed recovery plan. Never edit applied migrations or reset production.
 
+## Task 13: safe deletion and blocked DEMO validation (2026-10-16)
+
+The current deployment shares the development Supabase project. Keep its public
+catalog empty until explicit launch approval. Do **not** run generic seed/reset/
+wipe/import commands, live Vitest or Playwright against that shared project merely
+to make validation green.
+
+| Job state | Applications | Hard delete |
+|---|---:|---|
+| Draft | 0 | Confirmed permanent delete |
+| Open / closed | 0 | Confirmed permanent delete; public URL becomes 404 |
+| Any | 1 or more | Refused; close an open job instead |
+
+Use the row menu or editor **More job actions**. Read the job identity and warning,
+then confirm Delete. Cancel/Escape leaves it intact; dismissal is blocked while
+pending. The server independently authorizes, validates confirmation and checks
+applications inside a locked transaction. The restrictive application FK is a
+backstop against concurrent submissions. Related brands/options/questions cascade
+only when deletion succeeds. This workflow never deletes application snapshots,
+answers, notes, history or files. Catalog/detail cache invalidation also removes
+the sitemap entry on regeneration; no redirect is created.
+
+**Isolation blocker:** a second database inside the current project does not
+isolate Auth or Storage. Unchanged migration 0003 also needs managed Auth tables
+absent from a bare database. No second database was created or migrated.
+
+**Next owner decision:** approve/create a separate development-only Supabase test
+project. Keep credentials private and configure them locally, never in chat/git.
+Before any writes, implement and test independent guards for both DB URLs and API
+host, refusing the shared project and production; independently verify Auth,
+Storage and migrations. A different localhost port alone is not isolation.
+
+The five DEMO definitions, coverage matrix and seed/cleanup commands are **not
+implemented yet**. There are no safe commands to run them today. See
+`docs/DEMO_VALIDATION_STATUS.md` for the partial-delivery status.
+
+Credential-free checks in the feature worktree (PowerShell):
+
+```powershell
+pnpm typecheck
+if ($LASTEXITCODE -ne 0) { throw 'Typecheck failed.' }
+pnpm lint
+if ($LASTEXITCODE -ne 0) { throw 'Lint failed.' }
+pnpm test
+if ($LASTEXITCODE -ne 0) { throw 'Tests failed.' }
+```
+
+Leave `RUN_SUPABASE_TESTS` unset. `pnpm build` additionally requires valid local
+development configuration; it does not seed data. Browser keyboard/race behavior
+and the public deployed empty state remain unverified.
+
 ## References and limitations
 Official references (reviewed 2026-10-08): [PostgreSQL pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html), [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html), [Supabase Storage CLI](https://supabase.com/docs/reference/cli/supabase-storage-cp), and [Vercel cron management](https://vercel.com/docs/cron-jobs/manage-cron-jobs). Storage CLI flags are version-dependent and experimental; backup/restore, DNS, hosted packaging, production settings and physical-phone checks remain owner verification.
 

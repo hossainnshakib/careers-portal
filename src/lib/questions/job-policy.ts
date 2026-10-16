@@ -16,13 +16,19 @@ export function removedQuestionIds(
   return existing.filter((q) => !q.archivedAt && !supplied.has(q.id)).map((q) => q.id);
 }
 
+/** Refusal shown verbatim (after requireAdmin) whenever a job still has applications. */
+export const jobDeletionBlocked =
+  "Jobs with applications cannot be deleted. Close an open job instead to preserve application snapshots, files and history.";
+
 export function checkJobCommand(
   job: Pick<Job, "status" | "publishedAt">,
   command: "close" | "reopen" | "duplicate" | "delete",
   hasApplications: boolean,
 ) {
-  if (command === "delete" && (job.status !== "draft" || hasApplications || job.publishedAt))
-    throw new Error("Only unpublished drafts without applications can be deleted.");
+  // Any status may be hard-deleted only while the job has zero applications.
+  // Deletion never rewrites a slug, so the published-slug immutability rule
+  // and its DB trigger stay intact; the admin confirms this explicitly.
+  if (command === "delete" && hasApplications) throw new Error(jobDeletionBlocked);
   if (command === "close" && job.status !== "open")
     throw new Error("Only open jobs can be closed.");
   if (command === "reopen" && job.status !== "closed")

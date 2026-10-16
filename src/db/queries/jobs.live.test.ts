@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
-import { closeDb } from "@/db";
+import { closeDb, getDb } from "@/db";
+import { eq } from "drizzle-orm";
+import { jobBrands, jobOptionLinks, jobQuestions } from "@/db/schema";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { listBrands } from "./brands";
 import { listDepartments } from "./departments";
@@ -101,7 +103,26 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       const reopened = await loadJob(id);
       expect(reopened?.job.status).toBe("open");
       expect(reopened?.job.publishedAt?.getTime()).toBe(published?.job.publishedAt?.getTime());
-      await expect(mutateJob(id, "delete")).rejects.toThrow("Only unpublished drafts");
+    }, 60000);
+    it("deletes a published zero-application job through the real transaction", async () => {
+      const copy = await mutateJob(id, "duplicate");
+      await saveJob({ ...input, id: copy.id, slug: copy.slug, questions: [], intent: "publish" });
+      expect((await loadJob(copy.id))?.job.status).toBe("open");
+      await mutateJob(copy.id, "delete");
+      expect(await loadJob(copy.id)).toBeNull();
+      for (const table of [jobBrands, jobOptionLinks, jobQuestions]) {
+        expect(await getDb().select().from(table).where(eq(table.jobId, copy.id))).toEqual([]);
+      }
+    }, 60000);
+    it("serializes competing deletes so exactly one succeeds", async () => {
+      const copy = await mutateJob(id, "duplicate");
+      const outcomes = await Promise.allSettled([
+        mutateJob(copy.id, "delete"), mutateJob(copy.id, "delete"),
+      ]);
+      expect(outcomes.filter((outcome) => outcome.status === "fulfilled")).toHaveLength(1);
+      const refused = outcomes.find((outcome) => outcome.status === "rejected");
+      expect(refused?.status === "rejected" && refused.reason.message).toBe("Job not found");
+      expect(await loadJob(copy.id)).toBeNull();
     }, 60000);
     it("duplicates as a fresh draft with independent questions and rejects cross-job IDs atomically", async () => {
       const duplicate = await mutateJob(id, "duplicate");
@@ -118,6 +139,7 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
     }, 60000);
     it("archives removed questions with applications and forbids their restoration", async () => {
       await addTestApplication(id, prefix);
+      await expect(mutateJob(id, "delete")).rejects.toThrow("Jobs with applications cannot be deleted");
       await saveJob({ ...input, questions: [] });
       expect((await loadJob(id))?.questions[0].archivedAt).not.toBeNull();
       await expect(saveJob(input)).rejects.toThrow("Archived questions cannot be restored");
