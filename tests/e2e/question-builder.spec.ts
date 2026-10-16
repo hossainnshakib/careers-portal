@@ -16,6 +16,13 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByLabel("Title", { exact: true }).fill(`${adminAccount.prefix}Questions`);
   await page.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}questions`);
   await page.getByLabel("CV required", { exact: true }).uncheck();
+  const builder = page.getByRole("region", { name: "Question builder", exact: true });
+  await builder.getByRole("button", { name: "Add question", exact: true }).click();
+  const initialDialog = page.getByRole("dialog", { name: "Add question", exact: true });
+  await initialDialog.getByLabel("New question label", { exact: true }).fill("Cancelled definition");
+  await initialDialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(builder.locator(".admin-question")).toHaveCount(0);
+  await expect(builder.getByRole("button", { name: "Add question", exact: true })).toBeFocused();
   const types = [
     "short_text",
     "long_text",
@@ -31,9 +38,26 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   ];
   for (const [index, type] of types.entries()) {
     await page.getByRole("button", { name: "Add question", exact: true }).click();
-    await page.getByLabel(`Question ${index + 1} label`, { exact: true }).fill(`${type} question`);
-    await page.getByLabel(`Question ${index + 1} type`, { exact: true }).selectOption(type);
+    const dialog = page.getByRole("dialog", { name: "Add question", exact: true });
+    await dialog.getByLabel("New question type", { exact: true }).selectOption(type);
+    await dialog.getByLabel("New question label", { exact: true }).fill(`${type} question`);
+    if (type.endsWith("choice")) for (const option of ["Option 1", "Option 2"]) {
+      await dialog.getByLabel("Add option", { exact: true }).fill(option);
+      await dialog.getByLabel("Add option", { exact: true }).press("Enter");
+    }
+    await dialog.getByRole("button", { name: "Add question", exact: true }).click();
+    await expect(page.getByRole("button", { name: `Edit question ${index + 1}`, exact: true })).toBeVisible();
   }
+  await builder.getByRole("button", { name: "Move question 1", exact: true }).focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(builder.locator(".admin-question").nth(1)).toContainText("short_text question");
+  await page.keyboard.press("ArrowUp");
+  await expect(builder.locator(".admin-question").first()).toContainText("short_text question");
+  await builder.getByRole("button", { name: "Move question 1", exact: true }).dragTo(builder.locator(".admin-question").nth(1));
+  await expect(builder.locator(".admin-question").nth(1)).toContainText("short_text question");
+  await builder.getByRole("button", { name: "Move question 2", exact: true }).dragTo(builder.locator(".admin-question").first());
+  await expect(builder.locator(".admin-question").first()).toContainText("short_text question");
+  for (const number of [3, 4, 6, 11]) await page.getByRole("button", { name: `Edit question ${number}`, exact: true }).click();
   await page.getByLabel("Question 3 allow Other", { exact: true }).check();
   await page.getByLabel("Question 4 allow Other", { exact: true }).check();
   await page.getByLabel("Question 6 integer", { exact: true }).check();
@@ -41,8 +65,11 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByLabel("Question 6 Maximum", { exact: true }).fill("50");
   await page.getByLabel("Question 11 min date", { exact: true }).fill("today");
   await page.getByRole("button", { name: "Add standard questions", exact: true }).click();
+  await page.getByRole("button", { name: "Edit question 12", exact: true }).click();
   await page.getByLabel("Question 12 label", { exact: true }).fill("LinkedIn contact");
   const preview = page.getByRole("region", { name: "Candidate form preview", exact: true });
+  await expect(preview.getByRole("heading", { name: `Apply for ${adminAccount.prefix}Questions`, exact: true })).toBeVisible();
+  await preview.getByLabel("Preview privacy consent", { exact: true }).check();
   await preview.getByLabel("Years of relevant experience", { exact: true }).fill("3");
   await preview
     .getByLabel("Why do you want to work with us?", { exact: true })
@@ -65,7 +92,7 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await preview
     .getByLabel("single_choice question Other answer", { exact: true })
     .fill("Independent skill");
-  await page.getByLabel("Question 3 display", { exact: true }).selectOption("dropdown");
+  await page.getByRole("group", { name: "Question 3 display", exact: true }).getByRole("button", { name: "Dropdown", exact: true }).click();
   await expect(preview.getByLabel("single_choice question", { exact: true })).toBeVisible();
   const multi = preview.getByRole("group", { name: "multiple_choice question", exact: true });
   await multi.getByLabel("Option 1", { exact: true }).check();
@@ -89,16 +116,24 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
   await expect(preview.getByRole("status")).toContainText("Date is outside");
   await preview.getByLabel("date question", { exact: true }).fill(today);
+  await preview.getByLabel("Preview privacy consent", { exact: true }).uncheck();
+  await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
+  await expect(preview.getByRole("status")).toContainText("Accept the privacy notice");
+  await preview.getByLabel("Preview privacy consent", { exact: true }).check();
   await preview.getByRole("button", { name: "Validate preview answers", exact: true }).click();
   await expect(preview.getByRole("status")).toHaveText("Preview answers are valid.");
   await page.getByRole("group", { name: /^Work arrangement/ }).getByRole("checkbox", { name: "On-site", exact: true }).check();
   await page.getByRole("group", { name: /^Engagement type/ }).getByRole("checkbox", { name: "Full-time", exact: true }).check();
   await page.getByRole("button", { name: "Publish job", exact: true }).click();
+  await page.getByRole("dialog", { name: "Confirm job publication" }).getByRole("button", { name: "Publish", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/jobs\/[a-f0-9-]+\/edit$/, { timeout: 30000 });
-  for (const [index, type] of types.entries())
+  for (const [index, type] of types.entries()) {
+    await page.getByRole("button", { name: `Edit question ${index + 1}`, exact: true }).click();
     await expect(page.getByLabel(`Question ${index + 1} type`, { exact: true })).toHaveValue(type);
-  await expect(page.getByLabel("Question 3 display", { exact: true })).toHaveValue("dropdown");
+  }
+  await expect(page.getByRole("group", { name: "Question 3 display", exact: true }).getByRole("button", { name: "Dropdown", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByLabel("Question 11 min date", { exact: true })).toHaveValue("today");
+  await page.getByRole("button", { name: "Edit question 12", exact: true }).click();
   await expect(page.getByLabel("Question 12 label", { exact: true })).toHaveValue(
     "LinkedIn contact",
   );

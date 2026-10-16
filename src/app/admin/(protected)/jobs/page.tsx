@@ -40,56 +40,53 @@ export default async function JobsPage({
   const counts = await jobApplicationCounts(rows.map((row) => row.id));
   const countByJob = new Map(counts.map((row) => [row.jobId, row.count]));
   return (
-    <section>
+    <section className="admin-jobs-list">
       <AdminToolbar eyebrow="Jobs" title="Jobs" />
 
-      <form className="admin-card" action="/admin/jobs" method="get" style={{ marginBottom: 14 }}>
-        <div className="admin-filter-fields is-open">
+      <form className="admin-card admin-job-filters" action="/admin/jobs" method="get">
           <label>
-            Search
-            <input name="q" defaultValue={filters.q} maxLength={200} />
-          </label>
-          <label>
-            Status
+            <span className="sr-only">Status</span>
             <select aria-label="Status" name="status" defaultValue={filters.status}>
-              <option value="">All statuses</option>
+              <option value="">Status</option>
               {jobStatusEnum.enumValues.map((status) => (
                 <option key={status} value={status}>{jobStatusLabels[status]}</option>
               ))}
             </select>
           </label>
           <label>
-            Department
+            <span className="sr-only">Department</span>
             <select aria-label="Department" name="department" defaultValue={filters.department}>
-              <option value="">All departments</option>
+              <option value="">Department</option>
               {departments.map((row) => (
                 <option key={row.id} value={row.id}>{row.name}</option>
               ))}
             </select>
           </label>
           <label>
-            Brand
+            <span className="sr-only">Brand</span>
             <select aria-label="Brand" name="brand" defaultValue={filters.brand}>
-              <option value="">All brands</option>
+              <option value="">Brand</option>
               {brands.map((row) => (
                 <option key={row.id} value={row.id}>{row.name}</option>
               ))}
             </select>
           </label>
-          <div className="admin-filter-actions">
-            <button className="admin-btn" type="submit">Filter jobs</button>
+          <label className="admin-job-search"><span className="sr-only">Search</span><input name="q" defaultValue={filters.q} maxLength={200} placeholder="Search jobs" /></label>
+            <button className="admin-btn admin-job-filter-submit" type="submit" aria-label="Filter jobs" title="Filter jobs">→</button>
             {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
-            <a href="/admin/jobs" className="admin-link">Clear filters</a>
-          </div>
-        </div>
+            {rows.length > 0 && <a href="/admin/jobs" className="admin-btn admin-btn-secondary admin-job-filter-clear" aria-label="Clear filters" title="Clear filters">✕</a>}
       </form>
 
       {!parsed.success && <p role="status">Invalid filters were cleared.</p>}
 
       {rows.length === 0 ? (
         <div className="admin-card admin-empty">
-          <b>No jobs match these filters.</b>
-          <p className="admin-muted" style={{ margin: 0 }}>Try a different keyword or remove a filter.</p>
+          <b>{Object.values(filters).some(Boolean) ? "No jobs match these filters." : "No jobs yet"}</b>
+          <p className="admin-muted" style={{ margin: 0 }}>{Object.values(filters).some(Boolean) ? "Try a different keyword or remove a filter." : "Create a job to start collecting applications."}</p>
+          <div className="admin-inline">
+            {Object.values(filters).some(Boolean) && <a href="/admin/jobs" className="admin-btn admin-btn-secondary">Clear filters</a>}
+            <a href="/admin/jobs/new" className="admin-btn">New job</a>
+          </div>
         </div>
       ) : (
         <div className="admin-card">
@@ -110,7 +107,8 @@ export default async function JobsPage({
                     </td>
                     <td role="cell" className="admin-cell-dept">{row.department}</td>
                     <td role="cell" className="admin-cell-brands">
-                      <BrandMarks
+                       <BrandMarks
+                         initialsOnly
                         brands={marks.filter((mark) => mark.jobId === row.id).map((mark) => ({
                           id: mark.id,
                           name: mark.name,
@@ -129,15 +127,16 @@ export default async function JobsPage({
                     <td role="cell">{salaryText(row)}</td>
                     <td role="cell" className="admin-cell-status"><JobStatusBadge status={row.status} /></td>
                     <td role="cell">{countByJob.get(row.id) ?? 0}</td>
-                    <td role="cell"><time dateTime={row.updatedAt.toISOString()}>{formatAdminDay(row.updatedAt)}</time></td>
+                    <td role="cell" className="admin-muted"><time dateTime={row.updatedAt.toISOString()}>{formatAdminDay(row.updatedAt)}</time></td>
                     <td role="cell" className="admin-cell-actions">
-                      <JobRowMenu id={row.id} title={row.title} status={row.status} />
+                      <JobRowMenu id={row.id} title={row.title} status={row.status} applicationCount={countByJob.get(row.id) ?? 0} />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <div className="admin-note admin-job-menu-hint">Row menu: Edit · Duplicate · Close / Reopen</div>
         </div>
       )}
     </section>

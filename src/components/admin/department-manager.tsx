@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Department } from "@/db/schema";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/app/admin/(protected)/departments/actions";
 import type { DepartmentInput } from "@/lib/validation/departments";
 import { Pill } from "@/components/admin/status-badge";
+import { slugify } from "@/lib/slug";
 
 const blank: DepartmentInput = { id: null, name: "", slug: "", isActive: true };
 
@@ -23,6 +24,9 @@ export function DepartmentManager({
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
+  const settings = useRef<HTMLDetailsElement>(null);
+  const nameInput = useRef<HTMLInputElement>(null);
+  const [manualSlug, setManualSlug] = useState(false);
   async function reorder(id: string, direction: "up" | "down") {
     setPending(true);
     setMessage("");
@@ -37,10 +41,9 @@ export function DepartmentManager({
     }
   }
   return (
-    <div className="admin-grid admin-grid-settings">
-      <div className="admin-card">
+    <section aria-label="Departments" className="admin-card admin-settings-departments">
         <h2 className="admin-kicker" style={{ margin: 0 }}>
-          Departments in display order
+          Departments
         </h2>
         {rows.length === 0 ? (
           <div className="admin-empty" style={{ marginTop: 12 }}>
@@ -71,14 +74,14 @@ export function DepartmentManager({
                       {row.slug}
                     </td>
                     <td role="cell" className="admin-cell-status">
-                      <Pill tone={row.isActive ? "active" : "inactive"}>
+                        <Pill tone={row.isActive ? "active" : "rejected"}>
                         {row.isActive ? "Active" : "Inactive"}
                       </Pill>
                     </td>
-                    <td role="cell">{counts[row.id] ?? 0}</td>
+                    <td role="cell"><span className="admin-settings-count-label">Roles: </span>{counts[row.id] ?? 0}</td>
                     <td role="cell" className="admin-cell-actions">
                       <button
-                        className="admin-btn admin-btn-secondary admin-icon-btn"
+                        className="admin-settings-action"
                         disabled={pending || index === 0}
                         aria-label={`Move ${row.name} up`}
                         onClick={() => reorder(row.id, "up")}
@@ -86,7 +89,7 @@ export function DepartmentManager({
                         ↑
                       </button>
                       <button
-                        className="admin-btn admin-btn-secondary admin-icon-btn"
+                        className="admin-settings-action"
                         disabled={pending || index === rows.length - 1}
                         aria-label={`Move ${row.name} down`}
                         onClick={() => reorder(row.id, "down")}
@@ -94,16 +97,18 @@ export function DepartmentManager({
                         ↓
                       </button>
                       <button
-                        className="admin-btn admin-btn-secondary admin-btn-sm"
+                        className="admin-settings-action"
                         disabled={pending}
-                        onClick={() =>
+                        onClick={() => {
+                          setManualSlug(true); setMessage("");
+                          if (settings.current) settings.current.open = true;
                           setDraft({
                             id: row.id,
                             name: row.name,
                             slug: row.slug,
                             isActive: row.isActive,
-                          })
-                        }
+                          }); nameInput.current?.focus();
+                        }}
                       >
                         Edit<span className="sr-only"> {row.name}</span>
                       </button>
@@ -114,12 +119,6 @@ export function DepartmentManager({
             </table>
           </div>
         )}
-      </div>
-
-      <div className="admin-card">
-        <h2 className="admin-kicker" style={{ margin: 0 }}>
-          {draft.id ? "Edit department" : "Create department"}
-        </h2>
         <form
           style={{ marginTop: 12 }}
           onSubmit={async (event) => {
@@ -130,6 +129,7 @@ export function DepartmentManager({
               const result = await saveDepartmentAction(draft);
               if (result.ok) {
                 setDraft(blank);
+                setManualSlug(false);
                 setMessage("Department saved.");
                 router.refresh();
               } else setMessage(result.error);
@@ -140,15 +140,22 @@ export function DepartmentManager({
             }
           }}
         >
+          <fieldset disabled={pending} className="admin-fieldset">
+          <div className="admin-department-add">
           <label>
-            Name
+            <span className="sr-only">Name</span>
             <input
+              ref={nameInput}
+              placeholder={draft.id ? "Department name" : "New department"}
               value={draft.name}
               required
               maxLength={150}
-              onChange={(event) => setDraft({ ...draft, name: event.target.value })}
+              onChange={(event) => setDraft({ ...draft, name: event.target.value, slug: manualSlug ? draft.slug : slugify(event.target.value) })}
             />
           </label>
+          <button className="admin-btn" disabled={pending} aria-label={draft.id ? "Save department" : "Add department"}>{pending ? "Saving…" : draft.id ? "Save" : "Add"}</button>
+          </div>
+          <details ref={settings} className="admin-department-settings"><summary>{draft.id ? "Edit department settings" : "Additional settings"}</summary>
           <label>
             Slug
             <input
@@ -156,7 +163,7 @@ export function DepartmentManager({
               required
               maxLength={120}
               pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              onChange={(event) => setDraft({ ...draft, slug: event.target.value })}
+              onChange={(event) => { setManualSlug(true); setDraft({ ...draft, slug: event.target.value }); }}
             />
           </label>
           <label className="admin-inline" style={{ marginTop: 6 }}>
@@ -168,23 +175,21 @@ export function DepartmentManager({
             Active
           </label>
           <div className="admin-filter-actions" style={{ marginTop: 14 }}>
-            <button className="admin-btn" disabled={pending}>
-              {pending ? "Saving…" : "Save department"}
-            </button>
             <button
               className="admin-btn admin-btn-secondary"
               type="button"
               disabled={pending}
-              onClick={() => setDraft(blank)}
+              onClick={() => { setDraft(blank); setManualSlug(false); setMessage(""); }}
             >
-              Clear
+              {draft.id ? "Cancel" : "Clear"}
             </button>
           </div>
+          </details>
+          </fieldset>
         </form>
         <p role="status" aria-live="polite" className="admin-error">
           {message}
         </p>
-      </div>
-    </div>
+    </section>
   );
 }

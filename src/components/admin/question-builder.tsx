@@ -1,74 +1,70 @@
 "use client";
 
-import { useState } from "react";
-import type { QuestionDefinition } from "@/lib/questions/definition";
+import { useRef, useState } from "react";
+import { questionDefinitionSchema, type QuestionDefinition } from "@/lib/questions/definition";
 import { questionSectionEnum, questionTypeEnum } from "@/db/schema";
 import { copyJobQuestionsAction } from "@/app/admin/(protected)/jobs/actions";
 import { copyStandardQuestions } from "@/lib/questions/defaults";
+import { newQuestion, questionTypeChoices, reorderQuestions } from "@/lib/questions/editor";
+import { QuestionOptions } from "./question-options";
 
 export function QuestionBuilder({
   questions,
   onChange,
   sources,
   hasApplications,
+  onCopyingChange,
 }: {
   questions: QuestionDefinition[];
   onChange: (questions: QuestionDefinition[]) => void;
   sources: { id: string; title: string }[];
   hasApplications: boolean;
+  onCopyingChange?: (copying: boolean) => void;
 }) {
   const [source, setSource] = useState("");
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [adding, setAdding] = useState<QuestionDefinition | null>(null);
+  const [addError, setAddError] = useState("");
+  const [dragging, setDragging] = useState<string | null>(null);
   function replace(index: number, next: QuestionDefinition) {
     onChange(questions.map((q, i) => (i === index ? next : q)));
   }
   function move(index: number, direction: number) {
-    const next = [...questions];
-    [next[index], next[index + direction]] = [next[index + direction], next[index]];
-    onChange(next.map((q, sortOrder) => ({ ...q, sortOrder })));
+    if (pending) return;
+    const next = reorderQuestions(questions, index, index + direction);
+    if (next === questions) return;
+    onChange(next);
+    setMessage(`Moved ${questions[index].label || "question"} to position ${index + direction + 1}.`);
   }
   return (
-    <section aria-label="Question builder" className="admin-card">
+    <section aria-label="Question builder" className="admin-card admin-question-builder">
       <h2 className="admin-kicker">3 · Questions</h2>
-      <p className="admin-note">
+      <p className="sr-only">
         Questions removed from a job with applications are archived when saved.
       </p>
       <div className="admin-question-tools">
         <button
           type="button"
           className="admin-btn"
-          disabled={questions.length >= 100}
-          onClick={() =>
-            onChange([
-              ...questions,
-              {
-                id: crypto.randomUUID(),
-                label: "",
-                type: "short_text",
-                required: false,
-                helpText: null,
-                section: "role_specific",
-                options: null,
-                config: null,
-                sortOrder: questions.length,
-              },
-            ])
-          }
+          disabled={pending || questions.length >= 100}
+          onClick={() => { setAdding(newQuestion(questions.length)); setAddError(""); dialog.current?.showModal(); }}
         >
           Add question
         </button>
         <button
           type="button"
           className="admin-btn admin-btn-secondary"
-          disabled={questions.length > 93}
+          disabled={pending || questions.length > 93}
           onClick={() => onChange([...questions, ...copyStandardQuestions(questions.length)])}
         >
           Add standard questions
         </button>
+        <details className="admin-question-copy"><summary className="admin-btn admin-btn-secondary">Copy from another job</summary>
         <label>
           Copy questions from
-          <select aria-label="Copy questions from" value={source} onChange={(event) => setSource(event.target.value)}>
+          <select aria-label="Copy questions from" disabled={pending} value={source} onChange={(event) => setSource(event.target.value)}>
             <option value="">Choose job</option>
             {sources.map((job) => (
               <option key={job.id} value={job.id}>
@@ -80,30 +76,35 @@ export function QuestionBuilder({
         <button
           type="button"
           className="admin-btn admin-btn-secondary"
-          disabled={!source || pending}
+          disabled={!source || pending || questions.length >= 100}
           onClick={async () => {
             setPending(true);
+            onCopyingChange?.(true);
             setMessage("");
             try {
               const result = await copyJobQuestionsAction({ sourceJobId: source });
               if (!result.ok) setMessage(result.error);
               else if (questions.length + result.data.length > 100)
                 setMessage("A job can have at most 100 questions.");
-              else
+              else {
                 onChange(
                   [...questions, ...result.data].map((q, sortOrder) => ({ ...q, sortOrder })),
                 );
+                setMessage(`Copied ${result.data.length} questions.`);
+              }
             } catch {
               setMessage("Unable to copy questions. Try again.");
             } finally {
               setPending(false);
+              onCopyingChange?.(false);
             }
           }}
         >
           Copy questions
         </button>
+        </details>
       </div>
-      <p role="status" className="admin-error">
+      <p role="status" aria-live="polite" className="admin-question-feedback">
         {message}
       </p>
       {questions.map((q, index) => (
@@ -120,8 +121,35 @@ export function QuestionBuilder({
           onMove={move}
           count={questions.length}
           hasApplications={hasApplications}
+          disabled={pending}
+          onDragStart={(event) => { setDragging(q.id); event.dataTransfer.setData("text/plain", q.id); event.dataTransfer.effectAllowed = "move"; }}
+          onDragEnd={() => setDragging(null)}
+          onDragOver={(event) => { if (dragging && !pending) event.preventDefault(); }}
+          onDrop={(event) => {
+            event.preventDefault();
+            if (pending || !dragging || event.dataTransfer.getData("text/plain") !== dragging) return;
+            const from = questions.findIndex((question) => question.id === dragging);
+            onChange(reorderQuestions(questions, from, index));
+            setMessage(`Moved question to position ${index + 1}.`); setDragging(null);
+          }}
         />
       ))}
+      {!questions.length && <p className="admin-question-empty admin-muted">No questions yet.</p>}
+      <dialog ref={dialog} aria-label="Add question" className="admin-add-question-dialog" onKeyDown={(event) => { if (event.key === "Enter" && event.target instanceof HTMLInputElement) event.preventDefault(); }} onClose={() => { if (!dialog.current?.open) { setAdding(null); setAddError(""); } }}>
+        <div className="admin-kicker">Add question</div><h2>New question</h2>
+        {adding && <QuestionCard question={adding} index={questions.length} onChange={setAdding} onRemove={() => {}} onMove={() => {}} count={questions.length + 1} hasApplications={false} dialogMode />}
+        {addError && <p role="status" className="admin-error">{addError}</p>}
+        <div className="admin-publish-actions">
+          <button type="button" className="admin-btn admin-btn-secondary" onClick={() => dialog.current?.close()}>Cancel</button>
+          <button type="button" className="admin-btn" onClick={() => {
+            if (!adding) return;
+            const result = questionDefinitionSchema.safeParse({ ...adding, sortOrder: questions.length });
+            if (!result.success) { setAddError(result.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ")); return; }
+            if (questions.length >= 100) { setAddError("A job can have at most 100 questions."); return; }
+            onChange([...questions, result.data]); dialog.current?.close();
+          }}>Add question</button>
+        </div>
+      </dialog>
     </section>
   );
 }
@@ -134,6 +162,7 @@ function QuestionCard({
   onMove,
   count,
   hasApplications,
+  dialogMode = false, disabled = false, onDragStart, onDragEnd, onDragOver, onDrop,
 }: {
   question: QuestionDefinition;
   index: number;
@@ -142,11 +171,12 @@ function QuestionCard({
   onMove: (index: number, direction: number) => void;
   count: number;
   hasApplications: boolean;
+  dialogMode?: boolean; disabled?: boolean;
+  onDragStart?: React.DragEventHandler; onDragEnd?: React.DragEventHandler;
+  onDragOver?: React.DragEventHandler; onDrop?: React.DragEventHandler;
 }) {
-  const [optionText, setOptionText] = useState(
-    q.options?.map((o) => `${o.value} | ${o.label}`).join("\n") ?? "",
-  );
-  const prefix = `Question ${index + 1}`;
+  const [editing, setEditing] = useState(false);
+  const prefix = dialogMode ? "New question" : `Question ${index + 1}`;
   const config = q.config ?? {};
   function configure(key: string, value: unknown) {
     const next = { ...config };
@@ -156,11 +186,12 @@ function QuestionCard({
   }
   function numeric(key: string, label: string) {
     return (
-      <label key={key}>
+      <label key={key} className="admin-numeric-question">
         {label}
         <input
           aria-label={`${prefix} ${label}`}
           type="number"
+          placeholder={label.startsWith("Minimum") ? "Min length / value" : "Max length / value"}
           value={typeof config[key] === "number" ? config[key] : ""}
           onChange={(event) =>
             configure(key, event.target.value === "" ? undefined : Number(event.target.value))
@@ -170,19 +201,26 @@ function QuestionCard({
     );
   }
   return (
-    <fieldset className="admin-question">
+    <fieldset disabled={disabled} className={dialogMode ? "admin-question-dialog-fields" : "admin-question"} onDragOver={onDragOver} onDrop={onDrop}>
       <legend className="sr-only">{prefix}</legend>
-      <div className="admin-question-head">
-        <span className="admin-question-gutter" aria-hidden="true">
-          ⋮⋮
-        </span>
+      {!dialogMode && <div className="admin-question-head">
+        <button type="button" className="admin-question-gutter" draggable={!disabled} onDragStart={onDragStart} onDragEnd={onDragEnd} aria-label={`Move question ${index + 1}`} title="Drag to reorder, or use arrow keys" onKeyDown={(event) => { if (event.key === "ArrowUp" || event.key === "ArrowDown") { event.preventDefault(); onMove(index, event.key === "ArrowUp" ? -1 : 1); } }}>⋮⋮</button>
+        <button type="button" className="admin-question-edit" aria-label={`Edit question ${index + 1}`} aria-expanded={editing} onClick={() => setEditing(!editing)}>{q.label || "Untitled question"}</button>
+        <span className="admin-question-type">{questionTypeChoices.find(([type]) => type === q.type)?.[1]}</span>
+        <label className="admin-inline"><input aria-label={`${prefix} required`} type="checkbox" checked={q.required} onChange={(event) => onChange({ ...q, required: event.target.checked })} />Required</label>
+        <button type="button" className="admin-btn admin-btn-secondary" aria-label={`${hasApplications ? "Archive" : "Remove"} ${prefix}`} onClick={onRemove}>{hasApplications ? "Archive" : "Remove"}</button>
+      </div>}
+      <div className="admin-question-edit-fields" hidden={!dialogMode && !editing}>
+        {dialogMode && <label>Type<select aria-label={`${prefix} type`} value={q.type} onChange={(event) => onChange({ ...q, type: event.target.value as QuestionDefinition["type"], options: event.target.value.endsWith("choice") ? [] : null, config: null })}>{questionTypeChoices.map(([type, label]) => <option key={type} value={type}>{label}</option>)}</select></label>}
+        <label>Label
         <input
           aria-label={`${prefix} label`}
           value={q.label}
           maxLength={300}
           onChange={(event) => onChange({ ...q, label: event.target.value })}
         />
-        <select
+        </label>
+        {!dialogMode && <label>Type<select
           aria-label={`${prefix} type`}
           value={q.type}
           onChange={(event) => {
@@ -193,7 +231,6 @@ function QuestionCard({
                   { value: "option_2", label: "Option 2" },
                 ]
               : null;
-            setOptionText(options?.map((o) => `${o.value} | ${o.label}`).join("\n") ?? "");
             onChange({ ...q, type, config: null, options });
           }}
         >
@@ -202,20 +239,11 @@ function QuestionCard({
               {value.replaceAll("_", " ")}
             </option>
           ))}
-        </select>
-        <label className="admin-inline">
-          <input
-            aria-label={`${prefix} required`}
-            type="checkbox"
-            checked={q.required}
-            onChange={(event) => onChange({ ...q, required: event.target.checked })}
-          />
-          Required
-        </label>
+        </select></label>}
         <button
           type="button"
           className="admin-btn admin-btn-secondary admin-icon-btn"
-          disabled={index === 0}
+          disabled={dialogMode || index === 0}
           onClick={() => onMove(index, -1)}
           aria-label={`${prefix} move up`}
         >
@@ -224,16 +252,12 @@ function QuestionCard({
         <button
           type="button"
           className="admin-btn admin-btn-secondary admin-icon-btn"
-          disabled={index === count - 1}
+          disabled={dialogMode || index === count - 1}
           onClick={() => onMove(index, 1)}
           aria-label={`${prefix} move down`}
         >
           ↓
         </button>
-        <button type="button" className="admin-btn admin-btn-secondary admin-btn-sm" onClick={onRemove}>
-          {hasApplications ? "Archive" : "Remove"} {prefix}
-        </button>
-      </div>
       <div className="admin-grid admin-grid-2">
         <label>
           Help text
@@ -244,7 +268,8 @@ function QuestionCard({
             onChange={(event) => onChange({ ...q, helpText: event.target.value || null })}
           />
         </label>
-        <label>
+        {dialogMode && <label className="admin-inline"><input aria-label={`${prefix} required`} type="checkbox" checked={q.required} onChange={(event) => onChange({ ...q, required: event.target.checked })} />Required</label>}
+        <details className="admin-question-section"><summary>Additional settings</summary><label>
           Section
           <select
             aria-label={`${prefix} section`}
@@ -259,34 +284,10 @@ function QuestionCard({
               </option>
             ))}
           </select>
-        </label>
+        </label></details>
         {q.type.endsWith("choice") && (
           <>
-            <label style={{ gridColumn: "1 / -1" }}>
-              Options: one value | label per line
-              <textarea
-                aria-label={`${prefix} options`}
-                rows={4}
-                value={optionText}
-                onChange={(event) => {
-                  const text = event.target.value;
-                  setOptionText(text);
-                  onChange({
-                    ...q,
-                    options: text
-                      .split("\n")
-                      .filter((line) => line.trim())
-                      .map((line) => {
-                        const [value, ...labels] = line.split("|");
-                        return {
-                          value: value.trim(),
-                          label: labels.join("|").trim() || value.trim(),
-                        };
-                      }),
-                  });
-                }}
-              />
-            </label>
+            <QuestionOptions question={q} prefix={prefix} onChange={onChange} />
             <label className="admin-inline">
               <input
                 aria-label={`${prefix} allow Other`}
@@ -299,17 +300,7 @@ function QuestionCard({
           </>
         )}
         {q.type === "single_choice" && (
-          <label>
-            Display
-            <select
-              aria-label={`${prefix} display`}
-              value={typeof config.display === "string" ? config.display : "radio"}
-              onChange={(event) => configure("display", event.target.value)}
-            >
-              <option value="radio">Radio</option>
-              <option value="dropdown">Dropdown</option>
-            </select>
-          </label>
+          <div role="group" aria-label={`${prefix} display`} className="admin-write-preview">{(["dropdown", "radio"] as const).map((display) => <button key={display} type="button" aria-pressed={(config.display ?? "radio") === display} onClick={() => configure("display", display)}>{display === "radio" ? "Radio" : "Dropdown"}</button>)}</div>
         )}
         {q.type === "multiple_choice" && (
           <>
@@ -387,6 +378,7 @@ function QuestionCard({
             {numeric("maxSizeMb", "Maximum size MB")}
           </>
         )}
+      </div>
       </div>
     </fieldset>
   );

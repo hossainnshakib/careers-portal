@@ -21,13 +21,13 @@ export function ReviewControls({ applicationId, status }: { applicationId: strin
     finally { setPending(false); }
   }
   return (
-    <section aria-label="Review controls" className="admin-card">
+    <section aria-label="Review controls" className="admin-profile-review">
       <form
         className="admin-stack"
         onSubmit={(event) => { event.preventDefault(); void update(() => changeStatusAction({ applicationId, status: selected }), "Status updated."); }}
       >
         <label>
-          Application status
+           <span className="sr-only">Application status</span>
           <select
             aria-label="Application status"
             value={selected}
@@ -49,12 +49,14 @@ export function ReviewControls({ applicationId, status }: { applicationId: strin
         onSubmit={(event) => { event.preventDefault(); void update(() => addNoteAction({ applicationId, note }), "Note added."); }}
       >
         <label>
-          Internal note
+           <span className="sr-only">Internal note</span>
           <textarea
             aria-label="Internal note"
             value={note}
             onChange={(event) => setNote(event.target.value)}
-            maxLength={10000}
+             maxLength={10000}
+             rows={3}
+             placeholder="Internal note"
             disabled={pending}
           />
         </label>
@@ -63,7 +65,7 @@ export function ReviewControls({ applicationId, status }: { applicationId: strin
           <span className="admin-note">Internal notes are never shared with candidates.</span>
         </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          <button disabled={pending || !note.trim()} className="admin-btn admin-btn-sm">Add note</button>
+          <button disabled={pending || !note.trim()} className="admin-btn admin-btn-secondary">Add note</button>
           <span className="admin-note">Visible to the hiring team only.</span>
         </div>
       </form>
@@ -81,7 +83,7 @@ export function DeleteNoteButton({ applicationId, noteId }: { applicationId: str
     finally { setPending(false); }
   }}>Delete own note</button><p role="status" className="admin-error">{message}</p></div>;
 }
-export function DeleteApplicationControl({ applicationId, reference, retry = false }: { applicationId: string; reference: string; retry?: boolean }) {
+export function DeleteApplicationControl({ applicationId, reference, candidateName, retry = false }: { applicationId: string; reference: string; candidateName?: string; retry?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
@@ -89,20 +91,23 @@ export function DeleteApplicationControl({ applicationId, reference, retry = fal
     <section aria-label="Application deletion">
       <button
         type="button"
-        className="admin-btn admin-btn-danger"
+        className="admin-btn admin-btn-secondary admin-delete-trigger"
         style={{ width: "100%" }}
         onClick={() => dialog.current?.showModal()}
       >
         {retry ? "Retry deletion cleanup" : "Delete application"}
       </button>
-      <dialog ref={dialog} aria-label="Confirm application deletion">
-        <h2>Delete {reference}?</h2>
+      <dialog ref={dialog} className="admin-delete-dialog" aria-label="Confirm application deletion" onCancel={(event) => { if (pending) event.preventDefault(); }}>
+        <div className="admin-kicker">Delete</div>
+        <h2>Delete this application?</h2>
+        <p>{candidateName && <><b>{candidateName}</b> · </>}{reference}</p>
         <p className="admin-muted">This removes the application, answers, notes, history and uploaded files. This cannot be undone.</p>
-        <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap", justifyContent: "flex-end" }}>
           <button disabled={pending} onClick={() => dialog.current?.close()} className="admin-btn admin-btn-secondary">Cancel</button>
           <button
             disabled={pending}
-            className="admin-btn admin-btn-danger"
+             className="admin-btn admin-btn-danger"
+             aria-label={pending ? "Deleting…" : "Confirm deletion"}
             onClick={async () => {
               setPending(true); setMessage("");
               try {
@@ -113,7 +118,7 @@ export function DeleteApplicationControl({ applicationId, reference, retry = fal
               finally { setPending(false); }
             }}
           >
-            {pending ? "Deleting…" : "Confirm deletion"}
+             {pending ? "Deleting…" : "Delete"}
           </button>
         </div>
       </dialog>
