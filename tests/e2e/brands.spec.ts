@@ -15,6 +15,8 @@ test("admin edits, hides, reorders and uploads a validated brand logo", async ({
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.getByRole("link", { name: "Brands", exact: true }).click();
   const name = `${adminAccount.prefix}Brand`;
+  await page.getByRole("button", { name: "New brand", exact: true }).click();
+  await page.getByText("Additional settings", { exact: true }).click();
   await page.getByLabel("Name", { exact: true }).fill(name);
   await page.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}brand`);
   await page.getByLabel("Sector", { exact: true }).selectOption("media");
@@ -25,12 +27,13 @@ test("admin edits, hides, reorders and uploads a validated brand logo", async ({
   await expect(contrastPreview).toHaveCSS("background-color", "rgb(18, 52, 86)");
   await expect(contrastPreview).toHaveCSS("color", "rgb(255, 255, 255)");
   await page.getByRole("button", { name: "Save brand", exact: true }).click();
-  const row = page.getByRole("row").filter({ hasText: name });
+  const row = page.getByRole("article", { name, exact: true });
   await expect(row).toBeVisible();
+  await row.getByLabel(`Actions for ${name}`, { exact: true }).click();
   await row.getByRole("button", { name: `Move ${name} up`, exact: true }).click();
   await expect(row.getByRole("button", { name: `Move ${name} down`, exact: true })).toBeEnabled();
   await row.getByRole("button", { name: `Move ${name} down`, exact: true }).click();
-  await expect(page.getByRole("row").last()).toContainText(name);
+  await expect(page.getByRole("article").last()).toContainText(name);
   await page
     .getByLabel(`Logo for ${name}`, { exact: true })
     .setInputFiles({
@@ -50,12 +53,14 @@ test("admin edits, hides, reorders and uploads a validated brand logo", async ({
       ),
     });
   await page.getByRole("button", { name: "Upload logo", exact: true }).click();
-  await expect(row.getByRole("img", { name: `${name} logo`, exact: true })).toBeVisible();
-  expect(await row.getByRole("img").evaluate((image) => (image as HTMLImageElement).tagName)).toBe(
+  const logoPreview = page.getByRole("img", { name: `${name} logo`, exact: true });
+  await expect(logoPreview).toBeVisible();
+  await expect(row.getByRole("img")).toHaveCount(0);
+  expect(await logoPreview.evaluate((image) => (image as HTMLImageElement).tagName)).toBe(
     "IMG",
   );
   await page.getByLabel("Status", { exact: true }).selectOption("hidden");
   await page.getByLabel("Description", { exact: true }).fill("Updated brand description");
   await page.getByRole("button", { name: "Save brand", exact: true }).click();
-  await expect(row.getByRole("cell", { name: "Hidden", exact: true })).toBeVisible();
+  await expect(row.getByText("Hidden", { exact: true })).toBeVisible();
 });

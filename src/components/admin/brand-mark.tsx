@@ -15,16 +15,18 @@ export function BrandMark({
   accentColor: accent,
   size = "sm",
   alt,
+  initialsOnly = false,
 }: {
   name: string;
   logoUrl?: string | null;
   accentColor?: string | null;
   size?: "sm" | "lg";
   alt?: string;
+  initialsOnly?: boolean;
 }) {
   const initial = name.trim().charAt(0).toUpperCase() || "?";
-  const className = `admin-brand-mark${logoUrl ? " has-logo" : ""}${size === "lg" ? " is-lg" : ""}`;
-  if (logoUrl) {
+  const className = `admin-brand-mark${logoUrl && !initialsOnly ? " has-logo" : ""}${size === "lg" ? " is-lg" : ""}`;
+  if (logoUrl && !initialsOnly) {
     return (
       <span className={className} aria-hidden={alt ? undefined : true}>
         {/* SVG brand assets must remain passive img elements. */}
@@ -56,16 +58,18 @@ export function BrandMark({
 export function BrandMarks({
   brands,
   size = "sm",
+  initialsOnly = false,
 }: {
   brands: { id?: string; name: string; logoUrl?: string | null; accentColor?: string | null }[];
   size?: "sm" | "lg";
+  initialsOnly?: boolean;
 }) {
   if (!brands.length) return null;
   return (
     <span className="admin-brand-marks">
       {brands.map((brand, index) => (
         <span key={brand.id ?? `${brand.name}:${index}`} style={{ display: "inline-flex", alignItems: "center" }}>
-          <BrandMark name={brand.name} logoUrl={brand.logoUrl} accentColor={brand.accentColor} size={size} />
+          <BrandMark name={brand.name} logoUrl={brand.logoUrl} accentColor={brand.accentColor} size={size} initialsOnly={initialsOnly} />
           <span className="sr-only">{brand.name}</span>
         </span>
       ))}

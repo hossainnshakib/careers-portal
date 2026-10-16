@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Brand, Department } from "@/db/schema";
 import { jobInput, missingPublishGroups, type JobInput } from "@/lib/validation/jobs";
 import {
@@ -10,12 +10,14 @@ import {
   type OptionGroup,
 } from "@/lib/careers/option-labels";
 import { slugify } from "@/lib/slug";
-import { SafeMarkdown } from "@/lib/markdown/render";
+import { MarkdownEditor } from "./markdown-editor";
 import { jobCommandAction, saveJobAction } from "@/app/admin/(protected)/jobs/actions";
 import { QuestionBuilder } from "./question-builder";
 import { CandidatePreview } from "./candidate-preview";
 import { AdminToolbar } from "./admin-toolbar";
 import { JobStatusBadge } from "./status-badge";
+import { publishBlockers } from "@/lib/admin/job-publish";
+import { editLocalDeadline } from "@/lib/admin/deadline";
 
 function localDateTime(iso: string | null) {
   if (!iso) return "";
@@ -60,13 +62,14 @@ function ChipInput({
     setText("");
   }
   return (
-    <div>
-      <span className="admin-kicker is-muted">{label}</span>
+    <div className="admin-content-list" data-list-kind={label}>
+      <span className="admin-content-list-label">{label === "Benefits" ? "Benefits (short list)" : label}</span>
       <input
         aria-label={label}
         value={text}
         maxLength={maxLength}
         placeholder={placeholder}
+        aria-describedby={`${label.toLowerCase()}-limits`}
         style={{ marginTop: 6 }}
         onChange={(event) => setText(event.target.value)}
         onKeyDown={(event) => {
@@ -91,7 +94,7 @@ function ChipInput({
           </span>
         ))}
       </div>
-      <span className="admin-note">
+      <span id={`${label.toLowerCase()}-limits`} className="sr-only">
         {values.length}/{max} · each up to {maxLength} characters
       </span>
     </div>
@@ -123,13 +126,16 @@ export function JobEditor({
   const [draft, setDraft] = useState(initial);
   const [manualSlug, setManualSlug] = useState(!!initial.id);
   const [pending, setPending] = useState(false);
+  const [copyingQuestions, setCopyingQuestions] = useState(false);
   const [message, setMessage] = useState("");
   const [mounted, setMounted] = useState(false);
+  const publication = useRef<HTMLDialogElement>(null);
   useEffect(() => setMounted(true), []);
   function field<K extends keyof JobInput>(name: K, value: JobInput[K]) {
     setDraft((current) => ({ ...current, [name]: value }));
   }
   async function save(intent: "save" | "publish") {
+    if (copyingQuestions) return;
     setMessage("");
     if (intent === "publish") {
       const selected = draft.optionIds
@@ -166,6 +172,7 @@ export function JobEditor({
     }
   }
   async function command(command: "close" | "reopen" | "duplicate" | "delete") {
+    if (copyingQuestions) return;
     if (!draft.id) return;
     setPending(true);
     setMessage("");
@@ -187,12 +194,13 @@ export function JobEditor({
     .map((id) => options.find((option) => option.id === id)?.group)
     .filter((group): group is OptionGroup => !!group);
   const missingGroups = missingPublishGroups(selectedGroups);
+  const blockers = publishBlockers(draft, options);
 
   return (
-    <section>
+    <section className="admin-job-editor">
       <AdminToolbar
         eyebrow={draft.id ? `Jobs / ${initial.title || "Untitled"}` : "Jobs"}
-        title={draft.id ? "Edit job" : "Create job"}
+        title={draft.id ? "Edit job" : "New job"}
       />
       <p role="status" aria-live="polite" className="admin-error">{message}</p>
       <form
@@ -202,28 +210,27 @@ export function JobEditor({
           void save("save");
         }}
       >
-        <fieldset disabled={pending} className="admin-fieldset">
+        <fieldset disabled={pending || copyingQuestions} className="admin-fieldset">
           <div className="admin-actions">
             <JobStatusBadge status={status} />
-            {missingGroups.length > 0 && (
-              <span className="admin-chip admin-chip-warn">
-                Select at least one {missingGroups.map((group) => optionGroupLabels[group].toLowerCase()).join(" and ")} to publish
-              </span>
-            )}
             <span className="admin-spacer" />
             {draft.id && (
-              <button type="button" className="admin-btn admin-btn-secondary" onClick={() => void command("duplicate")}>
-                Duplicate job
+              <button type="button" className="admin-btn admin-btn-secondary admin-editor-duplicate" aria-label="Duplicate job" onClick={() => void command("duplicate")}>
+                Duplicate
               </button>
             )}
-            <button type="submit" className="admin-btn">
-              {draft.id ? "Save changes" : "Save draft"}
+            <button type="submit" className="admin-btn admin-btn-secondary">
+              {status === "draft" ? "Save draft" : "Save changes"}
             </button>
             {status !== "open" && (
-              <button type="button" className="admin-btn" onClick={() => void save("publish")}>
-                Publish job
+              <button type="button" className="admin-btn" aria-label="Publish job" onClick={() => { setMessage(""); publication.current?.showModal(); }}>
+                Publish
               </button>
             )}
+            {draft.id && <details className="admin-editor-more">
+              <summary className="admin-btn admin-btn-secondary" aria-label="More job actions" title="More job actions">⋯</summary>
+              <div className="admin-editor-more-panel">
+                <button type="button" className="admin-btn admin-btn-secondary admin-editor-mobile-duplicate" aria-label="Duplicate job" onClick={() => void command("duplicate")}>Duplicate</button>
             {status === "open" && (
               <button type="button" className="admin-btn admin-btn-secondary" onClick={() => void command("close")}>
                 Close job
@@ -239,11 +246,13 @@ export function JobEditor({
                 Delete draft
               </button>
             )}
+              </div>
+            </details>}
           </div>
 
           <div className="admin-grid admin-grid-editor">
             <div className="admin-stack">
-              <section aria-labelledby="job-basics" className="admin-card">
+              <section aria-labelledby="job-basics" className="admin-card admin-job-basics">
                 <h2 id="job-basics" className="admin-kicker">1 · Basics</h2>
                 <div className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
                   <label>
@@ -263,7 +272,7 @@ export function JobEditor({
                     />
                   </label>
                   <label>
-                    Slug
+                    <span>Slug{published && <span className="admin-slug-lock" aria-hidden="true"> 🔒</span>}</span>
                     <input
                       value={draft.slug}
                       aria-label="Slug"
@@ -275,9 +284,6 @@ export function JobEditor({
                         field("slug", event.target.value);
                       }}
                     />
-                    <span className="admin-note">
-                      {published ? "🔒 Locked after first publication." : "Editable until first publication."}
-                    </span>
                   </label>
                   <label>
                     Department
@@ -305,7 +311,7 @@ export function JobEditor({
                 </div>
 
                 <fieldset>
-                  <legend className="admin-kicker">Brands (select one or more)</legend>
+                  <legend>Brands</legend>
                   <div className="admin-chips" style={{ marginTop: 8 }}>
                     {brands.map((brand) => (
                       <label key={brand.id} className="admin-chip-check">
@@ -330,17 +336,6 @@ export function JobEditor({
                       </label>
                     ))}
                   </div>
-                  {(() => {
-                    const selected = brands.filter((brand) => draft.brandIds.includes(brand.id));
-                    if (!selected.length) return null;
-                    const missing = selected.filter((brand) => !brand.description?.trim());
-                    if (!missing.length) return null;
-                    return (
-                      <p className="admin-note" style={{ marginTop: 8 }}>
-                        Note: {missing.map((brand) => brand.name).join(", ")} {missing.length === 1 ? "has" : "have"} no description yet. Candidates will see only a logo and website link.
-                      </p>
-                    );
-                  })()}
                 </fieldset>
 
                 {optionGroups.map((group) => {
@@ -351,9 +346,8 @@ export function JobEditor({
                   );
                   return (
                     <fieldset key={group}>
-                      <legend className="admin-kicker">
+                      <legend>
                         {optionGroupLabels[group]}
-                        {group === "experience" ? " (optional)" : " (select at least one to publish)"}
                       </legend>
                       <div className="admin-chips" style={{ marginTop: 8 }}>
                         {visible.map((option) => (
@@ -379,23 +373,8 @@ export function JobEditor({
                   );
                 })}
 
-                <label>
-                  Engagement note (optional, short)
-                  <input
-                    value={draft.engagementNote ?? ""}
-                    maxLength={80}
-                    placeholder="e.g. 6 months or one campaign"
-                    onChange={(event) =>
-                      field("engagementNote", event.target.value ? event.target.value : null)
-                    }
-                  />
-                  <span className="admin-note">
-                    Shown next to Project-based and Duration-based selections.
-                  </span>
-                </label>
-
-                <fieldset>
-                  <legend className="admin-kicker">Salary</legend>
+                <fieldset className="admin-salary-mode">
+                  <legend>Salary</legend>
                   <div className="admin-chips" style={{ marginTop: 8 }}>
                     {([
                       ["negotiable", "Negotiable"],
@@ -413,23 +392,23 @@ export function JobEditor({
                     ))}
                   </div>
                   {draft.salaryMode === "range" ? (
-                    <label style={{ marginTop: 10 }}>
-                      Salary range
+                    <label style={{ marginTop: 8 }}>
+                      <span className="sr-only">Salary range</span>
                       <input
                         aria-label="Salary range"
                         value={draft.salaryText ?? ""}
                         maxLength={80}
-                        placeholder="e.g. ৳ 20,000 – 30,000 per month"
+                        placeholder="৳ 30,000 – 50,000 / month"
                         onChange={(event) => field("salaryText", event.target.value)}
                       />
-                      <span className="admin-note">Shown on the job card and at the top of the job page.</span>
+                      <span className="admin-note">One line, up to 80 characters, for example ৳ 30,000 – 50,000 / month</span>
                     </label>
                   ) : null}
                 </fieldset>
 
                 <div className="admin-grid admin-grid-3" style={{ marginTop: 12 }}>
                   <label>
-                    Vacancies (optional)
+                    Vacancies
                     <input
                       aria-label="Vacancies"
                       type="number"
@@ -442,17 +421,6 @@ export function JobEditor({
                     />
                   </label>
                   <label>
-                    Experience text (optional)
-                    <input
-                      value={draft.experienceText ?? ""}
-                      maxLength={60}
-                      placeholder="e.g. 1 – 4 years"
-                      onChange={(event) =>
-                        field("experienceText", event.target.value ? event.target.value : null)
-                      }
-                    />
-                  </label>
-                  <label>
                     Location
                     <input
                       value={draft.locationText}
@@ -460,23 +428,17 @@ export function JobEditor({
                       onChange={(event) => field("locationText", event.target.value)}
                     />
                   </label>
-                </div>
-                <div className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
                   <label>
-                    Deadline (your local time)
+                    Deadline
                     <input
                       aria-label="Deadline"
-                      type="datetime-local"
-                      value={mounted ? localDateTime(draft.deadlineAt) : ""}
-                      onChange={(event) =>
-                        field(
-                          "deadlineAt",
-                          event.target.value ? new Date(event.target.value).toISOString() : null,
-                        )
-                      }
+                      type="date"
+                      value={mounted ? localDateTime(draft.deadlineAt).split("T")[0] : ""}
+                      onChange={(event) => field("deadlineAt", editLocalDeadline(draft.deadlineAt, event.target.value))}
                     />
                   </label>
-                  <label className="admin-inline" style={{ alignSelf: "end" }}>
+                </div>
+                  <label className="admin-inline admin-cv-required">
                     <input
                       type="checkbox"
                       checked={draft.cvRequired}
@@ -484,77 +446,53 @@ export function JobEditor({
                     />
                     CV required
                   </label>
-                </div>
+                {missingGroups.length > 0 && <span className="admin-chip admin-chip-warn" style={{ marginTop: 12 }}>Select at least one {missingGroups.map((group) => optionGroupLabels[group].toLowerCase()).join(" and ")} to publish</span>}
+                <details className="admin-basics-extra">
+                  <summary>Additional settings</summary>
+                  <div className="admin-stack">
+                    <p className="admin-note">{published ? "Slug locked after first publication." : "Slug editable until first publication; typing a slug stops automatic updates."}</p>
+                    <label>Experience text<input aria-label="Experience text" value={draft.experienceText ?? ""} maxLength={60} placeholder="e.g. 1 – 4 years" onChange={(event) => field("experienceText", event.target.value || null)} /></label>
+                    <label>Engagement note<input aria-label="Engagement note" value={draft.engagementNote ?? ""} maxLength={80} placeholder="e.g. 6 months or one campaign" onChange={(event) => field("engagementNote", event.target.value || null)} /><span className="admin-note">Shown next to Project-based and Duration-based selections.</span></label>
+                    <label>Deadline time<input aria-label="Deadline time" type="time" disabled={!draft.deadlineAt} value={mounted ? localDateTime(draft.deadlineAt).split("T")[1] ?? "" : ""} onChange={(event) => field("deadlineAt", editLocalDeadline(draft.deadlineAt, localDateTime(draft.deadlineAt).split("T")[0], event.target.value))} /><span className="admin-note">Your local time. A new date defaults to 00:00; changing a date preserves the cutoff time.</span></label>
+                    {(() => {
+                      const missing = brands.filter((brand) => draft.brandIds.includes(brand.id) && !brand.description?.trim());
+                      return missing.length ? <p className="admin-note">Note: {missing.map((brand) => brand.name).join(", ")} {missing.length === 1 ? "has" : "have"} no description yet. Candidates will see only a logo and website link.</p> : null;
+                    })()}
+                  </div>
+                </details>
               </section>
 
-              <section aria-labelledby="job-content" className="admin-card">
+              <section aria-labelledby="job-content" className="admin-card admin-job-content">
                 <h2 id="job-content" className="admin-kicker">2 · Content</h2>
-                <label style={{ marginTop: 12 }}>
-                  Summary
+                <label>
+                  Summary ({draft.summary.length}/200)
                   <textarea
                     aria-label="Summary"
                     value={draft.summary}
                     maxLength={200}
+                    rows={2}
                     onChange={(event) => field("summary", event.target.value)}
                   />
-                  <span className="admin-note" style={{ textAlign: "right" }}>{draft.summary.length}/200</span>
                 </label>
                 {(
                   [
                     ["descriptionMd", "Description"],
                     ["responsibilitiesMd", "Responsibilities"],
                     ["requirementsMd", "Requirements"],
+                    ["niceToHaveMd", "Nice to have"],
                   ] as const
                 ).map(([name, label]) => (
-                  <div key={name} className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
-                    <label>
-                      {label} (Markdown)
-                      <textarea
-                        aria-label={`${label} (Markdown)`}
-                        rows={6}
-                        value={draft[name]}
-                        maxLength={50000}
-                        onChange={(event) => field(name, event.target.value)}
-                      />
-                    </label>
-                    <section aria-label={`${label} preview`} className="admin-card admin-markdown">
-                      <h3 className="admin-kicker">{label} preview</h3>
-                      <SafeMarkdown text={draft[name]} />
-                    </section>
-                  </div>
+                  <MarkdownEditor key={name} label={label} value={draft[name]} onChange={(value) => field(name, value)} description={name === "descriptionMd"} />
                 ))}
-                <div className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
-                  <label>
-                    Nice to have (Markdown, optional)
-                    <textarea
-                      aria-label="Nice to have (Markdown)"
-                      rows={4}
-                      value={draft.niceToHaveMd}
-                      maxLength={50000}
-                      onChange={(event) => field("niceToHaveMd", event.target.value)}
-                    />
-                  </label>
-                  <section aria-label="Nice to have preview" className="admin-card admin-markdown">
-                    <h3 className="admin-kicker">Nice to have preview</h3>
-                    <SafeMarkdown text={draft.niceToHaveMd} />
-                  </section>
-                </div>
-                <div className="admin-grid admin-grid-2" style={{ marginTop: 12 }}>
+                <div className="admin-stack admin-content-lists">
+                  <ChipInput label="Benefits" values={draft.benefits} max={12} maxLength={60} placeholder="Add a benefit, press Enter" onValues={(benefits) => field("benefits", benefits)} />
                   <ChipInput
                     label="Skills"
                     values={draft.skills}
                     max={20}
                     maxLength={40}
-                    placeholder="Add a skill and press Enter"
+                    placeholder="Add a skill, press Enter"
                     onValues={(skills) => field("skills", skills)}
-                  />
-                  <ChipInput
-                    label="Benefits"
-                    values={draft.benefits}
-                    max={12}
-                    maxLength={60}
-                    placeholder="Add a benefit and press Enter"
-                    onValues={(benefits) => field("benefits", benefits)}
                   />
                 </div>
               </section>
@@ -566,6 +504,7 @@ export function JobEditor({
                 onChange={(questions) => field("questions", questions)}
                 sources={sources.filter((source) => source.id !== draft.id)}
                 hasApplications={hasApplications}
+                onCopyingChange={setCopyingQuestions}
               />
               {archivedLabels.length > 0 && (
                 <section className="admin-card">
@@ -579,11 +518,22 @@ export function JobEditor({
                   </details>
                 </section>
               )}
-              <CandidatePreview questions={draft.questions} cvRequired={draft.cvRequired} />
+              <CandidatePreview questions={draft.questions} cvRequired={draft.cvRequired} title={draft.title} />
             </div>
           </div>
         </fieldset>
       </form>
+      <dialog ref={publication} className="admin-publish-dialog" aria-label="Confirm job publication" onCancel={(event) => { if (pending) event.preventDefault(); }}>
+        <div className="admin-kicker">Publish</div>
+        <h2>Publish {draft.title || "this job"}?</h2>
+        <p className="admin-muted">It becomes public at <span className="admin-publish-path">/jobs/{draft.slug || "your-slug"}</span>. The slug locks after publishing.</p>
+        {blockers.length ? <ul className="admin-publish-blockers">{blockers.map((blocker) => <li key={blocker}>{blocker}</li>)}</ul> : <span className="admin-chip admin-publish-ready">Requirements met</span>}
+        {message && <p role="status" className="admin-error">{message}</p>}
+        <div className="admin-publish-actions">
+          <button type="button" disabled={pending} className="admin-btn admin-btn-secondary" onClick={() => publication.current?.close()}>Cancel</button>
+          <button type="button" disabled={pending || blockers.length > 0} className="admin-btn" onClick={() => void save("publish")}>{pending ? "Publishing…" : "Publish"}</button>
+        </div>
+      </dialog>
     </section>
   );
 }

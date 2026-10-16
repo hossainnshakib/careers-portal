@@ -17,8 +17,7 @@ export default async function MfaPage() {
   const factors = await client.auth.mfa.listFactors();
   if (factors.error) throw new Error("Unable to load administrator security settings.");
   return <AdminAuthFrame>
-    <h1 className="admin-kicker">Administrator security</h1>
-    <p className="admin-note">An authenticator code is required before accessing applications or administration.</p>
+    <p className="sr-only">An authenticator code is required before accessing applications or administration.</p>
     <MfaForm factors={factors.data.totp.filter((factor) => factor.status === "verified").map((factor) => ({ id: factor.id, name: factor.friendly_name ?? "Authenticator" }))} />
     <LogoutButton />
   </AdminAuthFrame>;

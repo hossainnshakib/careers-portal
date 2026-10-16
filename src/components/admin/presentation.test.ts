@@ -5,6 +5,7 @@ import { expect, it, vi } from "vitest";
 import { contrastRatio } from "@/lib/brands/contrast";
 import { BrandMark } from "./brand-mark";
 import { ApplicationTable } from "./application-table";
+import { ApplicationEmptyState } from "./application-table";
 
 vi.mock("@/app/admin/mfa/actions", () => ({ enrollMfaAction: vi.fn(), verifyMfaAction: vi.fn() }));
 import { MfaForm } from "./mfa-form";
@@ -14,7 +15,7 @@ it("renders six MFA cells with one unambiguous composite-code selector", () => {
   expect([...html.matchAll(/class="admin-digit"/g)]).toHaveLength(6);
   expect([...html.matchAll(/aria-label="Authenticator code"/g)]).toHaveLength(1);
   for (let index = 2; index <= 6; index++) expect(html).toContain(`aria-label="Authenticator code digit ${index}"`);
-  expect(html).toContain("Verify authenticator");
+  expect(html).toContain("Continue");
   expect(html).toContain("disabled");
 });
 
@@ -64,4 +65,36 @@ it("keeps small-text admin status and muted tokens above 4.5:1", () => {
     ["pill-review-text", "pill-review"], ["pill-shortlist-text", "pill-shortlist"],
     ["pill-hired-text", "pill-hired"], ["pill-rejected-text", "pill-rejected"],
   ]) expect(contrastRatio(token(foreground), background(token(fill))), foreground).toBeGreaterThanOrEqual(4.5);
+});
+
+it("matches reference glass density without nested blur and supplies opaque fallbacks", () => {
+  const css = readFileSync("src/app/admin/admin.css", "utf8");
+  expect(css).toContain("--admin-glass: rgba(255, 255, 255, 0.58)");
+  expect(css).toContain("--admin-glass-strong: rgba(255, 255, 255, 0.76)");
+  expect(css).toMatch(/\.admin-card\s*\{\s*background: var\(--admin-glass-strong\);\s*-webkit-backdrop-filter: blur\(14px\);\s*backdrop-filter: blur\(14px\)/);
+  expect(css).toMatch(/\.admin-card \.admin-card,[\s\S]*?backdrop-filter: none;[\s\S]*?background: rgba\(255, 255, 255, 0\.9\)/);
+  expect(css).toContain("@supports not ((backdrop-filter:");
+  expect(css).toContain("@media (prefers-reduced-transparency: reduce)");
+  expect(css).toMatch(/\.admin-sidebar nav\s*\{\s*display: grid;\s*gap: 4px;/);
+  expect(css).toContain("line-height: normal;");
+});
+
+it("shows Applied before only for the additive earlier-email flag, never by matching candidate names", () => {
+  const base = { id: "fixture", reference: "APP-234567", fullName: "Synthetic candidate", email: "fixture@example.com", status: "new" as const, submittedAt: new Date("2026-10-09T01:42:00Z"), jobTitle: "Fixture role", brandNames: ["Fixture"], department: "Fixture department" };
+  const html = renderToStaticMarkup(createElement(ApplicationTable, { rows: [{ ...base, appliedBefore: true }, { ...base, id: "second", appliedBefore: false }], initialsOnly: true, brandAccents: [{ name: "Fixture", accentColor: "#123456", logoUrl: "/fixture.svg" }] }));
+  expect([...html.matchAll(/>Applied before</g)]).toHaveLength(1);
+  expect(html).not.toContain("fixture@example.com");
+  expect(html).not.toContain("/fixture.svg");
+  expect(html).toContain("admin-applied-before");
+});
+
+it("distinguishes genuinely empty applications from filtered misses without a useless reset action", () => {
+  const empty = renderToStaticMarkup(createElement(ApplicationEmptyState, { unfiltered: true }));
+  expect(empty).toContain("No applications yet");
+  expect(empty).toContain('href="/admin/jobs/new"');
+  expect(empty).not.toContain("Clear filters");
+  const filtered = renderToStaticMarkup(createElement(ApplicationEmptyState));
+  expect(filtered).toContain("No applications match these filters");
+  expect(filtered).toContain("Try a different name or remove a filter.");
+  expect(filtered).toContain("Clear filters");
 });

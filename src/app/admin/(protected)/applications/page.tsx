@@ -20,6 +20,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
   const filters = parsed.success ? parsed.data : reviewFilters.parse({});
   const result = await listReviewApplications(filters).catch(() => { throw new Error("Unable to load applications."); });
   const options = await reviewFilterOptions().catch(() => { throw new Error("Unable to load applications."); });
+  const hasFilters = [filters.brand, filters.department, filters.job, filters.status, filters.q, filters.from, filters.to].some(Boolean);
   function pageUrl(page: number) {
     const values = new URLSearchParams();
     for (const [key, value] of Object.entries(filters)) if (value !== "" && key !== "page" && key !== "cleanup") values.set(key, String(value));
@@ -27,24 +28,24 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
     return `/admin/applications?${values}`;
   }
   return (
-    <section>
+    <section className="admin-applications-list">
       <AdminToolbar eyebrow="Applications" title="Applications" />
       {!parsed.success && <p role="status">Invalid filters were cleared.</p>}
       {filters.cleanup && <DeleteApplicationControl applicationId={filters.cleanup} reference="the selected application" retry />}
       <ReviewFilterForm key={JSON.stringify(filters)} filters={filters} options={options} showReset={result.rows.length > 0} />
       <p className="admin-mobile-result-count">{result.total} results</p>
       <div className={result.rows.length ? "admin-card admin-mobile-flat" : undefined}>
-        <ApplicationTable rows={result.rows} brandAccents={options.brands} />
+         <ApplicationTable rows={result.rows} brandAccents={options.brands} initialsOnly emptyUnfiltered={!hasFilters} />
         <div className="admin-table-footer">
         <span>
           {result.total} results · {reviewPageSize} per page
         </span>
         <nav aria-label="Application pages" className="admin-pagination">
-          {result.page > 1 && (
+           {result.page > 1 ? (
             <a href={pageUrl(result.page - 1)} className="admin-page" aria-label="Previous page">
               ‹
             </a>
-          )}
+           ) : <span className="admin-page is-disabled" aria-label="Previous page" aria-disabled="true">‹</span>}
           {pageWindow(result.page, result.pages).map((value, index, all) => (
             <span key={value} style={{ display: "inline-flex", gap: 6 }}>
               {index > 0 && value - all[index - 1] > 1 && (
@@ -63,11 +64,11 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
               )}
             </span>
           ))}
-          {result.page < result.pages && (
+           {result.page < result.pages ? (
             <a href={pageUrl(result.page + 1)} className="admin-page" aria-label="Next page">
               ›
             </a>
-          )}
+           ) : <span className="admin-page is-disabled" aria-label="Next page" aria-disabled="true">›</span>}
         </nav>
         </div>
       </div>

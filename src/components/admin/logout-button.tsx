@@ -9,7 +9,7 @@ export function LogoutButton() {
   return (
     <div>
       <button
-        className="admin-btn admin-btn-secondary admin-btn-sm"
+        className="admin-btn admin-btn-secondary"
         style={{ width: "100%", marginTop: 10 }}
         disabled={pending}
         onClick={async () => {

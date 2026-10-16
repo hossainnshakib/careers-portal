@@ -34,7 +34,15 @@ export function AdminShell({ email, children }: { email: string; children: React
   const menuRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 801px)");
+    const closeOnDesktop = () => { if (desktop.matches) setMenuOpen(false); };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
     if (!menuOpen) return;
+    const trigger = menuButtonRef.current;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     menuRef.current?.querySelector<HTMLElement>("button, a")?.focus();
@@ -55,14 +63,15 @@ export function AdminShell({ email, children }: { email: string; children: React
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
+      if (window.matchMedia("(max-width: 800px)").matches) trigger?.focus();
     };
   }, [menuOpen]);
 
   return (
     <>
-      <div className="admin-orb" style={{ width: 420, height: 420, background: "#EC1C24", left: -120, top: -100 }} />
-      <div className="admin-orb" style={{ width: 380, height: 380, background: "#2F6BFF", left: 400, top: -200 }} />
-      <div className="admin-orb" style={{ width: 360, height: 360, background: "#0AA278", left: -100, top: 560 }} />
+      <div aria-hidden="true" className="admin-orb admin-orb-red" style={{ width: 420, height: 420, background: "#EC1C24", left: -120, top: -100 }} />
+      <div aria-hidden="true" className="admin-orb admin-orb-blue" style={{ width: 380, height: 380, background: "#2F6BFF", left: 400, top: -200 }} />
+      <div aria-hidden="true" className="admin-orb admin-orb-green" style={{ width: 360, height: 360, background: "#0AA278", left: -100, top: 560 }} />
 
       <aside className="admin-sidebar">
         <a href="/admin" className="admin-wordmark">
@@ -74,6 +83,7 @@ export function AdminShell({ email, children }: { email: string; children: React
               key={href}
               href={href}
               className={`admin-nav-link${isActiveLink(pathname, href) ? " is-active" : ""}`}
+              aria-current={isActiveLink(pathname, href) ? "page" : undefined}
             >
               {label}
             </a>
@@ -82,7 +92,7 @@ export function AdminShell({ email, children }: { email: string; children: React
         <SidebarFooter email={email} />
       </aside>
 
-      <div className="admin-topbar">
+       <div className="admin-topbar" inert={menuOpen}>
         <a href="/admin" className="admin-wordmark">
           Careers admin<i aria-hidden="true" />
         </a>
@@ -90,7 +100,7 @@ export function AdminShell({ email, children }: { email: string; children: React
         <button
           ref={menuButtonRef}
           type="button"
-          className="admin-btn admin-btn-secondary admin-btn-sm"
+          className="admin-btn admin-btn-secondary admin-menu-trigger"
           aria-label="Menu"
           aria-expanded={menuOpen}
           aria-controls="admin-mobile-menu"
@@ -111,7 +121,7 @@ export function AdminShell({ email, children }: { email: string; children: React
           }}
         >
           <aside ref={menuRef} id="admin-mobile-menu" className="admin-sidebar" role="dialog" aria-modal="true" aria-label="Admin navigation menu">
-            <button type="button" className="admin-btn admin-btn-secondary admin-btn-sm" aria-label="Close menu" onClick={() => { setMenuOpen(false); menuButtonRef.current?.focus(); }}>Close menu</button>
+            <button type="button" className="admin-btn admin-btn-secondary admin-menu-close" aria-label="Close menu" onClick={() => { setMenuOpen(false); menuButtonRef.current?.focus(); }}><span aria-hidden="true">×</span></button>
             <a href="/admin" className="admin-wordmark">
               Careers admin<i aria-hidden="true" />
             </a>
@@ -121,6 +131,7 @@ export function AdminShell({ email, children }: { email: string; children: React
                   key={href}
                   href={href}
                   className={`admin-nav-link${isActiveLink(pathname, href) ? " is-active" : ""}`}
+                  aria-current={isActiveLink(pathname, href) ? "page" : undefined}
                 >
                   {label}
                 </a>

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { and, asc, count, desc, eq, gte, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
 import {
   adminNotes, adminUsers, applications, applicationStatusEvents, attachments,
@@ -61,7 +62,15 @@ export async function listReviewApplications(filters: ReviewFilters) {
   const order = filters.sort === "oldest" ? asc(applications.submittedAt) :
     filters.sort === "name_asc" ? asc(applications.fullName) :
     filters.sort === "name_desc" ? desc(applications.fullName) : desc(applications.submittedAt);
-  const rows = await db.select(summary).from(applications).innerJoin(jobs, eq(jobs.id, applications.jobId))
+  const previous = alias(applications, "previous_application");
+  // Indexed, correlated read per listed email, independent of the active filters.
+  // Only a strictly earlier submission qualifies; equal timestamps are not ordered by UUID.
+  const appliedBefore = sql<boolean>`exists (
+    select 1 from ${applications} as ${sql.identifier("previous_application")}
+    where lower(${previous.email}) = lower(${applications.email})
+      and ${previous.submittedAt} < ${applications.submittedAt}
+  )`;
+  const rows = await db.select({ ...summary, appliedBefore }).from(applications).innerJoin(jobs, eq(jobs.id, applications.jobId))
     .where(where).orderBy(order, desc(applications.id)).limit(reviewPageSize).offset((page - 1) * reviewPageSize);
   return { rows, total: total.count, page, pages };
 }

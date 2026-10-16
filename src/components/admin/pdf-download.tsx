@@ -7,7 +7,7 @@ export function PdfDownload({ applicationId }: { applicationId: string }) {
   useEffect(() => { setFormat({ tz: Intl.DateTimeFormat().resolvedOptions().timeZone, locale: navigator.language }); }, []);
   const query = new URLSearchParams({ notes: notes ? "1" : "0", ...format });
   return (
-    <div className="admin-card admin-stack">
+    <div className="admin-stack admin-profile-pdf">
       <a
         href={`/api/admin/applications/${applicationId}/pdf?${query}`}
         className="admin-btn"
