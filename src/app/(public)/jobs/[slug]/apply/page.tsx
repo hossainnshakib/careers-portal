@@ -6,7 +6,7 @@ import { loadApplicationJob } from "@/db/queries/public-jobs";
 import { getPublicEnv } from "@/lib/env-public";
 import { accentColor } from "@/lib/careers/presentation";
 import { ApplicationForm } from "@/components/public/application-form";
-import { PublicBrandLogo } from "@/components/public/public-brand-logo";
+import { BrandLogoRow } from "@/components/public/brand-logo-row";
 import { PublicDeadline } from "@/components/public/public-deadline";
 import { PublicIcon } from "@/components/public/public-icon";
 
@@ -39,7 +39,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
       <header className="ui-glass mt-[18px] flex flex-col gap-[14px] rounded-[28px] px-6 py-7 sm:px-[30px]">
         {department && <p className="text-[12.5px] font-extrabold uppercase tracking-[.1em] text-ui-muted">{department.name}</p>}
         <h1 className="text-[30px] font-extrabold leading-[1.1] tracking-[-.03em] sm:text-[38px]">Apply for {job.title}</h1>
-        <div aria-label="Hiring brands" className="flex flex-wrap items-center gap-2.5"><span className="text-[13px] font-bold text-ui-muted">Hiring for</span>{visibleBrands.map(({ brand }) => <span key={brand.id} className="inline-flex items-center rounded-full bg-white/90 px-[11px] py-1.5"><PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} className="h-[24px] max-w-[110px]" /></span>)}</div>
+        <div className="flex flex-wrap items-center gap-2.5"><span className="text-[13px] font-bold text-ui-muted">Hiring for</span><BrandLogoRow brands={visibleBrands.map(({ brand }) => brand)} size={30} chip ariaLabel="Hiring brands" /></div>
         <div className="flex flex-wrap gap-2">
           {options.filter(option => option.isActive).map(option => <span key={option.id} className="ui-pill">{option.label}</span>)}
           {job.locationText && <span className="ui-pill">{job.locationText}</span>}

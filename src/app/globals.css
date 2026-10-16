@@ -249,8 +249,7 @@ body {
 .brand-marquee-track { display: flex; width: max-content; animation: brand-marquee 38s linear infinite; }
 .brand-marquee-track > ul { display: flex; align-items: center; gap: 64px; padding-right: 64px; }
 .brand-marquee:hover .brand-marquee-track,
-.brand-marquee:focus-within .brand-marquee-track,
-.brand-marquee[data-marquee-paused="true"] .brand-marquee-track { animation-play-state: paused; }
+.brand-marquee:focus-within .brand-marquee-track { animation-play-state: paused; }
 @keyframes brand-marquee { to { transform: translateX(-50%); } }
 @media (max-width: 1180px) {
   .ui-float-card { display: none; }

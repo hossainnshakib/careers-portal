@@ -13,7 +13,7 @@ import { createServerClient } from "@supabase/ssr";
 import { getPublicEnv } from "../../src/lib/env-public";
 import { createClient } from "@supabase/supabase-js";
 import { freshTestTotp } from "./totp";
-import { createPublicTestJob, createStressTestJobs, verifyPublicTestApplication } from "../../src/db/queries/public-test-fixture";
+import { createPublicTestJob, createStressTestJobs, createLogoRowTestJobs, verifyPublicTestApplication } from "../../src/db/queries/public-test-fixture";
 import { removePublicTestFiles } from "../../src/lib/storage/public-test-files";
 import { createReviewTestApplication, reviewTestApplicationIds, verifyReviewTestRows } from "../../src/db/queries/review-test-fixture";
 import { removeReviewTestFiles, reviewTestFilesAbsent } from "../../src/lib/storage/review-test-files";
@@ -164,8 +164,9 @@ async function setup() {
   const publicJob = process.argv[2] === "public" ? await createPublicTestJob(prefix) : undefined;
   const reviewApplication = process.argv[2] === "review" ? await createReviewTestApplication(prefix) : undefined;
   const stressJobs = process.argv[2] === "stress" ? await createStressTestJobs(prefix) : undefined;
+  const logoJobs = process.argv[2] === "logos" ? await createLogoRowTestJobs(prefix) : undefined;
   if (reviewApplication) { reviewIds.add(reviewApplication.applicationId); reviewIds.add(reviewApplication.previousId); }
-  process.send?.({ type: "ready", email, password, prefix, cookieJSON: JSON.stringify(cookies), publicJobJSON: JSON.stringify(publicJob ?? null), reviewJSON: JSON.stringify(reviewApplication ?? null), stressJobsJSON: JSON.stringify(stressJobs ?? null) });
+  process.send?.({ type: "ready", email, password, prefix, cookieJSON: JSON.stringify(cookies), publicJobJSON: JSON.stringify(publicJob ?? null), reviewJSON: JSON.stringify(reviewApplication ?? null), stressJobsJSON: JSON.stringify(stressJobs ?? null), logoJobsJSON: JSON.stringify(logoJobs ?? null) });
 }
 setup().catch(async () => {
   process.send?.({ type: "error", message: "Guarded test fixture setup failed." });

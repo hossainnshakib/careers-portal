@@ -14,10 +14,10 @@ it("groups in department order, preserves role order and hides empty departments
   ]);
   expect(groups.map(group => [group.number, group.slug, group.roles.map(role => role.id)])).toEqual([[2, "tech", ["first", "third"]], [3, "creative", ["second"]]]);
 });
-it("shows at most two brands with primary first and a visible fallback for hidden primaries", () => {
+it("orders brands primary-first with a visible fallback for hidden primaries", () => {
   const role = job("role", "tech");
-  expect(cardBrands(role).map(item => item.id)).toEqual(["b", "a"]);
-  expect(cardBrands({ ...role, primaryBrandId: "hidden" }).map(item => item.id)).toEqual(["a", "b"]);
+  expect(cardBrands(role).map(item => item.id)).toEqual(["b", "a", "c"]);
+  expect(cardBrands({ ...role, primaryBrandId: "hidden" }).map(item => item.id)).toEqual(["a", "b", "c"]);
   expect(cardBrands({ ...role, brands: [] })).toEqual([]);
 });
 it("accepts only passive six-digit accent values", () => {

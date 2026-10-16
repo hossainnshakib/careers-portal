@@ -1,0 +1,1575 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "slug": "web-developer",
+      "title": "Web Developer",
+      "department_slug": "web-technical",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Build fast, accessible and maintainable websites and web apps across front-end, back-end or full-stack work.",
+      "description_md": "We are looking for a web developer to build and maintain websites and web applications for Fixen Media and the brands we work with. Depending on your strengths you will work on interfaces, server-side logic and APIs, or both.\n\nYou will turn designs and briefs into clean, fast and accessible products, work closely with designers and project leads, and keep everything you build easy to maintain.",
+      "responsibilities_md": "- Build and ship responsive interfaces and server-side features from briefs and designs.\n- Develop and consume APIs and work with databases.\n- Write clean, documented and testable code, and review your teammates’ work.\n- Keep sites fast, secure and accessible.\n- Estimate your work, communicate progress and raise blockers early.",
+      "requirements_md": "- Solid HTML, CSS and JavaScript or TypeScript fundamentals.\n- Hands-on experience with a modern stack, for example React, Next.js, Laravel or Node.js.\n- Live projects or a repository that shows your own contribution.\n- Working knowledge of Git and basic deployment.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Experience with WordPress, WooCommerce or headless setups.\n- Knowledge of web performance and SEO basics.",
+      "skills": [
+        "HTML and CSS",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Laravel",
+        "REST APIs",
+        "Git"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "front-end-developer", "label": "Front-End Developer" },
+            { "value": "back-end-developer", "label": "Back-End Developer" },
+            { "value": "full-stack-web-developer", "label": "Full-Stack Web Developer" }
+          ]
+        },
+        {
+          "label": "GitHub profile or repository link",
+          "type": "url",
+          "required": false,
+          "section": "portfolio",
+          "help_text": "Optional, but it helps us see your code."
+        },
+        {
+          "label": "Links to your best live projects",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and one line about what each one is.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Your React or Next.js experience",
+          "type": "single_choice",
+          "required": true,
+          "section": "skills",
+          "options": [
+            { "value": "none-yet", "label": "None yet" },
+            { "value": "beginner-under-1-year", "label": "Beginner (under 1 year)" },
+            { "value": "intermediate-1-to-3-years", "label": "Intermediate (1 to 3 years)" },
+            { "value": "advanced-3-years-or-more", "label": "Advanced (3 years or more)" }
+          ]
+        },
+        {
+          "label": "What exactly did you build in your best project?",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "Describe your own contribution, not the team’s.",
+          "config": { "maxLength": 1500 }
+        }
+      ]
+    },
+    {
+      "slug": "wordpress-developer-analyst",
+      "title": "WordPress Developer & Analyst",
+      "department_slug": "web-technical",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Develop, customise and optimise WordPress and WooCommerce sites, and analyse how they perform.",
+      "description_md": "We need a WordPress specialist who can build and customise sites and online stores and who also understands how a site is performing. You will own the technical health of WordPress and WooCommerce projects from build to optimisation.\n\nYou will work with designers, content writers and marketers, and explain your findings in plain language so decisions are easy to make.",
+      "responsibilities_md": "- Build and customise WordPress themes, plugins and WooCommerce stores.\n- Develop custom functionality when ready-made plugins are not enough.\n- Audit and improve site speed, security and search visibility.\n- Track site performance and report findings with clear recommendations.\n- Maintain updates, backups and staging workflows.",
+      "requirements_md": "- Proven WordPress and WooCommerce experience on live sites.\n- Good knowledge of PHP, HTML, CSS and JavaScript.\n- Experience with page speed, caching and image optimisation.\n- Understanding of WordPress security basics.\n- Ability to explain technical findings to non-technical people.",
+      "nice_to_have_md": "- Experience with ACF, Elementor or block themes.\n- Familiarity with Google Analytics and Search Console.",
+      "skills": [
+        "WordPress",
+        "WooCommerce",
+        "PHP",
+        "Theme development",
+        "Plugin development",
+        "Performance optimisation",
+        "Security hardening",
+        "Google Analytics"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "wordpress-development", "label": "WordPress Development" },
+            { "value": "woocommerce", "label": "WooCommerce" },
+            { "value": "custom-development", "label": "Custom Development" },
+            { "value": "website-optimization", "label": "Website Optimization" }
+          ]
+        },
+        {
+          "label": "Links to WordPress or WooCommerce sites you built or improved",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and say what you did on each.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Do you build custom plugins or themes from scratch?",
+          "type": "yes_no",
+          "required": true,
+          "section": "skills"
+        },
+        {
+          "label": "How do you measure and improve the speed of a site?",
+          "type": "long_text",
+          "required": true,
+          "section": "role_specific",
+          "help_text": "Mention the tools you use and one real improvement you made.",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which page builders or frameworks do you use?",
+          "type": "multiple_choice",
+          "required": false,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "elementor", "label": "Elementor" },
+            { "value": "gutenberg-and-block-themes", "label": "Gutenberg and block themes" },
+            { "value": "wpbakery", "label": "WPBakery" },
+            { "value": "custom-themes", "label": "Custom themes" }
+          ],
+          "config": { "allowOther": true }
+        }
+      ]
+    },
+    {
+      "slug": "ui-ux-designer",
+      "title": "UI/UX Designer",
+      "department_slug": "web-technical",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Design clear, usable interfaces for websites and apps, from research and wireframes to prototypes and design systems.",
+      "description_md": "We are looking for a UI/UX designer who can shape how our websites and apps look and work. You will take ideas from first sketches to polished, tested interfaces.\n\nYou will work with developers and marketers, keep design consistent across projects, and make sure what we ship is simple to use.",
+      "responsibilities_md": "- Research user needs and turn them into flows and wireframes.\n- Design web and app interfaces with a consistent visual style.\n- Build interactive prototypes and test them with real users.\n- Create and maintain design systems and component libraries.\n- Hand over clear specifications and support developers during build.",
+      "requirements_md": "- A portfolio with at least two complete UI/UX case studies.\n- Strong skills in Figma or a similar design tool.\n- Understanding of usability, accessibility and responsive design.\n- Ability to explain your design decisions.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Experience designing for Bengali and English interfaces.\n- Basic knowledge of HTML and CSS.",
+      "skills": [
+        "Figma",
+        "Wireframing",
+        "Prototyping",
+        "Design systems",
+        "Usability testing",
+        "Accessibility",
+        "Responsive design"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "web-ui-ux", "label": "Web UI/UX" },
+            { "value": "app-ui-ux", "label": "App UI/UX" },
+            { "value": "prototyping", "label": "Prototyping" },
+            { "value": "design-systems", "label": "Design Systems" }
+          ]
+        },
+        {
+          "label": "Links to your portfolio or case studies",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links, with one line about your role in each.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which design tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "figma", "label": "Figma" },
+            { "value": "adobe-xd", "label": "Adobe XD" },
+            { "value": "sketch", "label": "Sketch" },
+            { "value": "framer", "label": "Framer" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe one project from research to final design",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What was the problem, what did you do and what changed after launch?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Have you built or maintained a design system?",
+          "type": "yes_no",
+          "required": false,
+          "section": "skills"
+        }
+      ]
+    },
+    {
+      "slug": "web-backend-security-analyst",
+      "title": "Web & Backend Security Analyst",
+      "department_slug": "web-technical",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "freelance"],
+        "experience": ["entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Test web applications, APIs and backends for vulnerabilities and help the team fix them before they are exploited.",
+      "description_md": "We are looking for a security analyst to assess the websites, web applications and backend systems we build and run. You will find weaknesses, explain the risk and help the developers fix them.\n\nThis role works under clear rules of engagement and a strict code of ethical practice. You will only test systems you are authorised to test.",
+      "responsibilities_md": "- Assess web applications and APIs for common vulnerabilities.\n- Review backend configuration, authentication and access control.\n- Run vulnerability scans and verify the findings manually.\n- Write clear reports with risk ratings and practical fixes.\n- Advise developers on secure coding and re-test after fixes.",
+      "requirements_md": "- Good understanding of the OWASP Top 10 and web application security.\n- Hands-on experience with tools such as Burp Suite, OWASP ZAP or similar.\n- Knowledge of how APIs, authentication and sessions work.\n- Examples of past assessments, write-ups, labs or reported issues.\n- A strong ethical approach and willingness to work under NDA and rules of engagement.",
+      "nice_to_have_md": "- Experience with cloud or server hardening.\n- Scripting skills in Python or Bash.",
+      "skills": [
+        "OWASP Top 10",
+        "Burp Suite",
+        "API security",
+        "Vulnerability assessment",
+        "Penetration testing",
+        "Threat modelling",
+        "Report writing"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "web-application-security", "label": "Web Application Security" },
+            { "value": "backend-and-api-security", "label": "Backend & API Security" },
+            { "value": "vulnerability-assessment", "label": "Vulnerability Assessment" },
+            { "value": "security-analysis", "label": "Security Analysis" }
+          ]
+        },
+        {
+          "label": "Security portfolio, write-ups or reports (links)",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Remove any confidential client information before sharing.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "HackTheBox or TryHackMe profile",
+          "type": "url",
+          "required": false,
+          "section": "portfolio"
+        },
+        {
+          "label": "Bug bounty profile",
+          "type": "url",
+          "required": false,
+          "section": "portfolio"
+        },
+        {
+          "label": "Describe a previous security assessment you carried out",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What did you test, what did you find and how was it fixed?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which standards and tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "owasp-top-10", "label": "OWASP Top 10" },
+            { "value": "burp-suite", "label": "Burp Suite" },
+            { "value": "owasp-zap", "label": "OWASP ZAP" },
+            { "value": "nmap", "label": "Nmap" },
+            { "value": "postman", "label": "Postman" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Are you willing to work under an NDA and rules of engagement?",
+          "type": "yes_no",
+          "required": true,
+          "section": "role_specific"
+        }
+      ]
+    },
+    {
+      "slug": "brand-identity-logo-designer",
+      "title": "Brand Identity & Logo Designer",
+      "department_slug": "design-creative",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Create logos, visual identities and brand guidelines that make brands recognisable and consistent.",
+      "description_md": "We are looking for a brand identity designer who can turn a brand’s story into a clear visual identity. You will design logos and complete identity systems for our clients and our own brands.\n\nYou will present your ideas confidently, take feedback well, and deliver guidelines that other designers can follow.",
+      "responsibilities_md": "- Design logos and visual identities from a client brief.\n- Build identity systems: colour, typography, patterns and usage rules.\n- Prepare brand guidelines and final file packages.\n- Present concepts and refine them with feedback.\n- Keep brand assets consistent across print and digital.",
+      "requirements_md": "- A portfolio with complete identity projects, not only logos.\n- Strong skills in Illustrator or a similar vector tool.\n- Good sense of typography, colour and layout.\n- Ability to explain the thinking behind a design.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Experience with packaging or signage.\n- Basic motion or social-media design skills.",
+      "skills": [
+        "Logo design",
+        "Visual identity",
+        "Brand guidelines",
+        "Typography",
+        "Adobe Illustrator",
+        "Photoshop"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "logo-design", "label": "Logo Design" },
+            { "value": "visual-identity", "label": "Visual Identity" },
+            { "value": "brand-identity-system", "label": "Brand Identity System" },
+            { "value": "brand-guidelines", "label": "Brand Guidelines" }
+          ]
+        },
+        {
+          "label": "Links to your portfolio",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and mark your best identity project.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "adobe-illustrator", "label": "Adobe Illustrator" },
+            { "value": "adobe-photoshop", "label": "Adobe Photoshop" },
+            { "value": "figma", "label": "Figma" },
+            { "value": "coreldraw", "label": "CorelDRAW" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Tell us about one identity project",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What was the brief, what was your process and what was the result?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Portfolio file (PDF)",
+          "type": "file_upload",
+          "required": false,
+          "section": "portfolio",
+          "help_text": "PDF file, up to 10 MB. Optional.",
+          "config": { "accept": ["pdf"], "maxSizeMb": 10 }
+        }
+      ]
+    },
+    {
+      "slug": "ad-social-creative-designer",
+      "title": "Advertising & Social Media Creative Designer",
+      "department_slug": "design-creative",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Design eye-catching ad creatives, social media posts and campaign visuals that perform.",
+      "description_md": "We are looking for a creative designer who can make ads and social media visuals that stop the scroll and support real campaign goals. You will work closely with marketers and writers.\n\nYou will design for many platforms, adapt ideas into different formats, and learn from how creatives perform.",
+      "responsibilities_md": "- Design ad creatives and social media posts for campaigns.\n- Adapt one idea into multiple formats and platforms.\n- Work with writers and marketers on concepts and messaging.\n- Prepare promotional materials for print and digital use.\n- Improve designs using performance feedback.",
+      "requirements_md": "- A portfolio of ad and social media designs.\n- Strong skills in Photoshop, Illustrator or Figma.\n- Good understanding of layout, typography and colour.\n- Ability to work quickly and meet deadlines.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Skills in short video editing or motion graphics.\n- Understanding of how paid ads are measured.",
+      "skills": [
+        "Ad design",
+        "Social media design",
+        "Campaign design",
+        "Photoshop",
+        "Illustrator",
+        "Figma",
+        "Canva"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "advertising-creative", "label": "Advertising Creative" },
+            { "value": "social-media-creative", "label": "Social Media Creative" },
+            { "value": "campaign-design", "label": "Campaign Design" },
+            { "value": "promotional-design", "label": "Promotional Design" }
+          ]
+        },
+        {
+          "label": "Links to your portfolio",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links with your best ad or campaign work.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which platforms do you design for?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "facebook-and-instagram", "label": "Facebook and Instagram" },
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "youtube", "label": "YouTube" },
+            { "value": "linkedin", "label": "LinkedIn" },
+            { "value": "print-and-outdoor", "label": "Print and outdoor" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe a campaign you designed and how it performed",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What was your role and what result did it get?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Can you also edit or animate short videos?",
+          "type": "yes_no",
+          "required": false,
+          "section": "skills"
+        }
+      ]
+    },
+    {
+      "slug": "visual-communication-designer",
+      "title": "Visual Communication Designer",
+      "department_slug": "design-creative",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Design presentations, company profiles, brochures and marketing materials that explain ideas clearly.",
+      "description_md": "We are looking for a designer who is good at organising information and making it look clear and professional. You will design presentations, profiles, catalogues and other materials for businesses.\n\nYou will take raw content, shape it into a clear structure and give it a polished, consistent look.",
+      "responsibilities_md": "- Design presentations and pitch decks.\n- Create company profiles, brochures and catalogues.\n- Lay out editorial and marketing materials for print and digital.\n- Organise content into a clear visual structure.\n- Prepare final files for print and screen.",
+      "requirements_md": "- A portfolio of presentation, brochure or editorial work.\n- Strong skills in InDesign, Illustrator or PowerPoint design.\n- Excellent layout, typography and attention to detail.\n- Understanding of print preparation.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Basic skills in infographics and data visualisation.\n- Experience working with Bengali typography.",
+      "skills": [
+        "Presentation design",
+        "Layout design",
+        "Brochure design",
+        "InDesign",
+        "Illustrator",
+        "PowerPoint",
+        "Typography"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "presentation-design", "label": "Presentation Design" },
+            { "value": "company-profile", "label": "Company Profile" },
+            { "value": "brochure-and-catalogue", "label": "Brochure & Catalogue" },
+            { "value": "editorial-and-marketing-materials", "label": "Editorial & Marketing Materials" }
+          ]
+        },
+        {
+          "label": "Links to your portfolio",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links with your best layout work.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "adobe-indesign", "label": "Adobe InDesign" },
+            { "value": "adobe-illustrator", "label": "Adobe Illustrator" },
+            { "value": "powerpoint", "label": "PowerPoint" },
+            { "value": "figma", "label": "Figma" },
+            { "value": "canva", "label": "Canva" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe a document you designed from raw content",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What did you start with and how did you structure it?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Portfolio file (PDF)",
+          "type": "file_upload",
+          "required": false,
+          "section": "portfolio",
+          "help_text": "PDF file, up to 10 MB. Optional.",
+          "config": { "accept": ["pdf"], "maxSizeMb": 10 }
+        }
+      ]
+    },
+    {
+      "slug": "commercial-documentary-video-editor",
+      "title": "Commercial & Documentary Video Editor",
+      "department_slug": "video-motion-production",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Edit commercials, brand films and documentaries with strong storytelling, pacing and sound.",
+      "description_md": "We are looking for a video editor who can shape long-form and commercial work into clear, engaging stories. You will edit brand films, commercials and documentaries from raw footage to final delivery.\n\nYou will work with directors and producers, give notes on footage, and take ownership of the finish.",
+      "responsibilities_md": "- Edit commercials, brand films and documentaries.\n- Build story structure, pacing and rhythm from raw footage.\n- Handle colour correction, sound clean-up and subtitles.\n- Manage projects, assets and versions.\n- Deliver final files in the right formats for each platform.",
+      "requirements_md": "- A showreel with commercial or long-form work.\n- Strong skills in Premiere Pro, DaVinci Resolve or Final Cut Pro.\n- Good sense of storytelling, pacing and music.\n- Ability to take direction and work to deadlines.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Colour grading and sound mixing skills.\n- Experience with motion graphics in After Effects.",
+      "skills": [
+        "Video editing",
+        "Storytelling",
+        "Premiere Pro",
+        "DaVinci Resolve",
+        "Colour grading",
+        "Sound design",
+        "Subtitling"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "commercial-video", "label": "Commercial Video" },
+            { "value": "brand-film", "label": "Brand Film" },
+            { "value": "documentary", "label": "Documentary" },
+            { "value": "long-form-storytelling", "label": "Long-form Storytelling" }
+          ]
+        },
+        {
+          "label": "Links to your showreel or best videos",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links. Tell us your role in each.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which editing software do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "adobe-premiere-pro", "label": "Adobe Premiere Pro" },
+            { "value": "davinci-resolve", "label": "DaVinci Resolve" },
+            { "value": "final-cut-pro", "label": "Final Cut Pro" },
+            { "value": "after-effects", "label": "After Effects" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe your role on your best long-form project",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "How long was the footage, how did you structure it and what was the outcome?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which finishing skills do you offer?",
+          "type": "multiple_choice",
+          "required": false,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "colour-grading", "label": "Colour grading" },
+            { "value": "sound-design-and-mixing", "label": "Sound design and mixing" },
+            { "value": "subtitling", "label": "Subtitling" }
+          ],
+          "config": { "allowOther": true }
+        }
+      ]
+    },
+    {
+      "slug": "short-form-video-editor",
+      "title": "Short-Form & Social Media Video Editor",
+      "department_slug": "video-motion-production",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Cut reels, shorts and promotional videos built for social platforms and fast turnaround.",
+      "description_md": "We are looking for an editor who knows how short videos work: strong hooks, tight pacing, clean captions and platform-ready formats. You will edit reels, shorts and promotional videos for several brands.\n\nYou will turn raw clips into content that holds attention, and deliver quickly without losing quality.",
+      "responsibilities_md": "- Edit reels, shorts and social media videos from raw footage.\n- Create strong hooks, pacing, captions and transitions.\n- Adapt videos to platform formats and ratios.\n- Handle basic colour, audio and sound-effect work.\n- Deliver on tight, regular schedules.",
+      "requirements_md": "- A portfolio of short-form videos.\n- Strong skills in Premiere Pro, CapCut, DaVinci Resolve or similar.\n- Good understanding of social trends and platform formats.\n- Ability to work fast and keep quality steady.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Basic motion graphics and animated captions.\n- Ability to write short hooks and captions.",
+      "skills": [
+        "Short-form editing",
+        "Reels and Shorts",
+        "Captions",
+        "Premiere Pro",
+        "CapCut",
+        "After Effects",
+        "Sound effects"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "reels", "label": "Reels" },
+            { "value": "shorts", "label": "Shorts" },
+            { "value": "social-media-videos", "label": "Social Media Videos" },
+            { "value": "promotional-videos", "label": "Promotional Videos" }
+          ]
+        },
+        {
+          "label": "Links to your best short videos",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to five links to reels, shorts or promotional videos.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which editing software do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "adobe-premiere-pro", "label": "Adobe Premiere Pro" },
+            { "value": "capcut", "label": "CapCut" },
+            { "value": "davinci-resolve", "label": "DaVinci Resolve" },
+            { "value": "after-effects", "label": "After Effects" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "About how many short videos do you edit in a normal week?",
+          "type": "number",
+          "required": false,
+          "section": "experience",
+          "config": { "min": 0, "max": 500, "integer": true }
+        },
+        {
+          "label": "Can you write hooks and captions for your videos?",
+          "type": "yes_no",
+          "required": false,
+          "section": "skills"
+        }
+      ]
+    },
+    {
+      "slug": "motion-graphics-animation-artist",
+      "title": "Motion Graphics & Animation Artist",
+      "department_slug": "video-motion-production",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Create motion graphics, 2D animation, animated ads and titles that bring brands to life.",
+      "description_md": "We are looking for a motion artist who can turn ideas and brand assets into smooth, polished animation. You will work on animated ads, explainers, titles and visual graphics.\n\nYou will work with designers and editors, and bring a strong sense of timing and style.",
+      "responsibilities_md": "- Create motion graphics and 2D animation for ads, explainers and social media.\n- Design and animate titles, lower thirds and transitions.\n- Animate brand assets and logos.\n- Prepare storyboards and animatics when needed.\n- Deliver final renders in the correct formats.",
+      "requirements_md": "- A showreel with motion graphics or 2D animation.\n- Strong skills in After Effects or a similar tool.\n- Good understanding of timing, easing and composition.\n- Basic design and typography skills.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Experience with Blender or Cinema 4D.\n- Character animation skills.",
+      "skills": [
+        "Motion graphics",
+        "2D animation",
+        "After Effects",
+        "Storyboarding",
+        "Title design",
+        "Illustrator",
+        "Blender"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "motion-graphics", "label": "Motion Graphics" },
+            { "value": "2d-animation", "label": "2D Animation" },
+            { "value": "animated-advertising", "label": "Animated Advertising" },
+            { "value": "titles-and-visual-graphics", "label": "Titles & Visual Graphics" }
+          ]
+        },
+        {
+          "label": "Links to your showreel or best animations",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and tell us your role in each.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "after-effects", "label": "After Effects" },
+            { "value": "blender", "label": "Blender" },
+            { "value": "cinema-4d", "label": "Cinema 4D" },
+            { "value": "premiere-pro", "label": "Premiere Pro" },
+            { "value": "illustrator", "label": "Illustrator" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe one animation project from idea to final render",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What did you design, animate and deliver?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Do you do character animation?",
+          "type": "yes_no",
+          "required": false,
+          "section": "skills"
+        }
+      ]
+    },
+    {
+      "slug": "cinematographer",
+      "title": "Cinematographer",
+      "department_slug": "video-motion-production",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Shoot commercial, documentary, brand and corporate productions with a strong visual eye.",
+      "description_md": "We are looking for a cinematographer who can plan and shoot beautiful, reliable footage for commercials, brand films, documentaries and corporate productions.\n\nYou will work with directors and producers, plan shots and lighting, and run the camera and crew on set.",
+      "responsibilities_md": "- Plan shots, lighting and camera setups for productions.\n- Shoot commercial, documentary, brand and corporate videos.\n- Operate and look after camera, lens, lighting and support equipment.\n- Work with the director and crew on set and in the planning stage.\n- Review footage quality and hand over organised files.",
+      "requirements_md": "- A showreel with commercial or documentary work.\n- Strong knowledge of cameras, lenses, exposure and lighting.\n- Experience leading or working in a crew on set.\n- Ability to travel and work irregular hours for shoots.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Experience with gimbals, sliders and drone footage.\n- Understanding of colour workflows and post-production.",
+      "skills": [
+        "Cinematography",
+        "Lighting",
+        "Camera operation",
+        "Composition",
+        "Gimbal and stabilisation",
+        "Drone footage",
+        "Colour workflow"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "commercial-production", "label": "Commercial Production" },
+            { "value": "documentary", "label": "Documentary" },
+            { "value": "brand-production", "label": "Brand Production" },
+            { "value": "corporate-production", "label": "Corporate Production" }
+          ]
+        },
+        {
+          "label": "Links to your best work or shoots",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and tell us your role in each.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Camera, lens and lighting equipment you own or operate",
+          "type": "long_text",
+          "required": true,
+          "section": "role_specific",
+          "help_text": "List the main items.",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Do you have your own equipment you can bring to shoots?",
+          "type": "single_choice",
+          "required": true,
+          "section": "role_specific",
+          "options": [
+            { "value": "yes-a-full-kit", "label": "Yes, a full kit" },
+            { "value": "yes-partial-kit", "label": "Yes, partial kit" },
+            { "value": "no-i-work-with-provided-equipment", "label": "No, I work with provided equipment" }
+          ]
+        },
+        {
+          "label": "Describe a shoot you led and how you planned it",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What was the location, lighting plan and outcome?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Are you willing to travel for shoots?",
+          "type": "yes_no",
+          "required": true,
+          "section": "role_specific"
+        }
+      ]
+    },
+    {
+      "slug": "product-commercial-photographer",
+      "title": "Product & Commercial Photographer",
+      "department_slug": "video-motion-production",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Photograph products, adverts and brands with clean lighting, careful styling and polished retouching.",
+      "description_md": "We are looking for a photographer who can produce clean, appealing images for products, advertising and brand campaigns. You will shoot in the studio and on location, and deliver retouched, ready-to-use files.\n\nYou will work with art directors, stylists and marketers, and care about detail, consistency and delivery time.",
+      "responsibilities_md": "- Shoot product, advertising, commercial and brand photographs.\n- Plan lighting, styling and backgrounds for each shoot.\n- Retouch and colour-correct images for final delivery.\n- Organise, name and deliver files in the formats required.\n- Maintain camera and lighting equipment.",
+      "requirements_md": "- A portfolio of product or commercial photography.\n- Strong knowledge of lighting, exposure and composition.\n- Skills in Lightroom and Photoshop retouching.\n- Ability to work to a brief and deadline.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Experience with fashion or e-commerce photography.\n- Basic video or short-form content skills.",
+      "skills": [
+        "Product photography",
+        "Studio lighting",
+        "Retouching",
+        "Lightroom",
+        "Photoshop",
+        "Composition",
+        "Brand photography"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "product-photography", "label": "Product Photography" },
+            { "value": "advertising-photography", "label": "Advertising Photography" },
+            { "value": "commercial-photography", "label": "Commercial Photography" },
+            { "value": "brand-photography", "label": "Brand Photography" }
+          ]
+        },
+        {
+          "label": "Links to your portfolio",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links with your best product or commercial work.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Your camera and lighting setup",
+          "type": "long_text",
+          "required": true,
+          "section": "role_specific",
+          "help_text": "List your main camera, lenses and lights.",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Commercial photography experience",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "Which clients or projects have you worked on?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which retouching software do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "adobe-lightroom", "label": "Adobe Lightroom" },
+            { "value": "adobe-photoshop", "label": "Adobe Photoshop" },
+            { "value": "capture-one", "label": "Capture One" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Do you have a studio or lighting setup you can use?",
+          "type": "single_choice",
+          "required": false,
+          "section": "role_specific",
+          "options": [
+            { "value": "yes-my-own-studio", "label": "Yes, my own studio" },
+            { "value": "yes-portable-lighting", "label": "Yes, portable lighting" },
+            { "value": "no", "label": "No" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "creative-director-production-lead",
+      "title": "Creative Director & Production Lead",
+      "department_slug": "video-motion-production",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time"],
+        "experience": ["mid", "senior"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Lead creative direction and production: concepts, campaigns, creative teams and delivery from idea to launch.",
+      "description_md": "We are looking for an experienced creative leader who can set direction for campaigns and productions and guide a team of designers, editors and filmmakers to deliver them.\n\nYou will turn client goals into strong creative ideas, supervise production, and be responsible for quality, schedule and the team.",
+      "responsibilities_md": "- Set creative direction and develop campaign concepts.\n- Lead and supervise designers, editors, filmmakers and writers.\n- Direct production from planning through shooting and post-production.\n- Review work, give clear feedback and protect quality.\n- Present ideas to clients and manage schedules and budgets with the team.",
+      "requirements_md": "- A strong portfolio of campaigns or productions you directed.\n- Experience leading a creative team.\n- Excellent creative judgement and storytelling.\n- Practical knowledge of production planning and post-production.\n- Strong communication and presentation skills in English and Bengali.",
+      "nice_to_have_md": "- Experience with brand strategy.\n- Experience managing production budgets.",
+      "skills": [
+        "Creative direction",
+        "Campaign concepts",
+        "Production management",
+        "Team leadership",
+        "Storytelling",
+        "Client presentation"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "creative-direction", "label": "Creative Direction" },
+            { "value": "campaign-concept-development", "label": "Campaign Concept Development" },
+            { "value": "production-direction", "label": "Production Direction" },
+            { "value": "creative-team-supervision", "label": "Creative Team Supervision" }
+          ]
+        },
+        {
+          "label": "Links to campaigns or productions you directed",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and describe your role in each.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "How many people have you led in a creative team?",
+          "type": "number",
+          "required": true,
+          "section": "experience",
+          "config": { "min": 0, "max": 200, "integer": true }
+        },
+        {
+          "label": "Describe a campaign you directed from concept to delivery",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What was the idea, how did you lead the team and what was the result?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Have you managed production budgets?",
+          "type": "yes_no",
+          "required": true,
+          "section": "experience"
+        },
+        {
+          "label": "How do you give feedback to creatives?",
+          "type": "long_text",
+          "required": false,
+          "section": "role_specific",
+          "help_text": "A short example is enough.",
+          "config": { "maxLength": 1500 }
+        }
+      ]
+    },
+    {
+      "slug": "script-creative-content-writer",
+      "title": "Script & Creative Content Writer",
+      "department_slug": "content-copywriting",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Write video scripts, ad copy and creative social content that is clear, memorable and on brand.",
+      "description_md": "We are looking for a writer who can write for the screen and for social media: scripts for videos and commercials, ad copy and creative content that people remember.\n\nYou will work with directors, designers and marketers, and write in Bengali, English or both.",
+      "responsibilities_md": "- Write scripts for commercials, brand videos and social content.\n- Write ad copy and campaign lines.\n- Create creative content ideas for social media.\n- Adapt one message across different formats and platforms.\n- Revise your writing with feedback and meet deadlines.",
+      "requirements_md": "- Writing samples that show creative and commercial range.\n- Excellent writing in Bengali, English or both.\n- Understanding of how scripts work for video.\n- Ability to write to a brief and in a brand voice.\n- Good time management.",
+      "nice_to_have_md": "- Experience in advertising or content agencies.\n- Basic knowledge of storyboarding.",
+      "skills": [
+        "Scriptwriting",
+        "Ad copy",
+        "Creative writing",
+        "Storytelling",
+        "Social content",
+        "Bengali writing",
+        "English writing"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "video-script", "label": "Video Script" },
+            { "value": "commercial-advertising-script", "label": "Commercial/Advertising Script" },
+            { "value": "ad-copy", "label": "Ad Copy" },
+            { "value": "social-and-creative-content", "label": "Social & Creative Content" }
+          ]
+        },
+        {
+          "label": "Links to your writing samples",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links to scripts, copy or content you wrote.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which languages do you write in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "options": [
+            { "value": "bengali", "label": "Bengali" },
+            { "value": "english", "label": "English" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Write a three-line hook for any product you like",
+          "type": "long_text",
+          "required": true,
+          "section": "role_specific",
+          "help_text": "This is a short writing test.",
+          "config": { "maxLength": 600 }
+        },
+        {
+          "label": "Writing sample (PDF or Word)",
+          "type": "file_upload",
+          "required": false,
+          "section": "portfolio",
+          "help_text": "PDF file, up to 10 MB. Optional.",
+          "config": { "accept": ["pdf"], "maxSizeMb": 10 }
+        }
+      ]
+    },
+    {
+      "slug": "seo-brand-content-writer",
+      "title": "SEO, Website & Brand Content Writer",
+      "department_slug": "content-copywriting",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Write search-friendly website, brand and corporate content that ranks, informs and sounds like the brand.",
+      "description_md": "We are looking for a content writer who understands both search and brand voice. You will write website pages, articles and corporate content that is easy to find, easy to read and true to the brand.\n\nYou will research topics and keywords, structure content for readers and search engines, and improve it using performance data.",
+      "responsibilities_md": "- Research keywords and topics and plan SEO content.\n- Write website pages, articles and brand copy.\n- Write corporate content such as profiles and company materials.\n- Optimise existing content for search and readability.\n- Track results and update content based on performance.",
+      "requirements_md": "- Writing samples for websites, articles or brands.\n- Excellent writing in English, Bengali or both.\n- Working knowledge of on-page SEO.\n- Experience with keyword research tools.\n- Ability to follow a brand voice and brief.",
+      "nice_to_have_md": "- Experience with Google Search Console and Analytics.\n- Basic knowledge of WordPress publishing.",
+      "skills": [
+        "SEO writing",
+        "Keyword research",
+        "Website copy",
+        "Brand voice",
+        "Content strategy",
+        "On-page SEO",
+        "Editing"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "seo-content", "label": "SEO Content" },
+            { "value": "website-content", "label": "Website Content" },
+            { "value": "brand-copy", "label": "Brand Copy" },
+            { "value": "corporate-content", "label": "Corporate Content" }
+          ]
+        },
+        {
+          "label": "Links to your writing samples",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links, ideally with ranking or traffic results.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which SEO tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "ahrefs", "label": "Ahrefs" },
+            { "value": "semrush", "label": "SEMrush" },
+            { "value": "google-search-console", "label": "Google Search Console" },
+            { "value": "yoast-or-rank-math", "label": "Yoast or Rank Math" },
+            { "value": "surfer-or-clearscope", "label": "Surfer or Clearscope" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe an article you optimised and the result",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What did you change and what happened to traffic or ranking?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which languages do you write in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "options": [
+            { "value": "bengali", "label": "Bengali" },
+            { "value": "english", "label": "English" }
+          ],
+          "config": { "allowOther": true }
+        }
+      ]
+    },
+    {
+      "slug": "social-media-community-manager",
+      "title": "Social Media & Community Manager",
+      "department_slug": "marketing-social",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Manage brand social media, publish content and build an active, positive community.",
+      "description_md": "We are looking for someone to run the day-to-day of our brands’ social media: planning and publishing content, answering the community and keeping the conversation positive and on brand.\n\nYou will work with designers, video editors and marketers, and report on what works.",
+      "responsibilities_md": "- Plan and publish content calendars across platforms.\n- Manage comments, messages and community conversations.\n- Coordinate content with designers, editors and writers.\n- Track engagement and report on results.\n- Handle sensitive comments and escalate issues calmly.",
+      "requirements_md": "- Experience managing social media pages or communities.\n- Excellent writing in Bengali and English.\n- Good understanding of Facebook, Instagram, TikTok and other platforms.\n- Ability to respond quickly and politely.\n- Organised and reliable with schedules.",
+      "nice_to_have_md": "- Experience with basic design or video tools.\n- Understanding of Meta Business Suite insights.",
+      "skills": [
+        "Social media management",
+        "Content calendar",
+        "Community management",
+        "Engagement",
+        "Meta Business Suite",
+        "Reporting"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "social-media-management", "label": "Social Media Management" },
+            { "value": "content-publishing", "label": "Content Publishing" },
+            { "value": "community-management", "label": "Community Management" },
+            { "value": "audience-engagement", "label": "Audience Engagement" }
+          ]
+        },
+        {
+          "label": "Pages or accounts you managed (links)",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links and the size of each audience.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which tools do you use for scheduling and reporting?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "meta-business-suite", "label": "Meta Business Suite" },
+            { "value": "buffer", "label": "Buffer" },
+            { "value": "hootsuite", "label": "Hootsuite" },
+            { "value": "later", "label": "Later" },
+            { "value": "canva", "label": "Canva" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe how you handled a difficult comment or a small crisis",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What happened and what did you do?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Are you comfortable replying to customers in both Bengali and English?",
+          "type": "yes_no",
+          "required": true,
+          "section": "role_specific"
+        }
+      ]
+    },
+    {
+      "slug": "performance-marketing-specialist",
+      "title": "Performance Marketing Specialist",
+      "department_slug": "marketing-social",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time"],
+        "experience": ["entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Plan, run and optimise paid campaigns on Meta and Google and turn the numbers into growth.",
+      "description_md": "We are looking for a performance marketer who can plan, launch and optimise paid campaigns and make decisions with data. You will manage ad budgets across Meta, Google and other channels.\n\nYou will work with creative and content teams, test ideas systematically and report results clearly.",
+      "responsibilities_md": "- Plan and run paid campaigns on Meta, Google and other platforms.\n- Manage budgets, bidding and audience targeting.\n- Test creatives, audiences and offers and learn from results.\n- Set up tracking and analytics for campaigns.\n- Report results and recommend next steps.",
+      "requirements_md": "- Proven experience running paid ad campaigns.\n- Strong knowledge of Meta Ads Manager and Google Ads.\n- Good understanding of tracking, pixels and analytics.\n- Comfortable working with numbers and reports.\n- Clear communication in English or Bengali.",
+      "nice_to_have_md": "- Meta Blueprint or Google certification.\n- Experience with e-commerce or lead generation campaigns.",
+      "skills": [
+        "Meta Ads",
+        "Google Ads",
+        "PPC",
+        "Media buying",
+        "Campaign optimisation",
+        "Marketing analytics",
+        "GA4",
+        "Tag Manager"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "meta-ads", "label": "Meta Ads" },
+            { "value": "google-ads", "label": "Google Ads" },
+            { "value": "ppc", "label": "PPC" },
+            { "value": "media-buying", "label": "Media Buying" },
+            { "value": "campaign-optimization", "label": "Campaign Optimization" },
+            { "value": "marketing-analytics", "label": "Marketing Analytics" }
+          ]
+        },
+        {
+          "label": "Campaigns you have managed",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "Describe the goal, budget range and results. Leave out confidential details.",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Monthly ad spend you have managed",
+          "type": "single_choice",
+          "required": true,
+          "section": "experience",
+          "options": [
+            { "value": "under-50000-bdt", "label": "Under 50,000 BDT" },
+            { "value": "50000-to-300000-bdt", "label": "50,000 to 300,000 BDT" },
+            { "value": "300000-to-1000000-bdt", "label": "300,000 to 1,000,000 BDT" },
+            { "value": "over-1000000-bdt", "label": "Over 1,000,000 BDT" }
+          ]
+        },
+        {
+          "label": "Certifications you hold",
+          "type": "multiple_choice",
+          "required": false,
+          "section": "skills",
+          "options": [
+            { "value": "meta-blueprint", "label": "Meta Blueprint" },
+            { "value": "google-ads-certification", "label": "Google Ads certification" },
+            { "value": "google-analytics-certification", "label": "Google Analytics certification" },
+            { "value": "none-yet", "label": "None yet" }
+          ]
+        },
+        {
+          "label": "Describe a campaign you optimised: goal, what you changed and the result",
+          "type": "long_text",
+          "required": true,
+          "section": "role_specific",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which analytics tools do you use?",
+          "type": "multiple_choice",
+          "required": false,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "google-analytics-4", "label": "Google Analytics 4" },
+            { "value": "meta-events-manager", "label": "Meta Events Manager" },
+            { "value": "looker-studio", "label": "Looker Studio" },
+            { "value": "google-tag-manager", "label": "Google Tag Manager" }
+          ],
+          "config": { "allowOther": true }
+        }
+      ]
+    },
+    {
+      "slug": "on-camera-presenter-host",
+      "title": "On-Camera Presenter & Content Host",
+      "department_slug": "presentation-production-operations",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Present products, brands and explainer content on camera with confidence and a natural, clear voice.",
+      "description_md": "We are looking for a presenter who is comfortable and engaging on camera. You will host product and brand videos, explainers and promotional content for different brands and platforms.\n\nYou will work with directors and editors, take direction well and keep energy up across takes.",
+      "responsibilities_md": "- Present products, brands and explainers on camera.\n- Host promotional and social media videos.\n- Prepare scripts and talking points before shoots.\n- Take direction and adjust tone for different brands.\n- Work with the crew during shoots.",
+      "requirements_md": "- Clear speaking voice and confident on-camera presence.\n- Examples of videos where you present or host.\n- Ability to present in Bengali, English or both.\n- Reliability and punctuality on shoot days.\n- Willingness to take feedback.",
+      "nice_to_have_md": "- Experience in acting, hosting or voice work.\n- Ability to present without a script.",
+      "skills": [
+        "On-camera presenting",
+        "Hosting",
+        "Voice and tone",
+        "Scriptless presenting",
+        "Bengali and English delivery"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "product-presentation", "label": "Product Presentation" },
+            { "value": "brand-presentation", "label": "Brand Presentation" },
+            { "value": "explainer-content", "label": "Explainer Content" },
+            { "value": "promotional-content", "label": "Promotional Content" },
+            { "value": "social-media-presentation", "label": "Social Media Presentation" }
+          ]
+        },
+        {
+          "label": "Links to videos where you appear",
+          "type": "long_text",
+          "required": true,
+          "section": "portfolio",
+          "help_text": "Add up to three links.",
+          "config": { "maxLength": 1200 }
+        },
+        {
+          "label": "Which languages can you present in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "options": [
+            { "value": "bengali", "label": "Bengali" },
+            { "value": "english", "label": "English" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Are you comfortable presenting without a script?",
+          "type": "yes_no",
+          "required": true,
+          "section": "role_specific"
+        },
+        {
+          "label": "Introduction video (link)",
+          "type": "url",
+          "required": false,
+          "section": "portfolio",
+          "help_text": "Optional. A short video introducing yourself."
+        }
+      ]
+    },
+    {
+      "slug": "production-coordinator",
+      "title": "Production Coordinator",
+      "department_slug": "presentation-production-operations",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "part_time", "freelance"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "salary_mode": "negotiable",
+      "summary": "Coordinate shoots, schedules, talent and logistics so every production runs smoothly.",
+      "description_md": "We are looking for an organised coordinator who keeps productions moving. You will plan schedules, coordinate talent and crew, and make sure everything is ready before and during shoots.\n\nYou will be the point of contact for the team, solve problems quickly and keep everyone informed.",
+      "responsibilities_md": "- Coordinate shoot schedules, call sheets and locations.\n- Manage talent, crew and vendor communication.\n- Handle production logistics: transport, equipment, permits and meals.\n- Track production tasks, costs and deadlines.\n- Solve problems on set and keep the team informed.",
+      "requirements_md": "- Experience coordinating productions, events or similar projects.\n- Excellent organisation and follow-up.\n- Clear communication in Bengali and English.\n- Ability to stay calm under pressure.\n- Comfort with irregular hours and some travel.",
+      "nice_to_have_md": "- Experience on video or photo shoots.\n- Basic budgeting skills.",
+      "skills": [
+        "Shoot coordination",
+        "Production management",
+        "Talent coordination",
+        "Logistics",
+        "Scheduling",
+        "Communication"
+      ],
+      "cv_required": true,
+      "use_standard_questions": true,
+      "questions": [
+        {
+          "label": "Which areas do you work in?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "shoot-coordination", "label": "Shoot Coordination" },
+            { "value": "production-management", "label": "Production Management" },
+            { "value": "talent-coordination", "label": "Talent Coordination" },
+            { "value": "production-logistics", "label": "Production Logistics" }
+          ]
+        },
+        {
+          "label": "Productions you have coordinated",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What were they and what was your role?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Which planning tools do you use?",
+          "type": "multiple_choice",
+          "required": true,
+          "section": "skills",
+          "help_text": "Choose all that apply.",
+          "options": [
+            { "value": "google-sheets", "label": "Google Sheets" },
+            { "value": "notion", "label": "Notion" },
+            { "value": "trello", "label": "Trello" },
+            { "value": "asana", "label": "Asana" },
+            { "value": "whatsapp-groups", "label": "WhatsApp groups" }
+          ],
+          "config": { "allowOther": true }
+        },
+        {
+          "label": "Describe a time a shoot plan changed at the last minute",
+          "type": "long_text",
+          "required": true,
+          "section": "experience",
+          "help_text": "What happened and how did you handle it?",
+          "config": { "maxLength": 1500 }
+        },
+        {
+          "label": "Are you comfortable with long and irregular shoot hours?",
+          "type": "yes_no",
+          "required": true,
+          "section": "role_specific"
+        },
+        {
+          "label": "Can you travel for shoots?",
+          "type": "yes_no",
+          "required": true,
+          "section": "role_specific"
+        }
+      ]
+    }
+  ]
+}

@@ -24,6 +24,7 @@ import { uploadDemoFile } from "@/lib/storage/demo-files";
 import { ensureBuckets } from "@/lib/storage/ensure-buckets";
 import { seedBase } from "./base";
 import { jobData } from "./data";
+import { demoJobContent, mayUpgradeDemoContent, type DemoJobContent } from "./demo-content";
 import { requireDevTarget } from "./require-dev";
 import { mayUpgradeDemoQuestions } from "./question-upgrade";
 import { copyStandardQuestions } from "@/lib/questions/defaults";
@@ -41,6 +42,26 @@ function reference(i: number) {
       .map((byte) => alphabet[byte % alphabet.length])
       .join("")
   );
+}
+
+/** Demo job-row fields derived from the realistic per-job content. */
+function demoContentValues(content: DemoJobContent) {
+  return {
+    summary: content.summary,
+    descriptionMd: content.descriptionMd,
+    responsibilitiesMd: content.responsibilitiesMd,
+    requirementsMd: content.requirementsMd,
+    niceToHaveMd: content.niceToHaveMd,
+    skills: content.skills,
+    benefits: content.benefits,
+    vacancies: content.vacancies ?? null,
+    experienceText: content.experienceText ?? null,
+    salaryMode: (content.salaryText ? "range" : "negotiable") as "range" | "negotiable",
+    salaryText: content.salaryText ?? null,
+    deadlineAt: content.deadlineInDays
+      ? new Date(Date.now() + content.deadlineInDays * 24 * 60 * 60 * 1000)
+      : null,
+  };
 }
 
 const departmentsSkills: Record<number, string[]> = {
@@ -261,6 +282,8 @@ export async function seedDemo() {
     const arrangementSlug = (["onsite", "remote", "hybrid"] as const)[i % 3];
     const engagementSlug = engagementTypes[i] ?? "full_time";
     const experienceSlug = slug === "creative-director-production-lead" ? "senior" : i % 2 === 0 ? "entry" : null;
+    const content = demoJobContent[slug];
+    if (!content) throw new Error(`Demo content missing for job ${slug}.`);
     await db.transaction(async (tx) => {
       const [job] = await tx
         .insert(jobs)
@@ -274,16 +297,19 @@ export async function seedDemo() {
           sortOrder: i + 1,
           publishedAt: status === "draft" ? null : new Date("2026-09-01T00:00:00Z"),
           closedAt: status === "closed" ? new Date("2026-09-20T00:00:00Z") : null,
-          summary: `Demo description for ${title}. Work with a small team on thoughtful projects.`,
-          descriptionMd: `Demo description for **${title}**.\n\n- Collaborate with a small team\n- Develop practical work\n\n[Example project](https://example.com)\n\n<script>alert('demo HTML must not render')</script>`,
-          responsibilitiesMd: "- Understand briefs\n- Deliver careful work\n- Communicate progress",
-          requirementsMd:
-            "- Relevant skills\n- A portfolio or practical examples\n- Clear communication",
+          ...demoContentValues(content),
         })
         .onConflictDoNothing({ target: jobs.slug })
         .returning();
       if (!job) {
         const [existing] = await tx.select().from(jobs).where(eq(jobs.slug, slug)).for("update");
+        // Conservative content upgrade: only untouched Phase 0 demo rows (same
+        // timestamps and original placeholder text) receive the realistic copy.
+        if (mayUpgradeDemoContent(existing, id(slug), title))
+          await tx
+            .update(jobs)
+            .set(demoContentValues(content))
+            .where(eq(jobs.id, existing.id));
         const current = await tx
           .select()
           .from(jobQuestions)

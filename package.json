@@ -25,6 +25,7 @@
     "seed:base": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/base.ts",
     "seed:demo": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/demo.ts",
     "db:reset:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/reset.ts",
+    "db:wipe-demo": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/wipe-demo.ts",
     "storage:ensure": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/lib/storage/ensure-buckets.ts",
     "db:counts": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/counts.ts",
     "db:keepalive:dev": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/keepalive.ts",
@@ -34,6 +35,7 @@
     "db:migrate:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/owner-setup.ts migrate",
     "seed:base:owner": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/owner-setup.ts base",
     "jobs:seed-shells": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/job-shells.ts",
+    "jobs:import-real": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/seed/import-real.ts",
     "links:generate": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx src/db/generate-links.ts"
   },
   "dependencies": {

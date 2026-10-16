@@ -49,7 +49,7 @@ describe("demo/reset production guard", () => {
       }),
     ).toThrow();
   });
-  it.each(["demo.ts", "reset.ts"])("%s CLI refuses production before connecting", (file) => {
+  it.each(["demo.ts", "reset.ts", "wipe-demo.ts"])("%s CLI refuses production before connecting", (file) => {
     const result = spawnSync(
       process.execPath,
       [

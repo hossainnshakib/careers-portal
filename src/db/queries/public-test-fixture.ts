@@ -115,6 +115,43 @@ export async function createStressTestJobs(prefix: string) {
     bengali: { id: bengali.id, slug: bengali.slug, title: bengaliTitle, summary: bengaliSummary, salaryText: bengaliSalaryText, questionLabel: bengaliQuestionLabel },
   };
 }
+/**
+ * Logo-row geometry: four temporary published roles with 1, 2, 3 and 4 hiring
+ * brands (primary first). Used by logo-rows.spec; every row is removed by the
+ * fixture's `removeTestFixture` cleanup, so owner demo data is untouched.
+ */
+export async function createLogoRowTestJobs(prefix: string) {
+  guard(prefix);
+  const brandRows = await getDb().select().from(brands).where(eq(brands.status, "active")).orderBy(asc(brands.sortOrder)).limit(4);
+  const [department] = await getDb().select().from(departments).where(eq(departments.isActive, true)).orderBy(asc(departments.sortOrder)).limit(1);
+  if (brandRows.length < 4 || !department) throw new Error("Base catalog required for logo row test");
+  const options = await listJobOptions();
+  const optionIds = options.filter((option) =>
+    (option.group === "arrangement" && option.slug === "remote") ||
+    (option.group === "engagement" && option.slug === "full_time") ||
+    (option.group === "experience" && option.slug === "entry"),
+  ).map((option) => option.id);
+  if (optionIds.length < 2) throw new Error("Base options required for logo row test");
+  const created: { id: string; slug: string; brandCount: number }[] = [];
+  for (const brandCount of [1, 2, 3, 4]) {
+    const selected = brandRows.slice(0, brandCount);
+    const saved = await saveJob(jobInput.parse({
+      id: null, title: `${prefix}Logo row ${brandCount} brand${brandCount === 1 ? "" : "s"}`,
+      slug: `${prefix}logo-row-${brandCount}`, departmentId: department.id,
+      brandIds: selected.map((brand) => brand.id), primaryBrandId: selected[0].id, optionIds, engagementNote: null,
+      salaryMode: "negotiable", salaryText: "", vacancies: null, experienceText: null,
+      skills: [], benefits: [], niceToHaveMd: "", locationText: "Dhaka",
+      deadlineAt: new Date(Date.now() + 7 * 86400000).toISOString(), cvRequired: false,
+      summary: "Temporary role that verifies brand logo row geometry.",
+      descriptionMd: "Temporary role used by an end-to-end layout check.",
+      responsibilitiesMd: "- Keep the brand logo row on one line", requirementsMd: "- Careful attention to layout",
+      intent: "publish",
+      questions: [{ id: randomUUID(), label: "Why this role?", type: "short_text", required: false, helpText: null, options: null, config: { maxLength: 200 }, section: "professional", sortOrder: 0 }],
+    }));
+    created.push({ id: saved.id, slug: saved.slug, brandCount });
+  }
+  return { jobs: created };
+}
 export async function verifyPublicTestApplication(prefix: string, reference: string) {
   guard(prefix);
   const rows = await getDb().select({ application: applications, slug: jobs.slug }).from(applications).innerJoin(jobs, eq(jobs.id, applications.jobId)).where(eq(applications.reference, reference));

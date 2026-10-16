@@ -1,16 +1,21 @@
 import Link from "next/link";
 import type { JobCard, PublicBrand } from "@/lib/careers/filters";
 import { accentColor, cardBrands } from "@/lib/careers/presentation";
-import { readableAccentText } from "@/lib/brands/contrast";
 import { PublicBrandLogo } from "./public-brand-logo";
+import { BrandLogoRow } from "./brand-logo-row";
 import { PublicIcon } from "./public-icon";
-import { MarqueeToggle } from "./marquee-toggle";
 
 export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicBrand[] }) {
   const hiring = brands.filter(brand => jobs.some(job => job.brands.some(link => link.id === brand.id)));
   const featured = jobs[0];
-  const featuredBrand = featured ? cardBrands(featured)[0] : undefined;
+  const featuredBrands = featured ? cardBrands(featured) : [];
   const hasRoles = jobs.length > 0;
+  // Stats card: the first four hiring brands (in brand sort order) that have a
+  // logo, in white rounded chips, plus a "+N" chip for the rest. Decorative —
+  // the "N brands hiring" line right below carries the same information.
+  const statsLogos = hiring.filter(brand => brand.logoUrl).slice(0, 4);
+  const statsHidden = hiring.filter(brand => brand.logoUrl).slice(4);
+  const statsHiddenNames = statsHidden.map(brand => brand.name).join(", ");
   const logos = (duplicate: boolean) => brands.map(brand => <li key={brand.id} className="shrink-0">
     <Link href={`/?brand=${encodeURIComponent(brand.slug)}#roles`} tabIndex={duplicate ? -1 : undefined} aria-label={`View roles at ${brand.name}`} className="block opacity-55 grayscale transition-opacity hover:opacity-100">
       {brand.logoUrl ? <PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} className="h-[30px] max-w-[110px]" decorative={duplicate} /> : <span className="text-[14px] font-bold">{brand.name}</span>}
@@ -26,12 +31,17 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
           <span className="text-[10.5px] font-bold uppercase tracking-[.06em] text-ui-muted">{featured.department.name}</span>
           <span className="text-[17px] font-extrabold tracking-[-.01em]">{featured.title}</span>
           <span className="flex flex-wrap gap-1.5">{featured.options.filter(option => option.group !== "experience").map(option => <span className="ui-pill" key={`${option.group}:${option.slug}`}>{option.label}</span>)}</span>
-          {featuredBrand && <PublicBrandLogo name={featuredBrand.name} src={featuredBrand.logoUrl} slug={featuredBrand.slug} className="h-[24px] max-w-[110px]" />}
+          {!!featuredBrands.length && <BrandLogoRow brands={featuredBrands} size={30} />}
         </Link>}
         {hasRoles && <div className="ui-float-card ui-glass absolute right-8 top-[84px] w-[220px] rotate-4 flex-col gap-2.5 rounded-[22px] p-[18px]" aria-label="Hiring statistics">
           <span className="text-[12px] font-bold text-ui-muted">Open roles</span>
           <span className="text-[44px] font-extrabold leading-none tracking-[-.03em]">{jobs.length}</span>
-          <div aria-hidden="true" className="flex flex-wrap pl-2">{hiring.map(brand => <span key={brand.id} className="-ml-2 flex h-[30px] w-[30px] items-center justify-center rounded-full border-2 border-white text-[12px] font-extrabold" style={{ backgroundColor: accentColor(brand.accentColor), color: readableAccentText(brand.accentColor) }}>{Array.from(brand.name)[0]}</span>)}</div>
+          <div aria-hidden="true" className="flex flex-wrap items-center gap-[6px] pl-1">
+            {statsLogos.map(brand => <span key={brand.id} className="flex h-[30px] min-w-0 items-center rounded-full border border-ui-border bg-white px-2">
+              <PublicBrandLogo name={brand.name} src={brand.logoUrl} slug={brand.slug} decorative shrink={false} className="h-[20px] w-auto min-w-0 max-w-[70px]" />
+            </span>)}
+            {statsHidden.length > 0 && <span className="flex h-[30px] shrink-0 items-center rounded-full border border-ui-border bg-white/80 px-2 text-[12px] font-bold text-ui-muted" title={statsHiddenNames}>+{statsHidden.length}</span>}
+          </div>
           <span className="text-[12px] font-semibold text-ui-muted">{hiring.length} {hiring.length === 1 ? "brand" : "brands"} hiring</span>
         </div>}
         <div className="mx-auto flex max-w-[760px] flex-col items-center gap-[22px] text-center">
@@ -50,7 +60,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
       </div>
     </section>
     {hasRoles && !!brands.length && <section aria-label="Hiring across our brands" className="mx-auto max-w-[1100px] px-6 pb-7 pt-2 text-center">
-      <h2 className="mb-[18px] text-[12.5px] font-bold uppercase tracking-[.08em] text-ui-muted">Hiring across our brands<MarqueeToggle targetId="brand-marquee" /></h2>
+      <h2 className="mb-[18px] text-[12.5px] font-bold uppercase tracking-[.08em] text-ui-muted">Hiring across our brands</h2>
       <div id="brand-marquee" className="brand-marquee py-1"><div className="brand-marquee-track"><ul>{logos(false)}</ul><ul aria-hidden="true" className="brand-marquee-copy">{logos(true)}</ul></div></div>
     </section>}
   </>;
