@@ -37,7 +37,7 @@ test("draft and unknown job slugs return 404", async ({ page }) => {
 
 test("open Apply page has a form; unknown Apply slug is 404", async ({ page }) => {
   // Use the stable demo job rather than the ephemeral fixture (avoids fixture setup races).
-  await page.goto("/jobs/web-developer/apply");
+  await page.goto("/jobs/demo-platform-developer/apply");
   await expect(page.getByRole("region", { name: "Application form" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Submit application/ })).toBeVisible();
   const unknown = await page.goto("/jobs/this-role-does-not-exist/apply");

@@ -33,7 +33,15 @@ test("both settings URLs retain unsaved editing and guarded delete confirmation"
     await expect(editor.getByLabel("Group", { exact: true })).toBeEnabled();
     await expect(editor.getByLabel("Label", { exact: true })).toHaveValue("");
     await expect(work.getByRole("button", { name: "Delete On-site", exact: true })).toBeDisabled();
-    const removable = page.getByRole("main").locator("button[aria-label^='Delete ']:enabled").first();
+    // All 13 base options are deliberately used by the demo matrix. Create an
+    // owned unused option rather than relying on (or deleting) an owner record.
+    // Labels cap at 40 characters; ownership belongs in the full nonce slug.
+    const unused = `DEMO ${adminAccount.prefix.slice(4, 12)} ${route}`;
+    await editor.getByLabel("Label", { exact: true }).fill(unused);
+    await editor.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}unused-${route}`);
+    await editor.getByRole("button", { name: "Create", exact: true }).click();
+    const removable = page.getByRole("button", { name: `Delete ${unused}`, exact: true });
+    await expect(removable).toBeEnabled();
     const rowCount = await page.getByRole("main").getByRole("row").count();
     await removable.click();
     const dialog = page.getByRole("dialog", { name: "Delete option", exact: true });

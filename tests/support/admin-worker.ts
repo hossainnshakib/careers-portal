@@ -5,7 +5,7 @@ import { closeDb, getDb } from "../../src/db/index";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { addAdmin } from "../../src/db/queries/admins";
-import { removeTestFixture } from "../../src/db/queries/test-fixtures";
+import { addTestApplication, removeTestFixture } from "../../src/db/queries/test-fixtures";
 import { requireDevTarget } from "../../src/db/seed/require-dev";
 import { createSupabaseAdminClient } from "../../src/lib/supabase/admin";
 import { removeTestLogos } from "../../src/lib/storage/test-logos";
@@ -162,6 +162,10 @@ async function setup() {
   }
   // Credentials travel only over IPC to the fixture, never stdout or files.
   const publicJob = process.argv[2] === "public" ? await createPublicTestJob(prefix) : undefined;
+  if (process.argv[2] === "dashboard") {
+    const job = await createPublicTestJob(prefix);
+    for (let i = 0; i < 10; i++) await addTestApplication(job.id, prefix);
+  }
   const reviewApplication = process.argv[2] === "review" ? await createReviewTestApplication(prefix) : undefined;
   const stressJobs = process.argv[2] === "stress" ? await createStressTestJobs(prefix) : undefined;
   const logoJobs = process.argv[2] === "logos" ? await createLogoRowTestJobs(prefix) : undefined;

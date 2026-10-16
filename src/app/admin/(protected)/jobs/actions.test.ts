@@ -24,6 +24,7 @@ vi.mock("@/db/queries/jobs", () => ({
 vi.mock("next/cache", () => ({ revalidateTag: mocks.tag, revalidatePath: mocks.path }));
 import { saveJobAction, jobCommandAction, copyJobQuestionsAction } from "./actions";
 import { jobInput } from "@/lib/validation/jobs";
+import { jobDeletionBlocked } from "@/lib/questions/job-policy";
 
 const id = "10000000-0000-4000-8000-000000000001";
 const input = {
@@ -65,6 +66,7 @@ beforeEach(() => {
 for (const [name, invoke] of [
   ["save", () => saveJobAction(input)],
   ["command", () => jobCommandAction({ id, command: "close" })],
+  ["delete", () => jobCommandAction({ id, command: "delete", confirmed: true })],
   ["copy", () => copyJobQuestionsAction({ sourceJobId: id })],
 ] as const) {
   it.each(["anonymous", "non-admin"])(`${name} rejects %s before DB reads/writes`, async (kind) => {
@@ -80,6 +82,8 @@ it("validates before mutation and reloads job definitions for copy", async () =>
   expect((await saveJobAction({ ...input, primaryBrandId: "invalid" })).ok).toBe(false);
   expect(mocks.save).not.toHaveBeenCalled();
   expect((await jobCommandAction({ id, command: "hack" })).ok).toBe(false);
+  expect(mocks.mutate).not.toHaveBeenCalled();
+  expect((await jobCommandAction({ id, command: "delete", confirmed: false })).ok).toBe(false);
   expect(mocks.mutate).not.toHaveBeenCalled();
   expect((await copyJobQuestionsAction({ sourceJobId: id, questions: [] })).ok).toBe(false);
   expect(mocks.load).not.toHaveBeenCalled();
@@ -133,7 +137,8 @@ it("returns generic failure for immutable slug/DB failures", async () => {
 it.each(["close", "reopen", "duplicate", "delete"])(
   "%s invalidates list/counts and both affected slug tags",
   async (command) => {
-    expect((await jobCommandAction({ id, command })).ok).toBe(true);
+    const input = { id, command, ...(command === "delete" ? { confirmed: true } : {}) };
+    expect((await jobCommandAction(input)).ok).toBe(true);
     expect(mocks.mutate).toHaveBeenCalledWith(id, command);
     expect(mocks.tag.mock.calls.map(([tag]) => tag)).toEqual([
       "jobs",
@@ -144,3 +149,25 @@ it.each(["close", "reopen", "duplicate", "delete"])(
     ]);
   },
 );
+it("requires an explicit confirmation before deleting and never mutates without it", async () => {
+  expect(await jobCommandAction({ id, command: "delete" })).toEqual({
+    ok: false,
+    error: "Confirm the deletion to continue.",
+  });
+  expect(mocks.mutate).not.toHaveBeenCalled();
+  expect((await jobCommandAction({ id, command: "delete", confirmed: true })).ok).toBe(true);
+  expect(mocks.mutate).toHaveBeenCalledWith(id, "delete");
+});
+it("shows the retention refusal and a stale missing job verbatim instead of a generic error", async () => {
+  mocks.mutate.mockRejectedValueOnce(new Error(jobDeletionBlocked));
+  expect(await jobCommandAction({ id, command: "delete", confirmed: true })).toEqual({
+    ok: false,
+    error: jobDeletionBlocked,
+  });
+  mocks.mutate.mockRejectedValueOnce(new Error("Job not found"));
+  expect(await jobCommandAction({ id, command: "close" })).toEqual({
+    ok: false,
+    error: "This job no longer exists. Refresh the jobs list.",
+  });
+  expect(mocks.tag).not.toHaveBeenCalled();
+});

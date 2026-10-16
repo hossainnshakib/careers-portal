@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { and, count, eq, like } from "drizzle-orm";
+import { and, count, eq, ilike, like } from "drizzle-orm";
 import { getDb } from "@/db";
 import { adminNotes, applications, applicationAnswers, applicationStatusEvents, attachments, jobs } from "@/db/schema";
 import { requireDevTarget } from "@/db/seed/require-dev";
@@ -35,7 +35,7 @@ export async function createReviewTestApplication(prefix: string) {
 }
 export async function reviewTestApplicationIds(prefix: string) {
   guard(prefix);
-  return (await getDb().select({ id: applications.id }).from(applications).innerJoin(jobs, eq(jobs.id, applications.jobId)).where(like(jobs.slug, `${prefix}%`))).map((row) => row.id);
+  return (await getDb().select({ id: applications.id }).from(applications).innerJoin(jobs, eq(jobs.id, applications.jobId)).where(and(like(jobs.slug, `${prefix}%`), ilike(applications.email, `${prefix}%@example.com`)))).map((row) => row.id);
 }
 export async function addReviewPaginationFixtures(prefix: string, jobId: string) {
   guard(prefix);

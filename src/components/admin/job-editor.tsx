@@ -130,6 +130,7 @@ export function JobEditor({
   const [message, setMessage] = useState("");
   const [mounted, setMounted] = useState(false);
   const publication = useRef<HTMLDialogElement>(null);
+  const deletion = useRef<HTMLDialogElement>(null);
   useEffect(() => setMounted(true), []);
   function field<K extends keyof JobInput>(name: K, value: JobInput[K]) {
     setDraft((current) => ({ ...current, [name]: value }));
@@ -177,10 +178,14 @@ export function JobEditor({
     setPending(true);
     setMessage("");
     try {
-      const result = await jobCommandAction({ id: draft.id, command });
+      const result = await jobCommandAction({
+        id: draft.id,
+        command,
+        ...(command === "delete" ? { confirmed: true } : {}),
+      });
       if (!result.ok) setMessage(result.error);
       else {
-        if (command === "delete") window.location.assign("/admin/jobs");
+        if (command === "delete") window.location.assign("/admin/jobs?deleted=1");
         else if (command === "duplicate") window.location.assign(`/admin/jobs/${result.data.id}/edit`);
         else window.location.reload();
       }
@@ -241,11 +246,12 @@ export function JobEditor({
                 Reopen job
               </button>
             )}
-            {draft.id && !published && !hasApplications && (
-              <button type="button" className="admin-btn admin-btn-danger" onClick={() => void command("delete")}>
-                Delete draft
+            {draft.id && !hasApplications && (
+              <button type="button" className="admin-btn admin-btn-danger" onClick={() => { setMessage(""); deletion.current?.showModal(); }}>
+                {status === "draft" ? "Delete draft" : "Delete job"}
               </button>
             )}
+            {hasApplications && <p className="admin-muted">Jobs with applications cannot be deleted. Close an open job instead; application snapshots, files and history are preserved.</p>}
               </div>
             </details>}
           </div>
@@ -534,6 +540,24 @@ export function JobEditor({
           <button type="button" disabled={pending || blockers.length > 0} className="admin-btn" onClick={() => void save("publish")}>{pending ? "Publishing…" : "Publish"}</button>
         </div>
       </dialog>
+      {draft.id && !hasApplications && (
+        <dialog ref={deletion} className="admin-delete-dialog" aria-label="Confirm job deletion" onCancel={(event) => { if (pending) event.preventDefault(); }}>
+          <div className="admin-kicker">Delete</div>
+          <h2>Delete {initial.title || "this job"}?</h2>
+          <p className="admin-muted">
+            {published
+              ? "This permanently removes the job, its questions and its public page. This cannot be undone."
+              : "This removes the draft and its questions. This cannot be undone."}
+          </p>
+          {message && <p role="status" className="admin-error">{message}</p>}
+          <div className="admin-inline" style={{ justifyContent: "flex-end" }}>
+            <button type="button" className="admin-btn admin-btn-secondary" disabled={pending} onClick={() => deletion.current?.close()}>Cancel</button>
+            <button type="button" className="admin-btn admin-btn-danger" disabled={pending} onClick={() => void command("delete")}>
+              {pending ? "Deleting…" : status === "draft" ? "Delete draft" : "Delete job"}
+            </button>
+          </div>
+        </dialog>
+      )}
     </section>
   );
 }

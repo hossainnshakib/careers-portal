@@ -3,6 +3,7 @@ import type { JobCard } from "@/lib/careers/filters";
 import { accentColor, cardBrands, groupRoles } from "@/lib/careers/presentation";
 import { BrandLogoRow } from "./brand-logo-row";
 import { PublicIcon } from "./public-icon";
+import { DemoNotice } from "./demo-notice";
 
 export function CareersResults({ jobs, departments, onClear, activeFilters = false }: { jobs: JobCard[]; departments: { name: string; slug: string }[]; onClear: () => void; activeFilters?: boolean }) {
   if (!jobs.length) return <div className="ui-glass rounded-[24px] p-8">
@@ -21,6 +22,7 @@ export function CareersResults({ jobs, departments, onClear, activeFilters = fal
       return <li key={job.id} className="min-w-0"><Link href={`/jobs/${job.slug}`} className="ui-glass ui-lift flex h-full min-w-0 flex-col gap-[14px] rounded-ui-card px-5 pb-[18px] pt-5" style={{ borderTopColor: accentColor(brands[0]?.accentColor), borderTopWidth: 3 }}>
         <BrandLogoRow brands={brands} size={28} />
         <h3 className="text-[18px] font-bold leading-[1.25] tracking-[-.01em]">{job.title}</h3>
+        <DemoNotice slug={job.slug} />
         <div className="flex flex-wrap gap-[7px]">
           {(["engagement", "arrangement", "experience"] as const).flatMap(group => job.options.filter(option => option.group === group)).map(option => <span key={`${option.group}:${option.slug}`} className={`ui-pill ${option.group === "experience" && option.slug === "fresher-welcome" ? "ui-pill-blue" : ""}`}>{option.label}</span>)}
           <span className="ui-pill ui-pill-salary">{job.salaryMode === "range" && job.salaryText ? job.salaryText : "Negotiable"}</span>

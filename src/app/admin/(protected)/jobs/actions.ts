@@ -7,6 +7,7 @@ import { requireAdmin, AdminAccessError } from "@/lib/auth/requireAdmin";
 import { loadJob, mutateJob, saveJob } from "@/db/queries/jobs";
 import { jobCommand, jobInput } from "@/lib/validation/jobs";
 import { questionDefinitionSchema, type QuestionDefinition } from "@/lib/questions/definition";
+import { jobDeletionBlocked } from "@/lib/questions/job-policy";
 import type { ActionResult } from "@/lib/actions/result";
 
 type Saved = { id: string; slug: string; previousSlug: string };
@@ -44,11 +45,19 @@ export async function jobCommandAction(input: unknown): Promise<ActionResult<Sav
   try {
     await requireAdmin();
     const parsed = jobCommand.safeParse(input);
-    if (!parsed.success) return { ok: false, error: "Invalid job command." };
+    if (!parsed.success) {
+      const confirmation = parsed.error.issues.find((issue) => issue.path[0] === "confirmed");
+      return { ok: false, error: confirmation ? confirmation.message : "Invalid job command." };
+    }
     const saved = await mutateJob(parsed.data.id, parsed.data.command);
     invalidate(saved);
     return { ok: true, data: saved };
   } catch (error) {
+    // Policy refusals and stale screens explain themselves; anything else stays generic.
+    if (error instanceof Error && error.message === jobDeletionBlocked)
+      return { ok: false, error: error.message };
+    if (error instanceof Error && error.message === "Job not found")
+      return { ok: false, error: "This job no longer exists. Refresh the jobs list." };
     return failure(error);
   }
 }

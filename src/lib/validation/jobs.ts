@@ -84,10 +84,25 @@ export const jobInput = z
         message: "Salary must be a single line.",
       });
   });
-export const jobCommand = z.strictObject({
-  id: z.uuid(),
-  command: z.enum(["close", "reopen", "duplicate", "delete"]),
-});
+/**
+ * Destructive commands must arrive with an explicit `confirmed: true` from the
+ * confirmation dialog. This validates intent, not proof that a human saw a dialog;
+ * authorization and the fresh application check remain the security gates.
+ */
+export const jobCommand = z
+  .strictObject({
+    id: z.uuid(),
+    command: z.enum(["close", "reopen", "duplicate", "delete"]),
+    confirmed: z.boolean().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.command === "delete" && value.confirmed !== true)
+      ctx.addIssue({
+        code: "custom",
+        path: ["confirmed"],
+        message: "Confirm the deletion to continue.",
+      });
+  });
 export const jobFilters = z.strictObject({
   status: z.enum(["", "draft", "open", "closed"]).default(""),
   department: z.union([z.literal(""), z.uuid()]).default(""),

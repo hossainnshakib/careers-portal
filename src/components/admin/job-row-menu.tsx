@@ -17,6 +17,7 @@ export function JobRowMenu({ id, title, status, applicationCount = 0 }: { id: st
   const trigger = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLSpanElement>(null);
   const confirmation = useRef<HTMLDialogElement>(null);
+  const deleteTrigger = useRef<HTMLButtonElement>(null);
   const panelId = useId();
   const [above, setAbove] = useState(false);
 
@@ -37,6 +38,7 @@ export function JobRowMenu({ id, title, status, applicationCount = 0 }: { id: st
       }
     }
     function onMouseDown(event: MouseEvent) {
+      if (confirmation.current?.open) return;
       if (!pending && !wrapper.current?.contains(event.target as Node)) setOpen(false);
     }
     document.addEventListener("keydown", onKeyDown);
@@ -51,21 +53,32 @@ export function JobRowMenu({ id, title, status, applicationCount = 0 }: { id: st
     setPending(true);
     setMessage("");
     try {
-      const result = await jobCommandAction({ id, command });
+      const result = await jobCommandAction({
+        id,
+        command,
+        ...(command === "delete" ? { confirmed: true } : {}),
+      });
       if (result.ok) {
         setOpen(false);
         if (command === "duplicate") window.location.assign(`/admin/jobs/${result.data.id}/edit`);
-        else window.location.reload();
-      } else setMessage(result.error);
+        else if (command === "delete") {
+          // Keep the admin's filters and add a precise success notice for the list.
+          const next = new URLSearchParams(window.location.search);
+          next.set("deleted", "1");
+          window.location.assign(`/admin/jobs?${next.toString()}`);
+        } else window.location.reload();
+      } else { setMessage(result.error); return false; }
+      return true;
     } catch {
       setMessage("Unable to update the job. Try again.");
+      return false;
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <span className="admin-menu" ref={wrapper} onBlur={(event) => { if (!pending && !event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}>
+    <span className="admin-menu" ref={wrapper} onBlur={(event) => { if (!pending && !confirmation.current?.open && !event.currentTarget.contains(event.relatedTarget)) setOpen(false); }}>
       <button
         ref={trigger}
         type="button"
@@ -93,16 +106,26 @@ export function JobRowMenu({ id, title, status, applicationCount = 0 }: { id: st
               Reopen job
             </button>
           ) : null}
-          {status === "draft" && applicationCount === 0 && <button type="button" disabled={pending} onClick={() => confirmation.current?.showModal()}>Delete draft</button>}
+          {applicationCount === 0 && (
+            <button ref={deleteTrigger} type="button" disabled={pending} onClick={() => { setMessage(""); confirmation.current?.showModal(); }}>
+              {status === "draft" ? "Delete draft" : "Delete job"}
+            </button>
+          )}
+          {applicationCount > 0 && <span className="admin-muted">Jobs with applications cannot be deleted. Close an open job instead; application snapshots, files and history are preserved.</span>}
           {message && <span role="status" className="admin-error">{message}</span>}
         </span>
       )}
-      <dialog ref={confirmation} aria-label={`Delete draft ${title}`} onCancel={(event) => { if (pending) event.preventDefault(); }}>
-        <div className="admin-kicker">Delete</div><h2>Delete this draft?</h2><p>{title}</p>
-        <p className="admin-muted">This removes the draft and its questions. This cannot be undone.</p>
+      <dialog ref={confirmation} className="admin-delete-dialog" aria-label="Confirm job deletion" onClose={() => deleteTrigger.current?.focus()} onCancel={(event) => { if (pending) event.preventDefault(); }}>
+        <div className="admin-kicker">Delete</div><h2>{status === "draft" ? "Delete this draft?" : "Delete this job?"}</h2><p>{title}</p>
+        <p className="admin-muted">
+          {status === "draft"
+            ? "This removes the draft and its questions. This cannot be undone."
+            : "This permanently removes the job, its questions and its public page. This cannot be undone."}
+        </p>
+        {message && <p role="status" className="admin-error">{message}</p>}
         <div className="admin-inline" style={{ justifyContent: "flex-end" }}>
           <button type="button" className="admin-btn admin-btn-secondary" disabled={pending} onClick={() => confirmation.current?.close()}>Cancel</button>
-          <button type="button" className="admin-btn admin-btn-danger" disabled={pending} onClick={async () => { await run("delete"); confirmation.current?.close(); }}> {pending ? "Deleting…" : "Delete draft"}</button>
+          <button type="button" className="admin-btn admin-btn-danger" disabled={pending} onClick={async () => { if (await run("delete")) confirmation.current?.close(); }}> {pending ? "Deleting…" : status === "draft" ? "Delete draft" : "Delete job"}</button>
         </div>
       </dialog>
     </span>

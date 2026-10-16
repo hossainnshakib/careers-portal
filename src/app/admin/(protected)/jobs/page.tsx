@@ -43,6 +43,8 @@ export default async function JobsPage({
     <section className="admin-jobs-list">
       <AdminToolbar eyebrow="Jobs" title="Jobs" />
 
+      {params.deleted === "1" && <p role="status">Job deleted.</p>}
+
       <form className="admin-card admin-job-filters" action="/admin/jobs" method="get">
           <label>
             <span className="sr-only">Status</span>
@@ -136,7 +138,7 @@ export default async function JobsPage({
               </tbody>
             </table>
           </div>
-          <div className="admin-note admin-job-menu-hint">Row menu: Edit · Duplicate · Close / Reopen</div>
+          <div className="admin-note admin-job-menu-hint">Row menu: Edit · Duplicate · Close / Reopen · Delete</div>
         </div>
       )}
     </section>

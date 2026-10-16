@@ -23,8 +23,17 @@ it("uses the drawn compact filter order, real columns, initials and exact option
   for (const name of ["Title", "Department", "Brands", "Options", "Salary", "Status", "Apps", "Updated"]) expect(html).toContain(`>${name}</th>`);
   expect(html).toContain("Custom option"); expect(html).toContain("৳ 30,000 – 50,000 / month");
   expect(html).not.toContain("/fixture.svg"); expect(html).toContain("9 Oct 2026");
-  expect(html).toContain("Row menu: Edit · Duplicate · Close / Reopen");
+  expect(html).toContain("Row menu: Edit · Duplicate · Close / Reopen · Delete");
   expect(mocks.gate).toHaveBeenCalled();
+});
+
+it("shows the precise deletion success notice only for the redirect back from a delete", async () => {
+  const quiet = renderToStaticMarkup(await JobsPage({ searchParams: Promise.resolve({}) }));
+  expect(quiet).not.toContain("Job deleted.");
+  const afterDelete = renderToStaticMarkup(
+    await JobsPage({ searchParams: Promise.resolve({ deleted: "1" }) }),
+  );
+  expect(afterDelete).toContain("Job deleted.");
 });
 
 it("distinguishes genuine empties from filtered misses and supplies working clear/create actions", async () => {

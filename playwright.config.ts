@@ -6,7 +6,7 @@ const baseURL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  globalSetup: "./tests/support/sweep-accounts.ts",
+  globalSetup: "./tests/support/demo-setup.ts",
   globalTeardown: "./tests/support/sweep-accounts.ts",
   fullyParallel: false,
   workers: 1,

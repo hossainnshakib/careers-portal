@@ -8,6 +8,7 @@ import { requireDevTarget } from "@/db/seed/require-dev";
 import { saveJob } from "./jobs";
 import { listJobOptions } from "./job-options";
 import { jobInput } from "@/lib/validation/jobs";
+import { demoDisclaimer } from "@/lib/demo";
 
 function guard(prefix: string) { requireDevTarget(); if (!/^e2e-[a-f0-9]{32}-$/.test(prefix)) throw new Error("Invalid public test prefix"); }
 export async function createPublicTestJob(prefix: string) {
@@ -23,7 +24,8 @@ export async function createPublicTestJob(prefix: string) {
   ).map((option) => option.id);
   if (optionIds.length < 2) throw new Error("Base options required for public test");
   const questionId = randomUUID(); const textId = randomUUID();
-  const saved = await saveJob(jobInput.parse({ id: null, title: `${prefix}Public Application Test`, slug: `${prefix}public`, departmentId: department.id,
+  const title = `${prefix}Public Application Test — ${demoDisclaimer}`;
+  const saved = await saveJob(jobInput.parse({ id: null, title, slug: `${prefix}public`, departmentId: department.id,
     brandIds: [brand.id], primaryBrandId: brand.id, optionIds, engagementNote: null,
     salaryMode: "negotiable", salaryText: "", vacancies: null, experienceText: null,
     skills: [], benefits: [], niceToHaveMd: "", locationText: "Dhaka",
@@ -32,7 +34,7 @@ export async function createPublicTestJob(prefix: string) {
       { id: textId, label: "Tell us about your work", type: "long_text", required: true, helpText: null, options: null, config: { maxLength: 1500 }, section: "professional", sortOrder: 0 },
       { id: questionId, label: "Work sample", type: "file_upload", required: true, helpText: "Upload a PDF sample.", options: null, config: { accept: ["pdf"], maxSizeMb: 1 }, section: "portfolio", sortOrder: 1 },
     ] }));
-  return { ...saved, questionId, textId, brandSlug: brand.slug, brandId: brand.id, departmentId: department.id, departmentSlug: department.slug, title: `${prefix}Public Application Test` };
+  return { ...saved, questionId, textId, brandSlug: brand.slug, brandId: brand.id, departmentId: department.id, departmentSlug: department.slug, title };
 }
 /**
  * Item 6 content stress: one long/all-sections job (near-limit fields, four
@@ -56,7 +58,7 @@ export async function createStressTestJobs(prefix: string) {
     (option.group === "experience" && option.slug === "fresher-welcome"),
   ).map((option) => option.id);
   if (longOptionIds.length < 2 || bengaliOptionIds.length < 3) throw new Error("Base options required for stress test");
-  const longTitle = "Senior Principal Full-Stack Engineer and Platform Reliability Lead for Cross-Brand Hiring Systems, Design Systems and Candidate Experience (Dhaka, Bangladesh, Remote-Friendly, Multiple Brands)";
+  const longTitle = `${demoDisclaimer} — Senior Principal Full-Stack Engineer and Platform Reliability Lead for Cross-Brand Hiring Systems, Design Systems and Candidate Experience (Dhaka, Bangladesh, Remote-Friendly, Multiple Brands)`.slice(0, 200);
   const longSummary = "Lead the shared hiring platform every brand relies on: architecture, design system, accessibility and candidate experience for a fast-growing multi-brand catalog.";
   const longSalaryText = "৳ 180,000-260,000 per month plus transport, festival bonus and wellbeing (gross)";
   const longSkills = [
@@ -93,7 +95,7 @@ export async function createStressTestJobs(prefix: string) {
     questions: [
       { id: randomUUID(), label: "Which city are you based in?", type: "short_text", required: true, helpText: null, options: null, config: { maxLength: 200 }, section: "professional", sortOrder: 0 },
     ] }));
-  const bengaliTitle = "সিনিয়র ফ্রন্টএন্ড ইঞ্জিনিয়ার (বাংলা কনটেন্ট প্ল্যাটফর্ম, রিমোট)";
+  const bengaliTitle = `${demoDisclaimer} — সিনিয়র ফ্রন্টএন্ড ইঞ্জিনিয়ার (বাংলা কনটেন্ট প্ল্যাটফর্ম, রিমোট)`;
   const bengaliSummary = "২০২৬ সাল পর্যন্ত আবেদন চলবে — বাংলা ভাষায় মানসম্মত কনটেন্ট প্ল্যাটফর্ম তৈরি ও পরিচালনার অভিজ্ঞতা প্রয়োজন।";
   const bengaliQuestionLabel = "কাজের অভিজ্ঞতা বিস্তারিত লিখুন";
   const bengaliSalaryText = "৳ ৪০,০০০ – ৭০,০০০ প্রতি মাসে (বার্ষিক বোনাস সহ)";
@@ -136,7 +138,7 @@ export async function createLogoRowTestJobs(prefix: string) {
   for (const brandCount of [1, 2, 3, 4]) {
     const selected = brandRows.slice(0, brandCount);
     const saved = await saveJob(jobInput.parse({
-      id: null, title: `${prefix}Logo row ${brandCount} brand${brandCount === 1 ? "" : "s"}`,
+      id: null, title: `${prefix}Logo row ${brandCount} brand${brandCount === 1 ? "" : "s"} — ${demoDisclaimer}`,
       slug: `${prefix}logo-row-${brandCount}`, departmentId: department.id,
       brandIds: selected.map((brand) => brand.id), primaryBrandId: selected[0].id, optionIds, engagementNote: null,
       salaryMode: "negotiable", salaryText: "", vacancies: null, experienceText: null,

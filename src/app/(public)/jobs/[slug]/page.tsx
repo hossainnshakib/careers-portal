@@ -11,6 +11,8 @@ import { buildJobPosting } from "@/lib/careers/json-ld";
 import { BrandLogoRow } from "@/components/public/brand-logo-row";
 import { PublicIcon } from "@/components/public/public-icon";
 import { PublicDeadline } from "@/components/public/public-deadline";
+import { DemoNotice } from "@/components/public/demo-notice";
+import { isDemoSlug } from "@/lib/demo";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -28,6 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const description = job.summary || `Explore the ${job.title} role, read the requirements and apply without an account.`;
   return {
     title: `${job.title} · Careers`, description, alternates: { canonical: url },
+    ...(isDemoSlug(job.slug) ? { robots: { index: false, follow: false } } : {}),
     openGraph: { title: job.title, description, url, type: "website", siteName: "Careers", images: [{ url: `/jobs/${job.slug}/opengraph-image`, width: 1200, height: 630 }] },
     twitter: { card: "summary_large_image", title: job.title, description },
   };
@@ -45,7 +48,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
   const applyUrl = `/jobs/${job.slug}/apply`;
   const experience = [job.experienceText, ...groupLabels(options, "experience")].filter(Boolean).join(" · ");
   const engagement = [...groupLabels(options, "engagement"), job.engagementNote].filter(Boolean).join(" · ");
-  const jobPosting = closed ? null : buildJobPosting({
+   const jobPosting = closed || isDemoSlug(job.slug) ? null : buildJobPosting({
     title: job.title, summary: job.summary, descriptionMd: job.descriptionMd, slug: job.slug,
     locationText: job.locationText, status: job.status, deadlineAt: deadline,
     publishedAt: job.publishedAt, departmentName: department.name, options,
@@ -72,6 +75,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
         <Link href="/#roles" className="inline-flex w-fit items-center gap-2 text-[14px] font-semibold text-white/85"><PublicIcon name="back" />All roles</Link>
         <p className="mt-2 text-[12.5px] font-extrabold uppercase tracking-[.12em] text-white/85">{department.name}</p>
         <h1 className="text-[38px] font-extrabold leading-[1.05] tracking-[-.035em] sm:text-[60px]">{job.title}</h1>
+        <DemoNotice slug={job.slug} />
         {job.summary && <p className="max-w-[640px] text-[18px] leading-[1.55] text-white/85">{job.summary}</p>}
         <div className="mt-1 flex flex-wrap gap-[9px]">
           {options.map(option => <span key={`${option.group}:${option.slug}`} className="ui-hero-pill">{option.label}</span>)}

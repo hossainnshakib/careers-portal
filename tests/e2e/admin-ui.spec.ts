@@ -3,7 +3,7 @@ import { completeAdminMfa } from "../support/mfa-login";
 
 test.use({ trace: "off" });
 
-test("mobile admin navigation contains focus and filters keep the date timezone", async ({ page, adminAccount }) => {
+test("mobile admin navigation contains focus and filters keep the date timezone", async ({ page, dashboardAccount: adminAccount }) => {
   test.setTimeout(90000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/admin/login");
@@ -12,7 +12,19 @@ test("mobile admin navigation contains focus and filters keep the date timezone"
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/mfa$/);
   const firstDigit = page.getByLabel("Authenticator code", { exact: true });
-  await firstDigit.fill("123456");
+  const secondDigit = page.getByLabel("Authenticator code digit 2", { exact: true });
+  // A fill that lands before client hydration never reaches React state, and
+  // React's value tracker then ignores an identical retry, so clear first
+  // before every distributed fill — the same workaround mfa-login.ts uses.
+  const distribute = async () => {
+    await firstDigit.fill("");
+    await firstDigit.fill("123456");
+  };
+  await distribute();
+  for (let attempt = 0; attempt < 20 && (await secondDigit.inputValue()) !== "2"; attempt++) {
+    await page.waitForTimeout(1000);
+    await distribute();
+  }
   for (let index = 2; index <= 6; index++) {
     await expect(page.getByLabel(`Authenticator code digit ${index}`, { exact: true })).toHaveValue(String(index));
   }

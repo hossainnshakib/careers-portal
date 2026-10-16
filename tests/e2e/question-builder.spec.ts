@@ -13,7 +13,8 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.goto("/admin/jobs/new");
-  await page.getByLabel("Title", { exact: true }).fill(`${adminAccount.prefix}Questions`);
+  const title = `${adminAccount.prefix}Questions — DEMO / TEST ONLY — Not a real job opening`;
+  await page.getByLabel("Title", { exact: true }).fill(title);
   await page.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}questions`);
   await page.getByLabel("CV required", { exact: true }).uncheck();
   const builder = page.getByRole("region", { name: "Question builder", exact: true });
@@ -68,7 +69,7 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await page.getByRole("button", { name: "Edit question 12", exact: true }).click();
   await page.getByLabel("Question 12 label", { exact: true }).fill("LinkedIn contact");
   const preview = page.getByRole("region", { name: "Candidate form preview", exact: true });
-  await expect(preview.getByRole("heading", { name: `Apply for ${adminAccount.prefix}Questions`, exact: true })).toBeVisible();
+  await expect(preview.getByRole("heading", { name: `Apply for ${title}`, exact: true })).toBeVisible();
   await preview.getByLabel("Preview privacy consent", { exact: true }).check();
   await preview.getByLabel("Years of relevant experience", { exact: true }).fill("3");
   await preview
