@@ -120,6 +120,9 @@ jobs/applications are eligible. Cleanup never touches Storage or Auth directly.
 CLI writes cannot call Next.js cache invalidation: allow up to 300 seconds for
 each deployment's catalog cache to refresh. Do not infer cleanup/live state from
 an immediately cached home page; Apply reloads visibility directly.
+Unsubmitted private upload reservations remain managed by the existing expiry
+cleanup; this command deliberately does not scan/delete unrelated pending files
+or bypass submitted-application retention to remove them.
 
 ## Verification commands and limits
 
@@ -133,6 +136,19 @@ pnpm test:e2e
 Remove-Item Env:PLAYWRIGHT_PRODUCTION
 ```
 
+For the explicit four-page Lighthouse gate, set `RUN_LIGHTHOUSE=1` before the
+full Playwright command. For the separately authorized live synthetic workflow:
+
+```powershell
+pnpm exec playwright test --config playwright.live.config.ts
+```
+
+The live config is restricted to the approved Vercel URL, verifies its project
+origin before fixtures can write, and runs one targeted application/review/PDF/
+deletion journey. It is not a substitute for the full local production suite.
+The normal suite's setup verifies the exact DEV dataset and waits for the five
+published roles to appear in the catalog, avoiding stale-cache false negatives.
+
 The production-mode server runs locally on port 3100 against the approved shared
 DEV services, not an isolated project. Browser accounts, jobs and files created
 by existing tests use their own strictly validated ephemeral E2E namespaces and
@@ -144,3 +160,29 @@ leaves an application must be resolved through that same safe flow.
 Full runtime totals, any failures, cleanup execution and final live read-only
 checks are recorded in the completion report and DECISIONS checkpoint. Do not
 interpret earlier partial-delivery totals as current full acceptance.
+
+## First runtime pass and fixes
+
+The first full browser pass recorded 43 passed / 4 failed / 1 opt-in performance
+skip. The all-eleven-type submission/review/download/PDF/delete journey and MFA
+passed. Failures were diagnosed, not blanket-skipped:
+
+- Accessibility started on an old persisted empty catalog: setup now asserts the
+  real five-role catalog is ready before any populated-catalog test.
+- Closing the mobile filter dialog hid it before the queued native close event
+  unlocked scrolling: explicit close now unlocks synchronously, and the listener
+  is installed when an empty catalog becomes populated. Assertions are retained.
+- All six engagement options add a row to the desktop filter panel: reduce only
+  desktop group spacing/fieldset top margin so all controls fit at 900px height.
+  The original no-overflow and sticky-boundary assertions remain unchanged.
+- Settings assumed an unused base option, but the new matrix uses all thirteen:
+  the test now creates a nonce-namespaced unused option and checks Cancel/Escape
+  against that record. Teardown removes only its owned option, not base records.
+
+Dashboard disclosure testing also now creates its own ten synthetic applications
+instead of relying on wiped shared applicants. Ephemeral public fixtures carry
+the exact disclaimer in titles, including before this branch is deployed. Their
+teardown checks candidate ownership as well as job namespace and refuses an
+unexpected identity; private review-file cleanup is similarly namespace/domain
+restricted. These test-only lifecycles are separate from the public DEMO cleanup
+command, which never deletes any application.

@@ -29,7 +29,11 @@ test("URL filters render without JavaScript and mobile filters use an accessible
   await dialog.getByRole("button", { name: "Done filtering" }).click();
   await expect(dialog).not.toBeVisible();
   const robots = await request.get("/robots.txt"); expect(robots.ok()).toBe(true); expect(await robots.text()).toContain("Disallow: /admin");
-  const sitemap = await request.get("/sitemap.xml"); expect(sitemap.ok()).toBe(true); expect(await sitemap.text()).toContain("/jobs/");
+  const sitemap = await request.get("/sitemap.xml"); expect(sitemap.ok()).toBe(true);
+  const xml = await sitemap.text();
+  expect(xml).toContain("<urlset");
+  expect(xml).toContain("/privacy</loc>");
+  expect(xml).not.toMatch(/\/jobs\/(demo-|e2e-)|\/admin|\/applied\/|\/apply</);
 });
 
 test("browse URL filters, apply with PDF CV and work sample, preserve Bengali and persist snapshots", async ({ page, request, publicFixture }) => {

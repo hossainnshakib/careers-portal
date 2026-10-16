@@ -18,6 +18,7 @@ import { missingPublishGroups } from "@/lib/validation/jobs";
 import { uniqueSlug } from "@/lib/slug";
 import { jobFilters, type JobInput } from "@/lib/validation/jobs";
 import { jobOptionsFor, type OptionRow } from "./job-options";
+import { ownsValidationJob } from "@/lib/demo";
 
 export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
   const linked = filters.brand
@@ -93,14 +94,17 @@ export async function jobHasApplications(id: string) {
   return !!row;
 }
 
-export async function saveJob(input: JobInput, expectedUpdatedAt?: Date) {
+export async function saveJob(input: JobInput, expectedDemoUpdatedAt?: Date) {
   return getDb().transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(1103)`);
     const [existing] = input.id
       ? await tx.select().from(jobs).where(eq(jobs.id, input.id)).for("update")
       : [];
     if (input.id && !existing) throw new Error("Job not found");
-    if (expectedUpdatedAt && (!existing || existing.updatedAt.getTime() !== expectedUpdatedAt.getTime()))
+    // The demo CLI's compare-and-set gate also reloads ownership and lifecycle
+    // under the lock. A concurrent publish/rename must never turn into an update.
+    if (expectedDemoUpdatedAt && (!existing || existing.updatedAt.getTime() !== expectedDemoUpdatedAt.getTime() ||
+      existing.status !== "draft" || existing.slug !== input.slug || !ownsValidationJob(existing)))
       throw new Error("Job changed during preparation; run the dry-run again.");
     checkJobEdit(existing ?? null, input);
     const [dept] = await tx

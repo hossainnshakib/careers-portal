@@ -3,7 +3,7 @@ import { completeAdminMfa } from "../support/mfa-login";
 
 test.use({ trace: "off" });
 
-test("mobile admin navigation contains focus and filters keep the date timezone", async ({ page, adminAccount }) => {
+test("mobile admin navigation contains focus and filters keep the date timezone", async ({ page, dashboardAccount: adminAccount }) => {
   test.setTimeout(90000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/admin/login");

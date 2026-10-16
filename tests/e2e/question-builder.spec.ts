@@ -13,7 +13,7 @@ test("eleven-type builder validates radio/dropdown Other, dates and candidate pr
   await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.goto("/admin/jobs/new");
-  await page.getByLabel("Title", { exact: true }).fill(`${adminAccount.prefix}Questions`);
+  await page.getByLabel("Title", { exact: true }).fill(`${adminAccount.prefix}Questions — DEMO / TEST ONLY — Not a real job opening`);
   await page.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}questions`);
   await page.getByLabel("CV required", { exact: true }).uncheck();
   const builder = page.getByRole("region", { name: "Question builder", exact: true });

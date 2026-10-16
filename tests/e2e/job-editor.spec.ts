@@ -1,5 +1,6 @@
 import { test, expect } from "../support/admin-fixture";
 import { completeAdminMfa } from "../support/mfa-login";
+import { demoDisclaimer } from "../../src/lib/demo";
 test.use({ trace: "off" });
 test("admin authors Markdown, publishes and manages job lifecycle", async ({
   page,
@@ -13,7 +14,7 @@ test("admin authors Markdown, publishes and manages job lifecycle", async ({
   await completeAdminMfa(page, adminAccount);
   await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
   await page.goto("/admin/jobs/new");
-  const title = `${adminAccount.prefix}Role`;
+  const title = `${adminAccount.prefix}Role — ${demoDisclaimer}`;
   await page.getByLabel("Title", { exact: true }).fill(title);
   await page.getByLabel("Slug", { exact: true }).fill(`${adminAccount.prefix}role`);
   const basics = page.getByRole("region", { name: "1 · Basics", exact: true });

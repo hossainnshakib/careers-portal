@@ -75,8 +75,4 @@ export function validationJobs(catalog: DemoCatalog): JobInput[] {
   });
 }
 
-/** Exact namespace AND content marker; a prefix alone never authorizes a write. */
-export function ownsValidationJob(job: { slug: string; title: string; descriptionMd: string }) {
-  return (demoSlugs as readonly string[]).includes(job.slug) && job.title.startsWith("DEMO — ") &&
-    job.title.includes(demoDisclaimer) && job.descriptionMd.includes(demoMarker) && job.descriptionMd.startsWith(demoDisclaimer);
-}
+export { ownsValidationJob } from "@/lib/demo";

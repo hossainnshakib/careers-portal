@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 import { closeDb, getDb } from "@/db";
 import { eq } from "drizzle-orm";
-import { jobBrands, jobOptionLinks, jobQuestions } from "@/db/schema";
+import { applications, jobBrands, jobOptionLinks, jobQuestions } from "@/db/schema";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { listBrands } from "./brands";
 import { listDepartments } from "./departments";
@@ -11,6 +11,7 @@ import { addTestApplication, removeTestFixture } from "./test-fixtures";
 import { loadJob, mutateJob, saveJob, listJobs } from "./jobs";
 import { listJobOptions } from "./job-options";
 import { jobInput, jobFilters, type JobInput } from "@/lib/validation/jobs";
+import { demoDisclaimer } from "@/lib/demo";
 
 describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
   "live job lifecycle transactions (dev only)",
@@ -34,7 +35,7 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       if (optionIds.length < 2) throw new Error("Base options required for lifecycle test");
       input = jobInput.parse({
         id: null,
-        title: `${prefix}Role`,
+        title: `${prefix}Role — ${demoDisclaimer}`,
         slug: `${prefix}role`,
         departmentId: department.id,
         brandIds: [brand.id],
@@ -114,6 +115,11 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
         expect(await getDb().select().from(table).where(eq(table.jobId, copy.id))).toEqual([]);
       }
     }, 60000);
+    it("rejects a stale expected version without overwriting the current job", async () => {
+      const before = await loadJob(id);
+      await expect(saveJob(input, new Date(0))).rejects.toThrow("Job changed during preparation");
+      expect((await loadJob(id))?.job.updatedAt).toEqual(before?.job.updatedAt);
+    }, 60000);
     it("serializes competing deletes so exactly one succeeds", async () => {
       const copy = await mutateJob(id, "duplicate");
       const outcomes = await Promise.allSettled([
@@ -123,6 +129,18 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       const refused = outcomes.find((outcome) => outcome.status === "rejected");
       expect(refused?.status === "rejected" && refused.reason.message).toBe("Job not found");
       expect(await loadJob(copy.id)).toBeNull();
+    }, 60000);
+    it("never orphans a synthetic application racing a job delete", async () => {
+      const copy = await mutateJob(id, "duplicate");
+      const outcomes = await Promise.allSettled([
+        mutateJob(copy.id, "delete"), addTestApplication(copy.id, prefix),
+      ]);
+      expect(outcomes.filter(outcome => outcome.status === "rejected")).toHaveLength(1);
+      const remaining = await loadJob(copy.id);
+      const rows = await getDb().select({ id: applications.id }).from(applications).where(eq(applications.jobId, copy.id));
+      expect(rows.length).toBe(remaining ? 1 : 0);
+      // If the application won, the guarded fixture teardown owns that exact
+      // synthetic row; no unrelated application is eligible for its cleanup.
     }, 60000);
     it("duplicates as a fresh draft with independent questions and rejects cross-job IDs atomically", async () => {
       const duplicate = await mutateJob(id, "duplicate");

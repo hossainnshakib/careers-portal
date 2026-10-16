@@ -50,7 +50,7 @@ function waitFor(child: ChildProcess, type: string) {
   });
 }
 
-async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" | "mfa" | "stress" | "logos" = false) {
+async function withAccount(consume: (account: PublicFixture) => Promise<void>, outsider: boolean | "public" | "review" | "mfa" | "stress" | "logos" | "dashboard" = false) {
   const child = fork(
     fileURLToPath(new URL("./admin-worker.ts", import.meta.url)),
     typeof outsider === "string" ? [outsider] : outsider ? ["outsider"] : [],
@@ -93,7 +93,7 @@ async function withAccount(consume: (account: PublicFixture) => Promise<void>, o
     }
   }
 }
-export const test = base.extend<{ adminAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture; stressFixture: PublicFixture; logoFixture: PublicFixture; mfaAccount: Account }>({
+export const test = base.extend<{ adminAccount: Account; dashboardAccount: Account; outsiderAccount: Account; publicFixture: PublicFixture; reviewFixture: PublicFixture; stressFixture: PublicFixture; logoFixture: PublicFixture; mfaAccount: Account }>({
   adminAccount: [
     async ({}, use) => {
       await withAccount(use);
@@ -111,5 +111,6 @@ export const test = base.extend<{ adminAccount: Account; outsiderAccount: Accoun
   stressFixture: [async ({}, use) => { await withAccount(use, "stress"); }, { timeout: 120000 }],
   logoFixture: [async ({}, use) => { await withAccount(use, "logos"); }, { timeout: 120000 }],
   mfaAccount: [async ({}, use) => { await withAccount(use, "mfa"); }, { timeout: 120000 }],
+  dashboardAccount: [async ({}, use) => { await withAccount(use, "dashboard"); }, { timeout: 120000 }],
 });
 export { expect };
