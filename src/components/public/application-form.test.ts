@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
 import type { QuestionDefinition } from "@/lib/questions/definition";
 import { QuestionFields } from "@/components/form-renderer/question-fields";
+import { UploadWidget } from "./upload-widget";
 
 vi.mock("@/app/(public)/jobs/[slug]/apply/actions", () => ({ submitApplication: vi.fn() }));
 import { ApplicationForm } from "./application-form";
@@ -43,6 +44,13 @@ it("keeps selected Other values, boolean false and linked help/error text access
   expect(html).toContain("অন্য দক্ষতা"); expect(html).toContain("Other answer");
   expect(html).toContain('data-selected="true"'); expect(html).toContain('aria-invalid="true"');
   expect(html).toContain(`question-help-${q.id}`); expect(html).toContain(`question-error-${q.id}`);
+  expect(html).toContain(`aria-describedby="question-help-${q.id} question-error-${q.id}"`);
   const boolean = renderToStaticMarkup(createElement(QuestionFields, { question: question("yes_no"), value: false, other: "", onChange: () => {}, onOtherChange: () => {} }));
   expect(boolean).toContain('<option value="no" selected="">No</option>');
+});
+
+it("associates upload validation errors with the real file control", () => {
+  const html = renderToStaticMarkup(createElement(UploadWidget, { label: "Synthetic CV", slot: "cv", accept: ["pdf"], maxMb: 5, prepare: async () => { throw new Error("Not used"); }, onChange: () => {}, onBusy: () => {}, error: "Upload one valid CV file before submitting." }));
+  expect(html).toMatch(/<input[^>]*aria-invalid="true"[^>]*aria-describedby="[^"]+-help [^"]+-error"/);
+  expect(html).toContain("Upload one valid CV file before submitting.");
 });

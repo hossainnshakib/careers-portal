@@ -14,6 +14,7 @@ import { mimeByExtension } from "@/lib/validation/uploads";
 import { questionSectionEnum } from "@/db/schema";
 import type { QuestionDefinition } from "@/lib/questions/definition";
 import type { Answer } from "@/lib/validation/buildSchema";
+import { applicationFieldErrors, type ApplicationFieldError } from "@/lib/validation/application-feedback";
 
 type FormValues = { contact: { fullName: string; email: string; phone: string; location: string }; answers: Record<string, Answer>; cv: string[]; consent: boolean };
 export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: string; questions: QuestionDefinition[]; cvRequired: boolean }) {
@@ -30,7 +31,21 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
   const honeypot = useRef<HTMLInputElement>(null);
   const form = useRef<HTMLFormElement>(null);
   const messageElement = useRef<HTMLParagraphElement>(null);
-  useEffect(() => { if (message) messageElement.current?.focus(); }, [message]);
+  const focusInvalid = useRef(false);
+  useEffect(() => {
+    if (!message || isSubmitting) return;
+    if (focusInvalid.current) {
+      focusInvalid.current = false;
+      const invalid = form.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+      const target = invalid?.closest('[data-application-field]')?.querySelector<HTMLElement>('input:not([type="hidden"]):not([type="file"]), textarea, select, button') ?? invalid;
+      if (target) { target.focus({ preventScroll: true }); target.scrollIntoView({ block: "center", behavior: "instant" }); return; }
+    }
+    messageElement.current?.focus();
+  }, [message, isSubmitting]);
+  function showFieldErrors(fields: ApplicationFieldError[]) {
+    for (const { field, message } of fields) setError(field, { message });
+    focusInvalid.current = fields.length > 0;
+  }
   const [securityActive, setSecurityActive] = useState(false);
   useEffect(() => {
     if (!form.current || typeof IntersectionObserver === "undefined") return;
@@ -65,8 +80,8 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
     return result.data;
   }, [ensureSession, jobSlug]);
   const busy = useCallback((delta: number) => setUploadBusy((count) => count + delta), []);
-  function fileField(label: string, slot: string, onChange: (ids: string[]) => void, accept: string[], maxMb: number, multiple = false) {
-    return <UploadWidget key={`${slot}:${uploadGeneration}`} label={label} slot={slot} prepare={prepare} onChange={onChange} onBusy={busy} accept={accept} maxMb={maxMb} multiple={multiple} />;
+  function fileField(label: string, slot: string, onChange: (ids: string[]) => void, accept: string[], maxMb: number, multiple = false, error?: string) {
+    return <UploadWidget key={`${slot}:${uploadGeneration}`} label={label} slot={slot} prepare={prepare} onChange={onChange} onBusy={busy} accept={accept} maxMb={maxMb} multiple={multiple} error={error} />;
   }
   return <form ref={form} method="post" noValidate className="ui-application-form space-y-[34px]" onInputCapture={() => setSecurityActive(true)} onFocusCapture={() => setSecurityActive(true)} onSubmit={handleSubmit(async () => {
     setMessage("");
@@ -76,62 +91,74 @@ export function ApplicationForm({ jobSlug, questions, cvRequired }: { jobSlug: s
       if (uploadBusy) throw new Error("Wait for every upload to finish.");
       const values = getValues();
       const contact = contactSchema.safeParse(values.contact);
+      const fieldErrors: ApplicationFieldError[] = [];
+      if (cvRequired && values.cv.length !== 1) fieldErrors.push({ field: "cv", message: "Upload one valid CV file before submitting." });
       if (!contact.success) {
-        for (const issue of contact.error.issues) setError(`contact.${String(issue.path[0])}` as "contact.fullName", { message: issue.message });
-        throw new Error("Check your contact details.");
+        fieldErrors.push(...applicationFieldErrors(contact.error.issues.map(issue => ({ ...issue, path: ["contact", ...issue.path] })), questions, true));
       }
       const answers: Record<string, Answer> = {};
       for (const q of questions) {
         const value = values.answers[q.id]; const options = new Set(q.options?.map((o) => o.value));
         if (q.type.endsWith("choice")) {
           const chosen = typeof value === "string" ? [value] : Array.isArray(value) ? value : [];
-          if (chosen.some((v) => !options.has(v)) && !(other[q.id] ?? "").trim()) throw new Error(`${q.label}: Provide a nonempty Other answer.`);
+          if (chosen.some((v) => !options.has(v)) && !(other[q.id] ?? "").trim()) fieldErrors.push({ field: `answers.${q.id}`, message: "Provide a nonempty Other answer." });
           answers[q.id] = typeof value === "string" ? options.has(value) ? value : other[q.id] : Array.isArray(value) ? value.map((v) => options.has(v) ? v : other[q.id] ?? "") : value;
         } else answers[q.id] = value;
       }
-      const validated = validateApplicationAnswers(questions, answers, values.cv, cvRequired);
-      if (!values.consent) throw new Error("Consent to the privacy notice is required.");
+      let validated;
+      try { validated = validateApplicationAnswers(questions, answers, values.cv, cvRequired); }
+      catch (error) {
+        if (error && typeof error === "object" && "issues" in error && Array.isArray(error.issues)) {
+          fieldErrors.push(...applicationFieldErrors(error.issues, questions));
+        } else throw error;
+      }
+      if (!values.consent) fieldErrors.push({ field: "consent", message: "Consent to the privacy notice is required." });
+      if (fieldErrors.length) {
+        showFieldErrors(fieldErrors);
+        setMessage("Check the highlighted fields. Complete all required answers, uploads and privacy consent.");
+        return;
+      }
+      if (!contact.success || !validated) throw new Error("Check your application fields and try again.");
       const sessionToken = await ensureSession();
       if (!tokenRef.current) throw new Error("Complete the security check before submitting.");
       const result = await submitApplication({ jobSlug, sessionToken, turnstileToken: tokenRef.current, honeypot: honeypot.current?.value ?? "", contact: contact.data, consent: values.consent, answers: validated.answers, cv: values.cv });
       setToken(""); setWidgetKey((key) => key + 1);
-      if (!result.ok) setMessage(result.error);
+      if (!result.ok) {
+        if ("fieldErrors" in result) showFieldErrors(result.fieldErrors.filter(({ field }) => !field.startsWith("answers.") || questions.some(q => field === `answers.${q.id}`)));
+        setMessage(result.error);
+      }
     } catch (error) {
       if (error && typeof error === "object" && "issues" in error && Array.isArray(error.issues)) {
-        const issues = error.issues as { path: string[]; message: string }[];
-        for (const issue of issues) {
-          if (questions.some(question => question.id === issue.path[0])) setError(`answers.${issue.path[0]}`, { message: issue.message });
-          else if (issue.path[0] === "cv") setError("cv", { message: issue.message });
-        }
-        setMessage(issues.map((issue) => `${questions.find((q) => q.id === issue.path[0])?.label ?? "Application"}: ${issue.message}`).join("; "));
+        showFieldErrors(applicationFieldErrors(error.issues, questions));
+        setMessage("Check the highlighted application fields and try again.");
       } else setMessage(error instanceof Error ? error.message : "Unable to submit. Try again.");
     }
   })}>
     <fieldset disabled={isSubmitting}>
       <legend className="ui-label mb-[18px] text-ui-blue-text">Personal & contact</legend>
       <div className="ui-form-grid">
-        {([ ["fullName", "Full name", "text"], ["email", "Email", "email"], ["phone", "Phone", "tel"], ["location", "Location (city/country)", "text"] ] as const).map(([name, label, type]) => <label key={name} className="flex min-w-0 flex-col gap-[7px] text-[13.5px] font-bold"><span>{label}<span className="text-ui-required"> *</span></span>
+        {([ ["fullName", "Full name", "text"], ["email", "Email", "email"], ["phone", "Phone", "tel"], ["location", "Location (city/country)", "text"] ] as const).map(([name, label, type]) => <label key={name} data-application-field={`contact.${name}`} className="flex min-w-0 flex-col gap-[7px] text-[13.5px] font-bold"><span>{label}<span className="text-ui-required"> *</span></span>
           <input aria-label={label} required aria-invalid={!!errors.contact?.[name]} aria-describedby={errors.contact?.[name] ? `contact-error-${name}` : undefined} type={type} autoComplete={name === "fullName" ? "name" : name === "phone" ? "tel" : name === "location" ? "address-level2" : "email"} {...register(`contact.${name}`)} className="ui-form-input" />
           {errors.contact?.[name] && <span id={`contact-error-${name}`} role="alert" className="text-[13px] font-medium text-red-700">{errors.contact[name]?.message}</span>}</label>)}
-        <div className="ui-form-wide"><Controller name="cv" control={control} render={({ field }) => fileField(`CV${cvRequired ? " *" : " (optional)"}`, "cv", field.onChange, ["pdf", "doc", "docx"], 5)} />{errors.cv?.message && <p role="alert" className="mt-2 text-[13px] text-red-700">{errors.cv.message}</p>}</div>
+        <div className="ui-form-wide" data-application-field="cv"><Controller name="cv" control={control} render={({ field }) => fileField(`CV${cvRequired ? " *" : " (optional)"}`, "cv", field.onChange, ["pdf", "doc", "docx"], 5, false, errors.cv?.message)} /></div>
       </div>
     </fieldset>
     {questionSectionEnum.enumValues.map((section) => {
       const grouped = questions.filter((q) => q.section === section);
       if (!grouped.length) return null;
       return <fieldset disabled={isSubmitting} key={section}><legend className="ui-label mb-[18px] text-ui-blue-text">{humanize(section)}</legend>
-        <div className="ui-form-grid">{grouped.map((q) => <div key={q.id} className={`min-w-0 ${["long_text", "single_choice", "multiple_choice", "file_upload"].includes(q.type) ? "ui-form-wide" : ""}`}><Controller name={`answers.${q.id}`} control={control} render={({ field }) => q.type === "file_upload" ? <>
-          {q.helpText && <p className="mb-2 text-[12.5px] text-ui-muted">{q.helpText}</p>}{fileField(`${q.label}${q.required ? " *" : ""}`, q.id, field.onChange, Array.isArray(q.config?.accept) ? q.config.accept as string[] : ["pdf", "png", "jpg", "webp", "zip"], typeof q.config?.maxSizeMb === "number" ? q.config.maxSizeMb : 10, true)}
-          {errors.answers?.[q.id]?.message && <p role="alert" className="mt-2 text-[13px] text-red-700">{errors.answers[q.id]?.message}</p>}
+        <div className="ui-form-grid">{grouped.map((q) => <div key={q.id} data-application-field={`answers.${q.id}`} className={`min-w-0 ${["long_text", "single_choice", "multiple_choice", "file_upload"].includes(q.type) ? "ui-form-wide" : ""}`}><Controller name={`answers.${q.id}`} control={control} render={({ field }) => q.type === "file_upload" ? <>
+          {q.helpText && <p className="mb-2 text-[12.5px] text-ui-muted">{q.helpText}</p>}{fileField(`${q.label}${q.required ? " *" : ""}`, q.id, field.onChange, Array.isArray(q.config?.accept) ? q.config.accept as string[] : ["pdf", "png", "jpg", "webp", "zip"], typeof q.config?.maxSizeMb === "number" ? q.config.maxSizeMb : 10, true, errors.answers?.[q.id]?.message)}
         </> : <QuestionFields question={q} value={field.value} other={other[q.id] ?? ""} error={errors.answers?.[q.id]?.message} onChange={field.onChange} onOtherChange={(value) => setOther((current) => ({ ...current, [q.id]: value }))} /> } /></div>)}</div>
       </fieldset>;
     })}
     <div className="absolute -left-[10000px]" aria-hidden="true"><label>Company website<input ref={honeypot} name="companyWebsite" tabIndex={-1} autoComplete="off" /></label></div>
     <section className="space-y-[18px] border-t border-ui-border pt-[26px]">
-      <label className="flex items-start gap-3 text-[14px] leading-[1.55] text-ui-body">
-        <input type="checkbox" className="mt-[3px] h-[18px] w-[18px] shrink-0 accent-ui-blue" {...register("consent")} />
+      <label data-application-field="consent" className="flex items-start gap-3 text-[14px] leading-[1.55] text-ui-body">
+        <input type="checkbox" aria-invalid={!!errors.consent} aria-describedby={errors.consent ? "consent-error" : undefined} className="mt-[3px] h-[18px] w-[18px] shrink-0 accent-ui-blue" {...register("consent")} />
         <span>I have read the <Link href="/privacy" className="underline underline-offset-4">privacy notice</Link> and consent to my application being processed for this role.</span>
       </label>
+      {errors.consent?.message && <p id="consent-error" role="alert" className="text-[13px] text-red-700">{errors.consent.message}</p>}
       {securityActive ? <TurnstileWidget key={widgetKey} onToken={setToken} /> : <p className="text-[13px] text-ui-muted">The security check loads when you start this form.</p>}
       <button type="button" disabled={isSubmitting || uploadBusy > 0} onClick={async () => {
         await sessionPromise.current?.catch(() => undefined);
