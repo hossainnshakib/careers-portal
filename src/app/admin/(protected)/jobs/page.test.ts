@@ -40,6 +40,7 @@ it("distinguishes genuine empties from filtered misses and supplies working clea
   const empty = renderToStaticMarkup(await JobsPage({ searchParams: Promise.resolve({}) }));
   expect(empty).toContain("No jobs yet"); expect(empty).toContain('href="/admin/jobs/new"');
   expect(empty).not.toContain("Clear filters");
+  expect(empty).not.toMatch(/DEMO|Synthetic role|href="\/admin\/jobs\/fixture\/edit"/);
   const filtered = renderToStaticMarkup(await JobsPage({ searchParams: Promise.resolve({ q: "none" }) }));
   expect(filtered).toContain("No jobs match these filters."); expect(filtered).toContain("Clear filters");
   expect(filtered).toContain('href="/admin/jobs/new"');

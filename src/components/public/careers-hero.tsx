@@ -57,7 +57,7 @@ export function CareersHero({ jobs, brands }: { jobs: JobCard[]; brands: PublicB
           {demo && <DemoNotice slug={demo.slug} />}
           <h1 id="careers-title" className="text-[42px] font-extrabold leading-[1.04] tracking-[-.035em] sm:text-[68px]">Good work starts here.<br /><span className="mt-2 block text-[28px] tracking-[-.03em] text-ui-muted sm:text-[44px]">Find your place across our brands.</span></h1>
           {hasRoles ? <p className="max-w-[560px] text-[18px] leading-[1.6] text-ui-muted">Browse open roles, pick one that fits, and apply in a few steps. No account needed.</p>
-            : <p className="max-w-[560px] text-[18px] leading-[1.6] text-ui-muted">We don&rsquo;t have any open roles at the moment. Check back soon — new opportunities open regularly.</p>}
+            : <p className="max-w-[560px] text-[18px] leading-[1.6] text-ui-muted">We don&rsquo;t have any open roles at the moment. Please check back later.</p>}
           <div className="mt-1.5 flex flex-wrap justify-center gap-3">
             {hasRoles && <a href="#roles" className="ui-button ui-button-pill shadow-[0_10px_30px_rgba(11,18,32,.25)]">Browse roles <PublicIcon name="down" /></a>}
             <a href="#how" className="ui-glass inline-flex items-center gap-[9px] rounded-full px-[26px] py-[15px] text-[15px] font-bold">How applying works <PublicIcon name="external" /></a>

@@ -105,7 +105,7 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
     <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-24 pb-6 pt-12">
       <div className="ui-glass rounded-[24px] p-8">
         <h2 className="text-[28px] font-extrabold tracking-[-.03em]">No open roles right now</h2>
-        <p className="mt-3 text-ui-muted">We don&rsquo;t have any vacancies at the moment. Check back soon — new opportunities open regularly.</p>
+        <p className="mt-3 text-ui-muted">We don&rsquo;t have any vacancies at the moment. Please check back later.</p>
       </div>
     </section>
     <CareersInfo />

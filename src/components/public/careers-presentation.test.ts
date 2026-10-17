@@ -85,6 +85,9 @@ it("empty catalog hides the hiring pill counts, marquee and floating stats card"
   expect(html).not.toContain("Hiring statistics");
   expect(html).not.toContain("Browse roles");
   expect(html).toContain("How applying works");
+  expect(html).not.toContain("open regularly");
+  expect(html).not.toContain("DEMO");
+  expect(html).not.toContain("data-testid=\"demo-notice\"");
 });
 
 it("no-match results show a friendly message and a working Clear filters button", () => {

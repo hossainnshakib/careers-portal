@@ -4,10 +4,11 @@ import { brandData, departmentData, optionData } from "@/db/seed/data";
 import { validationJobs } from "@/db/seed/validation-content";
 import { approvedDemoProject } from "@/db/seed/validation-policy";
 
-const mocks = vi.hoisted(() => ({ guard: vi.fn(), save: vi.fn(), load: vi.fn(), remove: vi.fn(), lock: vi.fn(), transaction: vi.fn(), rows: [] as unknown[][] }));
+const mocks = vi.hoisted(() => ({ guard: vi.fn(), save: vi.fn(), load: vi.fn(), remove: vi.fn(), lock: vi.fn(), transaction: vi.fn(), inventory: vi.fn(), rows: [] as unknown[][] }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/db/seed/require-dev", () => ({ requireDevTarget: mocks.guard }));
 vi.mock("./jobs", () => ({ saveJob: mocks.save, loadJob: mocks.load }));
+vi.mock("./demo-cleanup-inventory", () => ({ loadDemoCleanupInventory: mocks.inventory, cleanupInventoryHash: () => "expected-hash" }));
 vi.mock("@/db", () => {
   const result = () => ({
     then: (resolve: (value: unknown) => unknown) => Promise.resolve(resolve(mocks.rows.shift() ?? [])),
@@ -75,4 +76,9 @@ it("cleanup dry-run and repeated empty cleanup never delete", async () => {
   mocks.rows = [[], []];
   expect(await runValidationDemo("cleanup", true)).toMatchObject({ changed: 0 });
   expect(mocks.remove).not.toHaveBeenCalled();
+});
+it("rechecks the full approved snapshot under lifecycle/row locks before deletion", async () => {
+  mocks.rows = [owned, [], owned];
+  await expect(runValidationDemo("cleanup", true, "changed-hash")).rejects.toThrow("Inventoried records changed");
+  expect(mocks.inventory).toHaveBeenCalled(); expect(mocks.remove).not.toHaveBeenCalled();
 });
