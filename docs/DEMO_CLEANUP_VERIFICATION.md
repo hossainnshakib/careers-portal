@@ -1,8 +1,10 @@
 # Prompt 15 — scoped DEMO cleanup checkpoint
 
-**Partial completion / HANDOFF READY.** No claim of zero remaining Storage
-artifacts or production readiness. Storage pass is blocked until existing signed
-uploads expire; no background destructive operation is running.
+**Database cleanup and non-Storage audit/implementation complete to the available
+authentication/deployment boundary; Storage cleanup remains blocked.** No claim
+of zero remaining Storage artifacts or production readiness. The immediate
+revocation assessment below found no available supported per-URL revocation.
+No background destructive operation is running.
 
 ## Baseline and actual operations
 
@@ -93,6 +95,45 @@ Repeated completed runs remove zero. Do not change the manifest to evade a refus
 Then record final zero-object counts, rerun read-only verification, and update this
 checkpoint/DECISIONS. Existing owner approval covers this exact unchanged scope.
 
+### Immediate-removal assessment — 2026-10-17
+
+The owner's later instruction requested supported revocation rather than an
+unnecessary schedule, and explicitly requested completion of other work if safe
+immediate removal was unavailable. All non-Storage checks below were completed
+without waiting or repeatedly stopping the audit.
+
+**Immediate revocation is not available through the existing supported
+mechanisms.** This is a credential-validity limitation, not a new cleanup schedule:
+
+- The installed Supabase Storage SDK exposes signed upload creation and object
+  removal, but no revoke/invalidate method. Method enumeration made no network
+  requests. No undocumented mutating API was probed.
+- Supabase's documented upload token lifetime is two hours. The current upstream
+  [upload handler](https://github.com/supabase/storage/blob/master/src/http/routes/object/uploadSignedObject.ts)
+  verifies the token/path then uploads through elevated Storage access; the
+  [signature verifier/signer](https://github.com/supabase/storage/blob/master/src/storage/object.ts)
+  checks signature/scope/path/expiry, not this application's reservation record.
+  Thus deleting a JSON reservation or existing file does **not** revoke its already
+  issued upload authorization. A still-valid URL could recreate the deleted path.
+  Upstream source corroborates the risk; the hosted Storage server version was
+  not independently inspected, so an unverified revocation behavior is not assumed.
+- Supabase's [signed URL documentation](https://supabase.com/docs/guides/storage/serving/downloads#signing-urls)
+  says Storage URL signing uses a dedicated internal key, Auth-key changes do not
+  invalidate signed URLs, and revocation requires contacting Supabase support.
+  No provider-support revocation capability/confirmation is available here.
+- Bucket/policy changes, project-wide key changes or leaving replacement/tombstone
+  objects are not acceptable scoped deletion mechanisms. None was performed.
+
+The 16:24:40 UTC read-only recheck confirmed the exact project/APP_ENV, all 20
+unchanged object identities/bytes and all 20 backup hashes. There were **16
+reservations / 4 uploaded files**, no new jobs/applications/dependencies or unrelated
+objects, and identical six-department/eight-brand/13-option/one-allowlist fingerprints.
+At that check the latest possible authorization expiry plus margin had not passed;
+the existing safe boundary is still **17:58 UTC**. **No further data or Storage
+objects were removed in this immediate-removal execution.** The original 20-object
+backup and owner authorization remain intact. Do not weaken expiry validation,
+issue replacement signed URLs, or claim this blocked item complete.
+
 ## Structural preservation matrix
 
 All rows below are `legitimate-keep`, identified by documented operational slugs
@@ -156,7 +197,7 @@ owner sign-in/MFA smoke check was not performed; anonymous admin redirect was.
 | Public success reference | Clean by intended privacy model | Reference syntax only, no applicant lookup/details, noindex. Deleted reference does not expose a former profile or assert DB existence. |
 | Privacy | Blocked for real launch; honest runtime copy | Draft/contact/retention disclosures preserved. Owner must approve policy/contact; no invented replacement. No DEMO candidate copy. |
 | 404/error utilities | Clean locally/source | Generic recovery and no DB/provider/applicant content. Existing tests retained. |
-| Admin dashboard/jobs/applications/profile | Not verified signed-in live | DB graph is zero; existing source empty states and unit tests use real query results/mocks, not fallback candidates. Anonymous redirect verified. No auth/MFA bypass or test-account creation. |
+| Admin dashboard/jobs/applications/profile | Source/unit audit clean; not verified signed-in live | DB graph is zero. Actual page/component renders with isolated mocks prove zero dashboard counts, truthful empty/filtered jobs and applications, no synthetic candidate fallbacks or stale record links, auth-before-query behavior and generic read failure. All six admin entry routes redirect anonymous live requests to login. No auth/MFA bypass or test-account creation. |
 | Admin brands/departments/options/editor | Source/structural audit clean | Legitimate operational records preserved. Input examples (`e.g.`, salary placeholder) are authoring guidance, not saved vacancies; do not delete supported fields. |
 | PDF/downloads/uploads/auth | Not rerun end-to-end | No submitted application remains; no fixture seeded. Existing default validation/auth/storage/PDF tests and build trace pass. No security code/policy changes. |
 | src/db/seed/real-jobs.json and importer | Retain | Owner-authored 19-position authoring asset, not imported or published. No runtime route imports seed content. |
@@ -176,6 +217,8 @@ Exact changed code/test paths:
 - `src/components/public/careers-hero.tsx`, `careers-hub.tsx`, `careers-presentation.test.ts`
 - `playwright.cleanup.config.ts`
 - `tests/e2e/cleanup-readonly.spec.ts`
+- Immediate-removal follow-up: `src/app/admin/(protected)/applications/page.test.ts`,
+  `src/app/admin/(protected)/jobs/page.test.ts`, `src/components/admin/dashboard.test.ts`
 
 Documentation: this file, `docs/DECISIONS.md`, `docs/RUNBOOK.md` and
 `docs/SEED_DATA.md`. No package/lockfile, schema, migration, policy, auth or
@@ -187,7 +230,8 @@ repository changes.
 | Targeted cleanup guards/storage/query unit tests | 19 passed; mocked DB/Storage and production-refusal CLI checks, no DEV writes |
 | pnpm typecheck | PASS, after production build |
 | pnpm lint | PASS |
-| pnpm test | **699 passed / 90 existing opt-in skips**, 101 files passed / 8 skipped; no live flags |
+| Admin empty-state/auth/read-failure follow-up unit tests | **11 passed** across 3 files; only isolated mocks, no admin account or live DB mutation |
+| pnpm test | **703 passed / 90 existing opt-in skips**, 102 files passed / 8 skipped; no live flags |
 | pnpm build (external DEV environment loaded privately) | PASS, embedded lint/types and PDF trace guard |
 | PLAYWRIGHT_PRODUCTION=1 + playwright.cleanup.config.ts | **3 passed**; no global setup/teardown, seeds, account sweeps, uploads or successful submissions |
 | Full ordinary browser/live integration suites | NOT RUN: shared-DEV fixture seed/sweep/deletion risks explicitly prohibited |
@@ -213,16 +257,31 @@ no DEMO text, no JobPosting**, and sitemap had zero jobs. The existing 300-secon
 cache behavior is recorded, not hidden. Unsupported regular-hiring wording still
 exists on the older deployed code; its branch fix is not deployed.
 
+Follow-up direct live audit at **16:26 UTC** reconfirmed Home/brand-filtered Home
+have zero job links/DEMO notices/text, all ten old Job/Apply URLs are 404 without
+forms/JobPosting/DEMO titles, sitemap has no jobs, robots protects admin/success,
+privacy retains its honest draft disclosure, an unknown route is 404, and **all
+eight legitimate SVG brand assets return 200**. Footer/privacy navigation and FAQ
+are present. Six anonymous admin entry routes all finish at `/admin/login`.
+Signed-in admin access is still not claimed: no authorized owner session/MFA was
+provided and no account was created. The local production three-case E2E passed
+again with neutral empty-state text; the live site still serves the older text.
+
+Additional external evidence: `resume-preflight.json` (16:24 UTC),
+`final-readonly-audit.json`, `final-live-public-home.png`. The source/public-assets
+audit found no DEMO/test labels in static SVG/JSON/HTML/text assets. Existing mockups,
+test fixtures, guarded seed/import tools and legitimate authoring hints remain.
+
 ## Acceptance checkpoint
 
 | Required outcome | Status |
 |---|---|
-| No DEMO operational jobs/applications/files | **Not Implemented fully**: graph zero, 20 pending objects await safe expiry pass |
+| No DEMO operational jobs/applications/files | **Not Implemented fully / Blocked**: graph zero; 20 exact pending objects remain because individual issued upload URLs cannot be safely revoked with available supported mechanisms before expiry |
 | Legitimate structure/admin preservation | Implemented for data; live owner MFA check not performed |
 | Runtime/SEO no demo/fabricated hiring after deployment | Justified Deviation: actual live DEMO data gone; neutral wording patch awaits owner deployment; signed-in admin unverified |
 | Generic features/security/PDF/uploads remain | Justified Deviation: default tests/build/source pass, no new live application/account seeded |
 | Stale DEMO URLs safe | Implemented: ten live/local 404s; reference-only success remains private/noindex |
-| Scoped auditable guarded backup/recovery | Implemented: verified backup and locked fingerprint apply; Storage pending |
+| Scoped auditable guarded backup/recovery | Implemented: verified backup and locked fingerprint apply; repeat backup/current-byte validation and revocation assessment documented; Storage still pending |
 | No production/real-role/unrelated changes | Implemented |
 | Honest local/DEV/deployed distinction | Implemented |
 
@@ -236,7 +295,7 @@ plan. None is configured or claimed ready here.
 
 **Is any DEMO/test content still visible on the currently deployed live site?**
 No DEMO job/listing/applicant content was observed on the checked public surfaces
-at 15:59 UTC; all five jobs and applications are absent. Signed-in admin pages
+at 16:26 UTC; all five jobs and applications are absent. Signed-in admin pages
 were not inspected. Twenty private pending objects still exist and must not be
 reported as deleted. The older live empty-state promise still awaits deployment
 of the neutral wording fix. No production-readiness claim is made.

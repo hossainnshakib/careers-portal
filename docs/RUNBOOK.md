@@ -198,6 +198,16 @@ object update. This prevents a delayed upload recreating a deleted object. No ba
 deletion job has been scheduled. Fresh objects, applications or unrelated data
 cause a refusal; do not override it or regenerate an approval manifest silently.
 
+An immediate-revocation review found no supported per-URL revoke operation in
+the installed SDK. Deleting a file/reservation does not invalidate a stateless
+signed upload token and may let it recreate that path. Supabase documents a
+two-hour upload lifetime and provider-support intervention for signed-URL
+revocation; Auth key changes do not revoke Storage URLs. Do not change keys,
+policies/buckets or leave tombstones to evade this limitation. The complete
+source/documentation evidence and completed non-Storage audit are recorded in
+`DEMO_CLEANUP_VERIFICATION.md`. This boundary is token expiry, not a cleanup
+schedule. No request for duplicate owner approval is needed for the same scope.
+
 The private external backup contains the full original job graph and all 20
 object bodies with sizes/MIME and SHA-256 hashes. Every byte was read back and
 verified. Its `RECOVERY.md` describes exact-ID/path recovery requiring separate

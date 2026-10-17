@@ -24,6 +24,8 @@ it("uses six ordered status links and explicit empty states without dropping the
   for (const status of ["new", "under_review", "shortlisted", "rejected", "hired"]) expect(html).toContain(`/admin/applications?status=${status}`);
   expect(html).toContain("No applications yet");
   expect(html).toContain("No open roles yet.");
+  expect([...html.matchAll(/<b>0<\/b>/g)]).toHaveLength(6);
+  expect(html).not.toMatch(/DEMO|Synthetic Candidate|APP-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}/);
 });
 
 it("retains all latest ten records behind responsive disclosure, uses initial marks and real role bars", async () => {
