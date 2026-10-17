@@ -49,8 +49,9 @@ Do NOT build, even if it seems helpful: candidate accounts/login, interview sche
 - Never edit a migration that has been applied; add a new one.
 
 ## Environments and data safety
-- Right now only a DEV Supabase project exists. Demo data lives there.
+- The existing Supabase project is designated for controlled production conversion. No isolated cloud DEV target is configured; keep real application intake closed until owner go-live approval. See docs/PRODUCTION_CONVERSION_PLAN.md.
 - Scripts that create demo data or reset the database must refuse to run if `APP_ENV=production` or if the database URL looks like the production project. Include a hard guard and a test for it.
+- The source-pinned production ref must also be refused by all DEV tools when APP_ENV=development and DEV variables are maliciously/mistakenly repinned. Production owner maintenance requires independent target validation and explicit apply/confirmation; never invent a DEV ref to pass a guard.
 - You never receive production credentials. The owner runs production migrations manually.
 
 ## Windows / dev machine notes

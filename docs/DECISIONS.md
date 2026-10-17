@@ -1830,3 +1830,53 @@ HANDOFF READY
 - Completed the other audit work now: added isolated actual admin Applications-page empty/filtered-empty/auth-before-query/read-error tests; strengthened existing Jobs/Dashboard assertions against synthetic fallbacks, stale links and fake counts. **11 focused tests passed**. No owner account/MFA/session was used or changed, no test account created, no seeds/sweeps/uploads/synthetic applications were run. Authenticated live screenshots remain unavailable rather than bypassed.
 - Full renewed gates: typecheck/lint, **703 unit tests / 90 existing opt-in skips (102 files passed / 8 skipped)**, production build/PDF trace guard, and production-mode non-seeding Chromium **3/3 passed**. At **16:26 UTC**, direct live read-only audit confirmed zero DEMO listings, ten old detail/apply URLs actual404 with no forms/JobPosting/DEMO titles, empty sitemap job set, protected robots, honest draft privacy, unknown URL404, all eight brand SVGs200, footer/FAQ, and anonymous redirects for all six admin entry routes. The neutral empty-state branch fix still awaits owner deployment; signed-in admin/real-device/production-key checks remain explicitly unverified.
 - `DEMO_CLEANUP_VERIFICATION.md` and RUNBOOK now record the exact immediate-removal limitation, completed audit, actual tests and remaining acceptance item. All non-Storage work is complete to the available authentication/deployment boundary. **Prompt 15 itself is still partial while these 20 private objects remain.** Existing approval covers only their unchanged inventoried removal once no valid upload authorization can recreate them; use the same dry-run/apply command without weakening its guard. Preserve backups, do not seed/rebuild data to make tests green, and do not merge or configure domain/Turnstile/production infrastructure.
+
+## 2026-10-17 — Prompt 17 Stage 0: controlled existing-project conversion
+
+- Owner selected Option A for `xmtoccukridshadnxrlc`, not a new project. Stage 0
+  code/docs/local verification and feature-branch publication are authorized;
+  live mutations, rotations, session/connection changes, migrations, provider/env/
+  deployment changes, synthetic submissions and recruitment remain behind Gate 1.
+  This supersedes earlier separate-project/shared-DEV write assumptions, not the
+  requirement for isolation, independent target validation or owner-only secrets.
+- Fetched main `8072afe` (cleanup PR #8); clean separate `production-conversion-hardening`
+  worktree `G:\career-prod`. Four existing worktrees and primary user changes remain.
+  Read-only HTTPS reconfirmation at 17:30 UTC: structure 6/8/13/admin1, job/application
+  graph zero, pending 16 sidecars + 4 files, signups off. Both live domains now show
+  neutral empty state/no roles, unlike the earlier pre-merge cleanup report. Exact
+  deployed commit/server settings remain unknown, not inferred from public HTML.
+- Source-pinned production denial applies even to repinned DEV settings, startup,
+  runtime, fixtures and CI preflight. With no isolated DEV target, cloud mutation
+  suites cannot run here. Production owner commands require independent allowed/API/
+  both DB identities, no fabricated DEV pin, and exact apply/confirmation. Ordinary
+  migration/base CLIs are now DEV-only too. No authentication/RLS/CAPTCHA/file rule
+  is relaxed; no dependency or new business module is added.
+- All four postgres.js clients use certificate/hostname verification with optional
+  private PEM DATABASE_SSL_CA. Both fresh verified-TLS probes failed with
+  SELF_SIGNED_CERT_IN_CHAIN; no plaintext/unverified fallback was attempted. Supply
+  the correct CA privately and prove both hosted paths before launch. Source TLS
+  options/mocked connection tests do not establish successful live TLS.
+- Original 0006 SQL remains untouched and unjournaled; prior audit found no ledger
+  entry or salary CHECK despite the older applied claim. Generated forward 0007
+  adds only the CHECK, no row normalization or DROP, with matching snapshot/journal.
+  Its number intentionally reserves 6; installed reader/kit checks validate the
+  journal-driven path. No existing migration/ledger was rewritten or applied.
+- The original cleanup DEV path now refuses this production-designated target.
+  Prepared a separate explicit owner-conversion mode with the source-pinned original
+  manifest digest and all original backup/hash/scope/dependency/expiry checks. It
+  additionally requires owner evidence of the last privileged issuer retirement
+  and full TTL/margin; old job-removal time alone is insufficient for unknown direct
+  key issuers. This is code preparation, not approval/execution of cleanup.
+- Sitemap becomes request-dynamic with existing catalog tags/TTL unchanged, enabling
+  credential-free builds without production DB reads. No fake catalog/DEV project
+  is introduced. Privacy draft/contact/retention wording is retained for owner review.
+  PRODUCTION_CONVERSION_PLAN and PRODUCTION_LAUNCH_VERIFICATION record exact evidence,
+  unknown scopes, one-batch privileged approval categories, ordering and rollback.
+- Final Stage 0 local gates: typecheck/lint passed, 773 default cases passed with
+  90 existing opt-in skips (107 files/8 skipped), Drizzle check passed, refreshed
+  credential-free optimized build/PDF trace passed and two non-mutating local
+  Chromium cases passed. Scan found zero current private credential matches across
+  524 files; original 0000–0006 SQL is byte-identical to main. Initial fixture/test
+  expectation failures and corrected reruns are preserved in the launch report.
+  No successful live TLS, migrations/cleanup/rotations, authenticated smoke or
+  provider/deployment changes are claimed. Gate 1 and final go-live remain blocked.

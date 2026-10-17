@@ -2,8 +2,16 @@
 
 The agent prepares code and dev checks; **you perform production setup**. Never send production credentials, backups or applicant records to the agent, chat or git. V1 is a small recruitment portal: no candidate accounts, automatic email or HR management.
 
+**Current authority (Prompt 17):** the owner selected conversion of the existing
+project, not creation of a separate production project. Use
+`PRODUCTION_CONVERSION_PLAN.md` for ordered steps, target/CA/access inventory,
+batch Gate 1 approvals, exact commands, stop/rollback criteria and final go-live
+permission. **Stage 0 is code-only. Do not execute the historical setup/cleanup
+instructions below without the new approval gates.** No live changes are implied
+by a production label, branch merge, build or passing unit tests.
+
 ## 1. Choose the region and hosting plans
-The dev Supabase project is Mumbai. Compare Mumbai and Singapore using equivalent small database round-trips from Vercel functions and typical Bangladesh user connections; record median/tail latency, not just ping or a single request. If necessary, create disposable benchmark projects yourself. No production region has been selected by the agent.
+The retained project is Mumbai; functions remain bom1. No new benchmark/production project is needed for the selected conversion. Verify commercial hosting suitability, backup availability and recovery with the owner.
 
 - Supabase Mumbai (`ap-south-1`) -> Vercel `bom1`.
 - Supabase Singapore (`ap-southeast-1`) -> Vercel `sin1`.
@@ -12,16 +20,16 @@ The dev Supabase project is Mumbai. Compare Mumbai and Singapore using equivalen
 - Vercel Hobby is intended for non-commercial use. Choose an appropriate paid plan before a commercial careers launch. For business-critical use, prioritize reliable database backups/availability and sufficient hosting limits.
 
 ## 2. Create and configure production Supabase
-Create a separate project in the chosen region. Save its project reference and credentials privately. In Authentication > Sign In / Providers, switch **Enable sign-ups OFF**. Create no public signup flow. Keep the existing dev project separate.
+Do not create a project. The designated existing project must cease being DEV in every secret scope, collaborator/integration and running connection. Source-pinned guards alone cannot revoke historical credentials. In Authentication > Sign In / Providers verify **Enable sign-ups OFF**. Create no public signup flow.
 
 Use the transaction-pooler URL for DATABASE_URL (`prepare: false` is configured). For DIRECT_URL use direct Postgres, or the **session pooler** if the Windows network cannot reach IPv6. Copy the appropriate project-specific usernames/ports from Connect; percent-encode special password characters in connection URLs. Do not substitute a dev connection.
 
 Create a private file outside the repo, for example `C:\secure\careers-production.env`. Fill all runtime variables below. Also set:
 - `ALLOWED_SUPABASE_PROJECT_REF` = production project reference, independently copied from its dashboard.
-- `DEV_SUPABASE_PROJECT_REF` = existing dev reference (identifier only, not its credentials).
+- `DEV_SUPABASE_PROJECT_REF` = **omit** in production; do not invent a different ref. Ordinary cloud DEV tools remain unavailable until an actual isolated target is independently approved.
 - `ADMIN_EMAIL` = your existing production Auth account's address, when doing admin setup.
 
-Owner commands require explicit APP_ENV, both pins, the API host and **both DB URLs** to match. Production cannot target the dev pin; development must target it. The ordinary `admin:add` and `storage:ensure` remain dev-only. Demo/reset scripts always remain dev-only. Never run demo/reset on production.
+Owner commands require explicit APP_ENV, independent allowed target, API host and **both DB URLs** to match the source-pinned production ref, with no DEV pin. Owner writes additionally require `--apply --confirm=xmtoccukridshadnxrlc`. Ordinary migration/base/admin/bootstrap and all demo/reset/import/fixture commands remain DEV-only and refuse this target under every APP_ENV. See the conversion plan for the separate original-manifest-only cleanup path.
 
 ## 3. Environment inventory
 | Variable | Handling / purpose |
@@ -37,7 +45,8 @@ Owner commands require explicit APP_ENV, both pins, the API host and **both DB U
 | NEXT_PUBLIC_TURNSTILE_SITE_KEY | Public real production widget key |
 | NEXT_PUBLIC_SITE_URL | Optional public origin override; set the approved canonical custom origin for launch, omit on previews for Vercel system-hostname fallback |
 | NEXT_PUBLIC_CONTACT_EMAIL | Optional public recruitment/deletion contact; confirm before launch |
-| DEV_SUPABASE_PROJECT_REF | Dev identifier for guards; no dev secret in production |
+| DEV_SUPABASE_PROJECT_REF | Omit in production; DEV must be a real independently approved non-production target |
+| DATABASE_SSL_CA | Server-only optional multiline PEM CA; certificate and hostname verification always enabled |
 | ALLOWED_SUPABASE_PROJECT_REF, ADMIN_EMAIL | Owner-maintenance file only; not needed by deployed request handlers |
 
 Use a password manager to create independent secrets, then save them privately; do not print them with environment listing commands. Turnstile test site keys/secrets are allowed only with explicit APP_ENV=development. Production build/start rejects missing/unknown APP_ENV and test-key values. NEXT_PUBLIC variables are baked into browser bundles: change them before building and redeploy after edits.
@@ -52,7 +61,7 @@ node --env-file="C:\secure\careers-production.env" --run=storage:ensure:owner
 node --env-file="C:\secure\careers-production.env" --run=seed:base:owner
 node --env-file="C:\secure\careers-production.env" --run=jobs:seed-shells
 ```
-These map to the same migration/base code with an independent owner target gate. Never edit applied migrations. Drizzle keeps its migration ledger in the database; do not use Supabase CLI `db push` against this repo's Drizzle migrations.
+The command forms above are historical and now **refuse writes without explicit apply/confirmation**. Follow the conversion plan's reviewed direct-Node command, only for operations actually approved/needed; existing base/buckets/admin should not be recreated. Never edit applied migrations. Drizzle keeps its migration ledger; do not use kit/Supabase `db push`.
 
 Buckets: applications PRIVATE, <=10 MB and the supported file MIME union plus server-written JSON reservations; brand-assets PUBLIC, <=1 MB SVG/PNG/WebP. The bootstrap refuses visibility mismatches rather than making applicant files public. Per-slot CV/type/signature limits remain enforced by application code.
 
@@ -71,7 +80,7 @@ The command only allowlists an existing Auth identity and prints no address. It 
 Import the repository as a Next.js project; use Node 24, pnpm install with the frozen lockfile, `pnpm build`, and the standard Next output. Review `VERCEL_CHECKLIST.md` before deploying.
 The current reviewed implementation is on `main` (PRs through #7 at the 2026-10-17 cleanup baseline). The cleanup changes are on `demo-cleanup-launch-prep`; the owner manages its PR, CI and deployment. Do not deploy an older phase branch merely because a historical handoff named it. The agent does not merge or change Vercel settings.
 
-For a preview use **dev-only** project credentials, APP_ENV=development, the dev pin and documented Turnstile dev test keys. NEXT_PUBLIC_SITE_URL can be omitted: automatically exposed Vercel hostnames provide the build-time fallback (project production hostname first, deployment hostname next). Region is bom1. Previews must never connect to production. This development/test-key configuration must never be used for the real production recruitment deployment. Hosting access logs must not retain applicant-name/email filter queries or authorization headers; application request logging is disabled, but provider settings still require review. See VERCEL_ENV_TABLE for all settings.
+Preview/Development must have no credentials for the designated production project, including build-time secrets and branch overrides. There is currently no alternate approved cloud DEV target: use credential-free packaging/checks, not fake DEV pins. Vercel scope/APP_ENV disagreement fails startup. Hosting access logs must not retain applicant-name/email queries or authorization headers; provider settings require owner review.
 
 For production add the production runtime variables to the Production environment only. Create a real Cloudflare Turnstile widget for careers.fixenmedia.com and supply its real pair of keys. Do not allow localhost on the production widget. Redeploy after setting public variables. Disable sign-ups on production independently of the dev setting.
 
@@ -96,7 +105,7 @@ Wait for DNS propagation and Vercel's domain/certificate verification. Confirm H
 ## 9. Manual backup routine
 Keep backups outside the repo on encrypted owner-controlled storage, with a second encrypted offline copy. Back up daily while recruiting actively, at least weekly otherwise, and before migrations/deployments. Record dates and counts, not applicant details in shared notes. Choose backup retention consistent with the approved privacy policy.
 
-Install native PostgreSQL client tools for Windows from the official installer; pg_dump must be at least the server's major version. Configure a protected `C:\secure\pg_service.conf` with a `careers-prod` entry containing the production **direct/session-pooler** host, port, database, username/password and sslmode=require. This avoids putting passwords into command arguments. Do not use the transaction pooler for exports.
+Install native PostgreSQL client tools for Windows from the official installer; pg_dump must be at least the server's major version. Configure a protected `C:\secure\pg_service.conf` with the production **direct/session-pooler** settings, `sslmode=verify-full` and the trusted `sslrootcert` path. Never use require/disable as a substitute for certificate verification. Do not use the transaction pooler for exports. Database backups must include an explicit Auth/security-trigger/config recovery strategy as well as app data; Storage bytes need separate backup.
 
 Create the dated backup folder privately (example below assumes it exists), then:
 ```powershell
@@ -178,6 +187,11 @@ development configuration; it does not seed data. Browser keyboard/race behavior
 and the public deployed empty state remain unverified.
 
 ## Prompt 15 scoped cleanup checkpoint (2026-10-17)
+
+Historical checkpoint: the legacy DEV command below now refuses the designated
+production ref. Do not use an older worktree to evade that refusal. Prompt 17's
+owner-conversion path preserves the original manifest/backup/expiry/scope checks
+but requires fresh Gate 1 approval and independent production target confirmation.
 
 The owner explicitly approved removal of the five inventoried DEMO jobs and 20
 exact pending Storage objects. **Do not run a general wipe/reset, seed/import, or

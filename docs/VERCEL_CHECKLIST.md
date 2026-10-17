@@ -2,14 +2,16 @@
 
 ## Build and environment
 - Next.js 15.5.27 / Node 24 / pnpm 12.9.1; install with frozen lockfile and build with `pnpm build`. No static export: admin, uploads, inline forms and PDFs require server runtime.
-- Main now contains the reviewed V1 merge. Preview **fix-pdf-tracing** for the packaging/display fixes before any owner release decision; the agent does not merge or update main.
+- Main `8072afe` includes cleanup PR #8 at the conversion baseline. Use the reviewed conversion release, not historical phase branches. Agent does not merge/deploy. Follow `PRODUCTION_CONVERSION_PLAN.md` and its Gate 1 approvals; successful packaging is not go-live approval.
 - Set public variables before the build. NEXT_PUBLIC_SITE_URL is an optional explicit origin override. Otherwise, on Vercel, resolution prefers VERCEL_PROJECT_PRODUCTION_URL then VERCEL_URL with HTTPS; outside Vercel the default is http://localhost:3000. Enable Vercel's automatic System Environment Variables exposure. NEXT_PUBLIC_CONTACT_EMAIL is optional but required to finish owner contact/privacy review. Secrets stay server-only, without NEXT_PUBLIC prefixes. See VERCEL_ENV_TABLE.md.
 - Next config bakes the resolved public origin into NEXT_PUBLIC_SITE_URL for browser/server consistency; client modules cannot directly read unprefixed platform variables. Prefer an explicit approved custom origin for the real production launch. The requested production-project-first precedence can make preview canonical URLs point at the project's production domain. Auth/relative redirects stay request-bound so a preview does not send login/submission navigation to another environment.
-- Preview uses dev Supabase only, APP_ENV=development and its independent dev pin. Production uses a distinct project and explicit APP_ENV=production, with real Turnstile keys. Missing/unknown APP_ENV and production test-key values fail build/start.
+- The retained source-pinned Supabase project is production-designated and forbidden in Preview/Development/local DEV, even if variables are repinned. No isolated cloud DEV is configured. Remove target credentials from all non-production/branch scopes. Production only: APP_ENV=production, DEV pin absent, matching API/both DB targets, fresh secrets, final explicit canonical origin and real Turnstile. Vercel scope disagreement, missing/unknown APP_ENV and test keys fail startup.
+- Database connections always verify certificates/hostnames; supply the owner-verified CA privately via DATABASE_SSL_CA when needed. Both live trust checks remain blocked by SELF_SIGNED_CERT_IN_CHAIN until the proper CA is provided and tested. Never suppress TLS verification.
+- Sitemap is dynamic (runtime uses existing catalog cache). Credential-free builds with dummy public settings require no database/Auth secrets and must not query production.
 - Disable hosted access-log recording of private search queries/authorization headers; do not log request bodies. Application incoming-request diagnostics are disabled, but provider configuration is separate.
 
 ## Region and cron
-`vercel.json` uses bom1 for the current Mumbai dev-backed preview. Production must match the chosen Supabase region: bom1/Mumbai or sin1/Singapore after measuring latency. Change the regions entry before a Singapore production deployment.
+`vercel.json` uses bom1, matching the retained Mumbai project. Do not create another project or change region during conversion.
 
 Exactly one daily cron calls `/api/cron/daily` at 0 0 UTC. Set CRON_SECRET; Vercel automatically supplies `Authorization: Bearer <secret>`. This app compares digests in constant time before I/O. Hobby supports daily scheduling only and timing is best effort within an hour; check plan suitability for commercial use. Cron is production deployment scheduling, not proof that a preview performed cleanup. Confirm configuration and failure monitoring after rollout.
 
@@ -42,11 +44,11 @@ fontkit, linebreak, png-js, restructure, unicode-properties and unicode-trie run
 
 Local renderer tests can find every installed node_modules file and therefore cannot expose a stripped-serverless-package failure like this. The trace guard catches omissions in the local Next build manifest, not whether Vercel copied/loaded that manifest correctly on Linux. Confirm cold and warm Profile PDF downloads on the branch preview with MFA, including Bengali text, before promotion.
 
-## Test first on a dev-backed preview (owner)
+## Final approved production smoke (owner; no production-DB preview)
 1. **MFA login**: fresh ephemeral/test admin, password re-verification for enrollment, TOTP challenge and password-only denial. Verify HttpOnly/Secure cookies over HTTPS and CSP without unsafe-eval.
 2. **PDF download**: English and Bengali profiles, notes off/on, long text/URL pagination, correct visible footers/logos and fonts. Check first cold invocation and a subsequent warm one.
 3. **Logo upload**: small passive SVG/PNG/WebP succeeds and displays via img; active/malformed/oversized content fails. Confirm sharp works on Linux/serverless.
-4. **Apply with CV**: same-page anchor, lazy nonce-bearing CAPTCHA, direct private PDF upload, required question files, server validation, success reference and actual review rows. Check the old apply HTTP 308.
+4. **Apply with CV**: independent `/jobs/<slug>/apply` 200/noindex page, lazy nonce-bearing CAPTCHA, private direct upload, required files, consent, validation, reference and actual review rows. No inline form/308. This synthetic write requires separate approval; publish no real roles before final go-live permission.
 5. **Privacy/public**: real counts/filter SSR, reduced motion, mobile sheet/focus, 404/error recovery, canonical URLs/sitemap/robots and no applicant disclosure by references. Check on a physical phone too.
 6. **Authorization/maintenance**: anonymous/non-admin downloads denied; private signed links short-lived; missing/wrong cron bearer denied; authorized response contains only counts.
 
@@ -55,4 +57,4 @@ Preview deployment, Linux bundle contents, real production widget keys, producti
 ## Read-only post-deploy smoke
 Run `pnpm smoke -- https://<public-deployment-hostname>` from the repo root. It needs no env file, secrets or account; it makes GET requests only and creates no records/uploads. Publish at least one public role first. For local production-header checks use pnpm build/start, then `pnpm smoke -- http://localhost:3000` (next dev deliberately permits development CSP allowances and will fail the production-header check).
 
-Checks cover health, home/job/unknown-role responses, permanent inline-apply redirect, enforced nonce CSP/security headers, anonymous admin and every registered admin API denial, unauthorized cron, sitemap/robots and recognizable stack/private-configuration leak signatures. Output is one fixed PASS/FAIL line per check, never response bodies/headers/error diagnostics; any failure exits nonzero. The command does not follow redirects or send cookies/authorization. Use the final public base origin; Vercel Deployment Protection/SSO or canonical-domain redirects can prevent secretless checks and correctly fail rather than being bypassed. Leak detection is signature-based and cannot prove absence of arbitrary unknown unlabelled values. Authenticated PDF/upload/MFA and Linux-native packaging still need the owner preview walkthrough.
+Checks cover health, public Job/independent Apply, unknown role, CSP/headers, anonymous admin/API denial, unauthorized cron, sitemap/robots and recognizable leak signatures. This populated-catalog tool intentionally fails without an open role; **do not publish a role just to make it pass**. Use the existing cleanup read-only browser checks for the empty state. No credentials/automatic redirects are sent. Authenticated production smoke and Linux packaging still require owner approval and verification; signature scans do not prove absence of unknown secrets.

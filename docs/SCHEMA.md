@@ -80,6 +80,7 @@ Index: `(application_id)`.
 - Phase 4 adds bounded image decoding to brand-logo upload validation and rasterizes SVG logos for PDF use. Auth MFA factors live in Supabase Auth, not application tables. PDF exports read immutable application/answer snapshots and do not persist generated files. No new migration is required.
 
 ## Migrations notes
+- Conversion reconciliation (2026-10-17): original `0006_fix_salary_mode_text.sql` is preserved, but is not journaled and was absent from the audited ledger/schema despite an earlier applied claim. It must not be replayed or marked applied speculatively. New forward `0007_enforce_salary_range_text` adds only the salary-range CHECK, with generated snapshot and journal entry (number 6 reserved). It has not been applied. Invalid data or an existing conflicting constraint deliberately stops the migration; owner approval and backup are required. The Drizzle schema now includes the same CHECK for future generation.
 - A migration enables RLS on all tables, creates the partial unique index for the primary brand, and creates the slug-immutability trigger.
 - Seed data is NOT in migrations (see `docs/SEED_DATA.md`).
 - `date` is a Phase 1 schema extension. The applied Phase 0 enum has ten types; add `date` through a **NEW migration in Phase 1** and update the Drizzle enum then. Never edit an applied migration to add it.

@@ -1,5 +1,15 @@
 # SEED DATA — Careers Portal
 
+## Production conversion supersedes prior DEV write authorizations
+
+The existing project's ref is now designated production in source safeguards.
+Every ordinary seed/reset/wipe/import/validation/fixture command rejects it, even
+with APP_ENV=development and a matching DEV pin. Older shared-DEV approvals below
+are historical, not permission to run them during conversion. No alternate cloud
+DEV target is configured. Owner-only base/shell setup requires independent target
+validation and exact `--apply --confirm=<ref>`; do not create shells or publish
+anything merely to test conversion. See `PRODUCTION_CONVERSION_PLAN.md`.
+
 ## Prompt 15 cleanup checkpoint (2026-10-17; newer than the validation dataset below)
 
 The owner authorized removal of the five validation DEMOs. Those jobs and their
