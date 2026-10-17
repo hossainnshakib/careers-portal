@@ -1,5 +1,16 @@
 # SEED DATA — Careers Portal
 
+## Prompt 15 cleanup checkpoint (2026-10-17; newer than the validation dataset below)
+
+The owner authorized removal of the five validation DEMOs. Those jobs and their
+52 questions/9 brand links/16 option links are now removed from shared DEV;
+applications are zero. The six departments, eight brands and 13 operational
+options are retained verbatim. Twenty backed-up, owner-approved pending Storage
+objects await the expiry-safe pass documented in `DEMO_CLEANUP_VERIFICATION.md`.
+Do not re-seed/import/publish anything to validate cleanup or restore the former
+catalog automatically. All legacy authoring/fixture sources below remain useful
+developer assets, not instructions to create runtime content in this phase.
+
 ## Prompt 13 authorized validation dataset (2026-10-16)
 
 Use `demo:seed`, `demo:publish` and `demo:cleanup` for the five explicit fictional

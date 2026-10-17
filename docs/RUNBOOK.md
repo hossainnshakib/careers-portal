@@ -69,7 +69,7 @@ The command only allowlists an existing Auth identity and prints no address. It 
 
 ## 6. Preview first, then production Vercel
 Import the repository as a Next.js project; use Node 24, pnpm install with the frozen lockfile, `pnpm build`, and the standard Next output. Review `VERCEL_CHECKLIST.md` before deploying.
-V1 code is on **v1-complete**; main still contains only the foundation. Deploy that branch as a dev-backed preview first. After owner review, either merge through your own release process or consciously select the reviewed branch as Vercel's Production Branch. Do not assume the repository's current default branch already contains V1. The agent does not merge or update main.
+The current reviewed implementation is on `main` (PRs through #7 at the 2026-10-17 cleanup baseline). The cleanup changes are on `demo-cleanup-launch-prep`; the owner manages its PR, CI and deployment. Do not deploy an older phase branch merely because a historical handoff named it. The agent does not merge or change Vercel settings.
 
 For a preview use **dev-only** project credentials, APP_ENV=development, the dev pin and documented Turnstile dev test keys. NEXT_PUBLIC_SITE_URL can be omitted: automatically exposed Vercel hostnames provide the build-time fallback (project production hostname first, deployment hostname next). Region is bom1. Previews must never connect to production. This development/test-key configuration must never be used for the real production recruitment deployment. Hosting access logs must not retain applicant-name/email filter queries or authorization headers; application request logging is disabled, but provider settings still require review. See VERCEL_ENV_TABLE for all settings.
 
@@ -86,7 +86,7 @@ Wait for DNS propagation and Vercel's domain/certificate verification. Confirm H
 
 ## 8. Post-deploy smoke check (owner)
 - Home shows actual open counts, brand links/URL filters, keyboard focus and reduced-motion behavior. Check desktop and a real phone.
-- Draft is 404; closed/expired role has no form. Open role's Apply scrolls to its form; old apply URL returns 200 with `noindex` and the same inline form (no redirect).
+- Draft/deleted roles are 404; closed/expired roles have no application form. An open role's Apply button links to the independent `/jobs/<slug>/apply` page with `noindex`. Job detail has no inline form or Turnstile widget.
 - Complete a clearly synthetic application with Bengali answers and a small PDF CV using real Turnstile; retain its reference. Confirm review/status/note/CV/PDF downloads with MFA, then delete the synthetic record and files.
 - Anonymous and authenticated non-admin accounts cannot access admin pages/actions/downloads. Password-only admin goes to MFA. No applicant records are exposed by the success reference.
 - Verify sign-ups OFF, private applications bucket, RLS on every application table with no public policies, short-lived private links and correct MIME/size limits.
@@ -176,6 +176,59 @@ if ($LASTEXITCODE -ne 0) { throw 'Tests failed.' }
 Leave `RUN_SUPABASE_TESTS` unset. `pnpm build` additionally requires valid local
 development configuration; it does not seed data. Browser keyboard/race behavior
 and the public deployed empty state remain unverified.
+
+## Prompt 15 scoped cleanup checkpoint (2026-10-17)
+
+The owner explicitly approved removal of the five inventoried DEMO jobs and 20
+exact pending Storage objects. **Do not run a general wipe/reset, seed/import, or
+the normal browser suite during this checkpoint.** See
+`DEMO_CLEANUP_VERIFICATION.md` for the exact backup, inventory and remaining work.
+
+Already applied: five jobs, 52 questions, nine job-brand links and 16 job-option
+links removed through the existing guarded cleanup transaction. Applications and
+all application-dependent tables were already zero. Six departments, eight
+brands, 13 options and one admin allowlist entry are fingerprint-identical.
+
+**Storage cleanup is pending**, not complete: 16 reservation objects and four
+owner-confirmed disposable uploads remain. Job deletion committed at 15:56:12 UTC;
+wait until **2026-10-17 17:58 UTC (23:58 Bangladesh)** before the separately guarded
+Storage pass. A URL retry need not update object timestamps, so the full two-hour
+authorization lifetime plus a margin starts at locked job removal, not the latest
+object update. This prevents a delayed upload recreating a deleted object. No background
+deletion job has been scheduled. Fresh objects, applications or unrelated data
+cause a refusal; do not override it or regenerate an approval manifest silently.
+
+The private external backup contains the full original job graph and all 20
+object bodies with sizes/MIME and SHA-256 hashes. Every byte was read back and
+verified. Its `RECOVERY.md` describes exact-ID/path recovery requiring separate
+owner approval; Git rollback cannot restore this data. Restore was not rehearsed.
+
+From `G:\career-cleanup`, after the cutoff, use the approved private backup and
+manifest digest. First dry-run, inspect the result, then apply only if unchanged:
+
+```powershell
+node --env-file=G:\career\.env.local --conditions=react-server --import tsx scripts/cleanup-demo-artifacts.ts --backup=C:\Users\Hossa\AppData\Local\Temp\opencode\task15-evidence\backup-20261017 --sha256=be450f62a44746f6577161fde41fb1972eb1e164bf723f487e9cd65bb17e2562
+# Only after a successful inspected dry-run, use the same command plus:
+# --apply --confirm=xmtoccukridshadnxrlc
+```
+
+The default is read-only, with no implicit apply. It verifies environment/project,
+the exact external manifest digest, all backup hashes, approved graph ownership,
+expired uploads, preserved structure and current byte/metadata identity. The
+existing job cleanup still refuses applications; nothing bypasses that guard.
+After partial progress, only an unchanged subset of original objects is eligible;
+after complete cleanup a rerun removes zero. No prefix-wide deletion occurs.
+
+For non-seeding browser verification use `playwright.cleanup.config.ts` with a
+production-mode local build; it has no global seed/account sweeps/cleanup. Do not
+use `playwright.config.ts` to make an empty catalog pass by re-seeding it.
+
+The DEV-connected live site already shows zero DEMO listings after cache refresh,
+and the ten deleted detail/apply URLs return 404. The neutral empty-state wording
+change still needs owner merge/deployment; no claim that this branch is deployed.
+Privacy/contact/retention owner approval, a custom domain, real Turnstile,
+independent production Supabase and a compliant hosting plan remain separate
+launch prerequisites; do not configure them as part of this cleanup.
 
 ## References and limitations
 Official references (reviewed 2026-10-08): [PostgreSQL pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html), [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html), [Supabase Storage CLI](https://supabase.com/docs/reference/cli/supabase-storage-cp), and [Vercel cron management](https://vercel.com/docs/cron-jobs/manage-cron-jobs). Storage CLI flags are version-dependent and experimental; backup/restore, DNS, hosted packaging, production settings and physical-phone checks remain owner verification.
