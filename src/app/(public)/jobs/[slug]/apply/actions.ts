@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { ZodError } from "zod";
 import { existingSessionApplication, insertApplication, withUploadSession } from "@/db/queries/applications";
 import { loadApplicationJob } from "@/db/queries/public-jobs";
 import { verifyUploadSession } from "@/lib/upload-session";
@@ -8,15 +9,22 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { applicationInputSchema, validateApplicationAnswers } from "@/lib/validation/application";
 import { moveApplicationFile, restoreApplicationFiles, verifyUploadedFile } from "@/lib/storage/application-files";
 import type { Reservation } from "@/lib/validation/uploads";
-import type { ActionResult } from "@/lib/actions/result";
+import { applicationFieldErrors, type ApplicationSubmitResult } from "@/lib/validation/application-feedback";
+import type { QuestionDefinition } from "@/lib/questions/definition";
 
-export async function submitApplication(input: unknown): Promise<ActionResult<never>> {
+export async function submitApplication(input: unknown): Promise<ApplicationSubmitResult> {
   let reference: string;
   let sessionId: string | undefined;
   const moved: Reservation[] = [];
+  let questions: QuestionDefinition[] = [];
   try {
     const parsed = applicationInputSchema.safeParse(input);
-    if (!parsed.success || parsed.data.honeypot) return { ok: false, error: "Check your application fields and try again." };
+    // Anti-abuse denials stay generic; do not disclose the honeypot or token fields.
+    if (!parsed.success) {
+      const fieldErrors = applicationFieldErrors(parsed.error.issues, [], true);
+      return { ok: false, error: fieldErrors.length ? "Check the highlighted application fields and try again." : "Check your application fields and try again.", ...(fieldErrors.length ? { fieldErrors } : {}) };
+    }
+    if (parsed.data.honeypot) return { ok: false, error: "Check your application fields and try again." };
     const data = parsed.data;
     if (!(await verifyTurnstile(data.turnstileToken))) return { ok: false, error: "Complete the security check and try again." };
     const session = verifyUploadSession(data.sessionToken, data.jobSlug);
@@ -28,13 +36,18 @@ export async function submitApplication(input: unknown): Promise<ActionResult<ne
       if (existing) return existing.reference;
       const definition = await loadApplicationJob(data.jobSlug, tx);
       if (!definition || definition.job.status !== "open" || (definition.job.deadlineAt && definition.job.deadlineAt.getTime() <= Date.now()) || !definition.brands.some((b) => b.brand.status === "active")) throw new Error("Job unavailable");
+      questions = definition.questions;
       const validated = validateApplicationAnswers(definition.questions, data.answers, data.cv, definition.job.cvRequired);
       const files: Reservation[] = [];
       for (const file of validated.files) files.push(await verifyUploadedFile(session, file.id, file.slot, definition.questions));
       for (const file of files) { await moveApplicationFile(file); moved.push(file); }
       return insertApplication(tx, { id: session.id, contact: data.contact, consent: data.consent, definition, answers: validated.answers, files });
     });
-  } catch {
+  } catch (error) {
+    if (!moved.length && error instanceof ZodError) {
+      const fieldErrors = applicationFieldErrors(error.issues, questions);
+      if (fieldErrors.length) return { ok: false, error: "Check the highlighted application fields and try again.", fieldErrors };
+    }
     if (moved.length && sessionId) {
       try {
         // A lost commit acknowledgement must never cause committed attachments

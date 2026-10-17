@@ -22,6 +22,7 @@ export function QuestionFields({
 }) {
   const [fileError, setFileError] = useState("");
   const config = q.config ?? {};
+  const describedBy = [q.helpText ? `question-help-${q.id}` : "", error ? `question-error-${q.id}` : ""].filter(Boolean).join(" ") || undefined;
   const choice = q.type.endsWith("choice");
   const options = q.options ?? [];
   const selected = Array.isArray(value) ? value : typeof value === "string" ? [value] : [];
@@ -34,7 +35,7 @@ export function QuestionFields({
     else onChange(checked ? [...selected, option] : selected.filter((v) => v !== option));
   }
   return (
-    <fieldset className="question-field space-y-2" data-question-type={q.type} aria-describedby={[q.helpText ? `question-help-${q.id}` : "", error ? `question-error-${q.id}` : ""].filter(Boolean).join(" ") || undefined}>
+    <fieldset className="question-field space-y-2" data-question-type={q.type} aria-describedby={describedBy}>
       <legend className="question-label font-medium">
         {q.label}
         {q.required && <span className="question-required"> *</span>}
@@ -46,6 +47,7 @@ export function QuestionFields({
             <select
               aria-label={q.label}
               aria-invalid={!!error}
+              aria-describedby={describedBy}
               className={inputClass}
               value={otherSelected ? otherValue : ((value as string) ?? "")}
               onChange={(event) => onChange(event.target.value || undefined)}
@@ -66,6 +68,7 @@ export function QuestionFields({
                     type={q.type === "single_choice" ? "radio" : "checkbox"}
                     name={`preview-${q.id}`}
                     aria-invalid={!!error}
+                    aria-describedby={describedBy}
                     checked={selected.includes(o.value)}
                     onChange={(event) => choose(o.value, event.target.checked)}
                   />
@@ -78,6 +81,7 @@ export function QuestionFields({
                     type={q.type === "single_choice" ? "radio" : "checkbox"}
                     name={`preview-${q.id}`}
                     aria-invalid={!!error}
+                    aria-describedby={describedBy}
                     checked={otherSelected}
                     onChange={(event) => choose(otherValue, event.target.checked)}
                   />
@@ -91,6 +95,8 @@ export function QuestionFields({
               Other answer
               <input
                 aria-label={`${q.label} Other answer`}
+                aria-invalid={!!error}
+                aria-describedby={describedBy}
                 className={inputClass}
                 value={other}
                 maxLength={500}
@@ -103,6 +109,7 @@ export function QuestionFields({
         <select
           aria-label={q.label}
           aria-invalid={!!error}
+          aria-describedby={describedBy}
           className={inputClass}
           value={value === true ? "yes" : value === false ? "no" : ""}
           onChange={(event) =>
@@ -117,6 +124,7 @@ export function QuestionFields({
         <textarea
           aria-label={q.label}
           aria-invalid={!!error}
+          aria-describedby={describedBy}
           className={inputClass}
           value={typeof value === "string" ? value : ""}
           onChange={(event) => onChange(event.target.value)}
@@ -168,6 +176,7 @@ export function QuestionFields({
         <input
           aria-label={q.label}
           aria-invalid={!!error}
+          aria-describedby={describedBy}
           className={inputClass}
           type={
             q.type === "number"

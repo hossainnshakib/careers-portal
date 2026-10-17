@@ -6,9 +6,10 @@ import { PublicIcon } from "./public-icon";
 
 type UploadItem = { key: string; file: File; id?: string; progress: number; status: "uploading" | "done" | "error"; error?: string };
 export type PrepareUpload = (file: File, slot: string, uploadId?: string) => Promise<{ uploadId: string; signedUrl: string; uploaded?: boolean }>;
-export function UploadWidget({ label, slot, accept, maxMb, multiple = false, prepare, onChange, onBusy }: {
+export function UploadWidget({ label, slot, accept, maxMb, multiple = false, prepare, onChange, onBusy, error }: {
   label: string; slot: string; accept: string[]; maxMb: number; multiple?: boolean;
   prepare: PrepareUpload; onChange: (ids: string[]) => void; onBusy: (delta: number) => void;
+  error?: string;
 }) {
   const [items, setItems] = useState<UploadItem[]>([]);
   const [message, setMessage] = useState("");
@@ -59,7 +60,7 @@ export function UploadWidget({ label, slot, accept, maxMb, multiple = false, pre
     <div data-testid="upload-dropzone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (!event.currentTarget.closest("fieldset")?.disabled) choose([...event.dataTransfer.files]); }} className="flex flex-wrap items-center gap-4 rounded-[18px] border-[1.5px] border-dashed border-ui-ink/22 bg-white/55 p-[22px]">
       <span aria-hidden="true" className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-[14px] bg-ui-blue-surface text-ui-blue-text"><PublicIcon name="upload" size={22} /></span>
       <div className="min-w-0 flex-[1_1_180px] space-y-[3px]"><p className="text-[14.5px] font-bold">Drop a file here or choose one</p><p id={`${inputId}-help`} className="text-[12.5px] text-ui-muted">{accept.join(", ").toUpperCase()} · up to {maxMb} MB {multiple ? "each" : ""}</p></div>
-      <input ref={input} id={inputId} aria-label={label} aria-describedby={`${inputId}-help`} type="file" multiple={multiple} accept={accept.map((ext) => `.${ext}`).join(",")}
+       <input ref={input} id={inputId} aria-label={label} aria-invalid={!!error} aria-describedby={`${inputId}-help${error ? ` ${inputId}-error` : ""}`} type="file" multiple={multiple} accept={accept.map((ext) => `.${ext}`).join(",")}
       disabled={uploading} className="sr-only"
       onChange={(event) => {
         const chosen = [...(event.target.files ?? [])]; event.target.value = "";
@@ -69,6 +70,7 @@ export function UploadWidget({ label, slot, accept, maxMb, multiple = false, pre
     </div>
     <p className="mt-2 text-[12.5px] text-ui-muted">Up to 8 files per application. Removed files still count toward this limit; use Start fresh uploads to reset it.</p>
     {message && <p role="alert" className="mt-2 text-[13px] text-red-700">{message}</p>}
+    {error && <p id={`${inputId}-error`} role="alert" className="mt-2 text-[13px] text-red-700">{error}</p>}
     <ul className="mt-3 space-y-3">{items.map((item) => <li key={item.key} className="rounded-[14px] border border-ui-border bg-white/70 p-3">
       <p className="break-all text-sm">{item.file.name} ({Math.ceil(item.file.size / 1024)} KB)</p>
       {item.status === "uploading" ? <><progress max={100} value={item.progress} aria-label={`${item.file.name} upload progress`} /><span className="ml-2">{item.progress}%</span></> : item.status === "done" ? <p className="text-sm">Uploaded</p> : <p role="alert" className="text-sm">{item.error}</p>}
