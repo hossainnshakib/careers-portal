@@ -9,6 +9,7 @@ import { ownsValidationJob, validationJobs } from "@/db/seed/validation-content"
 import { demoSlugs } from "@/lib/demo";
 import { jobDeletionBlocked } from "@/lib/questions/job-policy";
 import { loadJob, saveJob } from "./jobs";
+import { cleanupInventoryHash, loadDemoCleanupInventory } from "./demo-cleanup-inventory";
 
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
@@ -21,7 +22,7 @@ function guard() {
   if (process.env.DEV_SUPABASE_PROJECT_REF !== approvedDemoProject) throw new Error("Not the owner-authorized demo project.");
 }
 
-export async function runValidationDemo(operation: DemoOperation, write: boolean) {
+export async function runValidationDemo(operation: DemoOperation, write: boolean, expectedCleanupHash?: string) {
   guard();
   const db = getDb();
   const selected = await db.select().from(jobs).where(inArray(jobs.slug, [...demoSlugs]));
@@ -37,7 +38,9 @@ export async function runValidationDemo(operation: DemoOperation, write: boolean
     await db.transaction(async tx => {
       await tx.execute(sql`select pg_advisory_xact_lock(1103)`);
       const rows = await tx.select().from(jobs).where(inArray(jobs.slug, [...demoSlugs])).for("update");
-      if (rows.some(row => !ownsValidationJob(row))) throw new Error("Ownership changed; cleanup refused.");
+       if (rows.some(row => !ownsValidationJob(row))) throw new Error("Ownership changed; cleanup refused.");
+      if (expectedCleanupHash && cleanupInventoryHash(await loadDemoCleanupInventory(tx)) !== expectedCleanupHash)
+        throw new Error("Inventoried records changed; cleanup refused.");
       if (!rows.length) return;
       const ids = rows.map(row => row.id);
       const refs = await tx.select({ id: applications.id }).from(applications).where(inArray(applications.jobId, ids)).limit(1);
