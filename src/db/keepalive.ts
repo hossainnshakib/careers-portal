@@ -1,12 +1,13 @@
 import "server-only";
 
 import postgres from "postgres";
-import { getDevDatabaseEnv } from "@/lib/env";
+import { getDatabaseTlsOptions, getDevDatabaseEnv } from "@/lib/env";
 import { requireDevTarget } from "@/db/seed/require-dev";
 
 async function keepAlive() {
   requireDevTarget();
   const client = postgres(getDevDatabaseEnv().DATABASE_URL, {
+    ssl: getDatabaseTlsOptions(),
     prepare: false,
     max: 1,
     connect_timeout: 10,

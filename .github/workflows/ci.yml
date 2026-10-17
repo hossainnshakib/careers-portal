@@ -32,6 +32,7 @@ jobs:
       DEV_SUPABASE_PROJECT_REF: ${{ secrets.DEV_SUPABASE_PROJECT_REF }}
       DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       DIRECT_URL: ${{ secrets.DEV_DIRECT_URL }}
+      DATABASE_SSL_CA: ${{ secrets.DEV_DATABASE_SSL_CA }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.DEV_SUPABASE_SERVICE_ROLE_KEY }}
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.DEV_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.DEV_SUPABASE_ANON_KEY }}
@@ -49,6 +50,8 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Refuse production before any DEV cloud test
+        run: node --conditions=react-server --import tsx --input-type=module -e "import { requireDevTarget } from './src/db/seed/require-dev.ts'; try { requireDevTarget(); } catch { console.error('DEV target refused. No cloud tests started.'); process.exit(1); }"
       - name: Live auth, review and anonymous RLS checks
         run: pnpm exec vitest run src/lib/auth/requireAdmin.live.test.ts src/lib/auth/surfaces.live.test.ts src/db/queries/review.live.test.ts src/db/rls.test.ts src/db/auth-config.live.test.ts
         env:

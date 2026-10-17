@@ -1,7 +1,8 @@
 import { beforeEach, expect, it, vi } from "vitest";
-const mocks = vi.hoisted(() => ({ guard: vi.fn(), download: vi.fn(), remove: vi.fn(), client: vi.fn() }));
+const mocks = vi.hoisted(() => ({ guard: vi.fn(), ownerGuard: vi.fn(), download: vi.fn(), remove: vi.fn(), client: vi.fn() }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/db/seed/require-dev", () => ({ requireDevTarget: mocks.guard }));
+vi.mock("@/lib/maintenance/require-target", () => ({ requireConversionCleanupTarget: mocks.ownerGuard }));
 vi.mock("./client", () => ({ getStorageClient: mocks.client }));
 import { artifactHash, removeCleanupArtifacts } from "./demo-cleanup";
 
@@ -34,4 +35,17 @@ it("fails closed on DEV guard denial or a different independently pinned project
   vi.stubEnv("DEV_SUPABASE_PROJECT_REF", "abcdefghijklmnopqrst");
   await expect(removeCleanupArtifacts([artifact], true)).rejects.toThrow();
   expect(mocks.client).not.toHaveBeenCalled();
+});
+it("owner conversion is separate, independently gated and dry-run by default", async () => {
+  expect(await removeCleanupArtifacts([artifact], false, true)).toEqual({ removed: 0, verified: 1 });
+  expect(mocks.ownerGuard).toHaveBeenCalledWith(false);
+  expect(mocks.guard).not.toHaveBeenCalled(); expect(mocks.remove).not.toHaveBeenCalled();
+});
+it("owner apply denial prevents Storage access and successful mocked apply still removes only exact paths", async () => {
+  mocks.ownerGuard.mockImplementationOnce(() => { throw new Error("No owner approval"); });
+  await expect(removeCleanupArtifacts([artifact], true, true)).rejects.toThrow("No owner approval");
+  expect(mocks.client).not.toHaveBeenCalled();
+  expect(await removeCleanupArtifacts([artifact], true, true)).toEqual({ removed: 1, verified: 1 });
+  expect(mocks.ownerGuard).toHaveBeenCalledWith(true);
+  expect(mocks.remove).toHaveBeenCalledWith([artifact.name]);
 });

@@ -6,7 +6,7 @@ import { seedBase } from "./seed/base";
 import { z } from "zod";
 
 try {
-  requireAllowedTarget();
+  requireAllowedTarget({ write: true, args: process.argv.slice(3) });
   const operation = z.enum(["migrate", "base"]).parse(process.argv[2]);
   if (operation === "migrate") await runMigrations();
   else await seedBase();

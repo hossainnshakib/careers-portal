@@ -17,6 +17,7 @@ jobs:
       DEV_SUPABASE_PROJECT_REF: ${{ secrets.DEV_SUPABASE_PROJECT_REF }}
       DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
       DIRECT_URL: ${{ secrets.DEV_DIRECT_URL }}
+      DATABASE_SSL_CA: ${{ secrets.DEV_DATABASE_SSL_CA }}
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.DEV_SUPABASE_URL }}
     steps:
       - uses: actions/checkout@v4

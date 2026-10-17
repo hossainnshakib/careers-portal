@@ -5,13 +5,15 @@ import { isAbsolute, join } from "node:path";
 import { closeDb } from "@/db";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { loadDemoCleanupInventory } from "@/db/queries/demo-cleanup-inventory";
-import { checkApprovedInventory, checkRemainingInventory, checkUploadAuthorizationExpiry, cleanupManifestSchema, expectedDemoJobSlug, jobRemovalReceiptSchema, parseArtifactCleanupCommand } from "@/db/seed/artifact-cleanup-policy";
+import { checkApprovedInventory, checkRemainingInventory, checkUploadAuthorizationExpiry, cleanupManifestSchema, expectedDemoJobSlug, issuerRetirementReceiptSchema, jobRemovalReceiptSchema, parseArtifactCleanupCommand } from "@/db/seed/artifact-cleanup-policy";
 import { artifactHash, removeCleanupArtifacts } from "@/lib/storage/demo-cleanup";
 import { reservationSchema } from "@/lib/validation/uploads";
+import { requireConversionCleanupTarget } from "@/lib/maintenance/require-target";
 
 try {
-  requireDevTarget();
   const options = parseArtifactCleanupCommand(process.argv.slice(2));
+  if (options.ownerConversion) requireConversionCleanupTarget(options.write);
+  else requireDevTarget();
   if (!isAbsolute(options.backup)) throw new Error("Use an external absolute backup directory.");
   const bytes = await readFile(join(options.backup, "manifest.json"));
   if (artifactHash(bytes) !== options.sha256) throw new Error("Unapproved manifest.");
@@ -21,6 +23,12 @@ try {
   // A retry can issue another signed URL without updating a reservation. The
   // locked job-removal time, not object age alone, bounds the last authorization.
   checkUploadAuthorizationExpiry(receipt.deletedAt);
+  if (options.ownerConversion) {
+    // Owner records verified retirement of ALL privileged issuers, not object age.
+    // Historical app job removal alone cannot bound URLs minted directly by old keys.
+    const retirement = issuerRetirementReceiptSchema.parse(JSON.parse(await readFile(join(options.backup, "issuer-retirement-receipt.json"), "utf8")));
+    checkUploadAuthorizationExpiry(retirement.lastIssuerStoppedAt);
+  }
   checkApprovedInventory(manifest.inventory);
   const reservations = [];
   for (const artifact of manifest.artifacts) {
@@ -38,14 +46,14 @@ try {
   for (const artifact of manifest.artifacts.filter(a => !a.name.includes("/reservations/"))) {
     if (!reservations.some(r => artifact.name === `pending/${r.sessionId}/${r.id}-${r.fileName}` && artifact.size === r.size)) throw new Error("Unowned file.");
   }
-  const current = await loadDemoCleanupInventory();
+  const current = await loadDemoCleanupInventory(undefined, options.ownerConversion);
   checkRemainingInventory(current, manifest.inventory);
   const remaining = manifest.artifacts.filter(a => current.objects.some(object => object.id === a.id));
-  const verified = await removeCleanupArtifacts(remaining, false);
+  const verified = await removeCleanupArtifacts(remaining, false, options.ownerConversion);
   if (options.write) {
-    checkRemainingInventory(await loadDemoCleanupInventory(), manifest.inventory);
-    const removal = await removeCleanupArtifacts(remaining, true);
-    const final = await loadDemoCleanupInventory();
+    checkRemainingInventory(await loadDemoCleanupInventory(undefined, options.ownerConversion), manifest.inventory);
+    const removal = await removeCleanupArtifacts(remaining, true, options.ownerConversion);
+    const final = await loadDemoCleanupInventory(undefined, options.ownerConversion);
     checkRemainingInventory(final, manifest.inventory);
     if (final.objects.length) throw new Error("Objects remain; inspect retained backup.");
     console.info(JSON.stringify({ dryRun: false, jobsRemoved: 0, objectsRemoved: removal.removed, remainingJobs: 0, remainingApplications: 0, remainingObjects: 0, structurePreserved: true }));

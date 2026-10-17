@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   index,
   integer as int,
   jsonb,
@@ -153,6 +154,7 @@ export const jobs = pgTable(
     index("jobs_status_idx").on(t.status),
     index("jobs_department_id_idx").on(t.departmentId),
     index("jobs_sort_order_idx").on(t.sortOrder),
+    check("jobs_salary_range_text_check", sql`${t.salaryMode} = 'negotiable' OR (${t.salaryText} IS NOT NULL AND btrim(${t.salaryText}) <> '')`),
   ],
 );
 

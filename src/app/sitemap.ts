@@ -3,6 +3,9 @@ import { loadPublicCatalog } from "@/db/queries/public-jobs";
 import { getPublicEnv } from "@/lib/env-public";
 import { isDemoSlug } from "@/lib/demo";
 
+// Packaging must not connect to production. Runtime retains the tagged catalog cache.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getPublicEnv().NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   const loaded = await loadPublicCatalog();

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { assertAllowedTarget, assertDeploymentTarget, productionProjectRef } from "./maintenance/target";
 
 /**
  * APP_ENV is explicit on purpose: there is no default, so a production build
@@ -47,6 +48,7 @@ export function assertStartupEnvironment(
   values: Record<string, string | undefined>,
   nodeEnv: string | undefined,
 ): void {
+  assertDeploymentTarget(values);
   if (nodeEnv !== "production") return;
   const parsed = appEnvSchema.safeParse(values.APP_ENV);
   if (!parsed.success) {
@@ -66,6 +68,18 @@ export function assertStartupEnvironment(
   if (testKeys.length)
     throw new Error(
       `Refusing to start with NODE_ENV=production: ${testKeys.join(" and ")} ` +
-        `hold${testKeys.length === 1 ? "s" : ""} a Cloudflare Turnstile test key, which is only allowed with APP_ENV=development.`,
+      `hold${testKeys.length === 1 ? "s" : ""} a Cloudflare Turnstile test key, which is only allowed with APP_ENV=development.`,
     );
+  assertAllowedTarget({ appEnv: parsed.data, allowedProjectRef: productionProjectRef,
+    devProjectRef: values.DEV_SUPABASE_PROJECT_REF, databaseUrl: values.DATABASE_URL,
+    directUrl: values.DIRECT_URL, supabaseUrl: values.NEXT_PUBLIC_SUPABASE_URL });
+  if (values.NEXT_PUBLIC_SITE_URL !== "https://careers.fixenmedia.com")
+    throw new Error("Production startup requires the approved canonical HTTPS site origin.");
+  const required = z.object({
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1), NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1), TURNSTILE_SECRET_KEY: z.string().min(1),
+    UPLOAD_SESSION_SECRET: z.string().min(32), CRON_SECRET: z.string().min(32),
+  });
+  if (!required.safeParse(values).success)
+    throw new Error("Production startup requires complete server/public credentials and independent upload/cron secrets.");
 }

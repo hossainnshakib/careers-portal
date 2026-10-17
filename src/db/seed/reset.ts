@@ -1,7 +1,7 @@
 import "server-only";
 
 import postgres from "postgres";
-import { getServerEnv } from "@/lib/env";
+import { getDatabaseTlsOptions, getServerEnv } from "@/lib/env";
 import { getStorageClient } from "@/lib/storage/client";
 import { runMigrations } from "@/db/migrate";
 import { closeDb } from "@/db";
@@ -10,7 +10,7 @@ import { seedDemo } from "./demo";
 
 async function resetDev() {
   requireDevTarget(); // Validate BOTH DB URLs before opening any connection.
-  const client = postgres(getServerEnv().DIRECT_URL, { prepare: false, max: 1 });
+  const client = postgres(getServerEnv().DIRECT_URL, { ssl: getDatabaseTlsOptions(), prepare: false, max: 1 });
   try {
     const exists = await client`select to_regclass('public.attachments') as name`;
     if (exists[0].name) {

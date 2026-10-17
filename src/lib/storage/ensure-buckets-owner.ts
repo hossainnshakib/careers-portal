@@ -3,7 +3,7 @@ import { requireAllowedTarget } from "@/lib/maintenance/require-target";
 import { ensureBuckets } from "./ensure-buckets";
 
 try {
-  requireAllowedTarget();
+  requireAllowedTarget({ write: true });
   await ensureBuckets();
   console.info("Allowed-target Storage buckets configured.");
 } catch {

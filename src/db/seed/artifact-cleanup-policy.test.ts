@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { checkApprovedInventory, checkRemainingInventory, checkUploadAuthorizationExpiry, parseArtifactCleanupCommand } from "./artifact-cleanup-policy";
+import { approvedCleanupManifestSha256, checkApprovedInventory, checkRemainingInventory, checkUploadAuthorizationExpiry, issuerRetirementReceiptSchema, parseArtifactCleanupCommand } from "./artifact-cleanup-policy";
 import { demoSlugs, demoDisclaimer, demoMarker } from "@/lib/demo";
 import type { CleanupInventory } from "@/db/queries/demo-cleanup-inventory";
 
@@ -31,6 +31,12 @@ it("accepts only the approved complete graph with zero application-related data"
     (i: CleanupInventory) => { i.objects[0].bucket_id = "brand-assets"; },
   ]) { const i = inventory(); change(i); expect(() => checkApprovedInventory(i)).toThrow(); }
 });
+it("owner conversion requires the source-pinned original manifest, with no generic cleanup bypass", () => {
+  const flags = ["--owner-conversion", "--backup=C:/external/backup", `--sha256=${approvedCleanupManifestSha256}`];
+  expect(parseArtifactCleanupCommand(flags)).toMatchObject({ write: false, ownerConversion: true });
+  expect(parseArtifactCleanupCommand([...flags, "--apply", "--confirm=xmtoccukridshadnxrlc"]).write).toBe(true);
+  expect(() => parseArtifactCleanupCommand(["--owner-conversion", "--backup=C:/external/backup", `--sha256=${"a".repeat(64)}`])).toThrow("originally approved");
+});
 it("blocks active or invalid upload timestamps while allowing read-only backup", () => {
   const i = inventory(); i.objects[0].updated_at = new Date().toISOString();
   expect(() => checkApprovedInventory(i)).toThrow("active");
@@ -43,6 +49,12 @@ it("waits a full URL lifetime after locked job removal even if reservations are 
   expect(() => checkUploadAuthorizationExpiry(deleted, Date.parse("2026-10-17T17:07:00Z"))).toThrow();
   expect(() => checkUploadAuthorizationExpiry(deleted, Date.parse("2026-10-17T17:58:00Z"))).not.toThrow();
   expect(() => checkUploadAuthorizationExpiry("invalid")).toThrow();
+});
+it("requires an exact-manifest retirement receipt and waits after the last privileged issuer, not only job removal", () => {
+  const receipt = issuerRetirementReceiptSchema.parse({ lastIssuerStoppedAt: "2026-10-17T18:00:00Z", manifestSha256: approvedCleanupManifestSha256 });
+  expect(() => checkUploadAuthorizationExpiry(receipt.lastIssuerStoppedAt, Date.parse("2026-10-17T19:00:00Z"))).toThrow();
+  expect(() => checkUploadAuthorizationExpiry(receipt.lastIssuerStoppedAt, Date.parse("2026-10-17T20:02:00Z"))).not.toThrow();
+  expect(() => issuerRetirementReceiptSchema.parse({ ...receipt, manifestSha256: "a".repeat(64) })).toThrow();
 });
 it("allows idempotent partial progress only with unchanged structural data and exact original objects", () => {
   const original = inventory(); const current = structuredClone(original);

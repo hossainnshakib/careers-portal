@@ -1,4 +1,5 @@
 import "server-only";
+import { requireDevTarget } from "./require-dev";
 
 import { fileURLToPath } from "node:url";
 import { sql } from "drizzle-orm";
@@ -43,7 +44,7 @@ export async function seedBase() {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  seedBase()
+  Promise.resolve().then(() => { requireDevTarget(); return seedBase(); })
     .then(
       () => console.info("Base seed completed."),
       () => {

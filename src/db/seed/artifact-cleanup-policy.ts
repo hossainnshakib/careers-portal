@@ -3,6 +3,9 @@ import { ownsValidationJob, demoSlugs } from "@/lib/demo";
 import type { CleanupInventory } from "@/db/queries/demo-cleanup-inventory";
 import { approvedDemoProject } from "./validation-policy";
 
+// Independent source pin for the one previously approved external backup (not a secret).
+export const approvedCleanupManifestSha256 = "be450f62a44746f6577161fde41fb1972eb1e164bf723f487e9cd65bb17e2562";
+
 export const artifactSchema = z.strictObject({
   id: z.uuid(), name: z.string().regex(/^pending\/[a-f0-9-]{36}\/(?:reservations\/[a-f0-9-]{36}\.json|[a-f0-9-]{36}-[^/]+)$/),
   size: z.number().int().positive(), sha256: z.string().regex(/^[a-f0-9]{64}$/), mime: z.string().min(1),
@@ -13,6 +16,7 @@ export const cleanupManifestSchema = z.strictObject({
 });
 export type CleanupManifest = z.infer<typeof cleanupManifestSchema>;
 export const jobRemovalReceiptSchema = z.strictObject({ deletedAt: z.string().datetime(), manifestSha256: z.string().regex(/^[a-f0-9]{64}$/) });
+export const issuerRetirementReceiptSchema = z.strictObject({ lastIssuerStoppedAt: z.string().datetime(), manifestSha256: z.literal(approvedCleanupManifestSha256) });
 export function checkUploadAuthorizationExpiry(deletedAt: string, now = Date.now()) {
   const cutoff = Date.parse(deletedAt) + 2 * 60 * 60 * 1000 + 60000;
   if (!Number.isFinite(cutoff) || now <= cutoff) throw new Error("Previously issued upload URLs may remain active.");
@@ -42,13 +46,15 @@ export function checkRemainingInventory(current: CleanupInventory, original: Cle
 }
 
 export function parseArtifactCleanupCommand(args: string[]) {
-  if (new Set(args.map(arg => arg.split("=")[0])).size !== args.length || args.some(arg => !/^--(?:backup=.+|sha256=[a-f0-9]{64}|apply|confirm=.+)$/.test(arg))) throw new Error("Invalid cleanup flags.");
+  if (new Set(args.map(arg => arg.split("=")[0])).size !== args.length || args.some(arg => !/^--(?:backup=.+|sha256=[a-f0-9]{64}|apply|confirm=.+|owner-conversion)$/.test(arg))) throw new Error("Invalid cleanup flags.");
   const backup = args.find(arg => arg.startsWith("--backup="))?.slice(9);
   const sha256 = args.find(arg => arg.startsWith("--sha256="))?.slice(9);
   const write = args.includes("--apply");
+  const ownerConversion = args.includes("--owner-conversion");
   const confirmation = args.find(arg => arg.startsWith("--confirm="));
   if (!backup || !sha256 || (write ? confirmation !== `--confirm=${approvedDemoProject}` : confirmation !== undefined)) throw new Error("Explicit manifest and apply confirmation required.");
-  return { backup, sha256, write };
+  if (ownerConversion && sha256 !== approvedCleanupManifestSha256) throw new Error("Only the originally approved manifest is eligible for conversion cleanup.");
+  return { backup, sha256, write, ownerConversion };
 }
 
 export function expectedDemoJobSlug(value: string) { return (demoSlugs as readonly string[]).includes(value); }

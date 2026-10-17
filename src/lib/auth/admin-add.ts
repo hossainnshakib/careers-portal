@@ -13,7 +13,7 @@ export async function allowlistExistingAdmin(emailInput: unknown) {
   await allowlistUser(emailInput);
 }
 export async function allowlistExistingAdminForOwner(emailInput: unknown) {
-  requireAllowedTarget();
+  requireAllowedTarget({ write: true });
   await allowlistUser(emailInput);
 }
 async function allowlistUser(emailInput: unknown) {

@@ -5,6 +5,7 @@ import { sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { approvedDemoProject } from "@/db/seed/validation-policy";
+import { requireConversionCleanupTarget } from "@/lib/maintenance/require-target";
 import type { ApplicationTransaction } from "./applications";
 
 export type CleanupRecord = Record<string, unknown>;
@@ -19,9 +20,12 @@ export function cleanupInventoryHash(inventory: CleanupInventory) {
 }
 
 /** Private external backup input only: never send this snapshot to a public route or log it. */
-export async function loadDemoCleanupInventory(transaction?: ApplicationTransaction): Promise<CleanupInventory> {
-  requireDevTarget();
-  if (process.env.DEV_SUPABASE_PROJECT_REF !== approvedDemoProject) throw new Error("Unapproved cleanup target.");
+export async function loadDemoCleanupInventory(transaction?: ApplicationTransaction, ownerConversion = false): Promise<CleanupInventory> {
+  if (ownerConversion) requireConversionCleanupTarget();
+  else {
+    requireDevTarget();
+    if (process.env.DEV_SUPABASE_PROJECT_REF !== approvedDemoProject) throw new Error("Unapproved cleanup target.");
+  }
   const load = async (tx: ApplicationTransaction) => {
     const tables: CleanupInventory["tables"] = {};
     for (const table of ["jobs", "job_brands", "job_option_links", "job_questions"] as const) {
