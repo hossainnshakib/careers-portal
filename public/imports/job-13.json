@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Creative Director & Production Lead",
+      "slug": "creative-director-production-lead",
+      "department": "video-motion-production",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time"],
+        "experience": ["mid", "senior"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 1,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Lead creative direction and production execution across campaigns, commercial projects and brand content while coordinating multidisciplinary creative and production teams.",
+      "descriptionMd": "We are looking for a Creative Director & Production Lead to oversee the creative and production execution of selected Fixen Media, brand and client projects.\n\nThis is an ownership-focused role for someone who can move from concept to execution while coordinating writers, designers, cinematographers, photographers, editors, presenters and production operations.\n\nThe role requires both creative judgment and practical production leadership. You should be able to understand a business or campaign objective, shape a strong creative direction and ensure the final execution remains consistent with that direction.\n\nThis is not intended as an entry-level position. We are looking for candidates with meaningful experience leading creative work, productions or multidisciplinary teams.",
+      "responsibilitiesMd": "- Develop and guide creative direction for campaigns, commercial productions and branded content.\n- Translate business and marketing objectives into clear creative concepts.\n- Lead pre-production planning for major visual and video projects.\n- Coordinate writers, designers, cinematographers, photographers, editors and presenters.\n- Review scripts, concepts, storyboards, shot plans and creative treatments.\n- Maintain visual and narrative consistency throughout production and post-production.\n- Guide teams during shoots and ensure creative objectives are achieved.\n- Review work-in-progress and provide actionable creative feedback.\n- Balance creative ambition with budget, timeline and production constraints.\n- Coordinate with marketing, brand and client stakeholders.\n- Establish quality standards for creative output.\n- Help improve repeatable production processes and team collaboration.",
+      "requirementsMd": "- Meaningful experience in creative direction, production leadership or a closely related role.\n- Strong visual and storytelling judgment.\n- Understanding of video, photography, design and content-production workflows.\n- Ability to lead multidisciplinary creative teams.\n- Strong communication and feedback skills.\n- Ability to turn briefs into actionable creative direction.\n- Strong planning and organizational ability.\n- Ability to manage competing priorities and production deadlines.\n- Understanding of pre-production, production and post-production.\n- Ability to make practical decisions under time and resource constraints.\n- A portfolio, reel, campaign case study or other demonstrable leadership work.",
+      "niceToHaveMd": "- Agency experience.\n- Commercial-production experience.\n- Campaign creative-direction experience.\n- Experience working with fashion, real estate, SaaS or ecommerce brands.\n- Script or storyboard experience.\n- Photography or cinematography background.\n- Editing or motion-design knowledge.\n- Client-facing presentation experience.\n- Budgeting and production-planning experience.\n- Experience building or mentoring creative teams.",
+      "benefits": [
+        "Lead real creative and commercial projects",
+        "Work across multiple brands and industries",
+        "High ownership over creative and production quality",
+        "Opportunity to shape team processes and creative standards",
+        "Work directly with business, marketing and production teams"
+      ],
+      "skills": ["Creative Direction", "Production Leadership", "Visual Storytelling", "Campaign Development", "Team Leadership", "Pre-Production", "Commercial Production", "Creative Strategy", "Project Coordination", "Art Direction"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/reel", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent title and company", "type": "short_text", "required": true, "section": "experience" },
+        { "label": "Earliest joining date", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three projects where you led or significantly influenced the creative direction or production.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the projects above, explain the objective, your role, the team involved and how you guided the final outcome.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "What types of creative and production teams have you previously coordinated?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Describe how you move from a client or business brief to a clear creative direction.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you handle a situation where the creative concept is strong but the budget, timeline or resources are limited?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Describe a time you gave difficult creative feedback or redirected a project that was not working.", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you led an on-location commercial or branded production?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, multiple times", "label": "Yes, multiple times" },
+            { "value": "Yes, a few times", "label": "Yes, a few times" },
+            { "value": "Only as part of another lead's team", "label": "Only as part of another lead's team" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        }
+      ]
+    }
+  ]
+}

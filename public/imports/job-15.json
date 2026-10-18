@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "SEO, Website & Brand Content Writer",
+      "slug": "seo-website-brand-content-writer",
+      "department": "content-copywriting",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 3,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Write clear, useful and search-aware website, brand and long-form content for multiple industries. Strong freshers with excellent research and writing ability are welcome to apply.",
+      "descriptionMd": "We are looking for SEO, Website & Brand Content Writers to create clear, useful and well-researched written content across Fixen Media, selected brands and client projects.\n\nThis role may involve website pages, landing-page copy, service content, blog articles, product or brand content, SEO-focused articles and structured informational writing.\n\nWe welcome candidates from different experience levels. Strong freshers with excellent research and writing fundamentals are encouraged to apply, while more experienced writers may take greater ownership of content planning, website structures, SEO-focused content and brand messaging.\n\nSearch optimization is important, but we do not want content written for algorithms at the expense of human readers. The priority is accurate, useful and natural content.",
+      "responsibilitiesMd": "- Write website pages, landing pages, service pages and brand content.\n- Research topics and industries before writing.\n- Produce informative long-form articles and SEO-focused content.\n- Structure content using clear headings, sections and logical information flow.\n- Understand search intent and incorporate relevant topics naturally.\n- Write or refine titles, headings, meta descriptions and supporting website copy where required.\n- Maintain consistent brand voice across pages and platforms.\n- Edit and improve existing website content.\n- Verify factual information before publication.\n- Collaborate with SEO, web, marketing and design teams.\n- Avoid keyword stuffing, filler content and unsupported claims.\n- More experienced writers may contribute to content planning, website information architecture and SEO-content strategy.",
+      "requirementsMd": "- Strong English writing and editing ability.\n- Ability to write clear, structured and useful website content.\n- Strong research and fact-checking habits.\n- Basic understanding of SEO and search intent.\n- Ability to organize long-form content logically.\n- Good grammar, spelling and proofreading skills.\n- Ability to adapt tone and messaging for different brands.\n- Ability to understand unfamiliar industries through research.\n- Ability to follow briefs and meet deadlines.\n- Writing samples, academic work, personal projects or other demonstrable content work.\n\nFormal professional experience is not mandatory for applicants with strong research and writing fundamentals.",
+      "niceToHaveMd": "- SEO-content writing experience.\n- Keyword-research knowledge.\n- Experience with Google Search Console or SEO tools.\n- WordPress content-management experience.\n- SaaS or technology writing experience.\n- Ecommerce or product-content experience.\n- Real-estate content experience.\n- Experience writing landing pages or conversion-focused website copy.\n- Basic technical SEO awareness.\n- Experience refreshing or optimizing existing content.\n- Bengali writing ability.\n\n### Optional skills\n\n- Keyword Research\n- WordPress\n- On-Page SEO\n- Landing Page Copy\n- Content Optimization",
+      "benefits": [
+        "Work on website and long-form content across industries",
+        "Exposure to SEO, branding and web projects",
+        "Opportunity to collaborate with web and marketing teams",
+        "Growth through research and content ownership",
+        "Chance to build a diverse professional writing portfolio"
+      ],
+      "skills": ["Content Writing", "SEO Writing", "Website Content", "Copywriting", "Content Research", "SEO", "Editing", "Proofreading", "Brand Content", "Long-Form Writing", "Search Intent"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/writing samples", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three website, SEO or long-form content samples that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the samples above, explain the objective, audience and research process behind the content.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you approach researching and writing about a topic or industry you are unfamiliar with?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you balance SEO requirements with natural, useful writing for human readers?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "What is your understanding of search intent, and how does it affect the way you structure content?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Have you used keyword research, SEO or content-analysis tools? If yes, briefly list the tools and how you used them.", "type": "long_text", "required": false, "section": "role_specific" },
+        { "label": "Write a short introduction for a website page about a business management software designed for growing ecommerce businesses.", "type": "long_text", "required": true, "section": "role_specific" }
+      ]
+    }
+  ]
+}

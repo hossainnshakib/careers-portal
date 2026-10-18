@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Script & Creative Content Writer",
+      "slug": "script-creative-content-writer",
+      "department": "content-copywriting",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 3,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Write scripts, campaign concepts and creative content for video, social media and branded communication. Strong freshers with excellent writing ability are welcome to apply.",
+      "descriptionMd": "We are looking for Script & Creative Content Writers to develop engaging scripts and creative written content across Fixen Media, selected brands and client projects.\n\nThe role may involve video scripts, social media concepts, campaign copy, presenter scripts, promotional content, short-form storytelling and other creative communication.\n\nWe welcome candidates from different experience levels. Strong freshers with excellent writing ability and thoughtful samples are encouraged to apply, while more experienced writers may take greater ownership of campaign concepts, brand voice and complex script development.\n\nWe value clarity, originality, audience understanding and natural writing. We are not looking for generic, over-written or template-based content.",
+      "responsibilitiesMd": "- Write scripts for promotional, educational, commercial and social-media videos.\n- Develop creative concepts and content angles for campaigns.\n- Write concise and engaging copy for digital content.\n- Adapt writing style based on brand, audience, platform and objective.\n- Convert raw information or briefs into clear and engaging narratives.\n- Work with presenters, directors, editors and marketing teams.\n- Revise scripts and copy based on feedback.\n- Research topics before writing when necessary.\n- Maintain brand voice and factual accuracy.\n- Develop hooks, openings, transitions and calls to action where appropriate.\n- Support recurring content formats and campaign ideas.\n- More experienced writers may contribute to broader creative concepts and content direction.",
+      "requirementsMd": "- Strong writing ability in English and/or Bengali relevant to the work.\n- Ability to write naturally and clearly for real audiences.\n- Good understanding of storytelling and structure.\n- Ability to adapt tone for different brands and platforms.\n- Ability to turn complex or raw information into understandable content.\n- Strong grammar, editing and proofreading skills.\n- Ability to research and verify information.\n- Ability to work with briefs and deadlines.\n- Willingness to revise work based on constructive feedback.\n- Writing samples, academic work, personal projects or other demonstrable creative writing.\n\nFormal professional experience is not mandatory for applicants with strong writing ability and meaningful samples.",
+      "niceToHaveMd": "- Video-script writing experience.\n- Advertising or campaign-copy experience.\n- Social-media content experience.\n- Storytelling for short-form video.\n- Voice-over or presenter-script experience.\n- Real-estate, fashion, technology or SaaS writing experience.\n- Basic SEO awareness.\n- Interview or documentary-script experience.\n- Experience collaborating with video-production teams.\n- Strong bilingual Bengali-English writing ability.",
+      "benefits": [
+        "Work on scripts and creative content across multiple brands",
+        "Exposure to video, campaign and social media production",
+        "Chance to collaborate with creative and production teams",
+        "Growth through practical writing ownership",
+        "Opportunity to build a diverse creative writing portfolio"
+      ],
+      "skills": ["Script Writing", "Creative Writing", "Copywriting", "Storytelling", "Content Writing", "Content Research", "Editing", "Proofreading", "Brand Voice", "Social Media Content"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/writing samples", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three writing or script samples that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the samples above, explain the audience, objective and your writing approach.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which types of content or scripts are you most comfortable writing?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Write a short opening hook for a 60-second video introducing a new premium clothing brand.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you research a topic before writing when you are not already familiar with it?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you adjust your writing style for different brands or audiences?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Are you comfortable writing in both Bengali and English? Briefly describe your level in each.", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}
