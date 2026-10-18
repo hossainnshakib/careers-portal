@@ -39,6 +39,15 @@ export function ReviewFilterForm({
 }) {
   const [zone, setZone] = useState(filters.tz);
   const [open, setOpen] = useState(false);
+  const [more, setMore] = useState(false);
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 800px)");
+    const adapt = () => setMobile(media.matches);
+    adapt();
+    media.addEventListener("change", adapt);
+    return () => media.removeEventListener("change", adapt);
+  }, []);
   useEffect(() => {
     if (!filters.from && !filters.to) setZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }, [filters.from, filters.to]);
@@ -73,45 +82,18 @@ export function ReviewFilterForm({
   if (filters.sort !== "newest") chips.push({ key: "sort", label: `Sort: ${sortLabels[filters.sort]}`, href: filterUrl(filters, { sort: "newest" }) });
 
   return (
-    <>
-      {chips.length > 0 && (
-        <div className="admin-chips" style={{ marginBottom: 12 }}>
-          {chips.map((chip) => (
-            <a key={chip.key} href={chip.href} className="admin-chip">
-              {chip.label}
-              <span className="admin-chip-remove" aria-hidden="true">
-                ✕
-              </span>
-              <span className="sr-only">— remove filter</span>
-            </a>
-          ))}
-          {/* Fresh private-document navigation renews authorization and the CSP nonce. */}
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/admin/applications" className="admin-link">
-            Clear all
-          </a>
-        </div>
-      )}
-      <form action="/admin/applications" method="get" className="admin-card admin-review-filters admin-mobile-flat" style={{ marginBottom: 14 }}>
+    <div className="admin-review-filter-block">
+      <form action="/admin/applications" method="get" className="admin-card admin-review-filters admin-mobile-flat">
         <label className="admin-review-search">
-          <span>Search name/email</span>
-          <input aria-label="Search name/email" name="q" defaultValue={filters.q} maxLength={200} placeholder="Search name or email" />
+           <span className="sr-only">Search name/email</span>
+          <input aria-label="Search name/email" name="q" defaultValue={filters.q} maxLength={200} placeholder={mobile ? "Search name or email" : "Name or email"} />
         </label>
-        <button
-          type="button"
-          className="admin-btn admin-btn-secondary admin-filter-toggle"
-          aria-expanded={open}
-          aria-controls="review-filter-fields"
-          onClick={() => setOpen((value) => !value)}
-        >
-          Filters
-        </button>
-        <div id="review-filter-fields" className={`admin-filter-fields${open ? " is-open" : ""}`}>
+        <div id="review-filter-fields" className={`admin-review-primary${open ? " is-open" : ""}`}>
           <input type="hidden" name="tz" value={zone} />
           <label>
-            Brand
+            <span className="sr-only">Brand</span>
             <select aria-label="Brand" name="brand" defaultValue={filters.brand}>
-              <option value="">All brands</option>
+              <option value="">Brand</option>
               {options.brands.map((brand) => (
                 <option key={brand.id} value={brand.id}>
                   {brand.name}
@@ -120,9 +102,9 @@ export function ReviewFilterForm({
             </select>
           </label>
           <label>
-            Department
+            <span className="sr-only">Department</span>
             <select aria-label="Department" name="department" defaultValue={filters.department}>
-              <option value="">All departments</option>
+              <option value="">Department</option>
               {options.departments.map((department) => (
                 <option key={department.id} value={department.id}>
                   {department.name}
@@ -131,9 +113,9 @@ export function ReviewFilterForm({
             </select>
           </label>
           <label>
-            Job
+            <span className="sr-only">Job</span>
             <select aria-label="Job" name="job" defaultValue={filters.job}>
-              <option value="">All jobs</option>
+              <option value="">Job</option>
               {options.jobs.map((job) => (
                 <option key={job.id} value={job.id}>
                   {job.title}
@@ -142,9 +124,9 @@ export function ReviewFilterForm({
             </select>
           </label>
           <label>
-            Status
+            <span className="sr-only">Status</span>
             <select aria-label="Status" name="status" defaultValue={filters.status}>
-              <option value="">All statuses</option>
+              <option value="">Status</option>
               {applicationStatusEnum.enumValues.map((status) => (
                 <option key={status} value={status}>
                   {applicationStatusLabel(status)}
@@ -153,9 +135,12 @@ export function ReviewFilterForm({
             </select>
           </label>
           <label>
-            From date
+            <span className="sr-only">From date</span>
             <input aria-label="From date" type="date" name="from" defaultValue={filters.from} />
           </label>
+          <button type="button" className="admin-btn admin-btn-secondary admin-review-more" aria-label="More filters" title="More filters" aria-expanded={more} aria-controls="review-extra-fields" onClick={() => setMore(!more)}><span aria-hidden="true">⋯</span></button>
+        </div>
+        <div id="review-extra-fields" className="admin-review-extra" hidden={!more && !open}>
           <label>
             To date
             <input aria-label="To date" type="date" name="to" defaultValue={filters.to} />
@@ -174,9 +159,6 @@ export function ReviewFilterForm({
             Date range uses {zone}; the end date is inclusive.
           </p>
           <div className="admin-filter-actions">
-            <button className="admin-btn" type="submit">
-              Filter applications
-            </button>
             {showReset && <>
               {/* Fresh private-document navigation rechecks authorization and renews the CSP nonce. */}
               {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
@@ -184,7 +166,17 @@ export function ReviewFilterForm({
             </>}
           </div>
         </div>
+        <button className={`admin-btn admin-review-submit${open ? " is-open" : ""}`} type="submit" aria-label="Filter applications" title="Filter applications"><span className="admin-review-submit-icon" aria-hidden="true">→</span><span className="admin-review-submit-label">Filter applications</span></button>
       </form>
-    </>
+      <div className="admin-review-filter-controls">
+        <button type="button" className="admin-btn admin-btn-secondary admin-filter-toggle" aria-expanded={open} aria-controls="review-filter-fields review-extra-fields" onClick={() => setOpen(!open)}>Filters</button>
+        {chips.length > 0 && <div className="admin-chips">
+          {chips.map((chip) => <a key={chip.key} href={chip.href} className="admin-chip">{chip.label}<span aria-hidden="true">✕</span><span className="sr-only">— remove filter</span></a>)}
+          {/* Fresh private-document navigation renews authorization and the CSP nonce. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/admin/applications" className="admin-link">Clear all</a>
+        </div>}
+      </div>
+    </div>
   );
 }

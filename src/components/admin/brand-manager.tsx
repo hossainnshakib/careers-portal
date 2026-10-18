@@ -27,14 +27,32 @@ const blank: BrandInput = {
   status: "active",
 };
 
+function editBrand(row: Brand): BrandInput {
+  return { id: row.id, name: row.name, slug: row.slug, sector: row.sector, description: row.description, website: row.website ?? "", accentColor: row.accentColor ?? "", status: row.status };
+}
+
 export function BrandManager({ rows }: { rows: Brand[] }) {
-  const [draft, setDraft] = useState<BrandInput>(blank);
+  const [draft, setDraft] = useState<BrandInput>(() => rows[0] ? editBrand(rows[0]) : blank);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState("");
+  const currentLogo = rows.find((row) => row.id === draft.id)?.logoUrl;
   const previewAccent = accentColor(draft.accentColor);
   const previewText = readableAccentText(previewAccent);
+  function selectDraft(next: BrandInput) {
+    if (logoInputRef.current) logoInputRef.current.value = "";
+    setSelectedFile(""); setMessage(""); setDraft(next);
+  }
+  function selectLogo(file: File | undefined) {
+    setMessage("");
+    if (file && (file.size > 1024 * 1024 || !["svg", "png", "webp"].includes(file.name.split(".").at(-1)?.toLowerCase() ?? "") || !["image/svg+xml", "image/png", "image/webp"].includes(file.type))) {
+      if (logoInputRef.current) logoInputRef.current.value = "";
+      setSelectedFile(""); setMessage("Choose SVG, PNG or WebP within 1 MB. The server also validates logo content."); return;
+    }
+    setSelectedFile(file?.name ?? "");
+  }
   async function run(action: () => Promise<ActionResult<unknown>>, success: string) {
     setPending(true);
     setMessage("");
@@ -61,54 +79,34 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
             </p>
           </div>
         ) : (
-          <div role="table" aria-label="Brands in display order">
-            <div role="rowgroup" className="admin-brand-grid">
+          <ul aria-label="Brands in display order" className="admin-brand-grid">
               {rows.map((row, index) => (
-                <div key={row.id} role="row" className="admin-brand-card">
-                  <div role="cell" className="admin-brand-card-head">
+                <li key={row.id}>
+                <article aria-label={row.name} data-selected={draft.id === row.id} className="admin-brand-card">
+                  <button type="button" disabled={pending} aria-label={`Edit ${row.name}`} aria-pressed={draft.id === row.id} onClick={() => selectDraft(editBrand(row))} className="admin-brand-card-head">
                     <BrandMark
                       name={row.name}
                       logoUrl={row.logoUrl}
                       accentColor={row.accentColor}
                       size="lg"
-                      alt={`${row.name} logo`}
+                      initialsOnly
                     />
-                    <div style={{ minWidth: 0 }}>
+                    <span style={{ minWidth: 0 }}>
                       <b style={{ display: "block", overflowWrap: "anywhere" }}>{row.name}</b>
                       <span className="admin-muted" style={{ fontSize: 12, overflowWrap: "anywhere" }}>
                         /{row.slug} · {sectorLabels[row.sector]}
                       </span>
-                    </div>
-                  </div>
-                  <div role="cell" className="admin-brand-card-status">
+                    </span>
+                  </button>
+                  <div className="admin-brand-card-status">
                     <Pill tone={row.status === "active" ? "active" : "inactive"}>
                       {row.status === "active" ? "Active" : "Hidden"}
                     </Pill>
-                  </div>
-                  <div role="cell" className="admin-brand-card-flags">
                     {row.status === "active" && !row.description?.trim() && (
                       <span className="admin-pill admin-pill-review">No description</span>
                     )}
                   </div>
-                  <div role="cell" className="admin-brand-card-actions">
-                    <button
-                      className="admin-btn admin-btn-secondary admin-btn-sm"
-                      disabled={pending}
-                      onClick={() =>
-                        setDraft({
-                          id: row.id,
-                          name: row.name,
-                          slug: row.slug,
-                          sector: row.sector,
-                          description: row.description,
-                          website: row.website ?? "",
-                          accentColor: row.accentColor ?? "",
-                          status: row.status,
-                        })
-                      }
-                    >
-                      Edit<span className="sr-only"> {row.name}</span>
-                    </button>
+                  <details className="admin-brand-card-more"><summary aria-label={`Actions for ${row.name}`}>Brand actions</summary><div className="admin-brand-card-actions">
                     <button
                       className="admin-btn admin-btn-secondary admin-icon-btn"
                       disabled={pending || index === 0}
@@ -135,15 +133,15 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
                     >
                       ↓
                     </button>
-                  </div>
-                </div>
+                  </div></details>
+                </article>
+                </li>
               ))}
-            </div>
-          </div>
+          </ul>
         )}
       </div>
 
-      <div className="admin-card">
+      <div className="admin-card admin-brand-editor">
         <h2 className="admin-kicker" style={{ margin: 0 }}>
           {draft.id ? "Edit brand" : "Create brand"}
         </h2>
@@ -156,7 +154,7 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
             const element = event.currentTarget;
             void run(async () => {
               const result = await uploadBrandLogoAction(form);
-              if (result.ok) element.reset();
+              if (result.ok) { element.reset(); setSelectedFile(""); }
               return result;
             }, "Logo uploaded.");
           }}
@@ -170,8 +168,14 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
               const selection = new DataTransfer();
               selection.items.add(event.dataTransfer.files[0]);
               logoInputRef.current.files = selection.files;
+              selectLogo(event.dataTransfer.files[0]);
             }}
           >
+            {currentLogo && <>
+              {/* SVG logos are never inlined; only the persisted validated logo is previewed. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={currentLogo} alt={`${draft.name} logo`} className="admin-logo-preview" />
+            </>}
             <span aria-hidden="true">Drop logo here · SVG, PNG or WebP · max 1 MB</span>
             <input
               ref={logoInputRef}
@@ -181,7 +185,9 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
               required
               disabled={!draft.id || pending}
               aria-label={`Logo for ${draft.name}`}
+              onChange={(event) => selectLogo(event.target.files?.[0])}
             />
+            {selectedFile && <span className="admin-selected-logo">Selected: {selectedFile}</span>}
           </label>
           {!draft.id && (
             <p className="admin-note" style={{ margin: "6px 0 0" }}>
@@ -206,6 +212,7 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
             }, "Brand saved.");
           }}
         >
+          <fieldset disabled={pending} className="admin-fieldset">
           <label>
             Name
             <input
@@ -215,6 +222,11 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
               onChange={(event) => setDraft({ ...draft, name: event.target.value })}
             />
           </label>
+          <label className="admin-brand-description">
+            <span>Description ({draft.description.length}/3000)</span>
+            <textarea aria-label="Description" rows={3} value={draft.description} maxLength={3000} onChange={(event) => setDraft({ ...draft, description: event.target.value })} />
+          </label>
+          <details className="admin-brand-settings"><summary>Additional settings</summary>
           <label>
             Slug
             <input
@@ -242,18 +254,6 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
             </select>
           </label>
           <label>
-            Description
-            <textarea
-              aria-label="Description"
-              value={draft.description}
-              maxLength={3000}
-              onChange={(event) => setDraft({ ...draft, description: event.target.value })}
-            />
-            <span className="admin-note" style={{ textAlign: "right" }}>
-              {draft.description.length}/3000
-            </span>
-          </label>
-          <label>
             Website
             <input
               type="url"
@@ -272,6 +272,13 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
               onChange={(event) => setDraft({ ...draft, accentColor: event.target.value })}
             />
           </label>
+          <label>
+            Status
+            <select aria-label="Status" value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as BrandInput["status"] })}>
+              <option value="active">Active</option><option value="hidden">Hidden</option>
+            </select>
+          </label>
+          </details>
           <section
             aria-label="Accent contrast preview"
             style={{
@@ -282,24 +289,9 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
               color: previewText,
             }}
           >
-            <b>{draft.name || "Brand colour preview"}</b>
-            <p style={{ margin: "6px 0 0", fontSize: 12 }}>
-              Readable text · {contrastRatio(previewAccent, previewText).toFixed(2)}:1 contrast
-            </p>
+            <b>Sample text on accent</b>
           </section>
-          <label>
-            Status
-            <select
-              aria-label="Status"
-              value={draft.status}
-              onChange={(event) =>
-                setDraft({ ...draft, status: event.target.value as BrandInput["status"] })
-              }
-            >
-              <option value="active">Active</option>
-              <option value="hidden">Hidden</option>
-            </select>
-          </label>
+          <p className="admin-muted admin-accent-contrast">Contrast {contrastRatio(previewAccent, previewText).toFixed(2)}:1 · readable text</p>
           <div className="admin-filter-actions" style={{ marginTop: 14 }}>
             <button className="admin-btn" disabled={pending}>
               {pending ? "Saving…" : "Save brand"}
@@ -308,11 +300,12 @@ export function BrandManager({ rows }: { rows: Brand[] }) {
               className="admin-btn admin-btn-secondary"
               type="button"
               disabled={pending}
-              onClick={() => setDraft(blank)}
+              onClick={() => selectDraft(blank)}
             >
               New brand
             </button>
           </div>
+          </fieldset>
         </form>
 
         <p role="status" aria-live="polite" className="admin-error">

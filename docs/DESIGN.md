@@ -27,8 +27,72 @@ Each brand has an `accent_color` (see SEED_DATA.md). Use it sparingly: a thin to
 - Measured small-text contrast uses chip ink `#26324A` for nav and darker green `#08694F` for salary text, a slight deviation from the mock's muted/green values. Job Summary uses valid direct dt/dd pairs. Local production Lighthouse scores are 95 performance/100 accessibility/100 best practices for both Home and Job; see UI_VERIFICATION.md for all pages and limits of this evidence.
 - Job detail follows `Job detail-html`: a deep dark primary-brand-tinted rounded hero, locally clipped brand orbs, All roles link, department/title/summary, option/location/deadline pills and all visible hiring-brand badges. The body has optional sanitised sections, numbered responsibilities, checked requirements/nice-to-have, skill pills, glass benefit/brand cards, final Ready to apply panel and a 340px glass summary column with the viewport-bounded sticky rule above. Summary rows omit unset optional values; experience combines text/options and engagement includes its note. Apply buttons use the real `/jobs/<slug>/apply` URL. Closed/expired jobs show a notice with no Apply button; drafts/hidden-only roles return 404. Sanitised Markdown renders with `overflow-wrap: anywhere` so a long unbroken URL breaks lines instead of overflowing narrow screens.
 - Apply is its own noindex server-rendered page with Back to job, real-data glass context card and a separate form panel. Blue section labels and a responsive two-column field grid retain current definitions; long text, choices and uploads span the row. Inputs use 50px height/14px radii/pale surfaces, radio cards and checkbox pills show blue selection, and dashed upload panels support Choose file and actual drag-and-drop through the same upload pipeline. Required consent, lazy Turnstile, upload retries/removal/restart, submit pending/error states and server validation remain. Public-only CSS hooks style the shared question renderer without changing admin preview styling. Field errors are linked to help text and a focusable summary; the developer UTC-date paragraph is removed.
-- Success, privacy, public errors and 404 content use glass panels and the shared chrome. Unmatched root URLs get an explicit public layout because they have no route-group wrapper; route-group 404 content does not duplicate that shell. Success shows only a syntactically valid reference and plain next steps, with no timing promise. Privacy retains its owner-review draft and actual provider/retention/deletion wording.
+- Success, privacy, public errors and 404 content use glass panels and the shared chrome. Unmatched root URLs get an explicit public layout because they have no route-group wrapper; route-group 404 content does not duplicate that shell. Success shows only a syntactically valid reference and plain next steps, with no timing promise. Privacy presents 44 sequential current-processing policy sections in a 1100px maximum shell with 76ch/740px-capped readable text, date metadata, native keyboard-accessible contents/anchors and responsive 16px/1.85 typography. Approved contacts/address are unchanged. Only the optional contents list collapses; substantive policy text remains server rendered. There is no standalone operational notice; manual retention is disclosed naturally within the retention section. Layout and styling are otherwise unchanged.
 - Admin follows the 14 boards in `design/mockup/careers-admin-mockups/`, with its own `src/app/admin/admin.css` system: cool-white canvas, ink/blue accents, glass cards/sidebar, rounded controls, status pills and real brand logos with initial fallbacks. The mobile shell switches to a focus-contained slide-over below 800px; tables become semantic card stacks. Applicant profile keeps the content/340px review rail, with a native mobile disclosure. Settings is split over the existing Departments and Options routes. Auth uses a centred card and six-cell TOTP entry. Business rules and authorization stay unchanged. See `ADMIN_UI_RESTYLE.md` for deliberate differences and verification. No UI library was added.
+- Admin fidelity (2026-10-12) supersedes the prior restyle's unapproved differences;
+  `ADMIN_ACCEPTANCE.md` governs reconciliation. Data cards use .76-white/14px
+  blur, chrome .58-white/24px blur; no nested backdrop blur. Dashboard now uses
+  the board's accent initials, not tiny logos, and six desktop/three mobile latest
+  rows with disclosure of the complete existing ten-row set. Mobile department
+  statistics remain accessible in a collapsed disclosure. Combined Settings,
+  markdown toggles and publish/add-question dialogs are required pending work,
+  not accepted omissions. Existing logo rendering remains for the brand uploader
+  and unreconciled screens until their own checkpoints. All real fields survive.
+- Applications fidelity: compact filter row, More filters for inclusive end date/
+  sort/timezone guidance, chips below/on the mobile Filters row, reference column
+  proportions, accent initials and Applied before pills. Read-only email history
+  is computed server-side, not inferred from names. All filters remain URL-driven.
+- Applicant fidelity: repeated desktop name with inline status, initial marks,
+  grouped answer/history cards and nested previous-application cards; one sticky
+  340px review glass panel becomes an open mobile disclosure above the content.
+  Personal rows retain two columns at 390px. All real metadata and PDF/privacy
+  guidance survive; the filled delete-confirmation red meets text contrast.
+- Jobs fidelity: compact Status/Department/Brand/Search row, reference column
+  proportions, accent initials and short dates. Labelled submit/reset icons retain
+  filter actions. Drawn row disclosures keep keyboard focus and viewport-safe
+  placement; mobile semantic cards avoid the reference's clipped actions.
+- Editor shell/Publish fidelity: .58-white sticky bar at 8px with drawn command
+  labels, secondary draft-save, additional lifecycle commands in More actions.
+  Mobile Duplicate is disclosed to fit the viewport. Native Publish modal shows
+  actual title/path/slug warning and advisory readiness/blockers; only confirmation
+  invokes the existing authorized server save. Other editor blocks remain pending.
+- Basics fidelity: compact plain labels, drawn chip density/blue selection/dark
+  salary selection and vacancies/location/date row. Additional settings preserves
+  experience text, engagement note and local deadline time. Date/time edit one
+  UTC instant; date changes preserve the existing cutoff, new dates default to
+  local midnight, and clearing the date removes the deadline. Slug/primary-brand
+  and inactive-linked option rules remain unchanged.
+- Content fidelity: two-row Summary with inline counter, independent dark-pill
+  Write/Preview controls for all four markdown fields, one visible mode at a time.
+  Previews reuse SafeMarkdown without nested glass blur. Benefits precede Skills
+  in Enter-add pill inputs; labelled remove crosses preserve item deletion.
+- Question-builder fidelity: compact .9-white cards/handle/bold label/type/Required/
+  archive-or-remove, full editing from the label and actions below cards. Native
+  drag/drop plus keyboard/arrow reorder retains IDs. Native Add-question modal
+  validates an independent draft before insertion; Enter-add option rows expose
+  label/value/removal and strict uniqueness. Section is additionally disclosed;
+  mobile card rows reflow rather than clipping controls. No schema change.
+- Candidate-preview fidelity: the whole card scales .9 from the top on desktop,
+  with live Apply for title and single-column contact placeholders. Complete fixed
+  fields/CV, configured sections, required consent and local validation remain;
+  answers/files are never submitted. Mobile is unscaled for usable controls.
+- Brands fidelity: semantic three-column accent-initial card list beside compact
+  name/description editor. Logo stays a passive img in the dashed uploader; picker/
+  drop/WebP and explicit upload remain. Extra fields are disclosed; card actions
+  retain ordering, Status retains hide/show, New brand retains creation. Inline
+  /3000 description count preserves supported content. Accent sample text shows
+  measured readable ink, not unsafe fixed white. Mobile stacks cards/editor.
+- Settings fidelity supersedes the separate-page presentation above: both original
+  Departments and Options routes render the same equal-column Departments & options
+  screen. Departments/Add/disclosed editing left; three option groups and compact
+  Create/edit form right. Compact real controls retain ordering, activation and
+  confirmed unused-option delete. Mobile rows stack with labelled counts and no
+  nested blur. Original independent authorization and server guards stay unchanged.
+- Login/MFA fidelity: centred .72-white glass card with wordmark/orbs and drawn
+  Sign in kicker; no redundant heading. MFA keeps mandatory password re-verification
+  before QR enrolment, six 44x52px cells/8px gap, paste/autofill/backspace/arrow
+  focus and Continue. Setup key and owner-only recovery sit in a compact disclosure;
+  challenge shows Enter code. Hydration/pending disable both auth forms.
 - Empty, loading and error states for every list. Accessible by default (labels, focus rings, contrast, keyboard use, `aria-live` for form errors).
 
 ## Metadata, sharing and site identity

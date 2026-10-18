@@ -29,6 +29,7 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
 }) {
   const [filters, setFilters] = useQueryStates(filterParsers, { shallow: true, history: "replace" });
   const mobileDialog = useRef<HTMLDialogElement>(null);
+  const hasJobs = jobs.length > 0;
   // Brand sites deep-link with /?brand=<slug>. On the FIRST load only, scroll once to #roles.
   // A module-level flag survives component remounts within the same page load, so later
   // client-side filter changes (which may remount this component) do not re-scroll.
@@ -49,12 +50,15 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
     const unlock = () => { document.documentElement.style.overflow = ""; };
     dialog.addEventListener("close", unlock);
     return () => { dialog.removeEventListener("close", unlock); document.documentElement.style.overflow = ""; };
-  }, []);
+  }, [hasJobs]);
   const openFilters = () => {
     document.documentElement.style.overflow = "hidden";
     mobileDialog.current?.showModal();
   };
-  const closeFilters = () => mobileDialog.current?.close();
+  const closeFilters = () => {
+    mobileDialog.current?.close();
+    document.documentElement.style.overflow = "";
+  };
   // Drop unknown/disabled URL values so ?brand=nonsense is ignored gracefully.
   const known: Record<FilterKey, Set<string>> = {
     brand: new Set(brands.map(brand => brand.slug)),
@@ -101,7 +105,7 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
     <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-24 pb-6 pt-12">
       <div className="ui-glass rounded-[24px] p-8">
         <h2 className="text-[28px] font-extrabold tracking-[-.03em]">No open roles right now</h2>
-        <p className="mt-3 text-ui-muted">We don&rsquo;t have any vacancies at the moment. Check back soon — new opportunities open regularly.</p>
+        <p className="mt-3 text-ui-muted">We don&rsquo;t have any vacancies at the moment. Please check back later.</p>
       </div>
     </section>
     <CareersInfo />
@@ -111,7 +115,7 @@ export function CareersHub({ jobs, brands, departments, jobOptions }: {
     <section id="roles" aria-label="Open roles" className="ui-container scroll-mt-24 pb-6 pt-12">
       <div className="mb-7 space-y-1.5"><h2 className="text-[36px] font-extrabold tracking-[-.03em]">Find your role</h2><p className="text-[15px] text-ui-muted">Every open role, grouped by department.</p></div>
       <div className="ui-roles-grid" data-testid="roles-grid">
-        <aside aria-label="Job filters" className="ui-desktop-filter ui-sticky-panel ui-glass space-y-4 self-start rounded-[24px] p-[22px]" data-testid="home-filter-panel">
+        <aside aria-label="Job filters" className="ui-desktop-filter ui-sticky-panel ui-glass space-y-2.5 self-start rounded-[24px] p-[22px]" data-testid="home-filter-panel">
           <div className="flex items-center justify-between"><h3 className="text-[16px] font-extrabold">Filters</h3><button onClick={clear} className="text-[13px] font-semibold text-ui-blue-text">Clear all</button></div>
           {panelKeys.map(group)}
         </aside>

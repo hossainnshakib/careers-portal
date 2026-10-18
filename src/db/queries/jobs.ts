@@ -18,6 +18,7 @@ import { missingPublishGroups } from "@/lib/validation/jobs";
 import { uniqueSlug } from "@/lib/slug";
 import { jobFilters, jobInput, type JobInput } from "@/lib/validation/jobs";
 import { jobOptionsFor, type OptionRow } from "./job-options";
+import { ownsValidationJob } from "@/lib/demo";
 
 export async function listJobs(filters: ReturnType<typeof jobFilters.parse>) {
   const linked = filters.brand
@@ -94,9 +95,11 @@ export async function jobHasApplications(id: string) {
 }
 
 type SavedJob = { id: string; slug: string; previousSlug: string };
-export function saveJob(input: JobInput): Promise<SavedJob>;
+export function saveJob(input: JobInput, expectedDemoUpdatedAt?: Date): Promise<SavedJob>;
 export function saveJob(input: JobInput, mode: "skip-existing"): Promise<SavedJob | null>;
-export async function saveJob(input: JobInput, mode?: "skip-existing") {
+export async function saveJob(input: JobInput, modeOrExpectedDemoUpdatedAt?: "skip-existing" | Date) {
+  const mode = modeOrExpectedDemoUpdatedAt === "skip-existing" ? modeOrExpectedDemoUpdatedAt : undefined;
+  const expectedDemoUpdatedAt = modeOrExpectedDemoUpdatedAt instanceof Date ? modeOrExpectedDemoUpdatedAt : undefined;
   input = jobInput.parse(input);
   if (mode === "skip-existing" && input.id !== null) throw new Error("Import only creates jobs");
   return getDb().transaction(async (tx) => {
@@ -113,6 +116,11 @@ export async function saveJob(input: JobInput, mode?: "skip-existing") {
       ? await tx.select().from(jobs).where(eq(jobs.id, input.id)).for("update")
       : [];
     if (input.id && !existing) throw new Error("Job not found");
+    // The demo CLI's compare-and-set gate also reloads ownership and lifecycle
+    // under the lock. A concurrent publish/rename must never turn into an update.
+    if (expectedDemoUpdatedAt && (!existing || existing.updatedAt.getTime() !== expectedDemoUpdatedAt.getTime() ||
+      existing.status !== "draft" || existing.slug !== input.slug || !ownsValidationJob(existing)))
+      throw new Error("Job changed during preparation; run the dry-run again.");
     checkJobEdit(existing ?? null, input);
     const [dept] = await tx
       .select({ id: departments.id, isActive: departments.isActive })

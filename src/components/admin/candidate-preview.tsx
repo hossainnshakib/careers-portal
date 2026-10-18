@@ -29,28 +29,34 @@ const fixed = (
 export function CandidatePreview({
   questions,
   cvRequired,
+  title,
 }: {
   questions: QuestionDefinition[];
   cvRequired: boolean;
+  title: string;
 }) {
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [other, setOther] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [personal, setPersonal] = useState<Record<string, Answer>>({});
+  const [consent, setConsent] = useState(false);
   return (
-    <section aria-label="Candidate form preview" className="admin-card admin-preview">
+    <section aria-label="Candidate form preview" className="admin-card admin-preview admin-preview-scale">
       <h2 className="admin-kicker">4 · Candidate form preview</h2>
-      <div className="admin-preview-scale">
+      <h3 className="admin-preview-title">Apply for {title.trim() || "this role"}</h3>
+      <div>
         <div className="public-ui">
           <p className="admin-note">
             Local preview only. Answers and selected files are not submitted.
           </p>
-          <div className="admin-grid admin-grid-2">
+          <div className="admin-preview-contacts">
             {fixed.slice(0, 4).map((q) => (
               <label key={q.id}>
-                {q.label} *
+                <span className={q.label === "Full name" || q.label === "Email" ? "sr-only" : undefined}>{q.label} *</span>
                 <input
                   aria-label={`Preview ${q.label}`}
+                  placeholder={q.label}
+                  type={q.type === "email" ? "email" : q.type === "phone" ? "tel" : "text"}
                   value={typeof personal[q.id] === "string" ? String(personal[q.id]) : ""}
                   onChange={(event) => setPersonal({ ...personal, [q.id]: event.target.value })}
                 />
@@ -98,6 +104,10 @@ export function CandidatePreview({
                 ))}
             </section>
           ))}
+          <label className="admin-preview-consent">
+            <input aria-label="Preview privacy consent" type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+            <span>I agree to the collection and review of my application as described in the <a href="/privacy" target="_blank" rel="noopener noreferrer">privacy notice</a>. *</span>
+          </label>
           <button
             type="button"
             className="admin-btn"
@@ -115,6 +125,10 @@ export function CandidatePreview({
                       )
                       .join("; "),
                   );
+                  return;
+                }
+                if (!consent) {
+                  setMessage("Accept the privacy notice before validating the preview.");
                   return;
                 }
                 const data: Record<string, Answer> = {};

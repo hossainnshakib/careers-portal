@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { checkJobCommand, checkJobEdit, removedQuestionIds } from "./job-policy";
+import { checkJobCommand, checkJobEdit, jobDeletionBlocked, removedQuestionIds } from "./job-policy";
 import { jobInput } from "@/lib/validation/jobs";
 
 const id = "10000000-0000-4000-8000-000000000001";
@@ -59,17 +59,21 @@ it("finds removed active questions and prevents archived question resurrection",
   expect(removedQuestionIds(rows, ["kept"])).toEqual(["removed"]);
   expect(() => removedQuestionIds(rows, ["archived"])).toThrow();
 });
-it("restricts deletion and lifecycle transitions", () => {
-  expect(() =>
-    checkJobCommand({ status: "draft", publishedAt: null }, "delete", false),
-  ).not.toThrow();
+it("restricts deletion to jobs without applications and keeps lifecycle transitions", () => {
+  // Any status is deletable while no applications exist (2026-10-16 decision).
   for (const job of [
+    { status: "draft", publishedAt: null },
+    { status: "draft", publishedAt: new Date() },
     { status: "open", publishedAt: new Date() },
     { status: "closed", publishedAt: new Date() },
-    { status: "draft", publishedAt: new Date() },
   ] as const)
-    expect(() => checkJobCommand(job, "delete", false)).toThrow();
-  expect(() => checkJobCommand({ status: "draft", publishedAt: null }, "delete", true)).toThrow();
+    expect(() => checkJobCommand(job, "delete", false)).not.toThrow();
+  for (const job of [
+    { status: "draft", publishedAt: null },
+    { status: "open", publishedAt: new Date() },
+    { status: "closed", publishedAt: new Date() },
+  ] as const)
+    expect(() => checkJobCommand(job, "delete", true)).toThrow(jobDeletionBlocked);
   expect(() => checkJobCommand({ status: "draft", publishedAt: null }, "close", false)).toThrow();
   expect(() =>
     checkJobCommand({ status: "open", publishedAt: new Date() }, "reopen", false),

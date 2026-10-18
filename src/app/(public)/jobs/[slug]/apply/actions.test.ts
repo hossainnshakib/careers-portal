@@ -61,3 +61,48 @@ it("does not restore files if the transaction committed but its acknowledgement 
   await expect(submitApplication(input)).rejects.toThrow("redirect-success");
   expect(mocks.restore).not.toHaveBeenCalled();
 });
+
+it("returns safe field guidance for invalid envelope fields before any security/storage/DB work", async () => {
+  const result = await submitApplication({ ...input, contact: { ...input.contact, email: "private-negative-marker" }, consent: false });
+  expect(result).toMatchObject({ ok: false, fieldErrors: [
+    { field: "contact.email", message: expect.any(String) }, { field: "consent", message: expect.any(String) },
+  ] });
+  expect(JSON.stringify(result)).not.toContain("private-negative-marker");
+  expect(mocks.turnstile).not.toHaveBeenCalled(); expect(mocks.load).not.toHaveBeenCalled(); expect(mocks.insert).not.toHaveBeenCalled();
+});
+
+it("keeps filled honeypots and malformed security tokens generically rejected", async () => {
+  for (const changed of [{ ...input, honeypot: "synthetic-bot-marker" }, { ...input, turnstileToken: "" }, { ...input, sessionToken: "" }]) {
+    expect(await submitApplication(changed)).toEqual({ ok: false, error: "Check your application fields and try again." });
+  }
+  expect(mocks.turnstile).not.toHaveBeenCalled(); expect(mocks.load).not.toHaveBeenCalled(); expect(mocks.insert).not.toHaveBeenCalled();
+});
+
+it("returns known dynamic field errors only after verified security and fresh job definitions", async () => {
+  const result = await submitApplication({ ...input, answers: {} });
+  expect(result).toMatchObject({ ok: false, fieldErrors: [{ field: `answers.${id}`, message: expect.any(String) }] });
+  expect(mocks.turnstile).toHaveBeenCalled(); expect(mocks.session).toHaveBeenCalled(); expect(mocks.load).toHaveBeenCalled();
+  expect(mocks.verifyFile).not.toHaveBeenCalled(); expect(mocks.insert).not.toHaveBeenCalled();
+});
+
+it("identifies a missing required CV without accepting the application", async () => {
+  expect(await submitApplication({ ...input, cv: [] })).toMatchObject({ ok: false, fieldErrors: [{ field: "cv", message: expect.any(String) }] });
+  expect(mocks.insert).not.toHaveBeenCalled();
+});
+
+it("accepts untouched optional fields and false/zero answers without relaxing required validation", async () => {
+  const optional = { ...question, id: fileId, type: "number", required: false };
+  const boolId = "00000000-0000-4000-8000-000000000003";
+  const boolean = { ...question, id: boolId, type: "yes_no", required: true };
+  mocks.load.mockResolvedValue({ ...definition, questions: [question, optional, boolean] });
+  await expect(submitApplication({ ...input, answers: { ...input.answers, [fileId]: 0, [boolId]: false } })).rejects.toThrow("redirect-success");
+  mocks.load.mockResolvedValue({ ...definition, questions: [question, optional] });
+  await expect(submitApplication({ ...input, answers: { ...input.answers, [fileId]: undefined } })).rejects.toThrow("redirect-success");
+  expect(mocks.insert).toHaveBeenCalledTimes(2);
+});
+
+it("gives missing CV feedback even when the job has no dynamic questions", async () => {
+  mocks.load.mockResolvedValue({ ...definition, questions: [] });
+  expect(await submitApplication({ ...input, answers: {}, cv: [] })).toMatchObject({ ok: false, fieldErrors: [{ field: "cv" }] });
+  expect(mocks.insert).not.toHaveBeenCalled();
+});

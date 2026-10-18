@@ -6,6 +6,7 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/db", () => ({ getDb: () => ({ transaction: mocks.transaction }) }));
 import { saveJob } from "./jobs";
 import { jobs, jobBrands, jobOptionLinks, jobQuestions } from "@/db/schema";
+import { demoDisclaimer, demoMarker } from "@/lib/demo";
 const id = (i: number) => `00000000-0000-4000-8000-${String(i).padStart(12, "0")}`;
 const raw = parseImport(JSON.stringify(data)).jobs[0];
 const catalog: ImportCatalog = {
@@ -24,7 +25,7 @@ beforeEach(() => {
   mocks.transaction.mockImplementation(async (work) => {
     const staged: unknown[] = [];
     const chain = () => {
-      const query = { from: () => query, where: () => query, for: () => query,
+      const query = { from: () => query, where: () => query, for: () => query, limit: () => query,
         then: (resolve: (rows: unknown[]) => unknown) => { expect(locked).toBe(true); return Promise.resolve(resolve(reads.shift() ?? [])); } };
       return query;
     };
@@ -35,6 +36,7 @@ beforeEach(() => {
         if (table === jobQuestions && failQuestions) throw new Error("Question insert failed");
         staged.push({ table, values });
       } }),
+      update: (table: unknown) => ({ set: (values: unknown) => ({ where: async () => { staged.push({ table, values }); } }) }),
       delete: () => ({ where: async () => {} }),
     });
     committed.push(...staged);
@@ -67,5 +69,37 @@ it("rolls back all staged job/brand/option records when question persistence fai
 it("rejects references deactivated between preview and persistence without partial records", async () => {
   reads[1] = catalog.departments.map((row) => ({ ...row, isActive: false }));
   await expect(saveJob(mapImportJob(raw, catalog), "skip-existing")).rejects.toThrow("active catalog references");
+  expect(committed).toEqual([]);
+});
+const demoInput = () => ({
+  ...mapImportJob(raw, catalog), id: id(90), slug: "demo-platform-developer",
+  title: `DEMO — Platform Developer — ${demoDisclaimer}`,
+  descriptionMd: `${demoDisclaimer}\n${demoMarker}`, intent: "save" as const,
+});
+it("preserves main's Date-based guarded demo save and ordinary editing overload", async () => {
+  const input = demoInput();
+  const updatedAt = new Date("2026-10-19T00:00:00Z");
+  const existing = { ...input, updatedAt, status: "draft", publishedAt: null };
+  reads = [[existing], catalog.departments, catalog.brands, [], [], [], catalog.options];
+  expect((await saveJob(input, updatedAt)).slug).toBe(input.slug);
+  expect(committed.length).toBeGreaterThan(0);
+  committed = [];
+  const ordinary = { ...input, slug: raw.slug, title: raw.title, descriptionMd: raw.descriptionMd };
+  reads = [[{ ...existing, ...ordinary }], catalog.departments, catalog.brands, [], [], [], catalog.options];
+  expect((await saveJob(ordinary)).slug).toBe(raw.slug);
+  expect(committed.length).toBeGreaterThan(0);
+});
+it.each(["stale", "published", "renamed", "unowned"])("preserves main's under-lock refusal for %s demo updates", async (kind) => {
+  const input = demoInput();
+  const expected = new Date("2026-10-19T00:00:00Z");
+  const existing = {
+    ...input, updatedAt: kind === "stale" ? new Date("2026-10-19T00:00:01Z") : expected,
+    status: kind === "published" ? "open" : "draft",
+    slug: kind === "renamed" ? "demo-visual-designer" : input.slug,
+    descriptionMd: kind === "unowned" ? "Not an owned demo" : input.descriptionMd,
+  };
+  reads = [[existing]];
+  await expect(saveJob(input, expected)).rejects.toThrow("Job changed during preparation");
+  expect(locked).toBe(true);
   expect(committed).toEqual([]);
 });

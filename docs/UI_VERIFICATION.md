@@ -1,5 +1,235 @@
 # Mock-up UI rebuild verification
 
+## Admin fidelity — 2026-10-12 (in progress)
+
+- Branch `admin-fidelity` starts at latest merged main `41e3768` under the owner's
+  newer explicit branch instruction. No merge/force-push or main content update.
+- Pre-code contract: `ADMIN_ACCEPTANCE.md`; 14 static boards committed (118,285
+  bytes), all CSS read and all 28 width references rendered/viewed. Local-only
+  images are in ignored `design/mockup-reference-admin/` and
+  `design/mockup-compare-admin/`. Runtime design scripts are not executed.
+- Shell: corrected typography/nav/control geometry, dense/shared glass layers,
+  mobile ambient treatment and accessible slide-over. Acceptance records two
+  allowed deviations (green contrast; usable mobile links/sign-out/close).
+- Shell typecheck/lint passed; two touched unit files / 7 tests passed. Local dev
+  capture passed including menu keyboard/close/resize checks. Permanent e2e
+  updated but full production execution is reserved until the final checkpoint.
+- Dashboard typecheck/lint passed; touched dashboard/presentation files / 10
+  tests passed. Initial-circle marks and reference row density restored; compact
+  disclosure preserves all latest ten records/mobile department statistics.
+  Before/after widths inspected (subsequent candidate names masked). Capture
+  checks verified responsive row limits and disclosure; visible mid-word pill
+  wrapping fixed and recaptured. D05/D06/D10 record permitted deviations.
+- Initial capture caught streamed loading markup; explicit Dashboard-heading
+  wait corrected it. Initial lint/ref warning and a .tsx test-discovery mismatch
+  were fixed without suppressions; the final targeted run actually ran 7 cases.
+- Full default/live/build/PDF-trace/production e2e and final route captures have
+  not run for this pass. Real phones/hosted Vercel are unverified. Unrelated
+  `src/db/queries/test-accounts.ts` remains untouched and unstaged.
+
+The sections below are historical evidence, not fidelity-pass completion claims.
+
+### Applications fidelity checkpoint
+
+- Compact filter/chip/table/mobile/empty-state layout reconciled; Applied before
+  projected read-only without a migration or per-row network query. Reference
+  column widths retain wrap behaviour even for long real values.
+- Typecheck/lint: passed. Three touched unit files: 12 passed. Initial SQL alias
+  regression and obsolete lint directive fixed without assertion suppression.
+- Ignored masked before/after/empty captures at 1440/390; capture checks passed for
+  overflow, disclosure and synthetic earlier/first submission flags. New live
+  case-insensitivity/equal-time/filter-independence cases and permanent e2e are
+  queued for the final run. Full default/live/build/production gates NOT run.
+
+### Applicant/deletion fidelity checkpoint
+
+- Repeated header name/initial marks, grouped answer/history/previous cards and
+  single sticky review panel reconciled. Mobile disclosure sits above content,
+  keeps two-column contact rows, and reopens when moving to desktop.
+- Typecheck/lint passed; four touched unit files / 17 tests passed. Synthetic
+  before/after/dialog captures at 1440/390 inspected; capture passed overflow,
+  Cancel/Escape focus restoration, no deletion and disclosure/resize reachability.
+- Actual status/note/attachment/PDF/deletion code and gates retained. Confirmation
+  red contrast measured 6.57:1 versus 3.91:1 in reference. Permanent e2e additions
+  queued; broad default/live/build/production checks, failure injection, hosted
+  Vercel and physical phones NOT verified at this checkpoint.
+
+### Jobs fidelity checkpoint
+
+- Compact filters, column proportions, initials, short dates, drawn menu hint and
+  empty-state actions reconciled. Menu adds focus/tab/outside dismissal and flips
+  above near the viewport bottom; eligible draft deletion requires confirmation.
+- Typecheck/lint passed; two touched unit files / 10 tests passed. Guarded captures
+  at 1440/390 passed overflow, menu focus/Escape/fit and draft Cancel/no deletion.
+  Shared contrast, functional filter icons and accessible mobile cards are the
+  three documented deviations. Full mutation/default/live/build/production e2e
+  remains final-only; real phones and hosted Vercel remain unverified.
+
+### Editor block 1 — shell/action bar/Publish checkpoint
+
+- Drawn chrome/grid/command labels restored; lifecycle extras remain disclosed,
+  and mobile Duplicate moves into More actions to keep Save/Publish visible.
+  Native Publish dialog uses existing schema and selected-group checks for its
+  advisory readiness; confirmation still calls the unchanged authorized save.
+- Typecheck/lint and one touched unit file / 8 tests passed. Guarded captures at
+  both widths passed Cancel/Escape focus/state preservation, disabled missing-group
+  confirmation, unchanged unsaved title, 8px sticky offset and overflow. No job
+  mutation/publication executed in this checkpoint. Permanent lifecycle/publish
+  assertions updated but remain queued for final production e2e.
+- Basics, Content, questions/dialog/options and candidate preview are NOT reconciled
+  by this shell block. All broad gates remain final-only.
+
+### Editor block 2 — Basics checkpoint
+
+- Drawn labels/top fields/chips/salary/three-field row reconciled; original extra
+  fields and local deadline time moved into Additional settings without a schema
+  or validation change. Deadline-date changes preserve the existing cutoff.
+- Typecheck/lint, two touched unit files / 12 tests passed. Isolated Basics captures
+  at 1440/390 inspected; browser checks passed overflow, disclosure-state retention,
+  cutoff preservation/clearing, auto/manual slug and primary-brand fallback.
+  Captures do not save any job. Unit cases retain salary-mode regressions and test
+  linked inactive options/readonly slug/seconds preservation. Permanent persistence
+  assertions queued for final e2e; all broad gates remain final-only.
+
+### Editor block 3 — Content checkpoint
+
+- Drawn counter/rows/labels/toggles/list order reconciled. Independent Write/Preview
+  buttons retain edits, hide the inactive textarea and use existing SafeMarkdown;
+  empty preview is explicit. Benefits/Skills retain Enter-add/removal and limits.
+- Typecheck/lint and two touched unit files / 14 tests passed. Both-width isolated
+  Content and preview captures; browser checks passed four-field state preservation,
+  Bengali strong text, raw-script absence, empty preview, live counter, item removal
+  and overflow. No persistence/upload executed. Permanent save-flow assertions
+  now switch to Preview/Write explicitly, queued for final production e2e.
+
+### Editor block 4 — questions/dialog/options checkpoint
+
+- Compact cards, lower action controls, working native/keyboard reorder and native
+  cancellable Add-question modal implemented. Original type configs/Section edits,
+  standard defaults, max bounds and authorized copy/archive behavior retained.
+- Typecheck/lint; four touched unit files / 17 tests passed. Both-width guarded
+  no-save captures/checks passed Cancel/Escape/focus/no insertion, duplicate-option
+  rejection, independent editing, arrow/native reorder and overflow. Additional
+  focused loop created all eleven types, including date today/number integer/
+  file-size config, without persistence. Permanent eleven-type e2e retains its
+  original validations and adds modal/order interactions; final execution pending.
+- Actual copied-definition/server archive/save integration, pending/failure
+  injection and full production suite remain final-only; candidate-preview block
+  and physical/hosted platforms remain unverified.
+
+### Editor block 5 — candidate preview checkpoint
+
+- Live role heading and whole-card .9/top desktop scale; single-column contact
+  placeholders, all fixed/configured fields/CV and local-only notice retained.
+  Required local privacy consent added to reflect the real candidate flow.
+- Typecheck/lint and two touched unit files / 12 tests passed. Guarded both-width
+  no-save captures exercised Bengali contact/answer text, title/state updates,
+  invalid/valid/optional CV, missing/accepted consent, local validation, exact
+  desktop/mobile scale and overflow; observed no save/upload network requests.
+- Full eleven-type production e2e remains queued, now preserving existing
+  validations and adding title/required-consent assertions. Mobile/hosted devices
+  and provider/cleanup failures remain unverified. E18 deviation documented.
+
+### Brands checkpoint
+
+- Semantic accent-initial cards and compact disclosed editor implemented; actual
+  logo remains a passive img in uploader. All fields/commands, 3000 description
+  bound, WebP and original authorized logo validation retained.
+- Typecheck/lint and two touched unit files / 14 tests passed. Both-width guarded
+  no-save captures inspected; checks exercised selected card, logo/initial split,
+  480-character Bengali description/count, disclosure state retention, invalid
+  local file, picker/drop selection and reset/create-disabled-upload, plus overflow.
+- Two capture failures fixed: counter text now lives in its own span (textarea
+  child text made exact lookup ambiguous); status assertion scoped to main instead
+  of including shell MFA status. No check removed or test skipped.
+- Permanent brand e2e now uses semantic articles and editor logo, preserving
+  creation/order/unsafe SVG/valid upload/hide assertions. Execution, save/upload
+  failure/pending injection, production console and physical devices remain queued.
+
+### Combined settings checkpoint
+
+- Both original URLs retain direct requireAdmin and render the shared equal-column
+  screen. Departments compact table/Add/disclosed slug/status; grouped options
+  followed by compact create/edit form and native delete confirmation. Paths are
+  invalidated together; no schema/auth/validation change.
+- Typecheck/lint, three touched unit files / 34 tests (including protected-page
+  gates) passed. Guarded both-route 1440/390 captures/checks passed field/disclosure
+  preservation, manual slug, locked edit group/cancel, linked delete disabled,
+  unused-delete Cancel/Escape/focus return and overflow. Captures inspected.
+- Fixed two existing client bugs without relaxing validation: activation submitted
+  unsupported sortOrder; a manually entered new slug was overwritten by label edit.
+- Permanent department mutation assertions retained/scoped to combined panel;
+  added no-save both-route settings e2e. Mutation/failed action/pending injection
+  execution and full production gates remain final-only. O03/O07/O08 documented.
+
+### Login and MFA checkpoint
+
+- Drawn centred auth card/wordmark/orbs, Sign in kicker (redundant heading removed),
+  generic existing credential error, hydration/pending guards. MFA keeps password
+  re-verification, actual QR, six 44x52px/8px cells, Continue/Verify buttons and
+  owner-only recovery/setup-key disclosure; challenge uses Enter code/Continue.
+- Typecheck/lint, two touched unit files / 34 tests passed. Guarded both-width
+  1440/390 captures (QR, setup key, passwords and cells masked) inspected for login,
+  wrong-credentials error, challenge, password gate and setup+disclosure; checks
+  covered error/password clearing, six-cell CSS size, complete-code enable, arrow/
+  backspace focus, cell-by-cell paste, wrong-password denial before QR and overflow.
+- Capture-helper adjustments: wrong-credentials text expectation updated to the
+  existing generic message (correctness check retained), hydration retry before
+  setup click, and cookie clearing instead of Sign out for cross-account navigation.
+  No assertion dropped; permanent mfa e2e now also asserts password denial before
+  enrolment. Full production auth/CSP suite remains final-only; setup secrets were
+  never written to disk or logged.
+
+### Mobile and cross-screen audit (S18/E27)
+
+- Guarded sweep (`tmp/mobile-audit-capture.spec.ts`, `tmp/viewport-capture.spec.ts`)
+  at 390×844 and 1440×900 over dashboard, applications, applicant profile, Jobs,
+  brands, combined settings and the new-job editor after real admin login + MFA.
+- Asserted zero horizontal page overflow on every route at both widths, reachable
+  mobile slide-over navigation (Menu button, Dashboard link visible, Escape close),
+  editor preview transform `none` at 390 vs 0.9/top-origin at 1440, action bar
+  within viewport, and Publish/Add-question dialogs fully inside the viewport at
+  both widths with Escape/Cancel closing them.
+- Full-page and viewport captures inspected: readable stacked cards and inputs,
+  Bengali candidate names/answers and Bengali editor-title rendering, profile
+  review rail collapsed into a labelled disclosure, no overlaps (the round "N"
+  badge in captures is the Next.js dev overlay tooling, not app UI).
+- No implementation change was needed; both rows land as Implemented. Physical
+  phone/hardware testing remains unverified and is recorded as a gap.
+
+### Final verification gates (V01–V06, in progress)
+
+- V01–V05 evidence collected: final both-width audit captures inspected (plus the
+  per-block dialog/menu/empty-state/auth captures, secrets masked); CSS audit
+  confirmed the @supports-guarded blur, opaque panels, no stacked blur and the
+  @supports-not / prefers-reduced-transparency fallbacks; contrast corrections,
+  focus/keyboard e2e and Bengali/overflow checks recorded; diff audit proved
+  requireAdmin() on every protected page/action/API handler and zero diff in
+  dependencies, middleware, schema, migrations, validation, auth lib and storage;
+  V05 behaviors all covered by permanent e2e without weakened assertions.
+- Broad gates: default vitest suite passed 621 (one stale "Verify authenticator"
+  label assertion in presentation.test.ts updated to the drawn "Continue" wording,
+  committed as 2279724; nothing dropped). Live suite with RUN_SUPABASE_TESTS=1
+  passed 707 when serialized with --no-file-parallelism: in the default parallel
+  run, src/db/seed/upgrade.live.test.ts fails because its applications-table
+  snapshot races the concurrent review.live.test.ts fixture writes on the shared
+  dev database — a test-isolation race, not a product regression (the upgrade test
+  passes standalone and in the serialized run). Production `pnpm build` and the
+  PDF-trace guard passed (Helvetica/ICC chunks, both Bengali fonts, 8 logos).
+- First complete production e2e (RUN_LIGHTHOUSE=1): 42/44. Both failures were
+  real findings fixed in 39d3220: the compact question-card head crushed its
+  label button to 0-8px wide (now a wrapping flex row with a readable minimum,
+  re-verified at both widths with fresh captures and width/overflow
+  assertions), and the job-editor spec clicked the More-actions summary without
+  waiting out the page reload that Close/Reopen trigger (now waits for the
+  reloaded status pill). Lighthouse (all four pages passed): home
+  97/100/100/92, job 97/100/100/100, apply 93/100/100/69, success
+  98/100/100/54 — accessibility 100 everywhere; the SEO misses are the
+  pre-existing public-page meta/crawl items. Final re-run after the fixes:
+  complete production e2e 44/44 passed (7.8m, serial worker) and the production
+  console check passed with zero console/page errors across every admin route,
+  login, MFA and an applicant profile — V06/V07 closed.
+
 ## Admin presentation replacement — 2026-10-11
 
 Branch remains `public-ui-finish`; main is untouched. Scope and deliberate

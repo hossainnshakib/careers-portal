@@ -2,7 +2,8 @@ import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { redirectAdminDenial } from "@/lib/auth/page-denial";
 import { loadReviewDashboard, openRolesByDepartment } from "@/db/queries/review";
 import { applicationStatusEnum } from "@/db/schema";
-import { ApplicationTable } from "@/components/admin/application-table";
+import { DashboardApplications } from "@/components/admin/dashboard-applications";
+import { DashboardDepartments } from "@/components/admin/dashboard-departments";
 import { AdminToolbar } from "@/components/admin/admin-toolbar";
 import { applicationStatusLabel } from "@/lib/admin/display";
 
@@ -24,7 +25,6 @@ export default async function DashboardPage() {
       outline: status === "new",
     })),
   ];
-  const maxRoles = Math.max(1, ...openRoles.map((row) => row.count));
   return (
     <section>
       <AdminToolbar eyebrow="Overview" title="Dashboard" />
@@ -48,33 +48,11 @@ export default async function DashboardPage() {
             Latest applications
           </h2>
           <div style={{ marginTop: 8 }}>
-            <ApplicationTable rows={latest} brandAccents={brandAccents} />
+            <DashboardApplications rows={latest} brandAccents={brandAccents} />
           </div>
         </div>
 
-        <div className="admin-card">
-          <h2 className="admin-kicker" style={{ margin: 0 }}>
-            Open roles by department
-          </h2>
-          <div style={{ margin: "12px 0" }}>
-            {openRoles.length === 0 && (
-              <p className="admin-note" style={{ margin: "8px 0" }}>
-                No open roles yet.
-              </p>
-            )}
-            {openRoles.map((row) => (
-              <div key={row.departmentId} style={{ margin: "12px 0" }}>
-                <div className="admin-bar-row">
-                  <span>{row.name}</span>
-                  <b>{row.count}</b>
-                </div>
-                <div className="admin-bar">
-                  <i style={{ width: `${Math.round((row.count / maxRoles) * 100)}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <DashboardDepartments rows={openRoles} />
       </div>
     </section>
   );

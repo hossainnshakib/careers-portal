@@ -1,5 +1,26 @@
 # SEED DATA — Careers Portal
 
+## Prompt 15 cleanup checkpoint (2026-10-17; newer than the validation dataset below)
+
+The owner authorized removal of the five validation DEMOs. Those jobs and their
+52 questions/9 brand links/16 option links are now removed from shared DEV;
+applications are zero. The six departments, eight brands and 13 operational
+options are retained verbatim. Twenty backed-up, owner-approved pending Storage
+objects await the expiry-safe pass documented in `DEMO_CLEANUP_VERIFICATION.md`.
+Do not re-seed/import/publish anything to validate cleanup or restore the former
+catalog automatically. All legacy authoring/fixture sources below remain useful
+developer assets, not instructions to create runtime content in this phase.
+
+## Prompt 13 authorized validation dataset (2026-10-16)
+
+Use `demo:seed`, `demo:publish` and `demo:cleanup` for the five explicit fictional
+DEMO jobs; each defaults to dry-run and writes only with exact DEV confirmation.
+Do not use the legacy 19-job demo seeder for this validation. Current owner
+authorization allows temporary public visibility on the existing DEV deployment.
+All application retention protections remain. See `DEMO_VALIDATION.md` for the
+complete role/field/question matrix, commands and safety boundaries. The legacy
+19 owner-authored roles and importer below are unchanged and are not published.
+
 Two seed commands, both idempotent (upsert by slug):
 - `pnpm seed:base` — departments + brands only. Safe for production.
 - `pnpm seed:demo` — base + 19 jobs with demo content, demo questions, and demo applicants. **DEV ONLY**: must refuse to run when `APP_ENV=production` or when the database URL does not match the dev project; include a test for this guard. `pnpm db:reset:dev` drops, migrates and runs `seed:demo`, with the same guard.

@@ -222,7 +222,7 @@ body {
 .ui-filter-group[open] > summary::after { content: "−"; }
 .ui-mobile-filter { display: none; }
 .ui-desktop-filter .ui-filter-group > summary { font-size: 11.5px; line-height: 14px; }
-.ui-desktop-filter .ui-filter-group fieldset { margin-top: 8px; }
+.ui-desktop-filter .ui-filter-group fieldset { margin-top: 6px; }
 .ui-desktop-filter .ui-filter-group label { margin-block: 0 8px; gap: 8px; font-size: 12.5px; line-height: 16px; }
 .ui-desktop-filter .ui-filter-group label:last-child { margin-bottom: 0; }
 .ui-desktop-filter .ui-filter-group button { padding: 5px 10px; font-size: 12px; line-height: 15px; }

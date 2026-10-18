@@ -42,7 +42,7 @@ export function validateApplicationAnswers(questions: QuestionDefinition[], answ
   const characters = Object.values(parsed).reduce<number>((total, value) => total + answerCharacters(value), 0);
   if (characters > maxAnswerCharacters)
     throw new Error(`Keep all of your written answers together under ${maxAnswerCharacters} characters.`);
-  if (cvRequired && cv.length !== 1) throw new Error("CV required");
+  if (cvRequired && cv.length !== 1) throw new z.ZodError([{ code: "custom", path: ["cv"], message: "CV required" }]);
   const files = [...cv.map((id) => ({ id, slot: "cv" }))];
   for (const q of questions) {
     if (q.type === "file_upload" && Array.isArray(parsed[q.id])) {

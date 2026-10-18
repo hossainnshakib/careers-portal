@@ -9,6 +9,7 @@ import type { ActionResult } from "@/lib/actions/result";
 function invalidate() {
   revalidateTag("jobs");
   revalidatePath("/admin/options");
+  revalidatePath("/admin/departments");
   revalidatePath("/admin/jobs");
 }
 

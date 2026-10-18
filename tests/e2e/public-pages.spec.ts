@@ -2,9 +2,9 @@ import { expect, test } from "@playwright/test";
 
 test("public privacy, 404, metadata and reference-only success remain safe", async ({ page, request }) => {
   await page.goto("/privacy");
-  await expect(page.getByRole("heading", { name: "Privacy", exact: true })).toBeVisible();
-  await expect(page.getByText("Draft — owner review required.", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Ask for deletion" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Privacy Policy", exact: true })).toBeVisible();
+  await expect(page.locator("#privacy-section-19")).toContainText("Submitted applications do not expire automatically.");
+  await expect(page.getByRole("heading", { name: "23. How to Exercise Your Rights", exact: true })).toBeVisible();
   expect((await request.get("/not-a-real-public-page")).status()).toBe(404);
   await page.goto("/not-a-real-public-page");
   await expect(page.getByRole("link", { name: "Browse open roles", exact: true })).toBeVisible();

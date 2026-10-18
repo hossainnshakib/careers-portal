@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
-import { closeDb } from "@/db";
+import { closeDb, getDb } from "@/db";
+import { eq, sql } from "drizzle-orm";
+import { applications } from "@/db/schema";
 import { requireDevTarget } from "@/db/seed/require-dev";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { addAdmin } from "./admins";
@@ -22,6 +24,25 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")("dev-only live review tr
     if (created.error || !created.data.user) throw new Error("Review live account setup failed");
     userId = created.data.user.id; await addAdmin(userId, email);
     fixture = await createReviewTestApplication(prefix);
+  }, 60000);
+  it("flags only earlier case-insensitive email submissions, independently of current filters", async () => {
+    // Only this guarded fixture row is edited; never inspect or rewrite owner records.
+    await getDb().update(applications).set({ email: fixture.email.toUpperCase() }).where(eq(applications.id, fixture.previousId));
+    const result = await listReviewApplications(reviewFilters.parse({ job: fixture.jobId, sort: "oldest" }));
+    expect(result.rows.map((row) => ({ id: row.id, appliedBefore: row.appliedBefore }))).toEqual([
+      { id: fixture.previousId, appliedBefore: false },
+      { id: fixture.applicationId, appliedBefore: true },
+    ]);
+    const filtered = await listReviewApplications(reviewFilters.parse({ job: fixture.jobId, status: "new" }));
+    expect(filtered.rows).toHaveLength(1);
+    expect(filtered.rows[0].appliedBefore).toBe(true);
+    const previousTime = result.rows[0].submittedAt;
+    await getDb().update(applications).set({ submittedAt: sql`(select submitted_at from ${applications} where id = ${fixture.applicationId})` }).where(eq(applications.id, fixture.previousId));
+    expect((await listReviewApplications(reviewFilters.parse({ job: fixture.jobId, status: "new" }))).rows[0].appliedBefore).toBe(false);
+    await getDb().update(applications).set({ submittedAt: previousTime }).where(eq(applications.id, fixture.previousId));
+    await getDb().update(applications).set({ email: `${prefix}different@example.com` }).where(eq(applications.id, fixture.previousId));
+    expect((await listReviewApplications(reviewFilters.parse({ job: fixture.jobId, status: "new" }))).rows[0].appliedBefore).toBe(false);
+    await getDb().update(applications).set({ email: fixture.email }).where(eq(applications.id, fixture.previousId));
   }, 60000);
   afterAll(async () => {
     try {
