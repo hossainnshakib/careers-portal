@@ -1,5 +1,11 @@
 # Decisions
 
+## 2026-10-19 — Approved Job 05 benefit correction
+
+- Owner supplied exact replacement wording for the three over-limit benefits. Change only those items, preserving the other two benefits and all remaining approved content; retain the existing 60-character limit.
+- Both approved datasets pass the actual importer parser and existing job validator with catalog fixtures, individually and together. Rename the validated Job 05 file to `public/imports/job-05.json`; the earlier `needs-review` blocker below is resolved.
+- Finalize on `feature/bulk-job-import` with a focused commit/push and a Compare/Create PR link targeting `main`. No merge, deployment or production import is authorized. Existing unrelated working changes remain excluded.
+
 ## 2026-10-18 — Authenticated new-job bulk import
 
 - Owner approved a dedicated feature branch, implementation/tests/build, commit/push and a PR creation URL if `gh` is unavailable. No merge, deployment or automatic live database writes are authorized for this feature. Preserve unrelated working changes in `src/db/queries/test-accounts.ts` and existing untracked assets/prompts.

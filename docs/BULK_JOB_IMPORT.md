@@ -30,17 +30,17 @@ See `public/imports/job-import-template.json` for the complete strict JSON shape
 
 `public/imports/job-04.json` contains the complete owner-supplied content, five separate benefits, all eighteen skills and fourteen questions. It requests publication; single choice is a dropdown with the exact four options. Associated brands are exactly the three explicitly specified by the owner: Fixen Media (primary), Accoraze, Builtale. No additional relationships are inferred. The administrator must confirm those active hiring needs when reviewing the import; remove any unconfirmed association before confirmation.
 
-### Job 05 — BLOCKED by existing benefit limits
+### Job 05
 
-`public/imports/job-05.needs-review.json` preserves the complete approved specification, all seventeen skills, fourteen questions and required portfolio URL. Only Fixen Media is associated, following the owner's fallback when other hiring needs are unverified. It requests publication **but cannot pass validation as supplied**:
+`public/imports/job-05.json` contains the complete approved specification, all seventeen skills, fourteen questions and required portfolio URL. Only Fixen Media is associated, following the owner's fallback when other hiring needs are unverified. It requests publication and passes the actual importer schema with the owner's three approved benefit corrections:
 
 | Benefit | Length | Existing maximum |
 |---|---:|---:|
-| Work on real brand identity projects across different industries | 64 | 60 |
-| Opportunity to build complete identity systems, not just standalone logos | 73 | 60 |
-| Opportunity to take greater responsibility as your skills develop | 65 | 60 |
+| Work on brand identity projects across industries | 49 | 60 |
+| Build complete brand identities, not just logos | 47 | 60 |
+| Grow through creative concepts and project ownership | 52 | 60 |
 
-The file is deliberately marked `needs-review`. No replacement copy is invented. The owner must supply approved shorter wording or explicitly approve a separate field-limit change. Importing this file, alone or in a batch, will fail before any writes. This does not prevent importing Job 04 separately.
+The other two benefits and all remaining Job 05 content are unchanged. Both Job 04 and Job 05 validate individually and together through the importer and existing job validator using catalog fixtures; live catalog references and duplicates are rechecked by the authenticated import workflow. No field limits were changed and neither file is automatically imported.
 
 ## Safety, duplicates and recovery
 
@@ -66,3 +66,11 @@ Unit tests cover contract limits, mapping, approved text preservation, duplicate
 - Production-mode Chromium: **2 distinct relevant specs passed** across affected reruns (`admin-gating.spec.ts`, `job-import.spec.ts`). Actual preview, confirmation, multi-job creation, duplicate re-preview, public published details/benefit/skill rendering, dropdown option ordering, mandatory portfolio marking, draft privacy and invalid-JSON feedback passed. No application was submitted. Initial new-test failures were a Node JSON-import attribute mismatch and overly broad nested-fieldset/Next route-announcer selectors; the harness/selectors were corrected without weakening assertions.
 - Live/browser fixtures used only guarded development resources, ephemeral identities and random-prefix jobs; cleanup completed. No owner credentials, production import, migration, deployment or merge was performed.
 - Not verified: a hosted deployment or live publication of Jobs 04/05; the entire existing browser suite, fresh live RLS, all other skipped live suites, mobile visual review or Job 05 import (deliberately blocked by unchanged benefit limits). The unrelated pre-existing working change in `src/db/queries/test-accounts.ts` is preserved and excluded from this feature commit.
+
+### Final dataset correction — 2026-10-19
+
+- The owner-approved replacements resolve the historical Job 05 benefit blocker above without changing field limits. The validated file is now `public/imports/job-05.json`.
+- A structural comparison against commit `4166036` verified that only benefit items 1, 2 and 5 changed; items 3 and 4 and all other Job 05 content are unchanged. Job 04 remains byte-for-byte unchanged.
+- Actual importer parser, preview mapping and existing job validation pass for both complete datasets individually and together using catalog fixtures. The focused dataset/validation suite passed all **26 tests**, including the required portfolio checks.
+- Typecheck, lint and production build (including PDF trace guard) passed. The final default suite passed **639 tests**, with **92 opt-in live cases skipped**. The first full run hit the pre-existing PDF-worker 5-second timeout while checks ran concurrently; an unchanged standalone full-suite rerun passed.
+- No importer logic, database schema, deployment settings or unrelated working changes were modified. Browser/live-database suites were not rerun for this data-only correction. No jobs were imported, merged or deployed; production catalog references and existing-job matches remain checks for the authenticated import workflow.

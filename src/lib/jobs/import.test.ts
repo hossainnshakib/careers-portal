@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import job04 from "../../../public/imports/job-04.json";
-import job05 from "../../../public/imports/job-05.needs-review.json";
+import job05 from "../../../public/imports/job-05.json";
 import template from "../../../public/imports/job-import-template.json";
-import { importJobSchema, mapImportJob, parseImport, previewImport, maxImportBytes, type ImportCatalog } from "./import";
+import { mapImportJob, parseImport, previewImport, maxImportBytes, type ImportCatalog } from "./import";
 import { buildSchema } from "@/lib/validation/buildSchema";
 import { QuestionFields } from "@/components/form-renderer/question-fields";
 
@@ -61,12 +61,18 @@ describe("bulk import contract and approved datasets", () => {
       last = position;
     }
   });
-  it("keeps Job 05's exact text and blocks the three benefits exceeding existing limits", () => {
-    expect(() => parseImport(JSON.stringify(job05))).toThrow("benefits");
-    expect(job05.jobs[0].benefits.map((item) => item.length)).toEqual([64, 73, 47, 57, 65]);
-    // Test the supported mapping independently; do not edit the approved dataset to pass validation.
-    const review = importJobSchema.parse({ ...job05.jobs[0], benefits: [] });
+  it("validates Job 05 with the approved benefit corrections and required portfolio", () => {
+    const review = parseImport(JSON.stringify(job05)).jobs[0];
+    expect(review.benefits).toEqual([
+      "Work on brand identity projects across industries",
+      "Build complete brand identities, not just logos",
+      "Exposure to multiple brands and client projects",
+      "Growth through concept development and creative ownership",
+      "Grow through creative concepts and project ownership",
+    ]);
+    expect(review.benefits.every((item) => item.length <= 60)).toBe(true);
     const input = mapImportJob(review, catalog);
+    expect(input.benefits).toEqual(review.benefits);
     expect(input.brandIds).toEqual([uuid(10)]);
     const portfolio = input.questions.find((q) => q.label === "Portfolio or website")!;
     expect(portfolio.required).toBe(true);
@@ -75,6 +81,11 @@ describe("bulk import contract and approved datasets", () => {
     expect(schema.safeParse({ [portfolio.id]: "https://example.com/portfolio" }).success).toBe(true);
     expect(input.questions.map((q) => q.label)).toEqual(job05.jobs[0].questions.map((q) => q.label));
     expect(input.questions.map((q) => q.required)).toEqual(job05.jobs[0].questions.map((q) => q.required));
+  });
+  it("validates the complete approved Job 04 and Job 05 datasets together before publication", () => {
+    const parsed = parseImport(JSON.stringify({ version: 1, jobs: [...job04.jobs, ...job05.jobs] }));
+    expect(previewImport(parsed.jobs, catalog).map((row) => row.outcome)).toEqual(["create", "create"]);
+    expect(parsed.jobs.map((job) => mapImportJob(job, catalog).intent)).toEqual(["publish", "publish"]);
   });
   it("skips existing and within-file duplicate slugs or normalized titles, never offering updates", () => {
     const first = raw();
