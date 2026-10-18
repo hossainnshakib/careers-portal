@@ -255,6 +255,14 @@ independent production Supabase and a compliant hosting plan remain separate
 launch prerequisites; do not configure them as part of this cleanup.
 
 ## References and limitations
+
+Current privacy execution supersedes historical draft-contact statements above:
+the owner approved the full policy, public contacts/address and manual retention.
+Follow [PRIVACY_OPERATIONS.md](PRIVACY_OPERATIONS.md): owner-monitored mailbox every
+business day, Monday/Thursday deadline reviews, weekly recovery/log review and
+monthly exception review. No automated retention is configured. Provider log/mail
+controls and a new policy release still require owner verification/approval.
+
 Official references (reviewed 2026-10-08): [PostgreSQL pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html), [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html), [Supabase Storage CLI](https://supabase.com/docs/reference/cli/supabase-storage-cp), and [Vercel cron management](https://vercel.com/docs/cron-jobs/manage-cron-jobs). Storage CLI flags are version-dependent and experimental; backup/restore, DNS, hosted packaging, production settings and physical-phone checks remain owner verification.
 
 V1 has bounded file-signature checks, not antivirus/full document parsing; no automated applicant retention, email notifications, ranking or extra roles. Accepted security residuals and provider failure/retry behavior are in DECISIONS/ARCHITECTURE. Keep privacy/contact/brand details and actual job content current through the admin panel.

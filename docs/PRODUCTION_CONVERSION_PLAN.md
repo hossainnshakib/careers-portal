@@ -1,5 +1,16 @@
 # Existing-project production conversion — owner runbook
 
+**Latest authority — Prompt 19, 2026-10-18:** the owner explicitly selected
+`Authorize operational batch` for the scoped B–H operations and independently
+`Authorize pinned merge/deploy` at release
+`36594bf0a1758a4b35a6ff21b6a8972622f0f3b2`. Authenticated provider/private CLI writes
+are executed by the owner; agent coordinates and checks redacted evidence. Existing
+recovery/security/expiry/pre-postcheck gates remain mandatory; no risk waiver,
+synthetic application or real intake is authorized. No live mutation is yet proven.
+Use the current Prompt 19 action sheet in PRODUCTION_LAUNCH_VERIFICATION.md.
+Earlier unapproved-status statements below describe the historical approval state;
+the operation scope, dependency order and stop/recovery conditions remain binding.
+
 Status: **A1/A2 authorized within owner/agent responsibilities; completion NOT verified.
 B–H are a planned sequence only and require subsequent explicit execution approval.
 No deployment, merge or recruitment is authorized.**

@@ -2060,3 +2060,88 @@ HANDOFF READY
   recovery coverage/validation and access/freeze evidence remain; no B–H mutation,
   issuer receipt fabrication, session/key rotation, cleanup, migration, release or
   merge. Approved release stays 36594bf, not documentation HEAD.
+
+## 2026-10-18 — Final launch read-only execution checkpoint
+
+- User consolidates remaining conversion, not blanket mutation authority. Existing
+  safe read-only work proceeds; one explicit conditional approval must cover access
+  retirement, owner-run 0007, Production environment, merge/deployment and SSL
+  enforcement. Synthetic acceptance and real intake remain separate later gates.
+- Fetched main remains 8072afe; reviewed release 36594bf unchanged. Four subsequent
+  commits through 8e3ed10 are documentation-only and carry actual recovery evidence.
+- Fresh verified-TLS inventory confirms zero jobs/applications, unchanged structure,
+  six historical ledger entries and absent 0007/CHECK; all ten approved current
+  artifacts and 20 original backup artifacts hash-match. No issuer-retirement receipt,
+  so cleanup remains blocked. Seven historical AAL2 sessions remain; no revocation.
+- Signups disabled, one legitimate allowlisted user with verified TOTP, private
+  applications bucket, all 13 anonymous count-only reads empty. Live domain healthy
+  with zero role links, but privacy still draft. Provider management/scope/hosting/
+  widget/hosted TLS and owner-authentication evidence remain unavailable.
+- Reused completed encrypted two-copy/PG18 recovery evidence; no repeat infrastructure
+  or recovery project. Full managed Auth/MFA/config/Storage-service recovery remains
+  an explicit critical risk/gate, not waived by portable PASS. Launch report records
+  exact execution and one owner checklist; no live mutation or release performed.
+
+## 2026-10-18 — Prompt 19 explicit operational and distinct release approvals
+
+- Fully read the primary-worktree owner prompt. One interactive checkpoint records
+  `Authorize operational batch` for the named B–H scope and, as a separate question,
+  `Authorize pinned merge/deploy`. The owner is the authenticated provider/private
+  CLI operator; agent coordinates/verifies redacted evidence. Existing recovery and
+  security gates remain mandatory, with no secret custody delegation or risk waiver.
+- Target stays xmtoccukridshadnxrlc and release stays immutable 36594bf. Approval is
+  not execution evidence. No session/key/connection retirement, cleanup, migration,
+  Production configuration, merge/deployment or SSL enforcement performed here.
+- New bounded integrity check: accepted G/J index matches its independent final
+  pin; all 17 ciphertext entries per copy hash-match. Reused prior decryption/PG18
+  rehearsal; no repeated source audit/full recovery/test cycle or infrastructure.
+- Provider management access/evidence remains unavailable. Existing report now
+  records exact owner clicks/commands and this approved-but-blocked state. Synthetic
+  acceptance, final privacy source/release approval and real intake remain separate.
+
+## 2026-10-18 — Explicitly delegated scoped historical-session revocation
+
+- Owner reports successful existing password/TOTP login and explicitly delegates
+  revocation if authorized server-side access exists. No merge/deploy or unrelated
+  credential rotation. Verified strict TLS access/DELETE privilege and recovered
+  the exact seven historical IDs privately from the protected recovery archive.
+- Guarded transaction at 11:53 UTC deleted only those seven provider sessions,
+  preserving the sole additional current AAL2 session. Independent postcommit reads
+  confirm zero historical sessions/refresh rows and unchanged account/allowlist/MFA
+  record fingerprints. No password, factor, key or unrelated setting changed.
+- Provider rejects all seven historical refresh credentials on actual auth requests.
+  No IDs/tokens/keys/raw responses exposed. Old browser-cookie denial and a fresh
+  post-revocation password/TOTP Dashboard login still require owner browser checks;
+  do not mark full hosted acceptance passed. Full production credential/issuer
+  retirement and other conversion gates remain incomplete.
+
+## 2026-10-18 — Prompt 20 full owner policy approval and implementation
+
+- Owner approved all 48 supplied policy sections with primary hr@fixenmedia.com,
+  general contact@fixenmedia.com, backup hiring@accoraze.com for all recruitment,
+  and Textile, Bayezid, East Nasriabad, Chittagong, Bangladesh, 4209. Existing dates
+  and all substantive clauses are preserved; only approved contact edits and heading/
+  presentation normalization. The old privacy mailbox/address placeholder and draft
+  banner are removed from staged code after this genuine approval.
+- Owner approves manual retention initially: active recruitment; up to 12 months
+  after closure for unsuccessful/closed applications; conditional separately opted-in
+  talent pool up to 24 months; normally 90-day logs, with existing policy exceptions.
+  PRIVACY_OPERATIONS.md gives the accountable owner daily mailbox review, Monday/
+  Thursday deadline reviews, weekly recovery/log checks and monthly exception review.
+  No automatic retention, talent pool, AI/analytics, email system or new roles added.
+- Privacy uses existing sanitized Markdown/public chrome in a 1100px maximum shell,
+  comfortable capped text, dates, accessible 48-section native contents/anchors and
+  responsive layout. An explicit operations note distinguishes unimplemented features
+  from conditional policy text. An independent canonical-content hash pins completeness.
+- Owner specifically authorizes tests/build, commit and push to the existing feature
+  branch, not merge/deployment of this new code. Return its immutable release SHA for
+  separate approval; prior 36594bf approval cannot silently cover a changed policy.
+- Tests: typecheck/lint PASS, 777 default cases PASS / 90 existing opt-in skips;
+  focused 10-case policy/form/preview PASS; optimized credential-free build/PDF trace
+  PASS; all four safe production-mode local browser checks PASS at 320/390/768/1440.
+  Actual CSS cap fixed from first browser finding; no assertion relaxed. Captures at
+  390/1440 inspected. No live fixtures, submit or provider changes in this batch.
+- Reuse prior encrypted G/J and portable restore evidence; no complete managed-service
+  recovery claim. Owner now attests fresh-window MFA login/Dashboard refresh; preserve
+  the verified factor and seven-session retirement. Supabase Free managed backup
+  absence, remaining key/issuer retirement and provider settings stay explicit gates.

@@ -1,0 +1,72 @@
+.privacy-page {
+  overflow-wrap: anywhere;
+}
+
+.privacy-page .privacy-prose,
+.privacy-page .privacy-sections {
+  max-width: min(76ch, 740px);
+  margin-inline: auto;
+}
+
+.privacy-page .privacy-prose {
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.privacy-page .privacy-prose p + p,
+.privacy-page .privacy-prose ul + p {
+  margin-top: 1rem;
+}
+
+.privacy-page .privacy-prose h3 {
+  margin-top: 2rem;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.45;
+  color: var(--ui-ink);
+}
+
+.privacy-page .privacy-prose h4 {
+  margin-top: 1.5rem;
+  font-size: 17px;
+  font-weight: 750;
+  color: var(--ui-ink);
+}
+
+.privacy-page .privacy-prose li {
+  margin-top: 0.35rem;
+  padding-left: 0.2rem;
+}
+
+.privacy-page .privacy-prose a {
+  color: var(--ui-blue-text);
+  text-underline-offset: 4px;
+}
+
+.privacy-page .privacy-prose strong {
+  font-weight: 750;
+}
+
+.privacy-page .privacy-section {
+  padding-block: 2.25rem;
+  border-top: 1px solid var(--ui-border);
+  scroll-margin-top: 7rem;
+}
+
+.privacy-page #privacy-title {
+  scroll-margin-top: 7rem;
+}
+
+.privacy-page a:focus-visible,
+.privacy-page summary:focus-visible,
+.privacy-page .privacy-section:focus {
+  outline: 2px solid var(--ui-blue);
+  outline-offset: 5px;
+}
+
+@media (max-width: 639px) {
+  .privacy-page .privacy-section {
+    padding-block: 1.75rem;
+    scroll-margin-top: 1rem;
+  }
+}

@@ -13,9 +13,9 @@ test("empty home, brand deep-link, footer and privacy are truthful without fabri
   }
   await page.screenshot({ path: "test-results/cleanup-public-home.png", fullPage: true });
   await page.goto("/privacy");
-  await expect(page.getByRole("heading", { name: "Privacy", exact: true })).toBeVisible();
-  // Do not silently remove honest owner-review/retention disclosures to claim launch readiness.
-  await expect(page.getByText("Draft — owner review required.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Privacy Policy", exact: true })).toBeVisible();
+  // Full policy is now owner-approved; manual retention remains honestly disclosed.
+  await expect(page.locator("main")).toContainText("submitted applications do not expire automatically");
   await expect(page.locator("main")).not.toContainText(/DEMO|synthetic candidate/i);
 });
 

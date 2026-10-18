@@ -1,7 +1,305 @@
-# Production conversion verification — Stage 0
+# Production conversion verification
 
-**Not production-ready. A1/A2 are now scoped-approved but incomplete; no provider
-freeze, full backup or restore is verified. B–H execution remains unapproved.**
+## Prompt 20 — complete approved Privacy implementation (newest)
+
+The owner approved the full supplied 48-section policy and finalized its public
+contacts/address/retention, then explicitly authorized implementation, checks,
+commit and push on the existing feature branch. **No approval to deploy the new
+application revision is implied.** Prior 36594bf release approval does not cover
+this code change. The final code commit SHA is returned in the execution handoff.
+
+### Completed in this batch
+
+- `/privacy`: all 48 numbered sections, paragraphs, subheadings, bullets, multi-brand
+  disclosures and 18 October 2026 dates preserved. Independent comparison to the
+  owner source matched every section after approved contact edits. A canonical
+  normalized-text SHA-256 test pins the complete text; no truncation/template swap.
+- Approved contacts: primary **hr@fixenmedia.com**, general **contact@fixenmedia.com**,
+  backup **hiring@accoraze.com** for all recruitment. Approved address: **Textile,
+  Bayezid, East Nasriabad, Chittagong, Bangladesh, 4209**. No bracketed address,
+  unconfirmed privacy mailbox, prohibited Gmail address or draft notice is served
+  by the new code. Mail-provider delivery/monitoring is owner-only, not agent-tested.
+- 1100px maximum shell; 76ch text additionally capped at 740px; 16px/1.85 body text;
+  semantic headings/dates, native collapsible contents and all 48 keyboard anchor
+  targets; shared public header/footer unchanged. Raw HTML remains disabled through
+  the existing sanitizer/Markdown renderer. No dependency, schema or auth change.
+- Explicit public operational note: retention is manual, not automatic; talent-pool
+  opt-in, AI candidate evaluation and optional analytics are not implemented. The
+  policy's conditional future descriptions are preserved, not activated as features.
+- PRIVACY_OPERATIONS.md assigns the portal owner business-day request monitoring,
+  Monday/Thursday deletion-deadline review, weekly backup/log review and monthly
+  exception review. It covers files/quarantine, exported CV/PDF copies, closure-date
+  preservation, policy exceptions, backups and reapplying deletions/access retirement
+  after restore. No automatic deletion/notifications or actual provider settings
+  are claimed. Production public contact should be hr@fixenmedia.com before rebuild.
+- Prompt 20 owner reports fresh-window password/existing-TOTP login and Dashboard
+  refresh succeeded. Retain that as **owner-attested hosted evidence**, alongside
+  the actual seven-session revocation and 7/7 provider refresh denials below; no MFA
+  reset/re-enrollment/session revocation repeated. Existing G/J recovery retained.
+
+### Verification
+
+| Check | Result / boundary |
+|---|---|
+| Typecheck/lint | PASS, including final optimized build's type/lint checks |
+| Default suite | **777 passed, 90 existing opt-in skips**; no cloud mutations |
+| Focused policy/form/preview tests | **10 passed**; complete canonical text/dates/contacts/48 anchors plus actual consent/footer link markup |
+| Optimized Next build + PDF trace | PASS; credential-free, APP_ENV=development/offline API placeholder, no DB/Auth secrets or live DB read |
+| Production-mode local Chromium | **4 passed**: full server-rendered policy/footer navigation, keyboard contents/anchors, no horizontal overflow at 320/390/768/1440, width/line-height bounds, public fallback/success and anonymous admin API/cron denials |
+| Visual inspection | 390px/1440px policy viewport captures inspected; readable glass layout; screenshots remain ignored |
+| Source/remote baseline | Fetched main still 8072afe; reviewed old pin still 36594bf, later published HEAD 8e3ed10 was documentation-only before this code batch |
+
+First policy unit attempt exposed the unit runner's unrelated CSS/PostCSS loader
+incompatibility; CSS is mocked only in markup tests and actually tested by Next /
+Playwright. First browser attempt found ambiguous shared-footer email selectors and
+a font-dependent 76ch paragraph wider than the 800px test bound. Selectors now scope
+to main, and real CSS adds a 740px cap. Rebuilt and all four browser cases passed;
+no assertion was weakened. Existing Vite future-loader warning remains non-failing.
+
+No ordinary cloud/browser account fixtures, real CAPTCHA solve, application
+submission, Storage deletion, 0007 application, credential rotation, production
+env activation, merge or deployment ran in this batch. No applicant data used.
+
+### Single remaining owner-only provider checklist
+
+1. **Vercel project > Settings > Cron Jobs / Environments / Git; Deployments;
+   team Members/Integrations, and GitHub > Actions / Settings > Secrets and variables:**
+   finish writer/old-deployment freeze, privileged access inventory and Production-only
+   credential replacement/removal from DEV/Preview/CI/local copies. Supabase > Database
+   > Settings and Settings > API Keys: rotate supported remaining privileged access
+   privately and prove old denials/fresh access. The already retired seven sessions
+   are not a reason to reset the owner password/factor or repeat that work.
+2. **Owner protected CLI:** record genuine final upload-issuer retirement, wait
+   strictly >2h1m, then run existing original-manifest guarded cleanup dry-run/apply
+   for only the eligible ten objects. Recheck ledger/data, apply sole 0007 through
+   owner migration command, and verify CHECK/ledger/counts/RLS. No receipt invented.
+3. **Cloudflare > Turnstile > widget Settings; Supabase > Authentication > URL
+   Configuration; Vercel > Settings > Environment Variables; team Billing / project
+   Logs; owner mail provider:** verify real hostname/key pair, minimal redirects,
+   fresh Production-only canonical env/CA, commercial use, log TTL/redaction and
+   approved contact mailbox monitoring. Follow PRIVACY_OPERATIONS.md; log/backup
+   retention availability is not proven by policy approval.
+4. **New immutable application release approval:** review the tested policy commit
+   reported in the handoff, not merely 36594bf or moving branch HEAD. Only then build /
+   deploy for Production/bom1, verify uncached hosted SQL/TLS and existing owner MFA,
+   then Supabase > Database > Settings > SSL Configuration: enable enforcement only
+   after all clients pass and recheck after restart. No historical DEV rollback.
+   Record CI/deployment IDs, refresh protected recovery as feasible and resume only
+   reviewed production cron/monitoring.
+5. **Recovery/intake boundary:** owner confirms Supabase Free has no provider-managed
+   project backups. Portable G/J DB/file recovery PASS does not establish managed
+   Auth/MFA-key/config/service recovery; document/resolve the remaining critical
+   limitation through the existing owner gate, without claiming unavailable provider
+   capabilities or silently accepting risk. Controlled synthetic acceptance requires
+   separate authorization after deployment/security pass; real intake requires its
+   own final approval. No real recruitment has been opened by this batch.
+
+The earlier checklist/status tables below are historical where superseded by this
+entry. Policy **implementation/owner approval PASS**, hosted publication **BLOCKED**;
+full access retirement, Storage cleanup, 0007, hosted TLS/enforcement, real CAPTCHA,
+commercial hosting/provider controls and production deployment remain **BLOCKED**.
+Synthetic production acceptance remains **NOT AUTHORIZED**.
+
+## 2026-10-18 — Final launch execution checkpoint (current)
+
+**Not production-ready. Portable encrypted database/Storage recovery passed;
+managed Supabase service recovery remains unverified. Prompt 19 operational
+conversion and separate pinned merge/deployment are now explicitly approved for
+the owner private operator, conditional on existing gates. Only the specifically
+delegated session revocation below has executed; other live changes remain pending.
+Synthetic submission and real intake remain unapproved.**
+This checkpoint supersedes historical statuses below, not their evidence.
+
+### Scoped admin session transition — executed 2026-10-18 11:53 UTC (latest)
+
+- Owner attests successful custom-domain login using the existing password/TOTP.
+  The subsequent instruction explicitly delegates scoped revocation if authorized
+  server-side access is available; no merge/deploy or unrelated rotation requested.
+- Privately recovered the exact seven historical session IDs from the retained
+  protected backup, in memory only. Verified all seven still existed for the sole
+  allowlisted owner, with exactly one additional current, unexpired AAL2 session
+  issued after the recovery baseline. Verified session DELETE privilege over strict
+  CA/hostname-validated session-pooler TLS. No session IDs/tokens/keys printed.
+- At **2026-10-18T11:53:24.564Z**, explicit-target guarded transaction removed only
+  those seven sessions, excluding the current session. Immediate independent
+  postcommit reads: **0 historical session rows, 0 associated refresh-token rows,
+  current AAL2 session preserved**. Full account/allowlist/MFA-record fingerprints
+  are unchanged before/after. Existing password and verified TOTP retained.
+- At **2026-10-18T11:53:54.384Z**, provider authentication rejected refresh attempts
+  using one previously unrevoked backed-up credential from each historical session:
+  **7/7 actual authentication denials**, not network failures. Credentials and raw
+  responses remained in memory; none logged. No replacement session was issued.
+- **Not verified:** old browser-cookie rejection on the live custom domain and
+  fresh password/TOTP login after revocation. Owner must keep the current verified
+  window open, hard-refresh its Dashboard, and use a separate fresh browser session
+  for the password/existing-TOTP challenge and Dashboard check. Pre-revocation owner
+  login is attested, not agent-observed. Current live deployed SHA remains unknown;
+  JWT expiry alone is not immediate application revocation evidence.
+- No account/factor/allowlist deletion, password/DB/API credential rotation,
+  configuration/migration/Storage mutation, merge or deployment. Other production
+  access retirement and upload-issuer expiry are still incomplete. Earlier entries
+  saying seven sessions remain/no live changes are historical, superseded here.
+
+### Prompt 19 approval and incremental execution (latest)
+
+- Read all 82 lines of the owner-authored prompt from the primary worktree; did
+  not copy/edit it or restart completed audits. In one interactive checkpoint the
+  owner selected **Authorize operational batch** and, independently, **Authorize
+  pinned merge/deploy**. Target is `xmtoccukridshadnxrlc`; immutable release is
+  `36594bf0a1758a4b35a6ff21b6a8972622f0f3b2`. Executor for authenticated provider
+  changes/private CLI writes is the owner; agent coordinates/checks redacted evidence.
+- Approval covers the listed B–H sequence and conditional enforcement, not agent
+  custody of production credentials, changed MFA factors/grants/policies, synthetic
+  submissions, real intake or a recovery-risk waiver. No repeated approval is needed
+  for this exact scope; unavailable access/evidence is now the execution blocker.
+- Independently read both G/J accepted ciphertext sets again without decryption:
+  pinned index matches `f4a59c655b50fd121f8f725644a0643da51334f8df2c200b7665a36ec25b6f8a`
+  and **all 17 ciphertext entries per copy hash-match**. Prior two-copy decryption
+  and isolated restore evidence retained; no new export, restore or key generation.
+- Official provider instructions corroborate Supabase Settings > API Keys legacy
+  deactivation is separate from creating replacement keys; Database Settings > SSL
+  enforcement may reboot; Vercel Settings > Cron Jobs > Disable Cron Jobs freezes
+  the scheduled writer. None of those dashboard actions was executed by this agent.
+- First blocked operation remains owner/provider recovery/access evidence and the
+  approved freeze/retirement. No genuine cutoff/retirement receipt exists, so no
+  cleanup or 0007 apply. No hosted configuration/build/deployment ID or CI result
+  is available. No further infrastructure, tests or repeated source audits added.
+
+### Owner action sheet — execute once, in order
+
+All steps use the existing project, owner account and private terminal. Record UTC,
+operator, target, PASS/FAIL and non-secret IDs/counts after each change; no secrets,
+cookies or raw connection strings in chat. Do not use Vercel environment pull.
+
+1. **Recovery/access/freeze:** Supabase project > Database > Backups: inspect actual
+   recovery point/coverage and obtain provider-supported Auth/MFA-key/config recovery
+   validation. Existing portable PASS does not clear that gate. Review organization
+   members and integrations. Vercel project > Settings > Cron Jobs > **Disable Cron
+   Jobs**; Settings > Git / Environments: prevent unintended auto-deploys; Deployments
+   / Deployment Protection: freeze/protect old write-capable releases. GitHub >
+   Actions: disable the two DEV workflows; Settings > Secrets and variables > Actions
+   (plus Environments/organization secrets): inventory production-target access.
+2. **Private B/C retirement:** Supabase > Database > Settings: replace DB access
+   credentials; Settings > API Keys: create replacement secret/publishable keys as
+   needed, validate current clients, retire old secret keys and separately deactivate
+   legacy keys where supported. Preserve the existing administrator/verified factor;
+   prove replacement owner MFA access before retiring historical sessions. Execute
+   supported private session revocation and obsolete connection termination, then
+   test actual old authentication denials alongside fresh successful access. Retire
+   upload/cron secrets and all DEV/Preview/CI/unneeded local copies. Account for every
+   privileged issuer; record the actual last-possible-issuance UTC in the existing
+   source-pinned receipt. Wait strictly more than 2h1m. Do not fabricate a receipt.
+3. **D/E private CLI:** with protected fresh owner env and the original approved
+   manifest/backup, run the existing owner-conversion cleanup dry-run command in
+   PRODUCTION_CONVERSION_PLAN section 5. Inspect it, then repeat with exact apply/
+   confirmation. Verify zero objects/job/application graph and preserved structure.
+   Recheck migration state immediately, then use the existing guarded owner migrate
+   command for sole pending 0007. Verify one new ledger entry, validated salary CHECK,
+   unchanged counts/RLS/security triggers. Stop on drift or ambiguous commit.
+4. **F business/configuration:** Cloudflare > Turnstile > existing widget > Settings:
+   verify `careers.fixenmedia.com` and real paired keys. Supabase > Authentication >
+   URL Configuration: canonical Site URL and minimal exact redirects (no unnecessary
+   DEV/Preview wildcard); retain disabled signups. Vercel > team Settings > Billing:
+   verify commercial-use entitlement; project > Logs: inspect actual privacy controls.
+   Provide authentic public contact/deletion email, retention period and privacy
+   approval; no invented policy. Vercel project > Settings > Environment Variables:
+   activate the Production-only profile in VERCEL_ENV_TABLE/conversion plan; remove
+   target credentials from Development, Preview, branch/custom/integration overrides.
+   DATABASE_SSL_CA is actual multiline PEM with hostname verification intact.
+5. **F release/G/H:** owner uses the approved merge/release workflow and proves the
+   built application is pinned to 36594bf, not moving documentation HEAD. Vercel >
+   Deployments: build explicitly for Production/bom1 with fresh Production variables;
+   do not promote a DEV-built artifact. Record commit/CI/deployment IDs. Verify normal
+   owner MFA and uncached SQL-backed reads over verified TLS, then Supabase > Database
+   > Settings > SSL Configuration > Enforce SSL on incoming connections, only if
+   needed after every client passes. Recheck all clients after restart. Refresh the
+   recovery baseline as feasible and resume only reviewed production cron/monitoring.
+   Never roll back to historical DEV configuration or resurrect retired credentials.
+
+Final privacy source changes need a separately reviewed release pin before intake.
+After B–H actually pass, synthetic acceptance and real intake each require their
+own later explicit approval. No real recruitment is opened by either approval above.
+
+### Executed in this continuation
+
+- Fetched origin: main remains `8072afe9f5d1404798d6458a1d69fb8d5689b887`.
+  Reviewed release remains `36594bf0a1758a4b35a6ff21b6a8972622f0f3b2`;
+  feature HEAD before this report is `8e3ed10`. Its four later commits change
+  documentation only (recovery results/instructions); no release substitution.
+  Historical SQL 0000–0006 remains byte-identical to fetched main.
+- Existing read-only audit over CA/hostname-verified session-pooler TLS: zero
+  jobs/applications; six ledger hashes/timestamps match, 0007/CHECK absent,
+  zero incompatible salary rows. All 13 public tables have RLS, no public/Storage
+  policies, both Auth security triggers present. No migration or ledger write.
+- All ten remaining objects (six sidecars/four uploads) match original metadata
+  and downloaded SHA-256/lengths; all 20 original backup artifacts hash-verify.
+  Structural fingerprints unchanged: six departments/eight brands/13 options/
+  one legitimate allowlisted Auth user. Issuer-retirement receipt still absent:
+  no cleanup invocation/deletion or invented last-issuance cutoff.
+- One allowlisted administrator has verified TOTP; seven historical sessions
+  remain, all AAL2. Eight other DB client backends were observed, not attributed
+  to obsolete operators and not terminated. No authentication/factor/session write.
+- Fresh public Auth settings confirm signups disabled. Count-only anonymous HEAD
+  reads return zero rows for all 13 application tables. Applications bucket private.
+- Custom-domain home/privacy/login/health return 200; unauthenticated daily cron
+  returns 401. HSTS/CSP present, homepage has zero job links. Privacy remains a
+  visible owner-review draft. Public cache MISS/health is not hosted SQL/TLS proof.
+- No management MCP resources, provider CLI or management token available in this
+  process. Provider memberships, env scopes, deployed SHA, SSL enforcement,
+  Turnstile hostname/solve, redirects, commercial hosting and logs remain unverified.
+  No browser-token extraction or production env download attempted.
+
+### Execution report
+
+| Component | Status | Evidence |
+|---|---|---|
+| Database and Storage recovery | PASS (portable only) | Existing independently decrypted G/J copies and isolated PG18 restore below; no repeat export/restore |
+| Historical access retirement | BLOCKED | Approved for owner; seven historical AAL2 sessions remain, private execution/old-access denial proof absent |
+| DEMO Storage cleanup | BLOCKED | Ten unchanged authorized objects verified; genuine issuer retirement/expiry not evidenced |
+| Migration 0007 | BLOCKED | Sole prepared forward CHECK; six-entry ledger consistent, zero invalid rows; owner execution pending |
+| Production environment | BLOCKED | Fresh Production-only settings and DEV/Preview/CI credential removal not activated/verified |
+| Verified TLS and SSL enforcement | BLOCKED | Local verified TLS succeeds; hosted uncached SQL and provider enforcement not verified |
+| Real CAPTCHA | BLOCKED | Real hostname configuration and protected live solve not verified |
+| Admin MFA | BLOCKED | Verified owner factor exists; normal owner login on hardened release and retired-session denial pending |
+| Privacy and hosting | BLOCKED | Live privacy draft; owner contact/retention and commercial hosting/log checks pending |
+| Production deployment | BLOCKED | Separate pinned merge/release approval recorded; provider execution and deployed-SHA/CI evidence absent |
+| Final synthetic acceptance | NOT AUTHORIZED | No test job, submission, upload, status/note mutation or PDF workflow executed |
+
+### Pre-approval checklist (historical; superseded by Prompt 19 action sheet above)
+
+1. Review access/memberships/integrations, old deployments and all env/CI scopes;
+   corroborate freeze and missing-sidecar history. Verify existing-project managed
+   Auth/MFA-key/config recovery coverage and supported validation; portable PG18/file
+   recovery is not complete managed recovery. Preserve backups/keys and owner MFA.
+2. Confirm public contact/retention/privacy wording, Auth redirects, real Turnstile
+   hostname and commercial hosting/log privacy. No business policy is invented.
+   Publishing final privacy copy requires a small separately reviewed source change
+   and release pin before real intake; do not silently replace the reviewed SHA.
+3. Give **one explicit conditional conversion approval**, naming the owner private
+   operator and reviewed SHA: credential/session/connection retirement with fresh
+   access and old denials; Production-only env activation and DEV/Preview/CI/local
+   copy retirement; sole 0007; merge and Production deployment; SSL enforcement
+   only after all clients pass verified TLS. Existing recovery/security gates remain
+   mandatory; approval is not evidence they passed. Migration remains owner-run.
+4. In that approved window follow the existing ordered runbook, not a new plan:
+   retire issuers → record actual cutoff → wait strictly more than 2h1m → exact
+   scoped cleanup → 0007 → Production build/release → owner MFA/uncached SQL →
+   enforcement/postcheck. Never resurrect historical DEV credentials/deployments.
+   Synthetic acceptance and final real intake each need separate later approval.
+
+Only this report and the decisions log changed. No application change or live
+mutation was made. Previous build/PDF trace/non-mutating browser evidence remains
+applicable to unchanged source; no ordinary cloud/browser fixture suite was run.
+Final local checks in this continuation: typecheck/lint PASS; 773 tests PASS with
+90 existing opt-in skips; Drizzle metadata check and `git diff --check` PASS. The
+existing non-failing Vite future-loader warning remains. No new build or browser
+run was necessary for documentation-only changes; hosted acceptance is not verified.
+Documentation remains local/uncommitted; no push or deployment integration triggered.
+
+## Historical Stage 0 checkpoint
+
+The statuses below are historical; use the current checkpoint and completed
+portable recovery section rather than interpreting old blockers as missing backups.
 Branch: `production-conversion-hardening`, based on main `8072afe` (cleanup PR #8).
 Verified code commit: `dd347f3` (guards, TLS, migration preparation and tests).
 Authoritative execution/approval matrix: `PRODUCTION_CONVERSION_PLAN.md`.

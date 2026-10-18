@@ -9,8 +9,9 @@ test("unconfigured local packaging serves honest public pages without fabricated
   await expect(page.locator('a[href^="/jobs/"]')).toHaveCount(0);
   expect(response?.headers()["content-security-policy"]).not.toContain("'unsafe-eval'");
   await page.goto("/privacy");
-  await expect(page.getByText("Draft — owner review required.", { exact: true })).toBeVisible();
-  await expect(page.getByText("The deletion contact email is awaiting confirmation by the owner.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Privacy Policy", exact: true })).toBeVisible();
+  await expect(page.locator("main").getByRole("link", { name: "hr@fixenmedia.com", exact: true })).toHaveAttribute("href", "mailto:hr@fixenmedia.com");
+  await expect(page.locator("main")).toContainText("submitted applications do not expire automatically");
   await page.goto("/applied/APP-WS2Z7R");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   await expect(page.locator("main")).not.toContainText(/Demo Candidate|under_review/);
