@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Web & Backend Security Analyst",
+      "slug": "web-backend-security-analyst",
+      "department": "web-technical",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media", "accoraze", "builtale"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": false,
+      "status": "published",
+      "summary": "Assess, identify and help resolve security risks across websites, web applications, APIs and backend systems. Strong practical learners and experienced security professionals are welcome to apply.",
+      "descriptionMd": "We are looking for Web & Backend Security Analysts to support the security of websites, web applications, APIs and backend systems across Fixen Media and selected brands or client projects.\n\nThis role focuses on identifying security weaknesses, understanding their impact, communicating findings clearly and helping technical teams improve the security of their systems.\n\nDepending on your experience, you may work on web application reviews, API security, authentication and authorization issues, configuration reviews, vulnerability assessment and post-fix verification.\n\nWe welcome candidates from different experience levels. Strong freshers with practical security knowledge, labs, research, CTF experience or demonstrable security work are encouraged to apply. More experienced candidates may take greater ownership of assessments, reporting and remediation guidance.\n\nYou are not expected to know every security tool or technique. We value strong fundamentals, ethical judgment, analytical thinking and practical problem-solving ability.",
+      "responsibilitiesMd": "- Review websites, web applications, APIs and backend systems for common security weaknesses.\n- Identify issues related to authentication, authorization, access control and session handling.\n- Review common web vulnerabilities and security misconfigurations.\n- Assess API security and backend exposure where relevant.\n- Review security headers, cookies, transport security and related web security configurations.\n- Identify outdated or vulnerable dependencies where applicable.\n- Document findings clearly with risk, impact and recommended remediation.\n- Work with developers to explain vulnerabilities and practical fixes.\n- Retest reported issues after remediation.\n- Support basic WordPress or CMS security reviews where required.\n- Maintain ethical and authorized testing practices at all times.\n- Experienced candidates may take ownership of structured assessments, severity classification and security reporting.",
+      "requirementsMd": "- Good understanding of web application security fundamentals.\n- Familiarity with OWASP Top 10.\n- Understanding of HTTP, cookies, sessions and authentication.\n- Basic knowledge of APIs and backend application behavior.\n- Ability to identify and explain common security issues.\n- Familiarity with at least one web security testing or inspection tool.\n- Understanding of authorization and access-control concepts.\n- Ability to document technical findings clearly.\n- Strong ethical judgment and respect for authorization boundaries.\n- Willingness to learn unfamiliar technologies.\n- Practical evidence of learning or work through labs, CTFs, research, projects or assessments.\n\nFormal employment experience is not mandatory for candidates demonstrating strong practical knowledge.",
+      "niceToHaveMd": "- Burp Suite, OWASP ZAP or similar tools\n- API security testing\n- JWT, session-based authentication and RBAC\n- Linux and command-line knowledge\n- Nmap, Postman or dependency scanners\n- WordPress security assessments\n- Bug bounty, CTF, Hack The Box or TryHackMe experience\n- Security assessment reporting\n- Secure coding practices\n- Server, deployment or cloud security reviews\n- Relevant training or certifications",
+      "benefits": [
+        "Work on real web and application security scenarios",
+        "Exposure to different technology stacks and products",
+        "Opportunity to collaborate directly with developers",
+        "Growth through practical security assessment experience",
+        "Opportunity to take greater ownership as your skills develop"
+      ],
+      "skills": ["Web Application Security", "OWASP Top 10", "API Security", "Authentication Security", "Access Control", "Vulnerability Assessment", "Security Testing", "HTTP", "Security Analysis", "Technical Reporting", "Burp Suite", "OWASP ZAP", "Linux", "Nmap", "Postman", "JWT", "WordPress Security", "Secure Coding"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn profile", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio or website", "type": "url", "required": false, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current or most recent job title and company", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining date", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected monthly salary (BDT)", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share any security-related portfolio, lab profile, CTF profile, research, project or practical work that represents your skills.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which areas of web or application security are you most comfortable working with?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which security tools or testing environments have you used?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you performed security testing on a web application or API in an authorized environment?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only in labs, CTFs or training environments", "label": "Only in labs, CTFs or training environments" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "Describe one security issue or vulnerability you identified or studied and explain how you would communicate its risk and remediation.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How comfortable are you with authentication, authorization, sessions, APIs and access-control concepts?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Do you have experience with platforms such as Hack The Box, TryHackMe, bug bounty programs or similar security practice environments?", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}

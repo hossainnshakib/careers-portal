@@ -5,6 +5,7 @@ Two seed commands, both idempotent (upsert by slug):
 - `pnpm seed:demo` — base + 19 jobs with demo content, demo questions, and demo applicants. **DEV ONLY**: must refuse to run when `APP_ENV=production` or when the database URL does not match the dev project; include a test for this guard. `pnpm db:reset:dev` drops, migrates and runs `seed:demo`, with the same guard.
 
 Real job content (descriptions, requirements, questions, brand assignment, options) is entered later through the admin panel. The 19 titles, slugs and departments below are FINAL; do not change them.
+The Admin Jobs bulk importer can also create approved new roles after authenticated preview/confirmation; it skips any existing slug/title, including draft shells. Prepared Job 04 and the benefit-limit-blocked Job 05 file are documented in `BULK_JOB_IMPORT.md`. These files are not automatically seeded or published.
 
 ## Managed job options (final; seeded by migration 0004 and `seed:base`, idempotent)
 Labels are displayed verbatim everywhere. Slugs equal the pre-v2 enum values so old shared filter URLs (`?mode=remote`, `?type=full_time`, `?level=entry`) keep working.

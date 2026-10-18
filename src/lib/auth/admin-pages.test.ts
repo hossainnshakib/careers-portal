@@ -21,6 +21,7 @@ import Departments from "@/app/admin/(protected)/departments/page";
 import Brands from "@/app/admin/(protected)/brands/page";
 import Jobs from "@/app/admin/(protected)/jobs/page";
 import NewJob from "@/app/admin/(protected)/jobs/new/page";
+import ImportJobs from "@/app/admin/(protected)/jobs/import/page";
 import EditJob from "@/app/admin/(protected)/jobs/[id]/edit/page";
 vi.mock("@/db/queries/jobs", () => ({
   listJobs: vi.fn(),
@@ -43,6 +44,7 @@ describe("protected admin pages independently gate access", () => {
     ["/admin/brands", Brands],
     ["/admin/jobs", () => Jobs({ searchParams: Promise.resolve({}) })],
     ["/admin/jobs/new", NewJob],
+    ["/admin/jobs/import", ImportJobs],
     ["/admin/jobs/[id]/edit", () => EditJob({ params: Promise.resolve({ id: "invalid" }) })],
   ] as const;
   for (const [name, invoke] of surfaces) {

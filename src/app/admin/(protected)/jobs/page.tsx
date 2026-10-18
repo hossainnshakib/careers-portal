@@ -42,6 +42,7 @@ export default async function JobsPage({
   return (
     <section>
       <AdminToolbar eyebrow="Jobs" title="Jobs" />
+      <p><a href="/admin/jobs/import" className="admin-btn">Import jobs</a></p>
 
       <form className="admin-card" action="/admin/jobs" method="get" style={{ marginBottom: 14 }}>
         <div className="admin-filter-fields is-open">

@@ -26,12 +26,14 @@ import Brands from "@/app/admin/(protected)/brands/page";
 import Departments from "@/app/admin/(protected)/departments/page";
 import Jobs from "@/app/admin/(protected)/jobs/page";
 import NewJob from "@/app/admin/(protected)/jobs/new/page";
+import ImportJobs from "@/app/admin/(protected)/jobs/import/page";
 import EditJob from "@/app/admin/(protected)/jobs/[id]/edit/page";
 import Layout from "@/app/admin/(protected)/layout";
 import * as authActions from "@/app/admin/login/actions";
 import * as departmentActions from "@/app/admin/(protected)/departments/actions";
 import * as brandActions from "@/app/admin/(protected)/brands/actions";
 import * as jobActions from "@/app/admin/(protected)/jobs/actions";
+import * as importActions from "@/app/admin/(protected)/jobs/import/actions";
 import * as reviewActions from "@/app/admin/(protected)/applications/actions";
 import * as mfaActions from "@/app/admin/mfa/actions";
 
@@ -86,6 +88,7 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       ["departments", Departments],
       ["jobs", () => Jobs({ searchParams: Promise.resolve({}) })],
       ["new job", NewJob],
+      ["import jobs", ImportJobs],
       ["edit job", () => EditJob({ params: Promise.resolve({ id: "invalid" }) })],
     ] as const;
     for (const [name, invoke] of pages)
@@ -113,6 +116,8 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       jobActions.saveJobAction,
       jobActions.jobCommandAction,
       jobActions.copyJobQuestionsAction,
+      importActions.previewJobImportAction,
+      importActions.importJobAction,
       reviewActions.changeStatusAction,
       reviewActions.addNoteAction,
       reviewActions.deleteNoteAction,

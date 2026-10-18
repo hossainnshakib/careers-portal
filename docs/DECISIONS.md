@@ -1,5 +1,14 @@
 # Decisions
 
+## 2026-10-18 — Authenticated new-job bulk import
+
+- Owner approved a dedicated feature branch, implementation/tests/build, commit/push and a PR creation URL if `gh` is unavailable. No merge, deployment or automatic live database writes are authorized for this feature. Preserve unrelated working changes in `src/db/queries/test-accounts.ts` and existing untracked assets/prompts.
+- Add Admin Jobs JSON import with strict validation, preview and explicit confirmation. Reuse `requireAdmin`, existing shared job/question/answer validation, cache invalidation and atomic `saveJob`. Create-only mode rechecks existing slug or normalized title under the existing writer advisory lock; no existing job update or application access. No migration/dependency/auth/security/deployment change.
+- Execute sequential per-job action requests; stop on error/unknown response and retain earlier successes. Re-preview safely skips committed jobs. Surface cache invalidation failure as a committed job warning. This is failure-safe per job, not an all-or-nothing batch or a durable import-audit subsystem.
+- Imported single choice is dropdown-only; reject explicit radio rather than silently rewriting supplied presentation. Preserve wording/options/order/required flags. Required portfolios use existing required portfolio-section URL questions, not a new jobs column.
+- Job 04 content comes from the owner's complete supplied specification, not the old seed package. Its explicit three-brand selection is retained for administrator review of actual active hiring needs. Job 05 now also has complete owner-supplied content; only Fixen Media is selected under the owner's unverified-brand fallback. Three approved Job 05 benefits exceed the unchanged 60-character limit (64/73/65). Preserve exact text in `job-05.needs-review.json` and block import pending approved wording or a separately approved limit change; do not truncate or silently split benefits.
+- `docs/BULK_JOB_IMPORT.md` is the contract, owner walkthrough, dataset status and recovery guide. Live publication still requires authorized owner execution on the deployed feature; implementation does not publish jobs.
+
 Newer entries override earlier planning documents. All code and database work in this phase targets development only.
 
 ## 2026-10-05 — Phase 0 foundation

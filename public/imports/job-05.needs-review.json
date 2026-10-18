@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Brand Identity & Logo Designer",
+      "slug": "brand-identity-logo-designer",
+      "department": "design-creative",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Create thoughtful brand identities, logos and visual systems for our brands and client projects. Strong freshers with quality portfolios and experienced designers are welcome to apply.",
+      "descriptionMd": "We are looking for Brand Identity & Logo Designers to work across Fixen Media, selected brands and client projects.\n\nThis role is focused on creating visual identities that are clear, distinctive and appropriate for the business they represent. Depending on the project, you may work on logo systems, typography, color direction, brand guidelines, visual language and supporting identity assets.\n\nWe welcome candidates from different experience levels. Strong freshers with thoughtful portfolio work are encouraged to apply, while more experienced designers may take greater ownership of brand strategy, identity systems and complex client-facing projects.\n\nWe are not looking only for someone who can make visually attractive logos. We value concept development, research, consistency and the ability to explain why a visual direction is appropriate for a brand.",
+      "responsibilitiesMd": "- Develop logo concepts and complete brand identity systems.\n- Translate business positioning, audience and brand personality into visual direction.\n- Explore concepts through research, sketches, references and visual experimentation.\n- Create logo variations, lockups and responsive identity applications where required.\n- Define typography, color palettes and supporting visual elements.\n- Prepare brand guidelines and practical usage rules.\n- Present design concepts clearly and explain the reasoning behind them.\n- Refine concepts based on internal or client feedback without losing design consistency.\n- Prepare professional production-ready logo and identity files.\n- Maintain organized source files and asset libraries.\n- Collaborate with creative, marketing and content teams when a brand identity needs to extend into campaigns or digital platforms.\n- More experienced candidates may contribute to broader brand strategy and lead complex identity projects.",
+      "requirementsMd": "- Strong understanding of logo design and visual identity fundamentals.\n- Good knowledge of typography, color, composition and visual hierarchy.\n- Ability to develop original concepts rather than relying only on templates.\n- Ability to translate a brand brief into a relevant visual direction.\n- Working knowledge of professional vector-design software.\n- Ability to prepare clean, scalable and production-ready logo files.\n- Attention to detail, consistency and brand usability.\n- Ability to explain design decisions and respond constructively to feedback.\n- Understanding of basic brand-system thinking beyond a single logo.\n- A portfolio, academic project or other demonstrable branding and identity work.\n\nFormal professional experience is not mandatory for applicants with strong fundamentals and a thoughtful portfolio.",
+      "niceToHaveMd": "- Experience creating complete brand guidelines.\n- Experience with naming, brand positioning or visual strategy.\n- Experience designing for fashion, real estate, SaaS, technology or service businesses.\n- Knowledge of grid systems and advanced typography.\n- Experience preparing identity assets for print and digital use.\n- Experience with packaging or merchandise applications.\n- Motion-branding or animated-logo experience.\n- Presentation and client-facing design experience.\n- Familiarity with Adobe Photoshop or similar raster-design tools.\n- Experience collaborating with marketing or social media design teams.",
+      "benefits": [
+        "Work on real brand identity projects across different industries",
+        "Opportunity to build complete identity systems, not just standalone logos",
+        "Exposure to multiple brands and client projects",
+        "Growth through concept development and creative ownership",
+        "Opportunity to take greater responsibility as your skills develop"
+      ],
+      "skills": ["Brand Identity Design", "Logo Design", "Typography", "Color Theory", "Visual Identity", "Adobe Illustrator", "Vector Design", "Brand Guidelines", "Concept Development", "Visual Hierarchy", "Adobe Photoshop", "Brand Strategy", "Grid Systems", "Packaging Design", "Presentation Design", "Print Design", "Motion Branding"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn profile", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio or website", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current or most recent job title and company", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest date you can join", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected monthly salary (BDT)", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three brand identity or logo projects that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the projects above, briefly explain the brand problem, your concept and why you chose that visual direction.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which design tools are you most comfortable using for logo and identity work?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you created a complete brand identity system or brand guideline before?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only as a personal or academic project", "label": "Only as a personal or academic project" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "How do you usually move from a brand brief to initial logo concepts?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you make sure a logo works across different sizes, backgrounds and real-world applications?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Describe a branding project where you changed or refined your original concept after feedback.", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}

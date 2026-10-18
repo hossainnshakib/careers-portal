@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Example role — replace before importing",
+      "slug": "example-role-replace-before-importing",
+      "department": "web-technical",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": { "arrangement": ["onsite"], "engagement": ["full_time"], "experience": [] },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": null,
+      "experienceText": null,
+      "skills": [],
+      "benefits": [],
+      "niceToHaveMd": "",
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": false,
+      "summary": "",
+      "descriptionMd": "",
+      "responsibilitiesMd": "",
+      "requirementsMd": "",
+      "includeStandardQuestions": true,
+      "questions": [
+        {
+          "label": "Example dropdown — replace before importing",
+          "type": "single_choice",
+          "required": false,
+          "section": "role_specific",
+          "config": { "display": "dropdown" },
+          "options": [{ "value": "first", "label": "First choice" }, { "value": "second", "label": "Second choice" }]
+        }
+      ],
+      "status": "draft"
+    }
+  ]
+}
