@@ -16,7 +16,7 @@ Follow `PRODUCTION_CONVERSION_PLAN.md`; no live conversion is approved by this t
 | APP_ENV | Server mode, not a secret | Build and runtime, mandatory | Owner selects the environment explicitly | Explicit development/test mode, dev DB only | Explicit production mode; no fallback |
 | DATABASE_URL | Secret, server-only | Runtime; validated at production startup | Supabase Connect, transaction pooler | No credentials for designated production target | Fresh production-only runtime credential; certificate verification enforced |
 | DIRECT_URL | Secret, server-only | Runtime validation and owner migrations | Supabase Connect, direct or session pooler | No credentials for designated production target | Fresh owner/runtime validation URL; never transaction pooler for migrations |
-| DATABASE_SSL_CA | Server-only PEM CA certificate, not a password | Runtime/owner clients | Owner downloads correct root certificate from Database Settings SSL | Use only with actual isolated DEV target | Multiline PEM when system trust is insufficient; never disable verification |
+| DATABASE_SSL_CA | Server-only PEM CA certificate, not a password | Runtime/owner clients | Owner downloads correct root certificate from Database Settings SSL | Use only with actual isolated DEV target | Required for this target's verified trust path: actual multiline PEM, not filename/base64/literal backslash-n; never disable verification |
 | SUPABASE_SERVICE_ROLE_KEY | Secret, server-only | Production startup/runtime; Auth/Storage use | Supabase API settings | Never the designated production key; not needed for credential-free build | Fresh production-only secret key; revoke historical/legacy access |
 | UPLOAD_SESSION_SECRET | Secret, server-only | Production startup/runtime HMAC | Password manager / cryptographic secret generator | No secret needed for credential-free build | Independent fresh strong secret; minimum length enforced |
 | CRON_SECRET | Secret, server-only | Production startup/runtime cron auth | Password manager / cryptographic secret generator | No secret needed for credential-free build | Independent fresh strong secret; Vercel supplies its bearer header |
@@ -58,3 +58,12 @@ DEV_DATABASE_SSL_CA optionally supplies only an isolated DEV target's CA. It doe
 not override the source-pinned production refusal. Vercel's validation DIRECT_URL
 should use its runtime login in session mode, not the privileged migration login;
 privileged maintenance credentials belong only in the protected owner file.
+
+The exact retained-project production and maintenance profiles and activation order
+are consolidated in PRODUCTION_CONVERSION_PLAN.md. Local verified TLS and actual
+helper/JSON/multiline env transport passed; deployed value, total environment size
+and Linux runtime connection are not verified. Use Config for the CA/public settings
+and Secret for private keys/password-bearing URLs, all with correct scope. Vercel
+environment changes only affect new deployments; pause auto-deploy and prepare a
+complete profile before starting the approved Production-targeted build. No private
+certificate file needs to be included in the application bundle.

@@ -7,15 +7,16 @@ Authoritative execution/approval matrix: `PRODUCTION_CONVERSION_PLAN.md`.
 
 | Requirement | Status | Actual evidence / boundary |
 |---|---|---|
-| Preserve worktrees and owner work | Verified | Separate clean `G:\career-prod`; four existing worktrees untouched |
+| Preserve worktrees and owner work | Verified | Separate clean feature worktree; four existing worktrees untouched |
 | Reconcile audit and cleanup | Verified / Reported | HTTPS counts and public checks at 2026-10-17 17:30 UTC; SQL findings/session count from Prompt 16 audit, not a fresh SQL success |
 | Empty catalog; preserved structure/admin | Verified | 0 jobs/questions/applications/dependents; 6 departments/8 brands/13 options/1 allowlist |
 | Pending test artifacts | Blocked | 20 remain: 16 reservations, 4 uploads; no deletion executed |
 | Signups disabled | Verified | Fresh public Auth settings GET |
 | Production-target deny guards | Implemented | Source pin rejects DEV repinning; runtime and startup scope/URL checks; local tests recorded below |
 | Owner maintenance confirmation | Implemented | Independently matched allowed/API/both DB targets; no fake DEV ref; explicit apply + exact confirmation |
-| TLS validation | Implemented / Blocked | All postgres.js paths enforce certificate validation; both live attempts failed SELF_SIGNED_CERT_IN_CHAIN; owner CA/hosted success required |
-| Migration reproducibility | Implemented / Not tested live | Generated forward 0007 + snapshot/journal, original migrations unchanged; no UPDATE/DROP/replayed orphan 0006; not applied |
+| Local TLS validation | Verified | Subsequent authorized gate: both paths passed CA/hostname-verified read-only SQL; wrong-hostname tests rejected. No insecure fallback or permanent trust/config change |
+| Production TLS configuration | Compatible / Not tested hosted | Actual helper consumes trusted multiline CA through JSON/env-file transport without overriding hostname checks. Owner must activate Production-only value and verify fresh hosted SQL reads |
+| Migration reproducibility | Implemented / Read-only preflight verified | Six ledger hashes/timestamps match source, no unexpected entry, 0007 absent, CHECK absent, zero incompatible range rows. Forward migration still NOT applied; recovery/approval required |
 | Old credentials/sessions/connections retired | Blocked | Requires explicit owner approval/execution and old-access denial tests; historical seven AAL2 sessions not revoked |
 | Backups + isolated restore | Blocked | No production recovery test performed; cleanup backup is insufficient |
 | Vercel/GitHub/Supabase scopes/memberships | Blocked | No management access; actual configured scopes/plan/log settings unknown |
@@ -80,24 +81,67 @@ No dependency, applied migration, Auth/RLS policy, secret, environment scope, DN
 deployment setting or applicant data was changed by this task. Fetch/feature-branch
 publication is distinct from owner merge/deployment approval.
 
+## Subsequent TLS gate and non-destructive preparation
+
+The owner supplied the official Supabase Root 2021 CA. The authorized local TLS
+gate passed for both transaction-pooler DATABASE_URL and session-pooler DIRECT_URL:
+certificate verification, correct endpoint hostname, matching chain root and
+read-only SQL. Deliberately incorrect hostnames failed with
+ERR_TLS_CERT_ALTNAME_INVALID. Earlier SELF_SIGNED_CERT_IN_CHAIN came from missing
+default Node trust, not an invalid server hostname or a reason to disable checks.
+The CA is valid through April 2031, has CA/signing constraints, and was not copied
+into source or committed; no downloaded file path is recorded here.
+
+New offline preparation verified the actual application's TLS helper with the CA:
+1,367 bytes, JSON round-trip and Node quoted multiline env-file round-trip unchanged,
+rejectUnauthorized remains true, default hostname verification is not overridden,
+and literal backslash-n input is rejected. Official Vercel docs allow certificates
+within the 64 KB combined Node environment budget. This establishes source/runtime
+configuration compatibility, **not** actual Vercel variable contents, a deployed
+Linux connection or SSL enforcement. Production still requires owner activation.
+
+New non-mutating migration preflight, using the same verified TLS helper and a
+read-only session-pooler transaction, confirmed six matching historical hashes and
+timestamps, no unexpected ledger rows, no recorded 0007, no salary CHECK and zero
+incompatible range rows. No DDL/data/schema mutation was executed. This is not a
+migration application or backup/restore test; recheck at the eventual execution
+boundary if state changes. No inventory, TLS handshake matrix, build or broad suite
+was repeated solely to reproduce completed results.
+
+Only documentation changed in this preparation continuation. Verification was the
+new configuration-transport check, read-only 0007 readiness check, source/official-doc
+review and documentation diff checks; prior typecheck/lint/test/build/browser results
+above remain historical, not newly executed. No privileged operation, secret/env
+scope change, certificate installation, deployment or merge occurred.
+
 ## Owner gate and remaining actions
 
-Request one batch decision for the seven categories in the conversion plan:
-freeze/access inventory; encrypted DB+Storage recovery/restore; exact expired
-20-object cleanup; trusted CA/SSL enforcement + migration 0007; credential/session/
-connection retirement; Production-only platform/deployment hardening; and limited
-synthetic production smoke/cleanup. Approvals may be granted or withheld by category;
-none is inferred from accepting this branch. Owner retains private credentials.
-Final real-job publishing/intake approval remains a separate decision after proof.
+Use the **single A1–H execution/authorization checklist** in the conversion plan,
+not the superseded circular cleanup-before-retirement order. It places access freeze
+and proven recovery first, privileged issuer retirement before expiry/cleanup, and
+actual hosted TLS verification before provider SSL enforcement. Owner dashboard and
+private CLI actions are explicitly separated from agent offline/redacted review.
+Approve/withhold categories, name executors and reviewed release SHA, and choose the
+recovery target/RPO/RTO/retention and maintenance window. Owner retains credentials.
+This operational batch excludes a main merge, DNS, new projects, changed grants/
+policies/MFA factors, synthetic applicants and real job publishing/intake. Limited
+synthetic acceptance and final real recruitment require separate explicit approval.
 Do not merge/deploy against the current shared-DEV settings: the new guards
 intentionally reject them. Coordinate approved freeze, fresh production-only
 configuration and release through Gate 1; the existing live deployment has not
 been converted by these commits. PR can be opened through the branch comparison;
 GitHub CLI/management access was not available to create it here.
 
-Immediate blockers: correct trusted CA and two successful live TLS checks; unknown
-privileged credential/collaborator/scope inventory; historical sessions/connections;
-20 pending artifacts; complete backup/isolated restoration; real widget/hosting/log
+Remaining blockers: actual Production-only CA/env activation and hosted SQL proof;
+unknown privileged credential/collaborator/scope inventory; historical sessions/connections;
+the last-observed 20 pending artifacts and verified issuer retirement/expiry;
+complete backup/isolated restoration; real widget/hosting/log
 verification; migration application; privacy/contact/retention approval and final
 authenticated production smoke. A new production project is not required by current
 evidence, but reuse is not safe until those checks actually pass.
+
+References reviewed for preparation: [Vercel environment scope/size/new-deployment
+semantics](https://vercel.com/docs/environment-variables), [Config versus Secret
+variables](https://vercel.com/docs/environment-variables/sensitive-environment-variables),
+[Supabase SSL enforcement/reboot](https://supabase.com/docs/guides/platform/ssl-enforcement),
+[database backups and excluded Storage bytes](https://supabase.com/docs/guides/platform/backups).

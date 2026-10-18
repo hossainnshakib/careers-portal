@@ -1880,3 +1880,34 @@ HANDOFF READY
   expectation failures and corrected reruns are preserved in the launch report.
   No successful live TLS, migrations/cleanup/rotations, authenticated smoke or
   provider/deployment changes are claimed. Gate 1 and final go-live remain blocked.
+
+## 2026-10-18 — TLS gate carried forward; consolidated Stage 1 preparation
+
+- The subsequent owner-authorized local TLS gate passed both DB paths with Supabase
+  Root 2021 CA, a matching trusted chain, correct hostname and read-only SQL; wrong
+  hostname negative tests rejected. This supersedes the local trust blocker above,
+  not the unverified production environment/deployment/SSL-enforcement gates. No
+  downloaded certificate, secret, connection string or machine-specific certificate
+  path is added to source. No certificate is installed or configuration activated.
+- Preparation reviewed the real runtime/maintenance TLS helper and official Vercel
+  scope/size/Secret documentation. A new offline check showed the trusted CA survives
+  JSON and Node multiline owner-env transport unchanged; the helper preserves strict
+  validation and default hostname checking and rejects literal backslash-n text.
+  No completed handshake matrix/build/full suite was repeated. Actual Vercel value/
+  Linux SQL verification remains owner-gated; public health/cache is not TLS proof.
+- New verified-TLS read-only migration readiness: all six historical hashes/timestamps
+  match, no unexpected ledger entry, 0007 not recorded, salary CHECK absent, zero
+  incompatible range rows. No migration/data change or backup/restore was performed.
+- Replaced the previous potentially circular sequence with one ordered A1–H table
+  in PRODUCTION_CONVERSION_PLAN: freeze/backup/isolated recovery, retire privileged
+  keys/sessions/connections, record last issuer and wait TTL, exact artifact cleanup,
+  forward migration, complete Production-only profile/release and owner MFA/uncached
+  reads, then SSL enforcement and recovery/cron stabilization. Each operation has
+  owner dashboard/private CLI responsibility, stop/verification and recovery rules.
+  Agent work is offline/docs/redacted review by default; no production credentials.
+- The next authorization must name categories/executors/release SHA and recovery
+  target/RPO/RTO/retention/window. Main merge, DNS/new projects, unreviewed grants/
+  policies/factor changes, synthetic applicants and real publishing/intake are not
+  included. Limited synthetic acceptance and final go-live need separate approval.
+  This continuation changes documentation only; no live mutation, rotation,
+  enforcement, environment scope, deployment or merge was executed.
