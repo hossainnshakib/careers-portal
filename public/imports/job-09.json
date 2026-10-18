@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Short-Form & Social Media Video Editor",
+      "slug": "short-form-social-media-video-editor",
+      "department": "video-motion-production",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 4,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Edit engaging short-form videos for social media, campaigns and branded content. Strong freshers with creative editing skills and experienced editors are welcome to apply.",
+      "descriptionMd": "We are looking for Short-Form & Social Media Video Editors to create fast, engaging and platform-appropriate video content across Fixen Media, selected brands and client projects.\n\nThis role focuses on Reels, Shorts, TikTok-style content, promotional clips, talking-head videos, campaign edits and other short-form formats.\n\nWe welcome candidates from different experience levels. Strong freshers with creative editing ability and meaningful personal work are encouraged to apply, while more experienced editors may take greater ownership of recurring content systems, creative direction and campaign-level short-form execution.\n\nWe value strong hooks, pacing, clarity and platform awareness more than excessive effects.",
+      "responsibilitiesMd": "- Edit short-form content for Instagram, Facebook, TikTok, YouTube Shorts and similar platforms.\n- Turn raw footage into engaging, concise and platform-appropriate videos.\n- Create strong openings, pacing and visual rhythm.\n- Add captions, subtitles, graphics, sound effects and music where appropriate.\n- Reframe or adapt content for different aspect ratios and platforms.\n- Work with talking-head, product, promotional and lifestyle footage.\n- Maintain brand consistency across recurring content.\n- Create multiple edits or variations when required.\n- Follow content briefs and social-media objectives.\n- Organize footage, templates and project files properly.\n- Collaborate with content, marketing and production teams.\n- More experienced editors may contribute to content format development and creative direction.",
+      "requirementsMd": "- Strong understanding of short-form video pacing and audience attention.\n- Working knowledge of professional video-editing software.\n- Ability to create clean captions and readable on-screen text.\n- Good understanding of vertical video formats.\n- Ability to work with music, sound and timing effectively.\n- Awareness of current short-form content styles and editing patterns.\n- Ability to maintain brand consistency.\n- Attention to detail and ability to work efficiently.\n- Ability to respond constructively to feedback and revisions.\n- A portfolio, showreel, personal project or other demonstrable short-form editing work.\n\nFormal professional experience is not mandatory for applicants with strong practical ability.",
+      "niceToHaveMd": "- Experience editing Reels, TikTok or YouTube Shorts.\n- Experience with CapCut, Premiere Pro or DaVinci Resolve.\n- Basic motion graphics.\n- Content repurposing experience.\n- Experience with ecommerce, fashion, real estate or SaaS brands.\n- Familiarity with performance-ad video creatives.\n- Basic color correction.\n- Sound-design experience.\n- Experience working with high-volume recurring content.\n- Awareness of content retention and hook structure.",
+      "benefits": [
+        "Work on high-volume real social media content",
+        "Exposure to multiple brands and content styles",
+        "Opportunity to collaborate with content and marketing teams",
+        "Growth through creative editing ownership",
+        "Chance to help shape recurring short-form content formats"
+      ],
+      "skills": ["Short-Form Video Editing", "Social Media Video", "Adobe Premiere Pro", "CapCut", "DaVinci Resolve", "Reels Editing", "TikTok Editing", "YouTube Shorts", "Video Storytelling", "Captions", "Sound Design"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/showreel", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to five short-form videos that best represent your editing work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the videos above, explain what you did to make the first few seconds engaging.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which editing tools are you most comfortable using for short-form content?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which short-form platforms have you edited content for?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you decide what to cut, keep or emphasize when editing a short video?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you created multiple versions of the same video for different platforms or campaign tests?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance", "label": "Yes, with guidance" },
+            { "value": "Limited experience", "label": "Limited experience" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "How do you stay current with short-form editing styles without simply copying trends?", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}
