@@ -15,7 +15,7 @@ test("empty home, brand deep-link, footer and privacy are truthful without fabri
   await page.goto("/privacy");
   await expect(page.getByRole("heading", { name: "Privacy Policy", exact: true })).toBeVisible();
   // Full policy is now owner-approved; manual retention remains honestly disclosed.
-  await expect(page.locator("main")).toContainText("submitted applications do not expire automatically");
+  await expect(page.locator("#privacy-section-19")).toContainText("Submitted applications do not expire automatically.");
   await expect(page.locator("main")).not.toContainText(/DEMO|synthetic candidate/i);
 });
 
