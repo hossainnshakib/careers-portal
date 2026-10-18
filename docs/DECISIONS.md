@@ -1975,3 +1975,51 @@ HANDOFF READY
   mechanism, not an assumed backup entitlement or permission for a live restore.
   If critical service recovery cannot be demonstrated, A2 remains NOT VERIFIED;
   no destructive conversion is permitted. No RPO/RTO or measured recovery claimed.
+
+## 2026-10-18 — Minimum-setup A2 execution boundary
+
+- Later owner authorization permits A2 backup/isolated recovery execution; no repeat
+  A2 approval is required. It does not authorize B–H or disruptive local changes.
+- USB, Docker, another PG installation and a hosted project are not prerequisites.
+  Existing independent storage may be used with honest failure-domain evidence.
+  D/E/F share a disk; C and G are distinct disks but in-machine copies are not
+  off-machine recovery. H independence/protection remains unverified.
+- 7-Zip 21.03 beta was found outside PATH with AES-256 support. Record this correction
+  to the earlier PATH-only inventory without claiming encryption success. Owner
+  private interactive password entry/custody, protected PGDATA and second-copy
+  selection remain genuine execution blockers. Streaming alone does not encrypt
+  restored data. No secret or unapproved encryption setup is created to bypass them.
+- Simplified the existing runbook, preserving the A1/A2 and B–H dependency gates.
+  No repeated source audits, sensitive exports, archive round trip, restore, live
+  write or service/configuration change was performed by this clarification.
+
+## 2026-10-18 — Prompt 18 private workflow and fresh read-only execution
+
+- Read the owner-authored Prompt 18 from the primary worktree without copying or
+  changing it. A2 execution remains approved; B–H remain plan-only. Launched one
+  local private desktop workflow for masked password/custody/freeze attestation and
+  explicit approval for a new isolated EFS directory, user encryption keys and
+  password-encrypted recovery-key exports. No certificate or local system change is
+  authorized by mere launch of the dialog. No password belongs in chat/argv/Git.
+- Prepared private source-export, native CMS chunk packaging/two-copy validation and
+  isolated PG18 restore helpers outside Git. Parse/syntax validation is not runtime
+  backup/restore evidence. Actual sensitive execution is conditional on the private
+  workflow result, EFS inheritance, recoverable PFXs, synthetic AES-256 round trip,
+  independent USB and capacity checks. Pending interaction is not a PASS.
+- Executed fresh source-pinned, verified-TLS read-only migration/inventory checks:
+  PostgreSQL 17.11, DB 13,514,419 bytes, Storage 227,976 bytes; six ledger entries
+  match, pending CHECK absent/zero incompatible salaries; 13 RLS/no policies, two
+  Auth security triggers; 49 accessible table counts/fingerprints; zero jobs/apps,
+  one allowlist/seven AAL2 sessions. All ten current artifacts and 20 original backup
+  files hash-match; structures unchanged. No uploads/deletions/DB writes performed.
+- Verified correct job-removal receipt/pin/elapsed cutoff; issuer-retirement receipt
+  absent, so no official cleanup invocation or fake retirement evidence. Ten absent
+  original sidecars still lack actor/timing attribution. Public Auth settings still
+  disable signups; redirect/provider recovery coverage remains owner-only. Privacy
+  draft/no local contact and dashboard commercial-plan/widget/scope controls stay
+  explicitly unverified. No control-plane MCP resources available.
+- Consolidated launch report groups local private input, dashboard evidence, later
+  scope-bound B–H execution and separate acceptance/go-live. Preserve the approved
+  release pin 36594bf rather than silently substituting documentation HEAD. Existing
+  typecheck/lint/tests (773/90 skips) and fresh Drizzle check pass; no app source,
+  build inputs, migrations, grants/policies/factors, deployment or merge changed.

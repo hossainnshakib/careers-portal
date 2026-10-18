@@ -150,9 +150,79 @@ variables](https://vercel.com/docs/environment-variables/sensitive-environment-v
 [Supabase SSL enforcement/reboot](https://supabase.com/docs/guides/platform/ssl-enforcement),
 [database backups and excluded Storage bytes](https://supabase.com/docs/guides/platform/backups).
 
-## A1/A2 authorized execution checkpoint — partial, not completion
+## Prompt 18 — consolidated execution evidence (newest checkpoint)
+
+**A1/A2 not complete.** A private local owner window has actually been launched for
+masked password/custody, remote-freeze attestation and explicit new-directory EFS /
+user-certificate / encrypted key-export approval. No general A2 reapproval is sought.
+At this checkpoint that interaction is pending; do not claim its conditional steps,
+backup, encryption or restore have executed. Private helpers are outside Git.
+
+| Check actually executed | Outcome / evidence |
+|---|---|
+| Fresh source identity + certificate-verified SQL | PASS: source/API/both DB tenant checks; session-pooler read-only transaction, trusted CA, PostgreSQL 17.11 |
+| Capacity estimate | DB size 13,514,419 bytes; Storage metadata total 227,976 bytes. Previously verified free space J 57.76 GiB/G 145.94 GiB comfortably exceeds these estimates and a 1 GiB USB/2 GiB local floor; actual archive size remains unknown |
+| Application/Auth snapshot | 0 jobs/applications; 1 allowlist; 7 sessions, all AAL2. No session/factor/password changes |
+| RLS/security triggers | PASS: all 13 public tables RLS enabled, no public/Storage policies, both careers Auth security triggers present. Read-only counts/fingerprints accessible for 49 public/Auth/drizzle/Storage tables; not a restore test |
+| Migration preflight | PASS: all six historical hashes/timestamps match journaled files; 0007/CHECK absent, 0 incompatible salary rows. No applied migration/ledger change; original 0006 remains untouched |
+| Current scoped Storage reconciliation | PASS: 10 objects/6 sidecars/4 uploads; all unchanged original metadata/timestamps and downloaded SHA-256/lengths match. 0 unknown/changed objects. Four structural fingerprints match. Ten original sidecars absent; actor/timing still unknown |
+| Original backup integrity | PASS: source-pinned manifest digest and all 20 original artifact hashes/lengths. Scoped historical backup, not encrypted full recovery |
+| Cleanup prerequisite receipts | Job-removal receipt exists, matches the original manifest and has expired. Issuer-retirement receipt is absent. No official cleanup dry-run/apply or fabricated cutoff; object age/job-removal alone is insufficient |
+| Auth settings read | PASS: public settings report signups disabled. Redirect allowlist, provider recovery and MFA service portability are not exposed by this endpoint |
+| Management access | No MCP resources/templates available. No authorized provider dashboard/control-plane channel is available to the agent; remote freeze, collaborators, scope overrides, old deployments, integration access and disappearance history remain owner evidence |
+| Privacy/hosting/widget readiness | Source still says Draft/owner review; local public contact is unset. Retention/contact approval, Vercel commercial-use plan/log redaction, actual Turnstile hostname configuration and protected acceptance are NOT VERIFIED; no values invented or activated |
+| Private helper validation | PowerShell parser: 0 errors for owner/packaging workflows; Node syntax checks pass. Source audit helper actually executed. Packaging/restore runtime paths are not thereby tested |
+| Repository checks | Typecheck/lint PASS; 773 tests passed, 90 existing opt-in skips; Drizzle check PASS. No app source changed: prior build/PDF trace evidence retained, not needlessly rerun. No destructive/browser/cloud fixtures |
+| Full backup, two-copy decryption, protected PGDATA and restore time | NOT VERIFIED / NOT RUN while private owner prerequisites are pending. No ciphertext integrity digest or measured recovery time yet; no claimed RPO/RTO or full managed-service recovery |
+
+### One consolidated remaining owner handoff, grouped by session
+
+1. **Local private window:** complete masked password/custody and the exact optional
+   EFS/user-key setup approval, or decline it. Source exports stay blocked until
+   protection/key recovery/synthetic encryption pass. Once verified, run delegated
+   A2 export → encrypted local/J copies → readback/decryption → isolated PG18 restore
+   with private logs and measured validation. No new hardware/software/project and
+   no renewed A2 approval. Preserve original backups and existing PostgreSQL service.
+2. **One owner dashboard session:** attest/finalize remote deployment/DEV-job/cron/
+   issuer freeze and access/scope/collaborator/integration inventory; explain missing
+   sidecars. Verify **existing-project** native backup/Auth-MFA-key/config recovery
+   coverage and a supported non-destructive validation route. Confirm recovery
+   objectives/window and privacy/contact/retention, Auth redirect rules, actual
+   Turnstile hostname, commercial hosting and log privacy. No rotation/release now;
+   unsupported critical recovery keeps A2 blocked, even after a portable PG18 pass.
+3. **After reviewing A2, one scope-bound B–H execution session:** explicitly authorize
+   named owner executors and immutable release 36594bf (or separately reviewed
+   replacement). Follow conversion-plan categories B → C → D → E → F → G → H:
+   retire historic DB/API/legacy service_role/upload/cron/Turnstile access, password/
+   sessions/connections and DEV/Preview/CI copies; prove old denials + fresh access;
+   record actual issuer cutoff, wait >2h1m; exact unchanged original subset cleanup;
+   sole pending 0007; Production-only fresh env/multiline CA and pinned release;
+   owner MFA/uncached hosted SQL-TLS and denial checks; enforcement only if needed
+   after all clients pass TLS; recovery refresh and reviewed cron/monitoring/backup
+   cadence. Source preflights must be fresh at mutation time. Keep intake closed.
+4. **Separate launch decision:** authorize protected synthetic apply/review/file/PDF
+   acceptance and exact cleanup, then explicitly approve real publishing/intake only
+   after passing results and no residual test data.
+
+Failure/continuation rules remain unchanged: no old credential resurrection, no
+historical DEV deployment promotion/rollback, no guard/TLS/MFA/RLS relaxation, no
+blind migration retry or broad Storage delete. On uncertainty preserve evidence,
+keep intake closed and inspect the exact affected state before a separately
+authorized correction. Documentation HEAD never replaces the approved release pin.
+
+## A1/A2 earlier authorized checkpoint — historical, not completion
 
 ### Subsequent Docker-free preparation (supersedes tooling/target assumptions below)
+
+Later minimum-setup clarification: A2 sensitive execution is approved, not waiting
+for renewed approval. See the runbook's minimum-setup path. 7-Zip 21.03 beta was
+found outside PATH with AES-256 codec support, but no encryption round trip ran.
+No USB/new hosted project/Docker/PG17 installation is required. Existing independent
+storage is eligible with explicit failure-domain evidence; H backing remains unknown.
+Remaining execution blockers are owner-controlled recoverable key/interactive entry,
+protected restore storage and a selected independently backed second destination,
+plus source/configuration completeness and managed-service recovery evidence. Source
+exports, two-copy integrity/decryption, local restore and timing remain NOT RUN.
 
 Owner approved documentation/preparation with existing PostgreSQL 18 and feature-
 branch publication, not sensitive exports, live changes, cluster startup/restore,

@@ -151,8 +151,11 @@ a cached public page are **not** evidence of an actual hosted DB TLS connection.
 ## 5. Single ordered Stage 1 checklist — scoped authorization status
 
 The owner's subsequent authorization permits A1 freeze/inventory and A2 encrypted
-backup/isolated rehearsal only. Privileged provider operations, credentials and
-backup custody stay with the owner; agent execution stays non-sensitive/read-only.
+backup/isolated rehearsal only. Prompt 18 specifically delegates A2 execution to the
+agent after private owner custody/protected-storage confirmation. Exact local EFS/
+user-key creation requires the separate explicit approval in the local workflow.
+Privileged provider operations and password custody stay with the owner; B–H remain
+plan-only. No fresh general A1/A2 approval is needed.
 During A1 do not revoke credentials/sessions, terminate existing DB connections,
 delete private env files, change secret values, or trigger fixture teardown/sweeps.
 Pause/protect the relevant automation/entry points without those B-stage actions.
@@ -266,8 +269,9 @@ Production-only release, normal owner MFA/read verification, enforcement and cro
 No open-ended database writes or execution permission is implied by the current
 conditional acceptance. Any unexpected state or failed checkpoint stops execution.
 
-Agent-executable work remains code/docs/offline validation and sanitized evidence
-review unless a particular live action is expressly delegated. Do not supply secrets
+Agent-executable work includes the specifically delegated conditional A2 execution,
+code/docs/offline validation and sanitized evidence review; no B–H action is delegated.
+Do not supply secrets
 in chat. **Main merge, DNS, new projects, changed grants/policies/MFA factors, real
 job publishing/intake and synthetic applicant submissions are excluded** from this
 operational authorization. Synthetic acceptance and real go-live need their own

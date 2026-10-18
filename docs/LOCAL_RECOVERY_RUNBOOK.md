@@ -2,9 +2,11 @@
 
 ## Status and authority
 
-Preparation only. Owner approved documentation and use of the installed PostgreSQL
-18 tools, **not sensitive exports, cluster creation/start, restore or key creation
-by the agent**. No Docker, PostgreSQL 17 install, new hosted project, dependency,
+**A2 execution is approved**, including sensitive backup and isolated restore once
+private custody/protected-storage prerequisites pass. This supersedes the original
+documentation-only approval. Exact local encryption/key-creation changes still need
+owner approval through the private workflow; no further general A2 approval is needed.
+No Docker, PostgreSQL 17 install, new hosted project, dependency,
 live mutation, deployment or merge is needed for this preparation. Follow
 [the conversion gates](PRODUCTION_CONVERSION_PLAN.md#5-single-ordered-stage-1-checklist--scoped-authorization-status).
 This document does not relax A2's managed-service recovery requirement.
@@ -25,7 +27,8 @@ for this rehearsal or restore an 18-produced archive to the live 17 server.
 
 ## 1. Preconditions and private custody
 
-Owner/private operator performs the eventual sensitive work. Before starting:
+Agent may execute the delegated A2 work after the owner's private confirmations;
+owner retains password/key custody and provider-dashboard responsibilities. Before starting:
 
 - Evidence the remote A1 freeze, including cron and existing signed-upload issuers.
   Explain the ten absent sidecars from provider history; do not guess their cause.
@@ -48,6 +51,83 @@ No additional system software is required for the database portion. Windows
 PowerShell CMS encryption is available; section 4 specifies a bounded-file method.
 An existing approved owner encryption tool is also acceptable after a round-trip
 test. No tool installation or certificate/key generation is performed by this plan.
+
+### Prompt 18 execution checkpoint and single private owner workflow
+
+- USB J was physically verified as removable USB disk 3, independent of local disks,
+  writable with a one-byte create/flush/length check; only that newly created probe
+  was removed. exFAT, 57.76 GiB free. G has 145.94 GiB free/NTFS. Do not repeat this
+  device audit unless devices change. J stores encrypted files only, not PGDATA.
+- A private local desktop workflow has been launched, not merely proposed. It asks
+  once for masked password/confirmation, independent off-PC/off-USB password custody,
+  writer-freeze attestation and explicit approval for the exact local changes:
+  create a fresh private EFS directory on G, allow user EFS-key creation, create a
+  user document-encryption certificate, and export password-encrypted AES-256 PFX
+  recovery keys to **separate key folders**, not archive directories, on G and J.
+  No existing volume/service/database is reconfigured. Owner can decline; no source
+  export then occurs. The password is not placed in argv, chat or source files.
+- The workflow verifies EFS inheritance on a harmless file, decrypts both encrypted
+  PFX copies in memory and tests a harmless CMS payload from both destinations.
+  Before exports the prepared packaging runner additionally requires the AES-256
+  CMS algorithm OID, unchanged protected storage and adequate capacity. These checks
+  are **implemented private procedures, not claimed PASS while awaiting owner input**.
+- Private helpers live outside Git in the approved agent temporary area. The source
+  helper's read-only audit has actually run. The export, chunk packaging and restore
+  helpers remain conditional/unexecuted until the private prerequisites pass. They
+  use existing tools/native CMS, not a new dependency or custom cipher. The old 7-Zip
+  beta need not handle secrets or binary PowerShell pipes.
+- Package layout: CMS-encrypted bounded binary/base64 chunks, encrypted file manifest,
+  ciphertext-only SHA-256 index, independent local/USB readback and decryption into
+  EFS storage. Both password-encrypted PFX copies are separately tested; password
+  custody remains an owner attestation, not a proven password-manager recovery drill.
+  Record the final ciphertext-index digest independently in the redacted evidence
+  before trusting later restores. Same-PC EFS and certificate checks do not simulate
+  total machine-loss recovery or managed Supabase services.
+
+Current owner-window outcome, backup and timing results belong in the latest launch
+verification entry. Do not turn a pending private interaction into a successful backup.
+
+### Minimum-setup execution path — no USB requirement
+
+Later A2 execution approval covers sensitive backup and isolated recovery, subject
+to the safeguards below; do not request that approval again. B–H remain gated.
+Use installed PG18 and existing encryption/storage resources, not Docker, another
+PostgreSQL installation or another Supabase project.
+
+- A subsequent inspection found **7-Zip 21.03 beta** outside PATH with 7zAES/AES-256
+  codec support. This supersedes the earlier PATH-only absence finding. Capability
+  detection is not an encryption/decryption test or endorsement of an old build.
+  Use only reviewed, self-created archives; do not open untrusted archives.
+- A USB disk is **not required**. Existing independently backed storage or an
+  existing private off-machine destination can hold the second encrypted copy.
+  D/E/F share one physical disk; C and G are on separate physical disks. Separate
+  disks in one machine provide disk-failure redundancy, not protection from machine
+  loss/ransomware. Record that distinction; do not silently equate it to off-machine
+  or offline protection. H has no established physical backing/independence and
+  must not be selected on its drive letter alone.
+- The shortest archive route is the owner's existing 7-Zip AES-256 workflow with
+  encrypted archive headers and a high-entropy owner-controlled password held in
+  existing independent private custody. Have the owner enter it in a **local
+  interactive password prompt**, never `-pPASSWORD`, chat, environment variables,
+  transcripts or command history. No interactive secret-entry channel is available
+  through the agent's current tools; do not invent a password or a custody location.
+- For a dump stream, use a reviewed binary process pipe (not PowerShell 5 text
+  piping); 7-Zip must receive and close the complete stream, and both producer and
+  archiver exit statuses must pass. Password prompting must use a separate local
+  interactive channel, not consume the dump stdin. Verify a nonsensitive round trip
+  first. No sensitive streaming implementation has been executed or validated here.
+- Streaming can avoid plaintext dump files but **cannot protect restored PGDATA by
+  itself**. Use an existing owner-controlled encrypted volume/directory with verified
+  recoverable encryption keys for local restoration. Previously inspected C–G had
+  BitLocker off; H protection is unknown. Do not enable volume encryption, create
+  encrypted containers, modify an existing service or claim NTFS ACLs encrypt data
+  as an unapproved shortcut. If no protected restore location exists, that is the
+  specific local recovery blocker; the owner can privately provision one using
+  available Windows facilities after approving the exact local change.
+
+Actual status remains: no verified owner key recovery, selected independent second
+destination, protected PGDATA or archive round trip. No sensitive export or restore
+has run. Once these pass, follow sections 2–7 without another planning cycle.
 
 ## 2. Read-only source export over verified TLS
 
