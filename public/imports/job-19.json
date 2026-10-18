@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Production Coordinator",
+      "slug": "production-coordinator",
+      "department": "presentation-production-operations",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": false,
+      "status": "published",
+      "summary": "Coordinate shoots, people, schedules, equipment and production logistics to help creative projects move smoothly from planning to delivery.",
+      "descriptionMd": "We are looking for Production Coordinators to support the planning and execution of video, photography, campaign and other creative productions across Fixen Media and selected brands.\n\nThis role is focused on organization and execution. You may coordinate schedules, locations, talent, equipment, production documents, team communication and other practical requirements before, during and after a shoot.\n\nWe welcome candidates from different experience levels. Strong freshers with excellent organization, communication and responsibility are encouraged to apply, while more experienced candidates may take greater ownership of complex production logistics and multiple concurrent projects.\n\nYou do not need to be a cinematographer, editor or designer. The role is about making sure the right people, information and resources are ready at the right time.",
+      "responsibilitiesMd": "- Coordinate production schedules, call times and project logistics.\n- Communicate schedules and requirements to relevant team members.\n- Help arrange locations, talent, props, equipment and other production needs.\n- Maintain production checklists and ensure important tasks are not missed.\n- Support pre-production meetings and preparation.\n- Coordinate with presenters, cinematographers, photographers, editors and creative leads.\n- Track project requirements, deadlines and production changes.\n- Prepare or maintain call sheets, contact lists and production documents where required.\n- Support equipment and asset coordination before and after shoots.\n- Assist on location during production when necessary.\n- Maintain clear communication when schedules or requirements change.\n- Help organize files, approvals and handoffs after production.\n- More experienced candidates may coordinate multiple productions and take greater ownership of operational planning.",
+      "requirementsMd": "- Strong organizational and communication skills.\n- Ability to manage multiple tasks and deadlines.\n- Attention to detail and reliability.\n- Ability to communicate clearly with different team members.\n- Ability to follow up on pending tasks and keep work moving.\n- Comfortable using basic digital productivity and communication tools.\n- Ability to adapt when production schedules or plans change.\n- Professional attitude when coordinating people and external parties.\n- Willingness to work on production locations when required.\n- Ability to remain calm and practical under time pressure.\n\nFormal production experience is not mandatory for applicants with strong organizational ability and responsibility.",
+      "niceToHaveMd": "- Previous production, event or project-coordination experience.\n- Experience creating call sheets or shoot schedules.\n- Familiarity with video or photography production workflows.\n- Basic equipment knowledge.\n- Experience coordinating talent, models or presenters.\n- Location-scouting or booking experience.\n- Experience with Google Workspace, Notion, Trello or project-management tools.\n- Basic budgeting or expense-tracking experience.\n- Vendor or supplier coordination experience.\n- Agency or media-production experience.\n\n### Optional skills\n\n- Call Sheets\n- Location Coordination\n- Vendor Coordination\n- Google Workspace\n- Project Management\n- Budget Tracking",
+      "benefits": [
+        "Work directly with real creative and commercial productions",
+        "Exposure to complete production workflows",
+        "Chance to collaborate with multiple creative disciplines",
+        "Growth through practical operational ownership",
+        "Chance to develop production and project-management skills"
+      ],
+      "skills": ["Production Coordination", "Project Coordination", "Scheduling", "Communication", "Production Planning", "Team Coordination", "Logistics", "Time Management", "Organization", "Production Operations"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/website", "type": "url", "required": false, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Describe any project, event, production or team activity that you have helped organize or coordinate.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "What were you personally responsible for in that project or activity?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you keep track of multiple people, tasks, deadlines and last-minute changes?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "A shoot is scheduled for tomorrow, but the location becomes unavailable at the last minute. How would you approach the situation?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which productivity, scheduling or project-management tools have you used?", "type": "long_text", "required": false, "section": "role_specific" },
+        { "label": "Are you comfortable working on location and adjusting your working hours when a scheduled production requires it?", "type": "yes_no", "required": true, "section": "role_specific" },
+        { "label": "Have you previously coordinated vendors, talent, equipment or external service providers?", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}

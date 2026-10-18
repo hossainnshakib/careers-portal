@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "On-Camera Presenter & Content Host",
+      "slug": "on-camera-presenter-content-host",
+      "department": "presentation-production-operations",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite"],
+        "engagement": ["full_time", "part_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 3,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": false,
+      "status": "published",
+      "summary": "Present confidently on camera for brand, educational, promotional and social content. Strong freshers with clear communication and natural camera presence are welcome to apply.",
+      "descriptionMd": "We are looking for On-Camera Presenters & Content Hosts to appear in branded, promotional, educational and social media content across Fixen Media and selected brands.\n\nThis role is for people who can communicate naturally and confidently in front of a camera while adapting their delivery to different subjects, audiences and formats.\n\nYou may present scripted content, explain products or services, host short-form videos, introduce campaigns, participate in interviews or deliver informational content.\n\nPrevious professional presenting experience is not mandatory. Strong freshers with good communication skills, confidence and a natural on-camera presence are encouraged to apply.\n\nWe value clarity, authenticity and adaptability more than exaggerated presenting styles.",
+      "responsibilitiesMd": "- Present scripted and semi-scripted content on camera.\n- Deliver information clearly, naturally and confidently.\n- Adapt tone, pacing and delivery based on the brand and content format.\n- Learn scripts or key talking points before recording.\n- Work with directors, scriptwriters and production teams during shoots.\n- Take direction and adjust delivery across multiple takes.\n- Present promotional, educational, interview-style and social content.\n- Maintain professional preparation and punctuality for scheduled productions.\n- Support content development with delivery feedback where useful.\n- Participate in rehearsals, screen tests or production preparation when required.\n- Maintain appropriate presentation and appearance based on the production brief.",
+      "requirementsMd": "- Clear verbal communication skills.\n- Confidence speaking in front of a camera.\n- Ability to understand and deliver scripts naturally.\n- Good pronunciation and audience awareness.\n- Ability to adjust tone and delivery based on direction.\n- Ability to remain composed through multiple takes.\n- Professional attitude and reliability during productions.\n- Comfortable working with a production team.\n- Ability to communicate in Bengali and/or English depending on the content.\n- A short presentation sample, self-recorded video, previous work or willingness to complete a screen test.\n\nPrevious professional presenting experience is not mandatory.",
+      "niceToHaveMd": "- Previous presenter, host or acting experience.\n- Short-form social media presenting experience.\n- Interview or event-hosting experience.\n- Voice-over experience.\n- Strong bilingual Bengali-English communication.\n- Teleprompter experience.\n- Experience presenting technical, educational or commercial topics.\n- Basic understanding of social media content.\n- Script interpretation skills.\n- Public-speaking experience.",
+      "benefits": [
+        "Work on real brand and social media productions",
+        "Exposure to multiple content formats and industries",
+        "Opportunity to develop professional on-camera experience",
+        "Collaboration with writers, directors and production teams",
+        "Opportunity to build a diverse presenter portfolio"
+      ],
+      "skills": ["On-Camera Presentation", "Content Hosting", "Public Speaking", "Communication", "Script Delivery", "Presentation Skills", "Video Presentation", "Brand Communication", "Bengali Communication", "English Communication"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/video profile", "type": "url", "required": false, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share a link to a short video where you are speaking or presenting on camera.", "type": "url", "required": true, "section": "role_specific", "helpText": "If someone has no previous professional work, a simple self-recorded sample should be accepted." },
+        { "label": "Which languages are you comfortable presenting in, and how would you describe your speaking level in each?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which types of content are you most comfortable presenting: promotional, educational, interview-style, short-form social content or others?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Are you comfortable working from a script and repeating multiple takes based on direction?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes", "label": "Yes" },
+            { "value": "Yes, but I have limited experience", "label": "Yes, but I have limited experience" },
+            { "value": "Not sure yet", "label": "Not sure yet" }
+          ]
+        },
+        { "label": "How would you prepare before presenting a topic that you are not already familiar with?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you used a teleprompter or delivered scripted content before?",
+          "type": "single_choice", "required": false, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, regularly", "label": "Yes, regularly" },
+            { "value": "Yes, a few times", "label": "Yes, a few times" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "Are you comfortable participating in an on-camera screen test as part of the selection process?", "type": "yes_no", "required": true, "section": "role_specific" }
+      ]
+    }
+  ]
+}
