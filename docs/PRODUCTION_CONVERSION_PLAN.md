@@ -1,7 +1,11 @@
 # Existing-project production conversion — owner runbook
 
-Status: **Preparation only; local TLS gate passed. NOT approved for live conversion or recruitment.**
+Status: **A1/A2 authorized within owner/agent responsibilities; completion NOT verified.
+B–H are a planned sequence only and require subsequent explicit execution approval.
+No deployment, merge or recruitment is authorized.**
 Owner-selected target: `xmtoccukridshadnxrlc`, Mumbai; Vercel region `bom1`.
+Approved release candidate remains `36594bf0a1758a4b35a6ff21b6a8972622f0f3b2`;
+later documentation HEADs are not automatically approved deployment candidates.
 No new project, UI redesign, applicant account, role system or real job publishing.
 This plan supersedes older instructions to create a separate production project.
 The Prompt 16 audit is the owner/agent conversation immediately preceding Prompt 17;
@@ -144,7 +148,22 @@ for Node deployments; this CA fits, but the owner's complete environment budget
 and deployed value/packaging still require verification. Build/health success and
 a cached public page are **not** evidence of an actual hosted DB TLS connection.
 
-## 5. Single ordered Stage 1 checklist — ALL live steps await approval
+## 5. Single ordered Stage 1 checklist — scoped authorization status
+
+The owner's subsequent authorization permits A1 freeze/inventory and A2 encrypted
+backup/isolated rehearsal only. Privileged provider operations, credentials and
+backup custody stay with the owner; agent execution stays non-sensitive/read-only.
+During A1 do not revoke credentials/sessions, terminate existing DB connections,
+delete private env files, change secret values, or trigger fixture teardown/sweeps.
+Pause/protect the relevant automation/entry points without those B-stage actions.
+
+RPO 24 hours, RTO 8 hours, retention 14 days, two independently stored encrypted
+copies, pre-conversion snapshots for 14 days and the preferred 22:00–04:00 Asia/Dhaka
+window are still **proposed targets**, not confirmed/achieved; the date is pending.
+The current partial results and consolidated owner actions are recorded in
+PRODUCTION_LAUNCH_VERIFICATION.md. A1/A2 are not PASS merely because authorization
+or a partial backup exists. B–H remain unexecuted even if A1/A2 later pass, until
+the owner issues a subsequent explicit execution authorization.
 
 **Executors:** O-D = owner dashboard/provider access; O-C = owner private CLI/secure
 operator. Agent = code/docs/offline checks and redacted evidence review. The agent
@@ -179,7 +198,7 @@ fresh authorized access on the same path and test old access privately without
 recording its credential/cookie value. Keep protected deployment access separate
 from the app's MFA/allowlist/session authorization checks.
 
-### Owner command forms (reference only; no execution authorized)
+### B–H owner command forms (reference only; no execution authorized)
 
 The variables below are private operator selections, not committed absolute paths.
 `$ApprovedManifestSha256` must be the independent original source/report pin, never
@@ -225,15 +244,23 @@ and migration 0003 recovery. Agree retention and deletion handling for backups t
 | Backup/restore | Encrypted copies/hashes and isolated rehearsal; recover Auth/config/files together | Never test restore over live. Restoring stale Auth/config may revive retired access: reapply retirement before exposing a recovery environment. Protect/delete backups under approved retention. |
 | Cron resume / later synthetic cleanup | Only the intended pending-prefix rule; counts/log redaction | Pause a failing job; use retained backups for any actual data-loss investigation. No automatic broad reconciliation/deletion or applicant-intake rollback. |
 
-### Exact next authorization (one consolidated owner decision)
+### Exact next authorization / access boundary
 
-Approve or withhold **A1–H**, naming the executor for each: owner dashboard and/or
-private owner CLI, the reviewed release commit, recovery target/RPO/RTO/retention
-and maintenance window. This includes rotation/revocation/termination, only the
-unchanged originally approved 20-object cleanup, only expected migration 0007,
-Production-only environment activation/release, normal owner MFA/read verification,
-SSL enforcement and reviewed production cron resumption. No open-ended database
-write permission is requested. Any unexpected state or failed checkpoint stops.
+**Do not request A1/A2 approval again.** They are approved within the stated execution
+responsibilities. What is missing is owner dashboard/private-operator access and
+evidence, plus confirmation of the recovery targets, two storage locations,
+encryption-key recovery method, isolated restore target and dated window. No secrets
+belong in chat. Available tools do not grant the agent dashboard access or backup
+custody; do not extract browser tokens, forge a freeze, or invent an encryption key/
+recovery location to bypass this boundary.
+
+After verified A1/A2 completion, request explicit execution authorization for the
+desired **B–H** categories and named executors. The approved candidate is pinned
+above; do not replace it with a moving HEAD. Authorization would cover only the
+listed operations, eligible unchanged original artifact subset, expected migration,
+Production-only release, normal owner MFA/read verification, enforcement and cron.
+No open-ended database writes or execution permission is implied by the current
+conditional acceptance. Any unexpected state or failed checkpoint stops execution.
 
 Agent-executable work remains code/docs/offline validation and sanitized evidence
 review unless a particular live action is expressly delegated. Do not supply secrets

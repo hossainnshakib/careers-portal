@@ -1,6 +1,7 @@
 # Production conversion verification — Stage 0
 
-**Not production-ready. No Gate 1 live changes approved or executed.**
+**Not production-ready. A1/A2 are now scoped-approved but incomplete; no provider
+freeze, full backup or restore is verified. B–H execution remains unapproved.**
 Branch: `production-conversion-hardening`, based on main `8072afe` (cleanup PR #8).
 Verified code commit: `dd347f3` (guards, TLS, migration preparation and tests).
 Authoritative execution/approval matrix: `PRODUCTION_CONVERSION_PLAN.md`.
@@ -121,8 +122,11 @@ not the superseded circular cleanup-before-retirement order. It places access fr
 and proven recovery first, privileged issuer retirement before expiry/cleanup, and
 actual hosted TLS verification before provider SSL enforcement. Owner dashboard and
 private CLI actions are explicitly separated from agent offline/redacted review.
-Approve/withhold categories, name executors and reviewed release SHA, and choose the
-recovery target/RPO/RTO/retention and maintenance window. Owner retains credentials.
+The later owner decision approves A1/A2 only, pins release candidate
+`36594bf0a1758a4b35a6ff21b6a8972622f0f3b2`, and leaves recovery objectives/window
+proposed rather than confirmed. Owner retains credentials and backup custody.
+B–H are conditionally accepted as sequence only: subsequent execution approval is
+required even after prerequisites pass. Do not re-request A1/A2 approval.
 This operational batch excludes a main merge, DNS, new projects, changed grants/
 policies/MFA factors, synthetic applicants and real job publishing/intake. Limited
 synthetic acceptance and final real recruitment require separate explicit approval.
@@ -145,3 +149,76 @@ semantics](https://vercel.com/docs/environment-variables), [Config versus Secret
 variables](https://vercel.com/docs/environment-variables/sensitive-environment-variables),
 [Supabase SSL enforcement/reboot](https://supabase.com/docs/guides/platform/ssl-enforcement),
 [database backups and excluded Storage bytes](https://supabase.com/docs/guides/platform/backups).
+
+## A1/A2 authorized execution checkpoint — partial, not completion
+
+Only non-sensitive/read-only agent work was supported. No stop/revoke/delete/export/
+restore/provider setting change was performed; no new sensitive backup was created.
+Existing worktrees/user changes and the prior backup remain untouched. Findings
+below are a point-in-time snapshot, not a guarantee against future writes.
+
+| Check | Result | Evidence / limitation |
+|---|---|---|
+| Approved project and release pin | PASS | Read-only probes independently checked API + both DB tenants against the source production ref. Approved candidate remains 36594bf; no deployment/merge |
+| Local project worker snapshot | PASS | Process inspection found 0 known project Next.js processes, 0 fixture/test workers and 0 other node.exe processes; no process needed stopping. No raw process command lines logged |
+| Worktree credential-copy inventory | PASS (bounded) | Root private env copies remain in primary and demo-validation worktrees, both labeled development and referencing this project; names/presence only recorded. Other three worktrees have no root private env. Inherited/external stores still need owner review; nothing deleted/edited |
+| Complete remote access inventory/freeze | NOT VERIFIED | No MCP management resources, Supabase/Vercel/GitHub management tokens in the current process, or supabase/vercel/gh executable on PATH. No dashboard freeze or scope/collaborator/job/deployment audit could be performed. App/API keys are not management credentials and were not used as such |
+| Database access metadata | PASS (snapshot only) | 9 login roles: 1 superuser login, 4 bypass-RLS logins; names fall within the known system/provider-name classification. This is not proof of account ownership or exclusive access. 5 other client backends, 0 active at sample; pooler/service backends are not necessarily five external operators. No connections terminated |
+| Source data/security preservation | PASS | Verified-TLS read-only inventory: 0 jobs/questions/applications/attachments; 6 departments, 8 brands, 13 options, 1 allowlist/Auth user, 1 admin with verified TOTP; 7 sessions, all AAL2. All 13 public tables have RLS; 0 public/Storage policies. No user IDs/emails/factors/tokens printed or changed |
+| Current artifact subset and structure | PASS (integrity only) | **10** current pending objects: **6 sidecars + 4 uploads**. All ten IDs/paths/metadata/timestamps and downloaded byte hashes match the original approved manifest; 0 unknown/changed objects. All four structural row fingerprints match original. No object created/deleted |
+| Cause of ten absent sidecars | NOT VERIFIED | Compared with original 20 objects, ten original sidecars are absent. No actor/timing attribution is available; cron or owner action must not be assumed. Owner must review activity/cron history and freeze remaining issuers before any fresh recovery baseline/cleanup |
+| Existing original scoped backup | PASS (integrity only) | Original pinned manifest digest and all 20 original artifact sizes/SHA-256 match. It covers only the earlier DEMO graph/files; directly parseable manifest/raw artifact files are not an independently encrypted full-project archive. Filesystem encryption is not established |
+| Backup client tooling | PASS (availability only) | pg_dump/pg_restore/psql 18.4 are on PATH; source server is PostgreSQL **17.11**. Tool presence is not a successful export or verified round-trip/version compatibility |
+| Archive encryption/key custody | NOT VERIFIED | age/gpg/7z/openssl not on PATH. Windows PowerShell 5 has Protect-CmsMessage/Unprotect-CmsMessage/New-SelfSignedCertificate, but no owner-selected encryption recipient/recoverable private key/tool workflow. No key created; the Supabase TLS CA is **not** an owner backup encryption key |
+| Two independent encrypted copies | NOT VERIFIED | No approved storage locations, ciphertexts, independent custody or decryptability evidence supplied. Two folders on one disk would not prove independence |
+| Isolated full restore target | NOT VERIFIED | No recovery target supplied and docker not on PATH. A bare PostgreSQL restore cannot establish managed Auth/config/MFA/Storage recovery. No local/cloud target was created, and no production endpoint was used as a restore target |
+| Full backup / restored constraints, RLS, files and Auth | NOT VERIFIED | No complete encrypted DB/Auth/config/Storage recovery set or genuinely isolated rehearsal was performed. Prior source RLS checks and scoped file hashes are not restore evidence |
+| Recovery objectives/window | NOT VERIFIED | 24h RPO / 8h RTO / 14d retention / two encrypted copies / pre-change 14d / preferred 22:00–04:00 Asia/Dhaka are proposed only. No date, measured recovery time, confirmed policy or achieved schedule |
+| Overall A1 freeze / A2 recovery | NOT VERIFIED | Local/read-only portions complete; provider freeze, backup custody and full recovery require owner actions below. No actual export/restore was attempted, so no failed recovery run is claimed |
+
+Documentation-only checkpoint validation: typecheck/lint passed; credential-free
+default unit suite passed **773 / 90 existing opt-in skips** (107 files passed,
+8 skipped). Diff checks passed. No ordinary browser/live fixture suite, build,
+authorized cron or synthetic application was run. These local checks do not prove
+freeze, encryption, recovery completeness or RPO/RTO. Keep this checkpoint local
+until the owner confirms auto-deploy/CI freeze; pushing could trigger integrations.
+
+### Consolidated owner actions — one checklist, no credentials in chat
+
+1. **Owner dashboards/private terminal:** pause Git auto-deploy, both DEV workflows,
+   production cron and other known writers; protect old write-capable deployments;
+   review all env scopes/branch/integration overrides, collaborators and key custodians.
+   Preserve admin/provider recovery access. Return a redacted freeze/access summary
+   and activity explanation for the ten missing sidecars; do not revoke credentials,
+   sessions, keys or connections or trigger fixture cleanup during A1.
+2. **Owner custody decisions:** confirm/replace the still-proposed recovery targets
+   and choose a date, two independently stored encrypted backup destinations,
+   encryption method with independently recoverable owner key, and a genuinely
+   isolated compatible full Supabase recovery target. Arrange missing tooling
+   privately if needed; no hosted project creation or repository dependencies were
+   authorized/installed. Do not use the downloaded TLS CA as a backup recipient key.
+3. **Owner private operator:** after the freeze is evidenced, create the encrypted
+   complete DB/ledger/roles-and-config recovery coverage, managed Auth/security-trigger
+   and Storage-file-byte backup. Coordinate DB/file consistency, use verified TLS,
+   preserve original backups, and avoid plaintext exports/logs. Obtain two verified
+   encrypted copies and test owner decryption independently of the source machine.
+   Use a reviewed binary-safe workflow: do not pipe a binary custom-format pg_dump
+   through PowerShell 5 text/CMS pipelines. Verify decrypted archive hashes and
+   restore compatibility before trusting copies; any staging and restored storage
+   must remain owner-controlled and encrypted.
+4. **Owner isolated rehearsal + redacted proof:** restore only into the approved
+   isolated target, with no production write route/active automation. Verify table/
+   object counts, constraints/triggers, RLS/anon denial, exact file paths/MIME/hashes,
+   Auth/config/MFA recovery under the existing no-factor-change restriction and actual
+   elapsed recovery time. Stop/escalate if managed Auth portability/required key
+   material cannot be recovered safely. Do not apply pending 0007 to satisfy this
+   pre-conversion rehearsal or weaken target guards. Share only tool versions,
+   encrypted-copy integrity/decryption results, component coverage, isolation checks,
+   measured timing and PASS/FAIL outcomes—not backup bodies, identities or keys.
+
+No further A1/A2 approval is needed for the already authorized scope. Genuine
+blockers are management access, operator custody/recovery decisions and available
+isolated infrastructure—not permission to rotate/delete/deploy early. Once A1/A2
+are actually proven, the next required authorization is explicit execution of the
+selected B–H categories. Until then no retirement, cleanup, migration, enforcement,
+deployment, cron activation, merge or applicant submission is permitted.

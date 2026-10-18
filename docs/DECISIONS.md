@@ -1911,3 +1911,44 @@ HANDOFF READY
   included. Limited synthetic acceptance and final go-live need separate approval.
   This continuation changes documentation only; no live mutation, rotation,
   enforcement, environment scope, deployment or merge was executed.
+
+## 2026-10-18 — A1/A2 scoped approval and available-tools checkpoint
+
+- Owner explicitly approved A1 freeze/inventory and A2 encrypted backup/isolated
+  restore, with privileged provider actions and backup/key custody assigned to the
+  owner. Agent remains non-sensitive/read-only. B–H are accepted only as planned
+  sequence and still need later explicit execution approval. Release candidate is
+  pinned to 36594bf, not any later documentation HEAD. Proposed 24h RPO/8h RTO/14d
+  retention/two copies/pre-change 14d/window remain unconfirmed and unachieved.
+- Supported inspection: no local project Node/Next/fixture workers observed; no
+  process stopped. No management MCP resources/tokens or supabase/vercel/gh on PATH,
+  so remote freeze/scope/collaborator/deployment/cron state cannot be attested. Two
+  existing worktree DEV env copies remain; no file/value or credential was changed.
+- Verified-TLS read-only source snapshot: PostgreSQL 17.11, 13 RLS tables/no public
+  or Storage policies, structure 6/8/13/admin1, job/question/application/attachment
+  zero, one Auth user/verified-TOTP admin and seven AAL2 sessions. Nine login roles
+  fall in the known provider/system-name classification; five other client backends
+  were idle at the sample, not proof that all external writers are frozen. No raw
+  roles' private data, SQL values, process command lines, users or tokens logged.
+- Important change: ten pending artifacts remain (six sidecars/four uploads), all
+  unchanged members of the original approved set, with all current byte hashes and
+  structural fingerprints matching. Ten original sidecars are absent; actor/timing
+  unknown without provider activity logs. No deletion performed here; do not infer
+  cron/owner causation or use the changed count as cleanup/freeze completion.
+- Existing original manifest and all 20 backup-file hashes still verify, but that
+  scoped raw-file/JSON backup is not encrypted full-project/Auth recovery proof.
+  PostgreSQL client tools 18.4 are available; no compatible full restore was tested.
+  PowerShell CMS commands exist but no owner key/custody workflow is selected;
+  standard external encryption CLIs and docker are not on PATH. No encryption key,
+  plaintext dump, new backup, target or sensitive export was created. The TLS CA is
+  not a backup encryption recipient whose private key belongs to the owner.
+- A1 remote freeze and A2 full backup/restore/independent encrypted copies remain
+  NOT VERIFIED. The launch report gives one consolidated owner checklist rather
+  than re-requesting A1/A2 approval. No B–H action, credentials/session/connection
+  revocation, policy/grant/factor change, migration, merge, deployment or submission
+  was performed. Do not push this checkpoint while auto-deploy freeze is unknown;
+  local documentation can be reviewed without triggering provider integrations.
+- Documentation checkpoint gates passed: typecheck/lint, 773 credential-free unit
+  tests with 90 existing opt-in skips, and diff checks. No cloud mutation/browser
+  fixtures or backup/restore action ran. These passes are not operational A1/A2
+  completion evidence. No remote publication until the freeze is owner-verified.
