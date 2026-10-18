@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Advertising & Social Media Creative Designer",
+      "slug": "advertising-social-media-creative-designer",
+      "department": "design-creative",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 3,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Create high-quality advertising and social media visuals for campaigns, brands and client projects. Strong freshers with solid portfolios and experienced designers are welcome to apply.",
+      "descriptionMd": "We are looking for Advertising & Social Media Creative Designers to work across Fixen Media, selected brands and client projects.\n\nThis role focuses on creating visually strong and platform-appropriate creative work for advertising, social media, campaigns and digital communication. You may work on paid ad creatives, social media posts, campaign visuals, launch materials, promotional graphics and other marketing assets.\n\nWe welcome candidates from different experience levels. Strong freshers with a thoughtful portfolio are encouraged to apply, while more experienced designers may take greater ownership of campaign systems, creative direction and multi-format visual execution.\n\nWe are not looking only for someone who can make attractive graphics. We value strong composition, clear communication, brand consistency and the ability to design with a specific marketing objective in mind.",
+      "responsibilitiesMd": "- Design advertising and social media creatives for brands and client campaigns.\n- Create static and multi-format visuals for different platforms and placements.\n- Translate campaign briefs, content and marketing objectives into effective visual concepts.\n- Adapt creative work across different sizes, formats and platform requirements.\n- Maintain brand consistency while exploring fresh visual directions.\n- Work with marketing, content and performance teams to support campaign goals.\n- Prepare design variations for testing when required.\n- Create launch, promotional, announcement and campaign-support materials.\n- Organize source files and reusable creative assets properly.\n- Refine work based on internal feedback, campaign performance or client requirements.\n- Balance aesthetics, readability and communication in every creative.\n- More experienced candidates may contribute to campaign-level visual direction and creative systems.",
+      "requirementsMd": "- Strong understanding of composition, typography, color and visual hierarchy.\n- Ability to create polished digital advertising and social media graphics.\n- Working knowledge of professional graphic-design software.\n- Ability to interpret briefs and convert them into clear visual communication.\n- Understanding of different social media formats and content dimensions.\n- Ability to work within established brand guidelines.\n- Good attention to detail and consistency.\n- Ability to produce multiple creative variations without losing quality.\n- Ability to work collaboratively and respond constructively to feedback.\n- A portfolio, academic project or other demonstrable advertising or social media design work.\n\nFormal professional experience is not mandatory for applicants with strong fundamentals and meaningful portfolio work.",
+      "niceToHaveMd": "- Experience designing paid advertising creatives.\n- Experience creating campaign systems rather than individual posts only.\n- Familiarity with Meta, Instagram, LinkedIn, TikTok or other digital-platform creative requirements.\n- Basic understanding of performance marketing and creative testing.\n- Experience designing for ecommerce, fashion, real estate, SaaS or service brands.\n- Motion or short-form animation skills.\n- Experience with Adobe Illustrator, Photoshop or similar tools.\n- Experience creating presentation-ready campaign concepts.\n- Familiarity with AI-assisted creative workflows used responsibly.\n- Experience working with copywriters or performance-marketing teams.\n\n### Optional skills\n\n- Meta Ads Creative\n- Digital Advertising\n- Creative Testing\n- Motion Design\n- Content Design\n- Ecommerce Design",
+      "benefits": [
+        "Work on real advertising and social media campaigns",
+        "Exposure to multiple brands and industries",
+        "Opportunity to collaborate with marketing and content teams",
+        "Growth through practical creative ownership",
+        "Opportunity to work on organic and paid campaign visuals"
+      ],
+      "skills": ["Social Media Design", "Advertising Design", "Creative Design", "Adobe Photoshop", "Adobe Illustrator", "Typography", "Visual Hierarchy", "Composition", "Brand Consistency", "Campaign Design"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn profile", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio or website", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current or most recent job title and company", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest date you can join", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected monthly salary (BDT)", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three advertising or social media design projects that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the projects above, briefly explain the campaign or communication objective and how your design supported it.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which design tools are you most comfortable using for advertising and social media creative work?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you created multiple visual variations for the same campaign or advertisement?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only as a personal or academic project", "label": "Only as a personal or academic project" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "How do you adapt one creative concept for different platforms, sizes or placements?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you balance visual appeal, readability and the marketing objective in a social media or advertising creative?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Have you worked with paid advertising creatives or performance-marketing teams? If yes, briefly explain your involvement.", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}

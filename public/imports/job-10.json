@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Motion Graphics & Animation Artist",
+      "slug": "motion-graphics-animation-artist",
+      "department": "video-motion-production",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Create motion graphics, animated visual systems and engaging branded animations for campaigns, videos and digital content. Strong freshers with good reels and experienced artists are welcome to apply.",
+      "descriptionMd": "We are looking for Motion Graphics & Animation Artists to create animated visual content across Fixen Media, selected brands and client projects.\n\nThis role may involve animated typography, logo animation, explainer sequences, social media motion graphics, campaign visuals, transitions, infographic animation and supporting motion elements for commercial or branded video content.\n\nWe welcome candidates from different experience levels. Strong freshers with a thoughtful showreel or personal work are encouraged to apply, while more experienced artists may take greater ownership of complex animation systems, visual direction and advanced motion execution.\n\nWe value strong timing, visual design, purposeful animation and technical control more than effects used without clear intent.",
+      "responsibilitiesMd": "- Create motion graphics and animated visual content for campaigns, social media and video projects.\n- Animate typography, logos, graphic elements and interface-style visuals.\n- Develop transitions, titles, lower thirds and supporting motion systems.\n- Translate static design assets into polished motion.\n- Create explainer-style or information-based animation where required.\n- Work with video editors and creative teams to integrate animation into larger productions.\n- Maintain visual consistency with brand guidelines.\n- Organize project files, assets and compositions professionally.\n- Optimize animations for different formats, resolutions and platforms.\n- Refine animation timing, easing and movement based on feedback.\n- More experienced candidates may develop reusable motion systems and lead complex animation sequences.",
+      "requirementsMd": "- Strong understanding of motion, timing, composition and visual hierarchy.\n- Working knowledge of professional motion-graphics or animation software.\n- Ability to animate typography and graphic elements cleanly.\n- Understanding of keyframes, easing and basic animation principles.\n- Good visual-design fundamentals.\n- Ability to work from design files, storyboards or creative briefs.\n- Attention to detail and consistency.\n- Ability to manage layered project files efficiently.\n- Ability to respond constructively to feedback.\n- A showreel, portfolio, academic project or other demonstrable motion work.\n\nFormal professional experience is not mandatory for applicants with strong fundamentals and meaningful motion work.",
+      "niceToHaveMd": "- Strong Adobe After Effects experience.\n- Logo-animation experience.\n- Explainer-video animation.\n- Infographic or data animation.\n- Basic 3D knowledge.\n- Cinema 4D, Blender or similar 3D experience.\n- Character-animation experience.\n- Experience with expressions or procedural animation.\n- Experience integrating motion graphics with live-action footage.\n- Experience creating reusable motion templates.\n- Sound-design awareness.\n\n### Optional skills\n\n- Blender\n- Cinema 4D\n- 3D Animation\n- Explainer Animation\n- Infographic Animation\n- Sound Design",
+      "benefits": [
+        "Work on real campaign and branded motion projects",
+        "Opportunity to collaborate with designers and video editors",
+        "Exposure to multiple animation styles and industries",
+        "Growth through practical motion-design ownership",
+        "Build reusable motion systems and advanced animation skills"
+      ],
+      "skills": ["Motion Graphics", "Adobe After Effects", "Animation", "Motion Design", "Typography Animation", "Logo Animation", "Visual Design", "Keyframe Animation", "Compositing", "Video Production"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/showreel", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three motion graphics or animation projects that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the projects above, explain your role and the animation approach you used.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which motion graphics or animation tools are you most comfortable using?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which types of animation are you most experienced or interested in?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you created motion graphics for real brand, campaign or video-production work?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only personal/academic projects", "label": "Only personal/academic projects" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "How do you approach timing, easing and movement so that an animation feels polished rather than mechanical?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Do you have any 3D animation or compositing experience? If yes, briefly describe it.", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Visual Communication Designer",
+      "slug": "visual-communication-designer",
+      "department": "design-creative",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Create clear and visually refined communication materials across print, digital and presentation formats. Strong freshers with thoughtful portfolios and experienced designers are welcome to apply.",
+      "descriptionMd": "We are looking for Visual Communication Designers to work across Fixen Media, selected brands and client projects.\n\nThis role focuses on organizing information and ideas into clear, professional and visually effective communication. You may work on company profiles, brochures, catalogues, reports, presentation materials, editorial layouts, marketing collateral and other structured visual content.\n\nWe welcome candidates from different experience levels. Strong freshers with good layout, typography and communication skills are encouraged to apply, while more experienced designers may take greater ownership of complex publications, visual systems and multi-page communication projects.\n\nWe value clarity, consistency and thoughtful information design—not decoration for its own sake.",
+      "responsibilitiesMd": "- Design company profiles, brochures, catalogues, reports and structured marketing materials.\n- Create clear page layouts for both digital and print communication.\n- Organize text, images, charts and visual elements into readable information hierarchies.\n- Maintain typography, spacing, grid and visual consistency across multi-page documents.\n- Translate raw content and business information into polished visual communication.\n- Prepare presentation and editorial-style materials where required.\n- Adapt visual systems across different formats and output requirements.\n- Work with content, marketing and brand teams to ensure accurate communication.\n- Prepare print-ready and digital-ready files.\n- Maintain organized source files and reusable layout systems.\n- Refine designs based on feedback while preserving clarity and consistency.\n- More experienced candidates may lead complex document systems and publication-level design work.",
+      "requirementsMd": "- Strong understanding of typography, layout, composition and visual hierarchy.\n- Ability to organize complex information clearly.\n- Good understanding of grid systems and multi-page design.\n- Working knowledge of professional design software.\n- Ability to work with both text-heavy and image-based content.\n- Attention to alignment, spacing, consistency and readability.\n- Ability to follow or extend brand guidelines.\n- Ability to prepare files for print and digital use.\n- Ability to receive and apply feedback professionally.\n- A portfolio, academic project or other demonstrable visual communication work.\n\nFormal professional experience is not mandatory for applicants with strong fundamentals and meaningful portfolio work.",
+      "niceToHaveMd": "- Experience with Adobe InDesign.\n- Experience designing company profiles, annual reports or catalogues.\n- Presentation design experience.\n- Editorial or publication-design experience.\n- Basic infographic and data-visualization skills.\n- Print-production knowledge.\n- Experience working with corporate or real-estate materials.\n- Experience building reusable document templates.\n- Familiarity with Adobe Illustrator and Photoshop.\n- Experience designing both English and Bengali content.",
+      "benefits": [
+        "Work on real corporate and brand communication projects",
+        "Exposure to both digital and print design",
+        "Chance to work on multi-page and publication-style projects",
+        "Growth through practical visual communication ownership",
+        "Opportunity to work across multiple industries and brands"
+      ],
+      "skills": ["Visual Communication Design", "Typography", "Layout Design", "Editorial Design", "Grid Systems", "Adobe InDesign", "Adobe Illustrator", "Adobe Photoshop", "Presentation Design", "Print Design", "Information Design"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn profile", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio or website", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job title and company", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest date you can join", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected monthly salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three visual communication projects that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the projects above, explain how you organized the information and visual hierarchy.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which design tools are you most comfortable using for multi-page or communication design?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you designed a company profile, brochure, catalogue, report or similar multi-page document?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only as a personal or academic project", "label": "Only as a personal or academic project" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "How do you maintain consistency across a long or multi-page design?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Do you have experience preparing files for professional print production?",
+          "type": "single_choice", "required": false, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance", "label": "Yes, with guidance" },
+            { "value": "Limited experience", "label": "Limited experience" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        }
+      ]
+    }
+  ]
+}
