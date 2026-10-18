@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Performance Marketing Specialist",
+      "slug": "performance-marketing-specialist",
+      "department": "marketing-social",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": false,
+      "status": "published",
+      "summary": "Plan, run and optimize measurable digital advertising campaigns across our brands and client projects using data, testing and clear business objectives.",
+      "descriptionMd": "We are looking for Performance Marketing Specialists to manage and optimize paid digital campaigns across Fixen Media, selected brands and client projects.\n\nThe role focuses on measurable marketing outcomes rather than simply boosting posts. You may work on lead generation, ecommerce campaigns, traffic, conversions, remarketing and other paid acquisition objectives.\n\nDepending on your experience, you may be responsible for campaign setup, audience strategy, creative testing, budget allocation, tracking, optimization and performance reporting.\n\nWe are primarily looking for candidates with practical exposure to paid campaigns. Formal job experience is not essential if you can demonstrate real campaign work, personal projects or meaningful hands-on experience.\n\nWe value analytical thinking, disciplined testing and honest reporting over vanity metrics.",
+      "responsibilitiesMd": "- Plan and execute paid digital advertising campaigns based on clear objectives.\n- Manage campaigns across Meta and other relevant advertising platforms.\n- Set up campaign structures, audiences, budgets and placements.\n- Coordinate with designers and content teams to develop advertising creatives.\n- Monitor campaign performance and identify opportunities for improvement.\n- Test audiences, messaging, creatives and campaign approaches.\n- Optimize campaigns based on meaningful performance data.\n- Track lead, conversion, acquisition and cost-related metrics.\n- Prepare clear performance reports and explain results.\n- Identify tracking or attribution problems where possible.\n- Support landing-page and funnel improvement through campaign insights.\n- Maintain accurate records of campaign changes and learnings.\n- More experienced candidates may take ownership of larger budgets and multi-brand performance strategy.",
+      "requirementsMd": "- Practical understanding of digital advertising and performance marketing.\n- Familiarity with Meta Ads Manager or another major advertising platform.\n- Understanding of campaign objectives, audiences, budgets and optimization.\n- Ability to interpret basic performance metrics.\n- Understanding of CTR, CPC, CPM, CPL, CPA, ROAS or related metrics.\n- Ability to think analytically and make decisions based on data.\n- Basic understanding of conversion tracking and marketing funnels.\n- Ability to communicate campaign performance clearly.\n- Attention to detail when managing budgets and campaign settings.\n- Practical campaign experience, case study, project or other demonstrable work.",
+      "niceToHaveMd": "- Meta Pixel and Conversions API awareness.\n- Google Ads experience.\n- Google Analytics or GA4 experience.\n- Google Tag Manager knowledge.\n- Ecommerce advertising experience.\n- Lead-generation campaign experience.\n- Retargeting and funnel experience.\n- Landing-page optimization awareness.\n- Creative-testing experience.\n- Experience with SaaS, real estate, fashion or service-business campaigns.\n- Basic spreadsheet/data-analysis skills.\n\n### Optional skills\n\n- Google Ads\n- GA4\n- Google Tag Manager\n- Meta Pixel\n- Conversions API\n- Ecommerce Marketing",
+      "benefits": [
+        "Work on real paid campaigns across multiple brands",
+        "Exposure to different industries and customer journeys",
+        "Opportunity to collaborate with creative and content teams",
+        "Growth through measurable campaign ownership",
+        "Chance to develop deeper analytics and acquisition skills"
+      ],
+      "skills": ["Performance Marketing", "Meta Ads", "Digital Advertising", "Paid Social", "Campaign Optimization", "Lead Generation", "Conversion Tracking", "Marketing Analytics", "Audience Targeting", "A/B Testing", "ROAS"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/case studies", "type": "url", "required": false, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three paid advertising campaigns or performance-marketing projects you have worked on.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one campaign above, explain the objective, budget range, your role and the main result or learning.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which advertising and analytics platforms are you most comfortable using?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which metrics would you prioritize for a lead-generation campaign, and why?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "A campaign is generating many clicks but very few conversions. How would you investigate the problem?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you personally managed paid campaign budgets?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only practice/personal campaigns", "label": "Only practice/personal campaigns" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "Do you have experience with pixels, analytics, conversion tracking or tag management? Briefly explain.", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}
