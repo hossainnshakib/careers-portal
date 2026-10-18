@@ -1,29 +1,47 @@
 import Link from "next/link";
-import { getPublicContactEmail, getPublicSiteUrl } from "@/lib/env-public";
+import { getPublicSiteUrl } from "@/lib/env-public";
+import { SafeMarkdown } from "@/lib/markdown/render";
+import { privacyPolicyDates, privacyPolicyIntroduction, privacyPolicySections } from "@/lib/privacy/policy";
+import "./privacy.css";
 
 export const metadata = {
-  title: "Privacy · Careers",
-  description: "How application information is collected, used and managed. Draft for owner review.",
+  title: "Privacy Policy · Careers",
+  description: "How Fixen Media and its hiring brands collect, use, protect and retain recruitment information, and how to exercise your privacy rights.",
   alternates: { canonical: `${getPublicSiteUrl()}/privacy` },
-  openGraph: { title: "Privacy · Careers", description: "How application information is collected, used and managed. Draft for owner review.", url: `${getPublicSiteUrl()}/privacy`, type: "website" as const },
+  openGraph: { title: "Privacy Policy · Careers", description: "Recruitment privacy, data retention, contact details and your rights.", url: `${getPublicSiteUrl()}/privacy`, type: "website" as const },
 };
 
 export default function PrivacyPage() {
-  const contact = getPublicContactEmail();
-  return <main id="main" className="mx-auto max-w-[820px] px-6 py-10">
+  return <main id="main" className="privacy-page mx-auto w-full max-w-[1100px] px-5 py-10 sm:px-8">
     <Link href="/#roles" className="text-[14px] font-semibold text-ui-blue-text underline">Back to roles</Link>
-    <article className="ui-glass mt-[18px] space-y-8 rounded-[28px] p-7 text-ui-body sm:p-10">
-    <header><h1 className="text-[38px] font-extrabold tracking-[-.03em] text-ui-ink">Privacy</h1>
-      <p className="mt-5 rounded-[18px] border border-ui-border bg-white/70 p-4"><strong>Draft — owner review required.</strong> The portal owner must confirm the contact address and retention policy before launch.</p>
-    </header>
-    <section><h2 className="text-[26px] font-extrabold tracking-tight text-ui-ink">What we collect</h2><p className="mt-3 leading-relaxed">When you apply, we collect your name, email, phone, location, the position you selected, your answers and the files requested by that role. You do not need a candidate account. Share only information relevant to your application.</p></section>
-    <section><h2 className="text-[26px] font-extrabold tracking-tight text-ui-ink">How it is used and who sees it</h2><p className="mt-3 leading-relaxed">The internal hiring team uses this information to review applications. Authorized administrators can add internal notes, update application status, download files and export a candidate profile. Applications and attachments are not public. Files are stored privately and administrator download links expire shortly after issue.</p>
-      <p className="mt-3 leading-relaxed">The portal uses Supabase for database, authentication and file storage, Vercel for hosting, and Cloudflare Turnstile for its security check. Turnstile receives the information needed to perform that check.</p>
-    </section>
-    <section><h2 className="text-[26px] font-extrabold tracking-tight text-ui-ink">Retention</h2><p className="mt-3 leading-relaxed">Submitted applications have no automatic deletion deadline in this version. The hiring team can delete an application and its attached files. The owner must set and publish the recruitment retention policy before launch. Temporary uploads that were not submitted are eligible for daily cleanup once their creation and last-update dates are more than 24 hours old.</p></section>
-    <section><h2 className="text-[26px] font-extrabold tracking-tight text-ui-ink">Ask for deletion</h2><p className="mt-3 leading-relaxed">Contact the portal owner and include your application reference so the team can locate your application. Do not send additional documents unless requested.</p>
-      <p className="mt-3">{contact ? <>Send your request to <a href={`mailto:${contact}`} className="underline">{contact}</a>.</> : "The deletion contact email is awaiting confirmation by the owner."}</p>
-    </section>
+    <article aria-labelledby="privacy-title" className="ui-glass mt-[18px] rounded-[28px] p-6 text-ui-body sm:p-10 lg:p-12">
+      <header className="border-b border-ui-border pb-8">
+        <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-ui-blue-text">Recruitment privacy</p>
+        <h1 id="privacy-title" className="mt-3 text-[36px] font-extrabold leading-tight tracking-[-.03em] text-ui-ink sm:text-[48px]">Privacy Policy</h1>
+        <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-[14px]">
+          <div><dt className="font-semibold text-ui-muted">Effective Date</dt><dd className="mt-1"><time dateTime={privacyPolicyDates.iso}>{privacyPolicyDates.effective}</time></dd></div>
+          <div><dt className="font-semibold text-ui-muted">Last Updated</dt><dd className="mt-1"><time dateTime={privacyPolicyDates.iso}>{privacyPolicyDates.updated}</time></dd></div>
+        </dl>
+      </header>
+      <div className="privacy-prose mt-8"><SafeMarkdown text={privacyPolicyIntroduction} /></div>
+      <aside aria-label="Current portal operation" className="mt-7 rounded-[18px] border border-ui-border bg-white/70 p-5 text-[14px] leading-relaxed">
+        <p><strong className="text-ui-ink">Current portal operation.</strong> Retention is handled by manual review and deletion; submitted applications do not expire automatically. Talent-pool opt-in, AI-assisted candidate evaluation and optional analytics are not implemented. Conditional policy descriptions do not enable these features.</p>
+      </aside>
+      <details className="privacy-contents my-9 rounded-[18px] border border-ui-border bg-white/70">
+        <summary className="cursor-pointer p-5 font-bold text-ui-ink">Contents <span className="ml-2 text-[13px] font-normal text-ui-muted">48 sections</span></summary>
+        <nav aria-label="Privacy policy sections" className="px-5 pb-5">
+          <ol className="grid gap-x-7 gap-y-1 sm:grid-cols-2">
+            {privacyPolicySections.map(section => <li key={section.id}><a className="block rounded-md py-2 text-[14px] leading-relaxed text-ui-blue-text underline decoration-transparent underline-offset-4 hover:decoration-current focus-visible:decoration-current" href={`#${section.id}`}>{section.title}</a></li>)}
+          </ol>
+        </nav>
+      </details>
+      <div className="privacy-sections">
+        {privacyPolicySections.map(section => <section key={section.id} id={section.id} aria-labelledby={`${section.id}-title`} tabIndex={-1} className="privacy-section">
+          <h2 id={`${section.id}-title`} className="text-[24px] font-extrabold leading-snug tracking-[-.02em] text-ui-ink sm:text-[28px]">{section.title}</h2>
+          <div className="privacy-prose mt-5"><SafeMarkdown text={section.text} /></div>
+          <a href="#privacy-title" className="mt-6 inline-block text-[13px] font-semibold text-ui-blue-text underline underline-offset-4">Back to top</a>
+        </section>)}
+      </div>
     </article>
   </main>;
 }

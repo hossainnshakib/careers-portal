@@ -1830,3 +1830,38 @@ HANDOFF READY
 - Completed the other audit work now: added isolated actual admin Applications-page empty/filtered-empty/auth-before-query/read-error tests; strengthened existing Jobs/Dashboard assertions against synthetic fallbacks, stale links and fake counts. **11 focused tests passed**. No owner account/MFA/session was used or changed, no test account created, no seeds/sweeps/uploads/synthetic applications were run. Authenticated live screenshots remain unavailable rather than bypassed.
 - Full renewed gates: typecheck/lint, **703 unit tests / 90 existing opt-in skips (102 files passed / 8 skipped)**, production build/PDF trace guard, and production-mode non-seeding Chromium **3/3 passed**. At **16:26 UTC**, direct live read-only audit confirmed zero DEMO listings, ten old detail/apply URLs actual404 with no forms/JobPosting/DEMO titles, empty sitemap job set, protected robots, honest draft privacy, unknown URL404, all eight brand SVGs200, footer/FAQ, and anonymous redirects for all six admin entry routes. The neutral empty-state branch fix still awaits owner deployment; signed-in admin/real-device/production-key checks remain explicitly unverified.
 - `DEMO_CLEANUP_VERIFICATION.md` and RUNBOOK now record the exact immediate-removal limitation, completed audit, actual tests and remaining acceptance item. All non-Storage work is complete to the available authentication/deployment boundary. **Prompt 15 itself is still partial while these 20 private objects remain.** Existing approval covers only their unchanged inventoried removal once no valid upload authorization can recreate them; use the same dry-run/apply command without weakening its guard. Preserve backups, do not seed/rebuild data to make tests green, and do not merge or configure domain/Turnstile/production infrastructure.
+
+## 2026-10-18 — Isolated owner-approved Privacy-only release
+
+- Owner explicitly scopes this release to Privacy only, not production conversion.
+  Created `privacy-policy-only-release` / separate `G:\career-privacy` from fetched
+  `origin/main` 8072afe. Source is 6864418f16a784c1d2092ba382ed4fd4690b520e.
+  Existing worktrees, production-conversion branch and user changes are untouched.
+- Privacy page, CSS, complete 48-section content and focused policy/browser tests
+  match approved source byte-for-byte. Existing footer and application consent links
+  already point to `/privacy`; their components and behavior remain unchanged.
+  Related documentation records the approved contacts/address and manual retention.
+- Explicit diff verification: no changes to dependencies/lockfile, Next/Vercel/CI
+  settings, APP_ENV/target guards, environment parsing, database/schema/migrations,
+  sitemap, auth/MFA, Storage, scripts, cron or existing application form. No 0007,
+  production target pin, credential change or cleanup is imported. Current main's
+  existing startup configuration requirements remain unchanged, not weakened.
+- Typecheck/lint PASS; **707 unit tests passed / 90 existing opt-in skips**. Optimized
+  production build and PDF trace guard PASS. **Three** isolated production-mode
+  Chromium cases PASS: complete policy/footer route, contents/keyboard/width/overflow
+  at 320/390/768/1440, plus public privacy/404/success metadata regression. Apply
+  consent link is covered by existing rendered-form unit tests; no live application,
+  upload, account fixture, seed, sweep or authenticated production workflow ran.
+- A credential-free full build initially stopped at main's inherited static sitemap
+  dependency on DB configuration. Do not import the unrelated dynamic-sitemap fix.
+  The successful full build used the existing public-catalog SELECT path through
+  privately loaded connection values, certificate/hostname-verified TLS and a
+  child-only CA setting. No privileged API key supplied, private env file copied,
+  provider configuration changed or database write executed. Browser checks then
+  ran without cloud/server credentials against that optimized local build. The
+  local artifact is not a production deployment; hosting rebuilds with its existing
+  configuration after owner approval.
+- Owner authorizes branch commit/push and CI verification, **not merge/deployment**.
+  No Supabase/Vercel settings, keys, existing deployment or custom domain changed.
+  Full production conversion, synthetic submissions and real intake are not part
+  of this release or its acceptance claim.
