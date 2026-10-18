@@ -1,5 +1,26 @@
 # Decisions
 
+## 2026-10-19 — PR #11 compatibility with current main
+
+- Resolve the feature branch against main without merging the PR or deploying. Keep main's ordinary job/lifecycle behavior and Date-based guarded demo compare-and-set save; retain the importer's separate `skip-existing` overload and transactional duplicate checks. Regression tests cover both save contracts and under-lock refusal for stale, published, renamed or unowned demo rows.
+- Preserve both branches' decision history, with the approved Job 05 benefit correction superseding its earlier blocker. Job 04/05 datasets remain unchanged by conflict resolution. No production records, authentication, provider settings or schema changes are part of this resolution.
+- Local resolution gates passed: typecheck, lint, 62 focused compatibility/import tests, 762 default tests (97 opt-in live cases skipped), and optimized production build with PDF trace guard. No live/browser mutation suite was run for this resolution; hosted CI/mergeability are checked separately after pushing.
+
+## 2026-10-19 — Approved Job 05 benefit correction
+
+- Owner supplied exact replacement wording for the three over-limit benefits. Change only those items, preserving the other two benefits and all remaining approved content; retain the existing 60-character limit.
+- Both approved datasets pass the actual importer parser and existing job validator with catalog fixtures, individually and together. Rename the validated Job 05 file to `public/imports/job-05.json`; the earlier `needs-review` blocker below is resolved.
+- Finalize on `feature/bulk-job-import` with a focused commit/push and a Compare/Create PR link targeting `main`. No merge, deployment or production import is authorized. Existing unrelated working changes remain excluded.
+
+## 2026-10-18 — Authenticated new-job bulk import
+
+- Owner approved a dedicated feature branch, implementation/tests/build, commit/push and a PR creation URL if `gh` is unavailable. No merge, deployment or automatic live database writes are authorized for this feature. Preserve unrelated working changes in `src/db/queries/test-accounts.ts` and existing untracked assets/prompts.
+- Add Admin Jobs JSON import with strict validation, preview and explicit confirmation. Reuse `requireAdmin`, existing shared job/question/answer validation, cache invalidation and atomic `saveJob`. Create-only mode rechecks existing slug or normalized title under the existing writer advisory lock; no existing job update or application access. No migration/dependency/auth/security/deployment change.
+- Execute sequential per-job action requests; stop on error/unknown response and retain earlier successes. Re-preview safely skips committed jobs. Surface cache invalidation failure as a committed job warning. This is failure-safe per job, not an all-or-nothing batch or a durable import-audit subsystem.
+- Imported single choice is dropdown-only; reject explicit radio rather than silently rewriting supplied presentation. Preserve wording/options/order/required flags. Required portfolios use existing required portfolio-section URL questions, not a new jobs column.
+- Job 04 content comes from the owner's complete supplied specification, not the old seed package. Its explicit three-brand selection is retained for administrator review of actual active hiring needs. Job 05 now also has complete owner-supplied content; only Fixen Media is selected under the owner's unverified-brand fallback. Three approved Job 05 benefits exceed the unchanged 60-character limit (64/73/65). Preserve exact text in `job-05.needs-review.json` and block import pending approved wording or a separately approved limit change; do not truncate or silently split benefits.
+- `docs/BULK_JOB_IMPORT.md` is the contract, owner walkthrough, dataset status and recovery guide. Live publication still requires authorized owner execution on the deployed feature; implementation does not publish jobs.
+
 ## 2026-10-16 - Prompt 13 updated owner authorization: existing shared DEV only
 
 - The owner explicitly superseded the earlier isolation blocker: use only Supabase DEV `xmtoccukridshadnxrlc`, also backing `https://careers-portal-sigma.vercel.app`. Exactly five clearly fictional DEMO jobs may be temporarily published there. No new project/database, migrations, security-policy changes or production writes are authorized. Synthetic candidates/files only.

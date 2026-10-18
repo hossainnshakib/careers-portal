@@ -42,6 +42,7 @@ export default async function JobsPage({
   return (
     <section className="admin-jobs-list">
       <AdminToolbar eyebrow="Jobs" title="Jobs" />
+      <p><a href="/admin/jobs/import" className="admin-btn">Import jobs</a></p>
 
       {params.deleted === "1" && <p role="status">Job deleted.</p>}
 

@@ -162,5 +162,23 @@ describe.skipIf(process.env.RUN_SUPABASE_TESTS !== "1")(
       expect((await loadJob(id))?.questions[0].archivedAt).not.toBeNull();
       await expect(saveJob(input)).rejects.toThrow("Archived questions cannot be restored");
     }, 60000);
+    it("serializes concurrent create-only imports and skips matching titles without updates", async () => {
+      const imported: JobInput = {
+        ...input, id: null, title: `${prefix}Concurrent import`, slug: `${prefix}concurrent-import`,
+        questions: [], intent: "publish",
+      };
+      const results = await Promise.all([
+        saveJob(imported, "skip-existing"),
+        saveJob(imported, "skip-existing"),
+      ]);
+      expect(results.filter(Boolean)).toHaveLength(1);
+      expect(results.filter((row) => row === null)).toHaveLength(1);
+      const saved = results.find((row) => row !== null)!;
+      const before = await loadJob(saved.id);
+      expect(before?.job.status).toBe("open");
+      expect(await saveJob({ ...imported, slug: `${prefix}another-import`, title: `  ${imported.title.toUpperCase()}  ` }, "skip-existing")).toBeNull();
+      const after = await loadJob(saved.id);
+      expect(after).toEqual(before);
+    }, 60000);
   },
 );

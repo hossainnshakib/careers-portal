@@ -9,6 +9,7 @@ export const protectedPages = [
   "/admin/options",
   "/admin/jobs",
   "/admin/jobs/new",
+  "/admin/jobs/import",
   "/admin/jobs/[id]/edit",
 ] as const;
 export const actionFiles = {
@@ -21,6 +22,7 @@ export const actionFiles = {
     "uploadBrandLogoAction",
   ],
   "(protected)/jobs/actions.ts": ["saveJobAction", "jobCommandAction", "copyJobQuestionsAction"],
+  "(protected)/jobs/import/actions.ts": ["previewJobImportAction", "importJobAction"],
   "(protected)/applications/actions.ts": ["changeStatusAction", "addNoteAction", "deleteNoteAction", "deleteApplicationAction"],
   "mfa/actions.ts": ["enrollMfaAction", "verifyMfaAction"],
 } as const;

@@ -16,7 +16,7 @@ import {
 import { checkJobCommand, checkJobEdit, removedQuestionIds } from "@/lib/questions/job-policy";
 import { missingPublishGroups } from "@/lib/validation/jobs";
 import { uniqueSlug } from "@/lib/slug";
-import { jobFilters, type JobInput } from "@/lib/validation/jobs";
+import { jobFilters, jobInput, type JobInput } from "@/lib/validation/jobs";
 import { jobOptionsFor, type OptionRow } from "./job-options";
 import { ownsValidationJob } from "@/lib/demo";
 
@@ -94,9 +94,24 @@ export async function jobHasApplications(id: string) {
   return !!row;
 }
 
-export async function saveJob(input: JobInput, expectedDemoUpdatedAt?: Date) {
+type SavedJob = { id: string; slug: string; previousSlug: string };
+export function saveJob(input: JobInput, expectedDemoUpdatedAt?: Date): Promise<SavedJob>;
+export function saveJob(input: JobInput, mode: "skip-existing"): Promise<SavedJob | null>;
+export async function saveJob(input: JobInput, modeOrExpectedDemoUpdatedAt?: "skip-existing" | Date) {
+  const mode = modeOrExpectedDemoUpdatedAt === "skip-existing" ? modeOrExpectedDemoUpdatedAt : undefined;
+  const expectedDemoUpdatedAt = modeOrExpectedDemoUpdatedAt instanceof Date ? modeOrExpectedDemoUpdatedAt : undefined;
+  input = jobInput.parse(input);
+  if (mode === "skip-existing" && input.id !== null) throw new Error("Import only creates jobs");
   return getDb().transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(1103)`);
+    // Recheck under the same lock used by every job writer, including the editor.
+    // Retrying an interrupted import cannot overwrite a previously committed row.
+    if (mode === "skip-existing") {
+      const identities = await tx.select({ slug: jobs.slug, title: jobs.title }).from(jobs);
+      const key = (value: string) => value.trim().replace(/\s+/g, " ").toLowerCase();
+      if (identities.some((row) => row.slug === input.slug || key(row.title) === key(input.title)))
+        return null;
+    }
     const [existing] = input.id
       ? await tx.select().from(jobs).where(eq(jobs.id, input.id)).for("update")
       : [];
@@ -108,15 +123,17 @@ export async function saveJob(input: JobInput, expectedDemoUpdatedAt?: Date) {
       throw new Error("Job changed during preparation; run the dry-run again.");
     checkJobEdit(existing ?? null, input);
     const [dept] = await tx
-      .select({ id: departments.id })
+      .select({ id: departments.id, isActive: departments.isActive })
       .from(departments)
       .where(eq(departments.id, input.departmentId));
     const selected = await tx
-      .select({ id: brands.id })
+      .select({ id: brands.id, status: brands.status })
       .from(brands)
       .where(inArray(brands.id, input.brandIds));
     if (!dept || selected.length !== input.brandIds.length)
       throw new Error("Invalid department or brands");
+    if (mode === "skip-existing" && (!dept.isActive || selected.some((row) => row.status !== "active")))
+      throw new Error("Import requires active catalog references");
     const id = existing?.id ?? randomUUID();
     const existingQuestions = existing
       ? await tx.select().from(jobQuestions).where(eq(jobQuestions.jobId, id)).for("update")
@@ -163,6 +180,8 @@ export async function saveJob(input: JobInput, expectedDemoUpdatedAt?: Date) {
       : [];
     if (optionRows.length !== optionIds.length || new Set(optionIds).size !== optionIds.length)
       throw new Error("Invalid job options");
+    if (mode === "skip-existing" && optionRows.some((row) => !row.isActive))
+      throw new Error("Import requires active options");
     if (input.intent === "publish") {
       const missing = missingPublishGroups(optionRows.map((row) => row.group));
       if (missing.length)
