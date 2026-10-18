@@ -24,11 +24,8 @@ export default function PrivacyPage() {
         </dl>
       </header>
       <div className="privacy-prose mt-8"><SafeMarkdown text={privacyPolicyIntroduction} /></div>
-      <aside aria-label="Current portal operation" className="mt-7 rounded-[18px] border border-ui-border bg-white/70 p-5 text-[14px] leading-relaxed">
-        <p><strong className="text-ui-ink">Current portal operation.</strong> Retention is handled by manual review and deletion; submitted applications do not expire automatically. Talent-pool opt-in, AI-assisted candidate evaluation and optional analytics are not implemented. Conditional policy descriptions do not enable these features.</p>
-      </aside>
       <details className="privacy-contents my-9 rounded-[18px] border border-ui-border bg-white/70">
-        <summary className="cursor-pointer p-5 font-bold text-ui-ink">Contents <span className="ml-2 text-[13px] font-normal text-ui-muted">48 sections</span></summary>
+        <summary className="cursor-pointer p-5 font-bold text-ui-ink">Contents <span className="ml-2 text-[13px] font-normal text-ui-muted">{privacyPolicySections.length} sections</span></summary>
         <nav aria-label="Privacy policy sections" className="px-5 pb-5">
           <ol className="grid gap-x-7 gap-y-1 sm:grid-cols-2">
             {privacyPolicySections.map(section => <li key={section.id}><a className="block rounded-md py-2 text-[14px] leading-relaxed text-ui-blue-text underline decoration-transparent underline-offset-4 hover:decoration-current focus-visible:decoration-current" href={`#${section.id}`}>{section.title}</a></li>)}

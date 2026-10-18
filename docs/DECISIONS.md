@@ -1865,3 +1865,30 @@ HANDOFF READY
   No Supabase/Vercel settings, keys, existing deployment or custom domain changed.
   Full production conversion, synthetic submissions and real intake are not part
   of this release or its acceptance claim.
+
+## 2026-10-18 — Current-processing Privacy copy refinement
+
+- Owner supersedes the prior 48-section copy with a policy limited to actual
+  recruitment processing. Reviewed the full document, removed four topic sections
+  and related speculative clauses throughout, and renumbered the remaining 44
+  sections, contents links and anchors sequentially. Current provider, access,
+  security, rights, necessary-cookie and applicant-data disclosures are retained.
+- Removed the standalone operational notice. The retention section now naturally
+  states that review/deletion are manual and submitted applications do not expire
+  automatically. The applicable 12-month/90-day periods and legal/administrative/
+  backup exceptions remain. Dates, approved contacts/address and CSS are unchanged.
+- Reviewed public metadata and application consent text: no obsolete references;
+  the consent component and its existing Privacy link do not need alteration.
+  Current product/design/operational docs and policy tests reflect the revised copy.
+  Historical entries above describe superseded text, not instructions to restore it.
+- Work is isolated on `privacy-policy-copy-refinement` from main cd7f9ee. No merge,
+  promotion, hosting/Supabase/security/credential/schema change or database write is
+  authorized by this refinement. Do not promote the previous staged release.
+- Verification: typecheck/lint PASS; 708 default tests PASS with 90 existing opt-in
+  skips; optimized build/PDF trace PASS, retaining the baseline's existing public
+  catalog SELECTs and private verified-TLS build transport. Three credential-free
+  production-mode Chromium checks PASS, including complete rendered-copy exclusion
+  assertions, 44 valid contents links, approved contacts/dates, manual retention,
+  footer navigation and nonoverflowing responsive layout at 320/390/768/1440.
+  Replacement hosted build/content verification must be reported separately; local
+  passes do not prove provider promotion or custom-domain publication.

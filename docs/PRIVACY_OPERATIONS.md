@@ -19,10 +19,8 @@ decisions and completion dates, not copies of applicant answers/CVs.
   administrator, necessary identity verification and applicable statutory deadline.
   Do not ask for passwords, authenticator codes or unnecessary identity documents.
 - Review access/correction/withdrawal/deletion requests against the policy and
-  applicable law. There is no automatic request portal, notification or correction
-  workflow: use authorized manual handling; never pretend unsupported UI exists.
-  Scope any necessary private maintenance separately. Communicate manually using
-  the approved mailbox; the app does not send recruitment emails automatically.
+  applicable law using authorized manual handling. Scope any necessary private
+  maintenance separately. Communicate manually using the approved mailbox.
 - For approved deletion use the existing MFA-gated application deletion UI; verify
   associated files/quarantine cleanup completes and retry its authorized cleanup
   if needed. Do not delete an entire job, bucket or unrelated candidate record.
@@ -40,16 +38,13 @@ catch up immediately; no grace period extending the approved limit is implied.
 |---|---|
 | Active application | Retain while recruitment remains active; review necessity and privacy requests |
 | Closed/unsuccessful recruitment | Delete no later than 12 months after process closure, unless a documented policy exception applies |
-| Optional talent pool | Not implemented: do not silently retain ordinary applications for 24 months or treat mandatory consent as opt-in. A future separately approved consent process would cap retention at 24 months or earlier consent withdrawal |
 | Successful candidate | Minimize any necessary transfer to authorized employment/engagement records; those systems/processes are outside this portal |
 | General technical/security logs | Normally at most 90 days; verify actual Vercel/Supabase/Cloudflare/mail/integration settings and oldest retained data. Use supported expiry/deletion controls; unavailable controls remain a launch blocker, not a claimed setting |
 | Administrative/legal records | Record the specific necessity/exception and review/end date; no indefinite blanket exemption |
 | Downloaded CVs/PDFs | Ask authorized reviewers to remove unnecessary local/shared copies and record confirmation; do not keep duplicate CVs in the request register |
 
-No talent-pool feature, AI ranking, optional analytics, cookie-consent manager,
-email automation or per-brand roles is added by this policy. All allowlisted
-admins are the same small trusted internal team; internal need-to-know practices
-must support the policy without claiming software-enforced brand segregation.
+All allowlisted admins are the same small trusted internal team. Internal access
+and sharing follow recruitment-related need-to-know practices.
 
 ## Backups, logs and evidence — weekly, plus before approved live changes
 
@@ -66,17 +61,16 @@ must support the policy without claiming software-enforced brand segregation.
   recovery must not resurrect the seven retired development sessions.
 - Verify actual provider log retention/redaction and exported-log destinations.
   Exclude applicant payloads, name/email query filters, passwords and tokens; review
-  logging integrations as well as application logging. Do not enable analytics to
-  satisfy the policy's conditional descriptions.
+  logging integrations as well as application logging.
 - Record only dates, operator, target, deletion counts, non-secret IDs/hashes and
   outcomes. Legal holds require a specific reason and next review. The owner
   reviews exceptions monthly and closes them when no longer justified.
 
 ## Publication and launch boundary
 
-The owner approved the complete 48-section policy with these contacts, address and
-retention decisions. The staged code removes the old draft banner and explicitly
-discloses manual retention. This approval does not verify mailbox delivery, provider
+The owner directed a current-processing-only policy with 44 sequential sections,
+preserving the approved contacts, address, dates and applicable retention decisions.
+Manual retention is disclosed within the policy. This does not verify mailbox delivery, provider
 retention/commercial licensing or deploy the page. The narrow Privacy-only release
 does not require environment-variable changes or authorize full production conversion.
 Synthetic production submission and real intake remain separate explicit gates.

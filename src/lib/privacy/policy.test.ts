@@ -13,19 +13,18 @@ function normalize(text: string) {
     .replace(/^---\s*$/gm, "").replace(/\*\*/g, "").replace(/\[([^\]]+)\]/g, "$1").replace(/\s+/g, " ").trim();
 }
 
-it("preserves the entire independently checked owner policy, with only approved contact changes", () => {
-  // Independent pin computed from Prompt 20's canonical policy + owner's final
-  // contact/address replacements, not generated from this implementation.
+it("preserves the reviewed current-processing policy and sequential section numbering", () => {
+  // Reviewed text pin after the owner's current-processing-only cleanup request.
   const content = normalize(`${privacyPolicyIntroduction}\n${privacyPolicySectionsMarkdown}`);
-  expect(createHash("sha256").update(content).digest("hex")).toBe("461f0fc85e084d7f30bffb39ee130f3163a23523c05a614a881a957fba1b9d03");
-  expect(privacyPolicySections.map(section => section.number)).toEqual(Array.from({ length: 48 }, (_, i) => i + 1));
+  expect(createHash("sha256").update(content).digest("hex")).toBe("41bd3b34f1094cb37ecc4c88c45d39520c2a78ca43a00f177a6ed94b391a6cf3");
+  expect(privacyPolicySections.map(section => section.number)).toEqual(Array.from({ length: 44 }, (_, i) => i + 1));
   expect(privacyPolicyDates).toEqual({ effective: "18 October 2026", updated: "18 October 2026", iso: "2026-10-18" });
 });
 
-it("serves all 48 sections, dates, anchors and the complete closing declaration in semantic HTML", () => {
+it("serves all 44 sections, dates, anchors and the closing declaration in semantic HTML", () => {
   const html = renderToStaticMarkup(createElement(PrivacyPage));
   expect(html.match(/<h1\b/g)).toHaveLength(1);
-  expect(html.match(/<h2\b/g)).toHaveLength(48);
+  expect(html.match(/<h2\b/g)).toHaveLength(44);
   expect(html.match(/<time dateTime="2026-10-18"/g)).toHaveLength(2);
   for (const section of privacyPolicySections) {
     expect(html).toContain(`id="${section.id}"`);
@@ -33,13 +32,25 @@ it("serves all 48 sections, dates, anchors and the complete closing declaration 
     expect(html).toContain(section.title);
     expect(html).toContain(`aria-labelledby="${section.id}-title"`);
   }
-  expect(html).toContain("rather than bundled into the mandatory application declaration.");
-  expect(html).toContain("normally be retained for up to <strong>24 months</strong>");
+  expect(html).toContain("information submitted by them is accurate to the best of their knowledge.");
   expect(html).toContain("<strong>12 months after the relevant recruitment process closes</strong>");
   expect(html).toContain("<strong>90 days</strong>");
-  expect(html).toContain("Talent-pool opt-in, AI-assisted candidate evaluation and optional analytics are not implemented.");
+  expect(html).toContain("Retention is currently managed through manual review and deletion. Submitted applications do not expire automatically.");
   expect(html).not.toMatch(/Draft|owner review required|Insert official|awaiting confirmation|DEMO|fixenmedia@gmail\.com|privacy@fixenmedia\.com/i);
   expect(metadata.description).not.toMatch(/draft/i);
+});
+
+it("removes obsolete topics from the entire policy and metadata without a standalone notice", () => {
+  const html = renderToStaticMarkup(createElement(PrivacyPage));
+  const prohibited = /\bAI\b|artificial intelligence|\bautomated\b|talent[ -]?pools?|\bfuture\b|unimplemented|not implemented|\banalytics\b|optional cookies|cookie preferences|24 months/i;
+  expect(`${privacyPolicyIntroduction}\n${privacyPolicySectionsMarkdown}`).not.toMatch(prohibited);
+  expect(html).not.toMatch(prohibited);
+  expect(JSON.stringify(metadata)).not.toMatch(prohibited);
+  expect(html).not.toContain("Current portal operation");
+  expect(html).not.toContain("<aside");
+  for (const provider of ["Supabase", "Vercel", "Cloudflare Turnstile"]) expect(html).toContain(provider);
+  expect(privacyPolicySections.find(section => section.title === "19. Data Retention")?.text).toContain("manual review and deletion");
+  expect(privacyPolicySections.find(section => section.title === "26. Authentication Cookies")?.text).toContain("signed-in session");
 });
 
 it("uses the approved public contacts independently of an unrelated environment contact override", () => {
