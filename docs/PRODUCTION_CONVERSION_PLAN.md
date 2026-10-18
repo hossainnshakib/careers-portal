@@ -226,13 +226,19 @@ runtime auth.sessions reads also need review. No new role/grant is provisioned h
 
 ### Recovery readiness and per-operation rollback
 
-**Recovery is still blocked**, not demonstrated by the local TLS gate. Supabase
+**Portable recovery has passed; full managed-service A2 remains blocked.** The
+encrypted database/configuration/file-byte copies on local G and USB J independently
+decrypt/hash-verify; isolated PG18 restore matches 41 table fingerprints, 140 portable
+constraints, 389 nullability rules, indexes, triggers and public RLS. Actual pg_restore
+0.784s / successful local rehearsal 13.339s are not a total disaster RTO. See the
+latest launch verification for the final independent integrity pin and exact limits.
+Do not repeat local setup or request general A2 approval again. Supabase
 managed backup availability/current plan is owner-unverified. Paid daily/PITR DB
 backups do not contain Storage file bytes; a public+drizzle-only dump omits managed
 Auth state/security triggers, and role passwords may require separate recovery.
 The previous scoped artifact backup covers only the deleted test graph/20 files,
-not a complete production recovery plan. Owner approved Docker-free preparation
-using installed PostgreSQL 18, not a PostgreSQL 17/Docker install or another hosted
+not a complete production recovery plan. Owner approved and executed Docker-free
+recovery using installed PostgreSQL 18, not a PostgreSQL 17/Docker install or another hosted
 project. Follow [LOCAL_RECOVERY_RUNBOOK.md](LOCAL_RECOVERY_RUNBOOK.md) for an isolated
 17 → 18 database/file rehearsal; leave the running local service untouched. This
 is not full Auth/Storage or migration 0003 managed-service recovery proof. Existing-

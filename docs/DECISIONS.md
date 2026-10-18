@@ -2023,3 +2023,40 @@ HANDOFF READY
   release pin 36594bf rather than silently substituting documentation HEAD. Existing
   typecheck/lint/tests (773/90 skips) and fresh Drizzle check pass; no app source,
   build inputs, migrations, grants/policies/factors, deployment or merge changed.
+
+## 2026-10-18 — A2 encrypted backup and portable PG18 restore executed
+
+- Private owner setup completed: independent password-custody and writer-freeze
+  attestations, explicit isolated EFS/user-key creation/export approval, inheritance
+  test, both password-encrypted PFX imports and synthetic CMS decryption. Sensitive
+  exports proceeded only after protection and AES-256 algorithm checks passed.
+- Full read-only snapshot pg_dump and ten Storage-byte exports now exist encrypted
+  on G and independent USB J. Both copies read back/decrypt/hash-verify: 15 main files
+  plus available-configuration supplement; 17 ciphertext entries. Final index SHA-256
+  f4a59c655b50fd121f8f725644a0643da51334f8df2c200b7665a36ec25b6f8a
+  supersedes intermediate indexes. Source snapshot fingerprinted 49 tables; all
+  objects/buckets and source rows reconciled. Configuration/389-column-rule metadata
+  captured afterward is labeled, not falsely described as the same snapshot.
+- Available metadata includes 30 roles, 24 memberships, settings, schema/default ACLs,
+  extension inventory and the Auth security function's owner/definer/search_path/ACL.
+  No source role passwords/signing keys or unavailable management configuration were
+  invented/exported. Both-copy decryption used this PC's owner certificate; PFX
+  import tests are not an independent-machine disaster exercise.
+- Successful isolated PG18 restore from USB-decoded bytes: 41 table fingerprints,
+  140 portable constraint definitions, 389 column nullability rules, indexes and
+  triggers match; 13 non-owner reads denied. All 366 PG18 catalog constraints valid;
+  NOT NULL catalog entries differ legitimately from PG17, so compare column rules
+  separately. 0007 remains absent; source owners/ACLs deliberately not restored locally.
+  pg_restore 0.784s; full successful rehearsal 13.339s; main packaging/readback 5.766s.
+  These exclude earlier rejected attempts/export/operator time and do not prove RTO.
+- Resolved private-helper timestamp normalization, child-handle wait, local inet/schema
+  bootstrap and cross-version constraint checks without source changes. Preserved
+  original artifacts/rejected attempts; all temporary clusters stopped, no remaining
+  isolated processes, no unprotected nonempty staging/cluster files; existing service
+  still Running. New local EFS/CMS keys/directories were explicitly owner-approved.
+- Portable database/file recovery PASS; overall A2 NOT VERIFIED for managed Auth/MFA
+  key usability, Storage service/config and provider-native recovery. Recurring RPO,
+  retention, total-machine-loss and PG17 restore are not proven. Owner dashboard
+  recovery coverage/validation and access/freeze evidence remain; no B–H mutation,
+  issuer receipt fabrication, session/key rotation, cleanup, migration, release or
+  merge. Approved release stays 36594bf, not documentation HEAD.

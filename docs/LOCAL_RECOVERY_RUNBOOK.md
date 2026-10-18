@@ -11,6 +11,13 @@ live mutation, deployment or merge is needed for this preparation. Follow
 [the conversion gates](PRODUCTION_CONVERSION_PLAN.md#5-single-ordered-stage-1-checklist--scoped-authorization-status).
 This document does not relax A2's managed-service recovery requirement.
 
+**Latest actual result:** encrypted local/USB backup, both-copy decryption and
+isolated PG18 portable restore have now passed. See
+[the execution evidence](PRODUCTION_LAUNCH_VERIFICATION.md#prompt-18--completed-portable-recovery-execution-newest-checkpoint)
+for the final ciphertext-index pin, measured times, limitations and the remaining
+owner handoff. Earlier pending/setup statements below are historical. Full managed
+Supabase recovery and overall A2 are still NOT VERIFIED; do not repeat completed setup.
+
 Inspection found pg_dump, pg_restore, psql, postgres, initdb and pg_ctl **18.4** on
 PATH, a registered 18.4 installation and an already-running postgresql-x64-18
 service. No 17 installation was found in PATH, conventional locations or registry.
@@ -84,8 +91,10 @@ test. No tool installation or certificate/key generation is performed by this pl
   before trusting later restores. Same-PC EFS and certificate checks do not simulate
   total machine-loss recovery or managed Supabase services.
 
-Current owner-window outcome, backup and timing results belong in the latest launch
-verification entry. Do not turn a pending private interaction into a successful backup.
+The owner window subsequently completed and the delegated backup/portable restore
+ran. Its actual results/timing are in the latest launch entry. No further password
+setup or general A2 approval is required. Existing-project managed-service recovery
+remains a separate unproven component.
 
 ### Minimum-setup execution path — no USB requirement
 
@@ -256,7 +265,10 @@ document-encryption recipient with a recoverable private key, and this file form
    keep recovered private-key material private. A checksum-only copy test is not a
    decryption test. Do not destroy the only working key during this test.
 
-No certificate/key is generated here. If no recoverable owner recipient/key exists,
+During the original preparation no certificate/key was generated. The later private
+owner workflow explicitly approved and completed EFS/CMS user-key creation and
+password-encrypted PFX export/import tests. Do not recreate these keys. If a future
+independent recovery has no recoverable owner recipient/key,
 owner must authorize/provision one privately before exports. An existing approved
 binary-safe encryption/archive tool can replace the chunk method, but its tested
 format/version/key-recovery instructions and authenticated integrity must be in
@@ -364,7 +376,9 @@ copy verification/decryption outcomes, validation PASS/FAIL and measured duratio
 Keep private paths, filenames, Auth identities, credentials and archive bodies out
 of the repository/report. Current results: tooling inspection **PASS**; packaging,
 exports, independent-copy decryption, local restore and elapsed recovery **NOT
-VERIFIED / NOT RUN**. No managed-service or RPO/RTO guarantee demonstrated.
+VERIFIED / NOT RUN** at the preparation checkpoint only. Actual portable-backup/
+restore results now supersede those statuses in the launch report. No managed-service
+or recurring RPO/RTO guarantee is demonstrated.
 
 ## 8. Consolidated minimum owner actions to finish conversion
 

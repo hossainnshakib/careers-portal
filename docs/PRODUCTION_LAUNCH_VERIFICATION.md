@@ -150,7 +150,80 @@ variables](https://vercel.com/docs/environment-variables/sensitive-environment-v
 [Supabase SSL enforcement/reboot](https://supabase.com/docs/guides/platform/ssl-enforcement),
 [database backups and excluded Storage bytes](https://supabase.com/docs/guides/platform/backups).
 
-## Prompt 18 — consolidated execution evidence (newest checkpoint)
+## Prompt 18 — completed portable recovery execution (newest checkpoint)
+
+**Portable PostgreSQL/database-and-file recovery PASS. Overall A2 remains NOT
+VERIFIED for full managed Supabase services.** The private owner setup completed;
+the prior pending-input checkpoint below is historical, not the current blocker.
+
+| Actual execution | Result / evidence |
+|---|---|
+| Private owner setup | PASS: masked password/custody and writer-freeze attestations; exact new-directory EFS/user-key changes explicitly approved locally. EFS inheritance, synthetic CMS round trips and both AES-256 password-encrypted PFX imports passed. Password was not provided to chat/argv/source files |
+| Protection before sensitive exports | PASS: private EFS staging and restrictive ACLs; source dump, downloaded bytes, metadata and recovered plaintext kept there. CMS algorithm checked as AES-256. Existing unencrypted volumes were not reconfigured |
+| Consistent database export | PASS: full pg_dump custom archive from the source session pooler with verify-full TLS/read-only mode and exported REPEATABLE READ snapshot. Archive readable, no dump warnings; 49 accessible source table fingerprints recorded. No source data/schema writes |
+| Storage bytes | PASS: all 10 objects, exact bucket/key mapping, MIME/size/metadata and SHA-256 preserved; source object/bucket state reconciled after export. Both local and USB recovered bytes match. Writer freeze is owner-attested, not independently dashboard-audited |
+| Available configuration | PASS, bounded: encrypted supplement with 30 roles/24 memberships, database-role settings, schema/default ACLs, extension inventory, security-function owner/SECURITY DEFINER/search_path/ACL metadata and available public Auth settings. No role-password/signing-key/control-plane export. Supplement and column rules were captured after the DB snapshot and are explicitly labeled accordingly |
+| Independent encrypted copies | PASS: local G and removable USB J. Both copies independently read back, decrypted and hash-validated: 15 main recovered files plus one configuration supplement per copy; 17 ciphertext entries verified. Both PFX copies imported/decrypted in memory during setup. Archive decryption ran on the same PC using its owner certificate; no total-machine-loss/key-store-loss exercise claimed |
+| Final integrity pin | **ciphertext-index.json SHA-256: f4a59c655b50fd121f8f725644a0643da51334f8df2c200b7665a36ec25b6f8a**. This supersedes intermediate pre-configuration indexes; it covers the configuration supplement as well as the original encrypted chunks/manifest |
+| Isolated restore | PASS: a new loopback-only PG18 cluster/database, no live app connection or source credentials loaded by the restore process. Restored from the independently decoded USB copy. No existing PostgreSQL service/database/configuration changed |
+| Restored database semantics | PASS: **41** public/Auth/drizzle table fingerprints, **140** portable constraint definitions, **389** column NOT NULL rules, indexes and trigger definitions match. All 366 PG18 catalog constraints validated; PG18 adds NOT NULL catalog entries absent in PG17. Available Auth data restored, not GoTrue/MFA services |
+| RLS / migration preservation | PASS: 13 public RLS flags match, 13 non-owner/non-BYPASSRLS probes denied; 0007 CHECK remains absent. Source owner/ACL preservation was intentionally not claimed: local restore used no-owner/no-privileges and a local-only probe role |
+| File protection and shutdown | PASS: synthetic PostgreSQL writes tested before real restore, restored files checked; final audit found **0 unprotected nonempty files** under the staging/rehearsal root and **0 remaining isolated PostgreSQL processes**. Existing PostgreSQL service remains Running. Empty bootstrap files are not represented as sensitive plaintext exports |
+| Measured successful rehearsal | pg_restore **0.784 seconds**; complete successful local rehearsal **13.339 seconds**, including bootstrap/protection tests/validation/shutdown. Final main packaging/readback/decryption phase **5.766 seconds**; this excludes source-export time, supplemental-config work, owner interaction and earlier rejected attempts. Not a total disaster RTO |
+| Managed service recovery / objectives | NOT VERIFIED: Supabase Auth/GoTrue/MFA encryption-key usability, Storage API/signed URLs, provider configuration and provider-native recovery. PG17 restore, exact owners/ACLs, source-machine-loss recovery, recurring 24h RPO/8h RTO/retention are not demonstrated. No critical A2 gate waived |
+
+### Resolved execution issues and preservation
+
+The first source run completed its protected dump/downloads but rejected comparison
+of JS Date objects with saved ISO strings. Normalizing timestamps and rechecking all
+49 source fingerprints plus objects/buckets validated the saved export; no dump was
+overwritten. An initial pg_ctl child-handle wait timed out after bootstrap only; its
+exact temporary cluster was identified and stopped before any source restore.
+Subsequent bootstrap/validation attempts caught loopback inet text formatting and
+the need to create local auth/drizzle namespaces for a schema-filtered restore.
+Finally PG18's extra NOT NULL catalog entries were separated from portable constraints
+and all column rules independently compared. Rejected attempts remain protected;
+none is labeled successful. All temporary clusters are now stopped.
+
+Post-execution repository validation: typecheck/lint PASS; 773 tests passed with
+90 existing opt-in skips; diff checks PASS. No application code changed, so no
+new build/browser fixture run was needed; prior build/PDF trace and Drizzle evidence
+remains unchanged. These local test passes do not replace managed-service recovery.
+
+Encrypted backup/key directories are on the owner-selected G and J locations; exact
+paths and detailed execution reports are retained privately with the non-secret owner
+setup receipt and EFS execution report, not committed. The verified-final subdirectories
+contain the accepted set; preserve earlier sets and keys pending owner retention
+instructions. EFS/CMS user certificates and new private directories were created only
+under explicit local approval. No existing volume was encrypted/reformatted, no
+production credential/session/connection was revoked, and no Storage cleanup,
+migration, deployment, Vercel change or merge was performed.
+
+### Remaining owner actions — current consolidated handoff
+
+1. **One provider/dashboard session:** corroborate the owner-attested writer freeze,
+   complete collaborator/integration/secret-scope/old-deployment inventory and explain
+   the missing sidecars. Verify existing-project provider-native backup availability
+   and **Auth/MFA-key/config recovery coverage plus a supported validation route**.
+   That is the remaining critical A2 service-recovery gap, not missing local backups,
+   USB, Docker or PG installation. Confirm recovery targets/cadence/window and
+   privacy/contact/retention, redirect allowlist, real Turnstile hostname, commercial
+   hosting and log privacy. No production changes are implied by this review.
+2. **After reviewing recovery evidence:** explicitly authorize named owner executors
+   for B–H at release 36594bf (unless separately replaced). Follow B → C → D → E → F
+   → G → H in the conversion plan: retire historical access/sessions/connections;
+   prove fresh access and old denials; genuine issuer receipt + >2h1m expiry; exact
+   eligible original-object cleanup; sole 0007; Production-only fresh env/CA and pinned
+   release; owner MFA/uncached hosted SQL-TLS; SSL enforcement only when needed after
+   all clients pass; recovery refresh and reviewed cron/backup cadence. No old
+   credential resurrection or historical DEV rollback. All privileged mutations
+   remain unapproved, including the absent issuer-retirement receipt.
+3. **Separate launch gate:** approve protected synthetic apply/review/file/PDF
+   acceptance/cleanup, then explicitly authorize real publishing/intake after passing
+   results and no residual synthetic data. Do not treat portable recovery as permission
+   for either gate.
+
+## Prompt 18 — preceding execution checkpoint (historical)
 
 **A1/A2 not complete.** A private local owner window has actually been launched for
 masked password/custody, remote-freeze attestation and explicit new-directory EFS /
