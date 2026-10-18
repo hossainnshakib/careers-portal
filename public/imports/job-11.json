@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "title": "Cinematographer",
+      "slug": "cinematographer",
+      "department": "video-motion-production",
+      "primaryBrand": "fixen-media",
+      "brands": ["fixen-media"],
+      "options": {
+        "arrangement": ["onsite", "hybrid"],
+        "engagement": ["full_time", "project-based"],
+        "experience": ["fresher-welcome", "entry", "mid"]
+      },
+      "engagementNote": null,
+      "salaryMode": "negotiable",
+      "salaryText": "",
+      "vacancies": 2,
+      "experienceText": null,
+      "locationText": "Chittagong, Bangladesh",
+      "deadlineAt": null,
+      "cvRequired": true,
+      "portfolioRequired": true,
+      "status": "published",
+      "summary": "Shoot visually strong commercial, branded and documentary-style content with thoughtful composition, lighting and camera movement. Strong freshers with quality work are welcome to apply.",
+      "descriptionMd": "We are looking for Cinematographers to work across Fixen Media, selected brands and client productions.\n\nThis role focuses on translating creative ideas, scripts and production briefs into strong visual storytelling through camera, lighting, framing and movement. Projects may include brand films, commercial shoots, real-estate videos, interviews, documentaries, social campaigns and product-focused productions.\n\nWe welcome candidates from different experience levels. Strong freshers with a thoughtful reel or meaningful practical work are encouraged to apply, while more experienced cinematographers may take greater ownership of shot planning, lighting setups, visual direction and complex productions.\n\nWe value visual judgment, technical discipline and storytelling—not expensive equipment alone.",
+      "responsibilitiesMd": "- Plan and execute camera work for commercial, branded, documentary and campaign productions.\n- Translate scripts, shot lists and creative direction into visual sequences.\n- Compose shots with strong framing, depth and visual continuity.\n- Plan and manage lighting appropriate to the subject, mood and location.\n- Operate cameras, lenses, stabilizers and related production equipment.\n- Work with directors, producers and creative teams during pre-production and shoots.\n- Maintain visual consistency across scenes and shooting days.\n- Capture interviews, B-roll, product shots and location footage as required.\n- Manage exposure, focus, frame rate, white balance and recording settings appropriately.\n- Organize footage and production media responsibly after shoots.\n- Adapt to practical production constraints while maintaining visual quality.\n- More experienced candidates may contribute to shot design, lighting plans and broader visual direction.",
+      "requirementsMd": "- Strong understanding of framing, composition and visual storytelling.\n- Working knowledge of camera operation and manual exposure.\n- Understanding of lenses, focal length, frame rate and basic camera settings.\n- Basic understanding of lighting for video production.\n- Ability to follow a shot list or creative brief.\n- Awareness of continuity and coverage.\n- Ability to work collaboratively in a production environment.\n- Attention to detail and production discipline.\n- Willingness to work on location when projects require it.\n- A showreel, portfolio, academic project or other demonstrable cinematography work.\n\nFormal professional experience is not mandatory for applicants with strong fundamentals and meaningful practical work.",
+      "niceToHaveMd": "- Commercial production experience.\n- Real-estate videography experience.\n- Product-video experience.\n- Documentary or interview cinematography.\n- Gimbal or stabilizer operation.\n- Drone operation where legally permitted.\n- Lighting-design experience.\n- Log/raw workflow knowledge.\n- Multi-camera production experience.\n- Basic editing or color-grading knowledge.\n- Experience working with production crews.\n\n### Optional skills\n\n- Gimbal Operation\n- Drone Videography\n- Interview Lighting\n- Commercial Production\n- Real Estate Videography\n- Color Workflow",
+      "benefits": [
+        "Work on real commercial and branded productions",
+        "Exposure to different production styles and industries",
+        "Opportunity to collaborate with directors and creative teams",
+        "Growth through practical shooting ownership",
+        "Develop stronger lighting and visual storytelling skills"
+      ],
+      "skills": ["Cinematography", "Camera Operation", "Lighting", "Composition", "Visual Storytelling", "Shot Planning", "Videography", "Camera Movement", "Lens Selection", "Production"],
+      "includeStandardQuestions": false,
+      "questions": [
+        { "label": "LinkedIn", "type": "url", "required": false, "section": "professional" },
+        { "label": "Portfolio/showreel", "type": "url", "required": true, "section": "portfolio" },
+        { "label": "Years of relevant experience", "type": "number", "required": true, "section": "experience", "config": { "integer": true, "min": 0, "max": 50 } },
+        { "label": "Current/recent job", "type": "short_text", "required": false, "section": "experience" },
+        { "label": "Earliest joining date", "type": "date", "required": false, "section": "professional", "config": { "min": "today" } },
+        { "label": "Expected salary", "type": "number", "required": false, "section": "professional" },
+        { "label": "Why do you want to work with us?", "type": "long_text", "required": true, "section": "professional", "config": { "maxLength": 1500 } },
+        { "label": "Share up to three cinematography or videography projects that best represent your work.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "For one of the projects above, explain your role and how you approached the visual style.", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Which cameras, lenses, lighting equipment or production tools are you comfortable working with?", "type": "long_text", "required": true, "section": "role_specific" },
+        {
+          "label": "Have you independently planned and executed a complete video shoot?",
+          "type": "single_choice", "required": true, "section": "role_specific", "config": { "display": "dropdown" },
+          "options": [
+            { "value": "Yes, independently", "label": "Yes, independently" },
+            { "value": "Yes, with guidance or as part of a team", "label": "Yes, with guidance or as part of a team" },
+            { "value": "Only personal/academic projects", "label": "Only personal/academic projects" },
+            { "value": "Not yet", "label": "Not yet" }
+          ]
+        },
+        { "label": "How do you approach lighting when working in a location with limited control over the environment?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "How do you decide framing, lens choice and camera movement for a scene?", "type": "long_text", "required": true, "section": "role_specific" },
+        { "label": "Do you have experience with gimbals, drones or multi-camera productions? If yes, briefly explain.", "type": "long_text", "required": false, "section": "role_specific" }
+      ]
+    }
+  ]
+}
