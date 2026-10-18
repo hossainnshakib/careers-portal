@@ -1952,3 +1952,26 @@ HANDOFF READY
   tests with 90 existing opt-in skips, and diff checks. No cloud mutation/browser
   fixtures or backup/restore action ran. These passes are not operational A1/A2
   completion evidence. No remote publication until the freeze is owner-verified.
+
+## 2026-10-18 — Approved Docker-free recovery preparation
+
+- Owner approved LOCAL_RECOVERY_RUNBOOK.md and related documentation updates,
+  verification, commit and push on the existing feature branch; no merge or
+  deployment. This explicitly supersedes the prior documentation publication hold.
+  Approved release SHA remains 36594bf, not the new documentation HEAD.
+- Use existing PostgreSQL 18.4 tools for a separately authorized isolated local
+  17 → 18 logical rehearsal. The registered PostgreSQL 18 service is running and
+  remains untouched; no PostgreSQL 17/Docker installation or hosted project added.
+  No existing local cluster connection, new cluster, export or restore occurred.
+- Runbook covers source verify-full TLS, snapshot/Storage consistency, full accessible
+  Auth/security-trigger/config metadata, separate file bytes, encrypted staging,
+  Windows CMS bounded binary-safe packaging, independent-copy decryption and
+  local-only restore/privilege/constraint validation. Packaging is a specification,
+  not an executed/tested encryption implementation. Owner keys/custody and separate
+  sensitive execution authorization remain necessary.
+- Standard PostgreSQL cannot prove Supabase Auth/MFA/key or Storage service recovery,
+  and an 18 rehearsal cannot prove restoration to 17. Existing-project provider
+  recovery coverage plus a supported validation method is the smallest additional
+  mechanism, not an assumed backup entitlement or permission for a live restore.
+  If critical service recovery cannot be demonstrated, A2 remains NOT VERIFIED;
+  no destructive conversion is permitted. No RPO/RTO or measured recovery claimed.

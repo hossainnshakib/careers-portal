@@ -152,6 +152,43 @@ variables](https://vercel.com/docs/environment-variables/sensitive-environment-v
 
 ## A1/A2 authorized execution checkpoint — partial, not completion
 
+### Subsequent Docker-free preparation (supersedes tooling/target assumptions below)
+
+Owner approved documentation/preparation with existing PostgreSQL 18 and feature-
+branch publication, not sensitive exports, live changes, cluster startup/restore,
+PostgreSQL 17/Docker installation or new hosted infrastructure. Inspection found
+all six client/server tools at 18.4, a registered installation and a running
+postgresql-x64-18 service. No 17 installation was found in PATH, conventional
+locations or registry; no existing cluster was connected to or modified.
+
+[LOCAL_RECOVERY_RUNBOOK.md](LOCAL_RECOVERY_RUNBOOK.md) now specifies verified-TLS
+read-only exports, Auth/trigger/config coverage, separate hashed Storage bytes,
+encrypted staging/CMS packaging, two independent decrypt-and-verify copies and a
+separate loopback-only PG18 cluster. It includes portability exclusions and local
+privilege tests, not fabricated Supabase services. No new recovery target/tool
+installation is required for the portable database/file portion; owner custody and
+separate execution approval are still required. PG17 → PG18 is a forward-version
+rehearsal, not proof of a restore back to PG17.
+
+**PASS:** bounded tooling inspection and preparation. **NOT VERIFIED / NOT RUN:**
+exports, encryption round trip, independent copies, local restore, elapsed recovery,
+RPO/RTO and managed Auth/MFA/Storage recovery. Existing-project provider recovery
+coverage and a supported validation route are the smallest additional mechanism;
+availability alone does not satisfy full-service restore proof. No critical A2
+requirement has been waived. Earlier statements about no full restore target/tool
+workflow remain execution gaps, not a need for Docker or another hosted project.
+
+The later owner explicitly authorized pushing documentation to the existing feature
+branch; this supersedes the earlier local-only publication hold, not the deployment
+freeze requirement or release SHA pin. A push/CI run is not deployment approval.
+
+Docker-free documentation verification: typecheck and lint PASS; default tests
+**773 passed, 90 existing opt-in skips** (107 files passed / 8 skipped). Markdown
+fence/local-file-link and new-runbook credential/path checks PASS. Existing DECISIONS
+encoding was preserved rather than normalizing unrelated historical content. No
+build/browser/live tests or sensitive backup/restore/encryption round trip ran; no
+user-visible/code changes require browser acceptance in this documentation change.
+
 Only non-sensitive/read-only agent work was supported. No stop/revoke/delete/export/
 restore/provider setting change was performed; no new sensitive backup was created.
 Existing worktrees/user changes and the prior backup remain untouched. Findings
@@ -184,6 +221,11 @@ freeze, encryption, recovery completeness or RPO/RTO. Keep this checkpoint local
 until the owner confirms auto-deploy/CI freeze; pushing could trigger integrations.
 
 ### Consolidated owner actions — one checklist, no credentials in chat
+
+**Historical A1/A2 checklist below is superseded by the single current minimum
+owner list in [LOCAL_RECOVERY_RUNBOOK.md, section 8](LOCAL_RECOVERY_RUNBOOK.md#8-consolidated-minimum-owner-actions-to-finish-conversion).**
+Use the Docker-free PG18 path there; do not provision another hosted/full local
+Supabase target merely to follow this older list. Full-service proof remains gated.
 
 1. **Owner dashboards/private terminal:** pause Git auto-deploy, both DEV workflows,
    production cron and other known writers; protect old write-capable deployments;

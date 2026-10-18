@@ -228,9 +228,13 @@ managed backup availability/current plan is owner-unverified. Paid daily/PITR DB
 backups do not contain Storage file bytes; a public+drizzle-only dump omits managed
 Auth state/security triggers, and role passwords may require separate recovery.
 The previous scoped artifact backup covers only the deleted test graph/20 files,
-not a complete production recovery plan. Use an existing isolated recovery target
-or approved local full Supabase stack; bare Postgres alone cannot prove Auth/Storage
-and migration 0003 recovery. Agree retention and deletion handling for backups too.
+not a complete production recovery plan. Owner approved Docker-free preparation
+using installed PostgreSQL 18, not a PostgreSQL 17/Docker install or another hosted
+project. Follow [LOCAL_RECOVERY_RUNBOOK.md](LOCAL_RECOVERY_RUNBOOK.md) for an isolated
+17 → 18 database/file rehearsal; leave the running local service untouched. This
+is not full Auth/Storage or migration 0003 managed-service recovery proof. Existing-
+project provider recovery coverage/validation is still needed; an unproven critical
+component keeps A2 blocked. Agree retention and deletion handling for backups too.
 
 | Operation | Verification before continuing | Rollback / recovery boundary |
 |---|---|---|
